@@ -93,13 +93,17 @@ export default function BuilderPage() {
     // Helpers
     const handleInputChange = (section: keyof StoreData | null, field: string, value: string) => {
         if (section) {
-            setStoreData(prev => ({
-                ...prev,
-                [section]: {
-                    ...prev[section],
-                    [field]: value
-                }
-            } as StoreData));
+            setStoreData(prev => {
+                const sectionData = prev[section] ?? {};
+
+                return {
+                    ...prev,
+                    [section]: {
+                        ...sectionData,
+                        [field]: value
+                    }
+                } as StoreData;
+            });
         } else {
             setStoreData(prev => ({
                 ...prev,
