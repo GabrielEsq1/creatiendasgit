@@ -10,6 +10,14 @@ interface StorePreviewProps {
     readOnly?: boolean;
 }
 
+const formatPrice = (value: string | number) => {
+  const num = Number(value || 0);
+  return num.toLocaleString("es-CO", {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  });
+};
+
 export default function StorePreview({ data, products, viewMode = 'desktop', readOnly = false }: StorePreviewProps) {
     const containerClass = `store-preview-container ${viewMode === 'mobile' ? 'device-mobile' : ''}`;
 
@@ -105,7 +113,7 @@ export default function StorePreview({ data, products, viewMode = 'desktop', rea
                             <div className="product-category">{product.category}</div>
                             <div className="product-name">{product.name}</div>
                             <div className="product-desc">{product.description}</div>
-                            <div className="product-price">${parseInt(product.price).toLocaleString()}</div>
+                            <div className="product-price" suppressHydrationWarning>${formatPrice(product.price)}</div>
 
                             <a
                                 href={`https://wa.me/${data.whatsapp}?text=Hola, quiero pedir: ${product.name}`}
