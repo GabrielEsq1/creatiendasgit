@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Store Builder - Crea tu Tienda en Minutos</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1e40af;
+            --secondary: #0f172a;
+            --accent: #f59e0b;
+            --text-main: #1e293b;
+            --text-light: #64748b;
+            --bg-light: #f8fafc;
+            --success: #22c55e;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            color: var(--text-main);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* UTILITIES */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s;
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 10px 25px -5px rgba(37, 99, 235, 0.4);
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .btn-outline {
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            background: transparent;
+        }
+
+        .btn-outline:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .text-primary {
+            color: var(--primary);
+        }
+
+        .highlight {
+            color: var(--accent);
+        }
+
+        /* NAVBAR */
+        .navbar {
+            padding: 1.5rem 0;
+            position: absolute;
+            width: 100%;
+            top: 0;
+            z-index: 10;
+        }
+
+        .nav-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--secondary);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* HERO */
+        .hero {
+            padding: 8rem 0 5rem;
+            background: linear-gradient(135deg, #eff6ff 0%, #ffffff 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            background: #dbeafe;
+            color: var(--primary);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            color: var(--secondary);
+            letter-spacing: -1px;
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            color: var(--text-light);
+            margin-bottom: 2.5rem;
+            max-width: 500px;
+        }
+
+        .hero-img-container {
+            position: relative;
+        }
+
+        .hero-img {
+            width: 100%;
+            border-radius: 20px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            transform: perspective(1000px) rotateY(-5deg) rotateX(2deg);
+            transition: transform 0.5s;
+        }
+
+        .hero-img:hover {
+            transform: perspective(1000px) rotateY(0) rotateX(0);
+        }
+
+        .floating-card {
+            position: absolute;
+            background: white;
+            padding: 1rem;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .fc-1 {
+            bottom: 10%;
+            left: -20px;
+        }
+
+        .fc-2 {
+            top: 20%;
+            right: -20px;
+            animation-delay: 1.5s;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        /* FEATURES */
+        .features {
+            padding: 6rem 0;
+            background: white;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .section-title h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--secondary);
+        }
+
+        .section-title p {
+            font-size: 1.1rem;
+            color: var(--text-light);
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .feature-card {
+            padding: 2rem;
+            border-radius: 16px;
+            background: var(--bg-light);
+            transition: all 0.3s;
+            border: 1px solid transparent;
+        }
+
+        .feature-card:hover {
+            background: white;
+            border-color: var(--primary);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            transform: translateY(-5px);
+        }
+
+        .f-icon {
+            width: 60px;
+            height: 60px;
+            background: #dbeafe;
+            color: var(--primary);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .feature-card h3 {
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+            color: var(--secondary);
+        }
+
+        /* BENEFITS */
+        .benefits {
+            padding: 6rem 0;
+            background: var(--bg-light);
+        }
+
+        .benefit-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+            margin-top: 3rem;
+        }
+
+        .benefit-list {
+            list-style: none;
+        }
+
+        .benefit-list li {
+            padding: 1.5rem 0;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+
+        .benefit-list li i {
+            color: var(--success);
+            font-size: 1.5rem;
+            margin-top: 0.25rem;
+        }
+
+        .benefit-list li strong {
+            display: block;
+            font-size: 1.1rem;
+            margin-bottom: 0.25rem;
+            color: var(--secondary);
+        }
+
+        /* SOCIAL PROOF */
+        .social-proof {
+            padding: 6rem 0;
+            background: white;
+        }
+
+        .proof-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+            margin-top: 3rem;
+        }
+
+        .proof-img {
+            width: 100%;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .testimonial {
+            background: var(--bg-light);
+            padding: 2rem;
+            border-radius: 16px;
+            margin-bottom: 2rem;
+        }
+
+        .testimonial-text {
+            font-size: 1.1rem;
+            font-style: italic;
+            margin-bottom: 1rem;
+            color: var(--text-main);
+        }
+
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .author-img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: #ddd;
+        }
+
+        .author-info strong {
+            display: block;
+            color: var(--secondary);
+        }
+
+        .author-info span {
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+
+        /* PRICING */
+        .pricing {
+            padding: 6rem 0;
+            background: var(--secondary);
+            color: white;
+            position: relative;
+        }
+
+        .pricing-card {
+            background: white;
+            color: var(--text-main);
+            max-width: 500px;
+            margin: 0 auto;
+            border-radius: 24px;
+            padding: 3rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .promo-banner {
+            position: absolute;
+            top: 20px;
+            right: -35px;
+            background: var(--accent);
+            color: white;
+            padding: 0.5rem 3rem;
+            transform: rotate(45deg);
+            font-weight: 700;
+            font-size: 0.9rem;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .price-tag {
+            font-size: 4rem;
+            font-weight: 800;
+            color: var(--primary);
+            line-height: 1;
+            margin: 1.5rem 0;
+        }
+
+        .price-sub {
+            font-size: 1.1rem;
+            color: var(--text-light);
+            margin-bottom: 2rem;
+        }
+
+        .price-features {
+            list-style: none;
+            text-align: left;
+            margin-bottom: 2.5rem;
+        }
+
+        .price-features li {
+            padding: 0.8rem 0;
+            border-bottom: 1px solid #f1f5f9;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-weight: 500;
+        }
+
+        .price-features li i {
+            color: var(--success);
+        }
+
+        .price-features li:last-child {
+            border-bottom: none;
+        }
+
+        /* CTA SECTION */
+        .cta {
+            padding: 6rem 0;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            text-align: center;
+        }
+
+        .cta h2 {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .cta p {
+            font-size: 1.25rem;
+            margin-bottom: 2.5rem;
+            opacity: 0.9;
+        }
+
+        /* FOOTER */
+        footer {
+            background: white;
+            padding: 3rem 0;
+            border-top: 1px solid #eee;
+            text-align: center;
+            color: var(--text-light);
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero-grid,
+            .benefit-grid,
+            .proof-grid {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            .hero p {
+                margin: 0 auto 2rem;
+            }
+
+            .fc-1,
+            .fc-2 {
+                display: none;
+            }
+
+            .cta h2 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar">
+        <div class="container nav-content">
+            <a href="#" class="logo"><i class="fa-solid fa-store"></i> StoreBuilder</a>
+            <a href="dashboard.html" class="btn btn-outline" style="padding: 0.5rem 1.5rem; font-size: 0.9rem;">Iniciar
+                Sesión</a>
+        </div>
+    </nav>
+
+    <!-- HERO SECTION -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-grid">
+                <div class="hero-text">
+                    <span class="hero-badge">🔥 Oferta de Lanzamiento</span>
+                    <h1>Crea tu Tienda Online en Minutos <span class="text-primary">Sin Programar</span></h1>
+                    <p>La herramienta más fácil y rápida para crear tu tienda online. Diseño profesional, integración
+                        con WhatsApp y resultados inmediatos.</p>
+                    <a href="#pricing" class="btn btn-primary" style="font-size: 1.1rem;">Ver Oferta Especial</a>
+                </div>
+                <div class="hero-img-container">
+                    <img src="img/dashboard-preview.png" alt="Dashboard Preview" class="hero-img">
+                    <div class="floating-card fc-1">
+                        <i class="fa-solid fa-rocket" style="font-size: 2rem; color: var(--primary);"></i>
+                        <div>
+                            <strong>Súper Rápido</strong>
+                            <div style="font-size: 0.9rem; color: var(--text-light);">En 5 minutos</div>
+                        </div>
+                    </div>
+                    <div class="floating-card fc-2">
+                        <i class="fa-brands fa-whatsapp" style="font-size: 2rem; color: #25D366;"></i>
+                        <div>
+                            <strong>WhatsApp</strong>
+                            <div style="font-size: 0.9rem; color: var(--text-light);">Integrado</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FEATURES -->
+    <section class="features">
+        <div class="container">
+            <div class="section-title">
+                <h2>Todo lo que Necesitas para Vender Online</h2>
+                <p>Herramientas profesionales al alcance de todos</p>
+            </div>
+
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="f-icon"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
+                    <h3>Sin Código</h3>
+                    <p>Crea tu tienda sin saber programar. Todo visual, todo fácil. Arrastra, suelta y listo.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="f-icon"><i class="fa-brands fa-whatsapp"></i></div>
+                    <h3>WhatsApp Integrado</h3>
+                    <p>Tus clientes te contactan directo por WhatsApp. Ventas más rápidas y personales.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="f-icon"><i class="fa-solid fa-mobile-screen"></i></div>
+                    <h3>100% Responsive</h3>
+                    <p>Tu tienda se ve perfecta en celular, tablet y computadora. Sin configuración extra.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="f-icon"><i class="fa-solid fa-bolt"></i></div>
+                    <h3>Súper Rápido</h3>
+                    <p>Crea tu tienda completa en menos de 5 minutos. Empieza a vender hoy mismo.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="f-icon"><i class="fa-solid fa-palette"></i></div>
+                    <h3>Diseño Profesional</h3>
+                    <p>Templates modernos y elegantes. Tu tienda se verá como las de las grandes marcas.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="f-icon"><i class="fa-solid fa-download"></i></div>
+                    <h3>Exporta tu Tienda</h3>
+                    <p>Descarga el HTML y hostea donde quieras. Libertad total para tu negocio.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- BENEFITS -->
+    <section class="benefits">
+        <div class="container">
+            <div class="section-title">
+                <h2>¿Por Qué Elegir StoreBuilder?</h2>
+                <p>La solución completa para tu negocio online</p>
+            </div>
+
+            <div class="benefit-grid">
+                <div>
+                    <ul class="benefit-list">
+                        <li>
+                            <i class="fa-solid fa-check-circle"></i>
+                            <div>
+                                <strong>Ahorra Tiempo y Dinero</strong>
+                                <p>No necesitas contratar diseñadores ni programadores. Hazlo tú mismo en minutos.</p>
+                            </div>
+                        </li>
+                        <li>
+                            <i class="fa-solid fa-check-circle"></i>
+                            <div>
+                                <strong>Vende Más Rápido</strong>
+                                <p>Integración directa con WhatsApp. Tus clientes compran con un solo clic.</p>
+                            </div>
+                        </li>
+                        <li>
+                            <i class="fa-solid fa-check-circle"></i>
+                            <div>
+                                <strong>Actualiza Cuando Quieras</strong>
+                                <p>Cambia productos, precios y fotos en segundos. Sin complicaciones.</p>
+                            </div>
+                        </li>
+                        <li>
+                            <i class="fa-solid fa-check-circle"></i>
+                            <div>
+                                <strong>Soporte Incluido</strong>
+                                <p>Te ayudamos en cada paso. Nunca estarás solo en tu camino al éxito.</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <div>
+                    <img src="img/mobile-example.png" alt="Mobile Example" class="proof-img">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SOCIAL PROOF -->
+    <section class="social-proof">
+        <div class="container">
+            <div class="section-title">
+                <h2>Historias de Éxito</h2>
+                <p>Emprendedores como tú ya están vendiendo</p>
+            </div>
+
+            <div class="proof-grid">
+                <div>
+                    <div class="testimonial">
+                        <p class="testimonial-text">"En 10 minutos tenía mi tienda lista. Mis ventas aumentaron un 300%
+                            en el primer mes. ¡Increíble!"</p>
+                        <div class="testimonial-author">
+                            <div class="author-img"
+                                style="background-image: url('https://randomuser.me/api/portraits/women/44.jpg'); background-size: cover;">
+                            </div>
+                            <div class="author-info">
+                                <strong>Camila Torres</strong>
+                                <span>Moda Chic - Bogotá</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="testimonial">
+                        <p class="testimonial-text">"Antes pagaba $500.000 mensuales por mi tienda. Ahora con
+                            StoreBuilder solo pagué una vez y es mía para siempre."</p>
+                        <div class="testimonial-author">
+                            <div class="author-img"
+                                style="background-image: url('https://randomuser.me/api/portraits/men/32.jpg'); background-size: cover;">
+                            </div>
+                            <div class="author-info">
+                                <strong>Carlos Mendoza</strong>
+                                <span>Tech Store - Medellín</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <img src="img/dashboard-preview.png" alt="Success Story" class="proof-img">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PRICING -->
+    <section id="pricing" class="pricing">
+        <div class="container">
+            <div class="section-title" style="color: white;">
+                <h2 style="color: white;">¡Oferta de Lanzamiento!</h2>
+                <p style="color: #94a3b8;">Precio especial por tiempo limitado. No te lo pierdas.</p>
+            </div>
+
+            <div class="pricing-card">
+                <div class="promo-banner">AHORRA 50%</div>
+                <h3>Membresía Vitalicia</h3>
+                <div class="price-tag">$60.000 <span
+                        style="font-size: 1.5rem; color: var(--text-light); font-weight: 500;">COP</span></div>
+                <p class="price-sub">Pago único. Sin mensualidades. Tuya para siempre.</p>
+
+                <ul class="price-features">
+                    <li><i class="fa-solid fa-check-circle"></i> Acceso ilimitado al Creador Web</li>
+                    <li><i class="fa-solid fa-check-circle"></i> Productos Ilimitados</li>
+                    <li><i class="fa-solid fa-check-circle"></i> Integración con WhatsApp</li>
+                    <li><i class="fa-solid fa-check-circle"></i> Exportación de Tienda HTML</li>
+                    <li><i class="fa-solid fa-check-circle"></i> Actualizaciones Gratis de por Vida</li>
+                    <li><i class="fa-solid fa-check-circle"></i> Soporte Prioritario</li>
+                </ul>
+
+                <a href="#" onclick="alert('¡Gracias por tu interés! Redirigiendo a pasarela de pago...')"
+                    class="btn btn-primary" style="width: 100%; font-size: 1.1rem;">Comprar Ahora</a>
+                <p style="font-size: 0.8rem; margin-top: 1rem; color: var(--text-light);">Acceso inmediato tras el pago.
+                    Garantía de 30 días.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA FINAL -->
+    <section class="cta">
+        <div class="container">
+            <h2>¿Listo para Empezar a Vender?</h2>
+            <p>Únete a cientos de emprendedores que ya están creciendo con StoreBuilder</p>
+            <a href="#pricing" class="btn btn-outline" style="border-color: white; color: white; font-size: 1.1rem;">Ver
+                Oferta Especial</a>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 Store Builder. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+</body>
+
+</html>
