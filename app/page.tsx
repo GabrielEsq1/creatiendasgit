@@ -209,6 +209,13 @@ export default function BuilderPage() {
                 alert(`¡Tienda guardada con éxito!\n\nTu tienda está lista en:\n${finalUrl}`);
                 window.open(finalUrl, '_blank');
             } else {
+                // Handle 401 specifically
+                if (res.status === 401) {
+                    alert('Debes iniciar sesión para guardar tu tienda.');
+                    window.location.href = '/auth/login';
+                    return;
+                }
+
                 // Server returned an error (4xx or 5xx) or success: false
                 const msg = json.message || 'Error desconocido en el servidor';
                 alert(`No se pudo guardar la tienda.\nDetalle: ${msg}`);

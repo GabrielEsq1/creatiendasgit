@@ -1,10 +1,27 @@
 import { NextResponse } from 'next/server';
 import { StoreService } from '@/lib/store-service';
+import { auth } from '@/auth';
+import { prisma } from '@/lib/prisma';
 
 export async function POST(request: Request) {
-    // Uses StoreService which switches between In-Memory (Vercel) and FileSystem (Local)
-    // to avoid "Read-only filesystem" errors in production.
     try {
+        const session = await auth();
+        if (!session?.user?.email) {
+            return NextResponse.json(
+                { success: false, message: 'No autorizado. Debes iniciar sesión.' },
+                { status: 401 }
+            );
+        }
+
+        const user = await prisma.user.findUnique({
+            where: { email: session.user.email },
+            include: { subscription: true, stores: true }
+        });
+
+        if (!user) {
+            return NextResponse.json({ success: false, message: 'Usuario no encontrado' }, { status: 404 });
+        }
+
         const body = await request.json();
         const { name, data, products } = body;
 
@@ -15,7 +32,38 @@ export async function POST(request: Request) {
             );
         }
 
+        const currentStoreCount = user.stores.length;
+        const maxStores = user.subscription?.maxStores || 1;
+
+        // Check if updating existing store (by name match)
+        const existingStore = user.stores.find(s => s.name === name);
+
+        if (!existingStore && currentStoreCount >= maxStores) {
+            return NextResponse.json(
+                {
+                    success: false,
+                    message: `Has alcanzado el límite de tiendas (${maxStores}). Actualiza tu plan para crear más.`
+                },
+                { status: 403 }
+            );
+        }
+
         const store = await StoreService.createStore(name, data, products);
+
+        // Upsert store in DB
+        await prisma.store.upsert({
+            where: { slug: store.slug },
+            update: {
+                name: name,
+                updatedAt: new Date(),
+            },
+            create: {
+                name: name,
+                slug: store.slug,
+                userId: user.id,
+                blobKey: `stores/${store.slug}.json`
+            }
+        });
 
         // Generate public URL
         const origin =
@@ -23,14 +71,13 @@ export async function POST(request: Request) {
             request.headers.get("origin") ||
             "https://creatiendasgit1.vercel.app";
 
-        // Ensure origin doesn't have a trailing slash before appending
         const cleanOrigin = origin.endsWith('/') ? origin.slice(0, -1) : origin;
         const storeUrl = `${cleanOrigin}/stores/${store.slug}`;
 
         return NextResponse.json({
             success: true,
             url: storeUrl,
-            publicUrl: storeUrl, // Keep for backward compatibility if needed elsewhere
+            publicUrl: storeUrl,
             message: "¡Tienda guardada con éxito!"
         });
     } catch (error) {
