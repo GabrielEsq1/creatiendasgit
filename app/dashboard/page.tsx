@@ -50,7 +50,7 @@ export default async function DashboardPage() {
                 <div className="px-4 py-5 sm:p-6">
                     {user.stores.length > 0 ? (
                         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                            {user.stores.slice(0, 3).map((store: { id: string; name: string; slug: string }) => (
+                            {user.stores.slice(0, 3).map((store: { id: string; name: string; slug: string; views: number }) => (
                                 <div key={store.id} className="relative rounded-lg border border-gray-300 bg-white px-6 py-5 shadow-sm flex items-center space-x-3 hover:border-gray-400 focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-blue-500">
                                     <div className="flex-1 min-w-0">
                                         <Link href={`/stores/${store.slug}`} className="focus:outline-none">
@@ -61,6 +61,10 @@ export default async function DashboardPage() {
                                             <p className="text-sm text-gray-500 truncate">
                                                 /stores/{store.slug}
                                             </p>
+                                            <div className="mt-2 flex items-center text-xs text-gray-500">
+                                                <i className="fas fa-eye mr-1"></i>
+                                                {store.views} vistas
+                                            </div>
                                         </Link>
                                     </div>
                                 </div>

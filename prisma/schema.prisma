@@ -69,6 +69,7 @@ model Store {
   blobKey     String?  // Reference to Vercel Blob
   userId      String
   user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  views       Int      @default(0)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 

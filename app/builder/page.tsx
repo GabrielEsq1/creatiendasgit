@@ -11,6 +11,7 @@ const INITIAL_DATA: StoreData = {
     desc: 'Personaliza esta descripción con lo mejor de tu negocio.',
     whatsapp: '573001234567',
     color: '#25D366',
+    font: 'Inter',
     logo: null,
     heroBg: null,
     slug: '',
@@ -280,6 +281,20 @@ export default function BuilderPage() {
                             />
                             <span>{storeData.color}</span>
                         </div>
+                    </div>
+                    <div className="form-group">
+                        <label>Tipografía</label>
+                        <select
+                            value={storeData.font || 'Inter'}
+                            onChange={(e) => handleInputChange(null, 'font', e.target.value)}
+                            className="w-full p-2 border rounded"
+                        >
+                            <option value="Inter">Inter (Moderna)</option>
+                            <option value="Roboto">Roboto (Clásica)</option>
+                            <option value="Open Sans">Open Sans (Legible)</option>
+                            <option value="Lato">Lato (Elegante)</option>
+                            <option value="Montserrat">Montserrat (Geométrica)</option>
+                        </select>
                     </div>
                     <div className="form-group">
                         <label>Logo</label>

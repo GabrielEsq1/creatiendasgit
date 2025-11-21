@@ -16,6 +16,7 @@ export interface StoreData {
     desc: string;
     whatsapp: string;
     color: string;
+    font?: string;
     logo: string | null;
     heroBg: string | null;
     slug: string;

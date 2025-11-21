@@ -51,7 +51,10 @@ export default function StorePreview({ data, products, viewMode = 'desktop', rea
 
     return (
         <>
-            <div className={containerClass} style={{ maxWidth: viewMode === 'mobile' ? '430px' : '100%' }}>
+            <style jsx global>{`
+                @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lato:wght@400;700&family=Montserrat:wght@400;600;700&family=Open+Sans:wght@400;600;700&family=Roboto:wght@400;500;700&display=swap');
+            `}</style>
+            <div className={containerClass} style={{ maxWidth: viewMode === 'mobile' ? '430px' : '100%', fontFamily: data.font || 'Inter, sans-serif' }}>
                 {/* TOPBAR */}
                 <div className="store-topbar">
                     <div className="store-topbar-inner">

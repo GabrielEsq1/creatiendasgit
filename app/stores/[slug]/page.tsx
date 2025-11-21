@@ -39,6 +39,9 @@ export default async function StorePage({ params }: Props) {
                 viewMode="desktop"
                 readOnly={true}
             />
+            <ViewTracker slug={params.slug} />
         </div>
     );
 }
+
+import ViewTracker from '@/components/ViewTracker';
