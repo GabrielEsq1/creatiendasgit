@@ -67,11 +67,12 @@ export interface Store {
 
 export const StoreService = {
     createStore: async (name: string, data: StoreData, products: Product[]) => {
-        const stores = await storage.getStores();
-
         // Generate slug
         let slug = slugify(name);
-        if (stores.some(s => s.slug === slug)) {
+
+        // Check if slug exists
+        let existing = await storage.getStore(slug);
+        if (existing) {
             slug = `${slug}-${Date.now()}`;
         }
 
@@ -92,19 +93,16 @@ export const StoreService = {
     },
 
     getStore: async (slug: string) => {
-        const stores = await storage.getStores();
-        const store = stores.find(s => s.slug === slug);
-        return (store as Store) || null;
+        return await storage.getStore(slug);
     },
 
     updateStore: async (slug: string, data: StoreData, products: Product[]) => {
-        const stores = await storage.getStores();
-        const index = stores.findIndex(s => s.slug === slug);
+        const existingStore = await storage.getStore(slug);
 
-        if (index === -1) return null;
+        if (!existingStore) return null;
 
         const updatedStore: Store = {
-            ...stores[index] as Store,
+            ...existingStore,
             data,
             products,
         };

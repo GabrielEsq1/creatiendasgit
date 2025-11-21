@@ -18,16 +18,19 @@ export async function POST(request: Request) {
         const store = await StoreService.createStore(name, data, products);
 
         // Generate public URL
-        const rootDomain = process.env.NEXT_PUBLIC_ROOT_DOMAIN;
-        const publicBaseUrl = process.env.NEXT_PUBLIC_PUBLIC_BASE_URL;
+        const origin = request.headers.get('origin') || request.headers.get('host');
+        const protocol = request.headers.get('x-forwarded-proto') || 'http';
+        const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || (origin ? `${protocol}://${origin}` : null);
+
         let publicUrl = '';
 
-        if (rootDomain) {
-            publicUrl = `https://${store.slug}.${rootDomain}`;
-        } else if (publicBaseUrl) {
-            publicUrl = `${publicBaseUrl}/stores/${store.slug}`;
+        if (baseUrl) {
+            // Remove trailing slash if present
+            const cleanBaseUrl = baseUrl.endsWith('/') ? baseUrl.slice(0, -1) : baseUrl;
+            publicUrl = `${cleanBaseUrl}/stores/${store.slug}`;
         } else {
-            publicUrl = `http://localhost:3000/stores/${store.slug}`;
+            // Fallback if we really can't determine origin (unlikely in browser fetch)
+            publicUrl = `/stores/${store.slug}`;
         }
 
         return NextResponse.json({ success: true, store, publicUrl });
