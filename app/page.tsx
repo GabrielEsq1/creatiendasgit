@@ -93,6 +93,10 @@ export default function BuilderPage() {
     });
 
     // Helpers
+    const normalizeUrl = (url: string) => {
+        return url.replace("https://https://", "https://");
+    };
+
     const handleInputChange = (section: keyof StoreData | null, field: string, value: string) => {
         if (section) {
             setStoreData(prev => {
@@ -199,7 +203,8 @@ export default function BuilderPage() {
 
             if (res.ok && json.success) {
                 // Success
-                const finalUrl = json.url || json.publicUrl; // Prefer 'url' but fallback if needed
+                const rawUrl = json.url || json.publicUrl; // Prefer 'url' but fallback if needed
+                const finalUrl = normalizeUrl(rawUrl);
                 setPublicUrl(finalUrl);
                 alert(`¡Tienda guardada con éxito!\n\nTu tienda está lista en:\n${finalUrl}`);
                 window.open(finalUrl, '_blank');
