@@ -18,22 +18,21 @@ export async function POST(request: Request) {
         const store = await StoreService.createStore(name, data, products);
 
         // Generate public URL
-        const origin = request.headers.get('origin') || request.headers.get('host');
-        const protocol = request.headers.get('x-forwarded-proto') || 'http';
-        const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || (origin ? `${protocol}://${origin}` : null);
+        const origin =
+            process.env.NEXT_PUBLIC_SITE_URL ||
+            request.headers.get("origin") ||
+            "https://creatiendasgit1.vercel.app";
 
-        let publicUrl = '';
+        // Ensure origin doesn't have a trailing slash before appending
+        const cleanOrigin = origin.endsWith('/') ? origin.slice(0, -1) : origin;
+        const storeUrl = `${cleanOrigin}/stores/${store.slug}`;
 
-        if (baseUrl) {
-            // Remove trailing slash if present
-            const cleanBaseUrl = baseUrl.endsWith('/') ? baseUrl.slice(0, -1) : baseUrl;
-            publicUrl = `${cleanBaseUrl}/stores/${store.slug}`;
-        } else {
-            // Fallback if we really can't determine origin (unlikely in browser fetch)
-            publicUrl = `/stores/${store.slug}`;
-        }
-
-        return NextResponse.json({ success: true, store, publicUrl });
+        return NextResponse.json({
+            success: true,
+            url: storeUrl,
+            publicUrl: storeUrl, // Keep for backward compatibility if needed elsewhere
+            message: "¡Tienda guardada con éxito!"
+        });
     } catch (error) {
         console.error('Error creating store:', error);
         return NextResponse.json(

@@ -199,9 +199,10 @@ export default function BuilderPage() {
 
             if (res.ok && json.success) {
                 // Success
-                setPublicUrl(json.publicUrl);
-                alert(`¡Tienda guardada con éxito! \n\nTu tienda está lista en:\n${json.publicUrl}`);
-                window.open(json.publicUrl, '_blank');
+                const finalUrl = json.url || json.publicUrl; // Prefer 'url' but fallback if needed
+                setPublicUrl(finalUrl);
+                alert(`¡Tienda guardada con éxito!\n\nTu tienda está lista en:\n${finalUrl}`);
+                window.open(finalUrl, '_blank');
             } else {
                 // Server returned an error (4xx or 5xx) or success: false
                 const msg = json.message || 'Error desconocido en el servidor';
