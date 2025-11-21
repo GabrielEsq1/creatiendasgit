@@ -94,7 +94,11 @@ export default function BuilderPage() {
     const handleInputChange = (section: keyof StoreData | null, field: string, value: string) => {
         if (section) {
             setStoreData(prev => {
-                const sectionData = prev[section] ?? {};
+                const currentSection = prev[section];
+                // Defensive check: ensure it's an object before spreading
+                const sectionData = (typeof currentSection === 'object' && currentSection !== null)
+                    ? currentSection
+                    : {};
 
                 return {
                     ...prev,
