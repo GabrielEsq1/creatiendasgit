@@ -1,71 +1,34 @@
-import { auth } from "@/auth";
-import { prisma } from "@/lib/prisma";
-import { redirect } from "next/navigation";
+import { auth } from '@/auth';
+import { redirect } from 'next/navigation';
 
 export default async function BillingPage() {
     const session = await auth();
-    if (!session?.user?.email) return null;
 
-    const user = await prisma.user.findUnique({
-        where: { email: session.user.email },
-        include: { subscription: true },
-    });
-
-    const plan = user?.subscription?.planType || "free";
-    const isPro = plan === "pro";
+    if (!session?.user?.email) {
+        redirect('/auth/login');
+    }
 
     return (
-        <div className="max-w-2xl mx-auto">
-            <h2 className="text-2xl font-bold mb-6">Facturación y Planes</h2>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+            <h1 className="text-2xl font-semibold text-gray-900 mb-6">Mi Plan y Facturación</h1>
 
-            <div className="bg-white border rounded-lg shadow-sm overflow-hidden">
-                <div className="p-6 border-b">
-                    <h3 className="text-lg font-medium">Plan Actual</h3>
-                    <div className="mt-2 flex items-baseline">
-                        <span className="text-3xl font-bold capitalize">{plan}</span>
-                        <span className="ml-2 text-gray-500">/ mes</span>
+            <div className="bg-white shadow sm:rounded-lg p-6">
+                <div className="text-center py-10">
+                    <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-blue-100 mb-4">
+                        <i className="fas fa-credit-card text-blue-600"></i>
                     </div>
-                </div>
-
-                <div className="p-6 bg-gray-50">
-                    <h4 className="font-medium mb-4">Detalles del plan:</h4>
-                    <ul className="space-y-2 mb-6 text-sm text-gray-600">
-                        <li className="flex items-center">
-                            <span className="mr-2">✅</span>
-                            {isPro ? "Hasta 10 tiendas" : "1 Tienda"}
-                        </li>
-                        <li className="flex items-center">
-                            <span className="mr-2">✅</span>
-                            Soporte básico
-                        </li>
-                        {isPro && (
-                            <li className="flex items-center">
-                                <span className="mr-2">✅</span>
-                                Dominio personalizado (próximamente)
-                            </li>
-                        )}
-                    </ul>
-
-                    {!isPro ? (
-                        <form action="/api/stripe/checkout" method="POST">
-                            <button
-                                type="submit"
-                                className="w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white font-bold py-3 px-4 rounded hover:opacity-90 transition"
-                            >
-                                Actualizar a PRO ($9/mes)
-                            </button>
-                            <p className="text-xs text-center text-gray-400 mt-2">
-                                Pago seguro vía Stripe
-                            </p>
-                        </form>
-                    ) : (
+                    <h3 className="mt-2 text-sm font-medium text-gray-900">Gestión de Suscripción</h3>
+                    <p className="mt-1 text-sm text-gray-500">
+                        Próximamente podrás gestionar tu plan y métodos de pago aquí.
+                    </p>
+                    <div className="mt-6">
                         <button
-                            disabled
-                            className="w-full bg-gray-200 text-gray-500 font-bold py-3 px-4 rounded cursor-not-allowed"
+                            type="button"
+                            className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                         >
-                            Ya eres PRO 🎉
+                            Ver Planes Disponibles
                         </button>
-                    )}
+                    </div>
                 </div>
             </div>
         </div>
