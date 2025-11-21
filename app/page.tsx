@@ -139,6 +139,24 @@ export default function BuilderPage() {
         }
     };
 
+    const handleGalleryUpload = async (e: ChangeEvent<HTMLInputElement>) => {
+        const files = e.target.files;
+        if (files) {
+            const newImages: string[] = [];
+            for (let i = 0; i < files.length; i++) {
+                const base64 = await fileToBase64(files[i]);
+                newImages.push(base64);
+            }
+            setStoreData(prev => ({
+                ...prev,
+                about: {
+                    ...prev.about,
+                    gallery: [...prev.about.gallery, ...newImages]
+                }
+            }));
+        }
+    };
+
     const handleAddProduct = () => {
         if (!prodForm.name || !prodForm.price) return alert('Nombre y precio requeridos');
 
@@ -237,6 +255,10 @@ export default function BuilderPage() {
                         <label>Logo</label>
                         <input type="file" accept="image/*" onChange={(e) => handleImageUpload('logo', e)} />
                     </div>
+                    <div className="form-group">
+                        <label>Imagen de fondo del encabezado (opcional)</label>
+                        <input type="file" accept="image/*" onChange={(e) => handleImageUpload('heroBg', e)} />
+                    </div>
                 </section>
 
                 {/* 2. Redes */}
@@ -250,29 +272,64 @@ export default function BuilderPage() {
                         />
                     </div>
                     <div className="form-group">
+                        <label>Facebook</label>
+                        <input
+                            value={storeData.socials.facebook}
+                            onChange={(e) => handleInputChange('socials', 'facebook', e.target.value)}
+                        />
+                    </div>
+                    <div className="form-group">
+                        <label>TikTok</label>
+                        <input
+                            value={storeData.socials.tiktok}
+                            onChange={(e) => handleInputChange('socials', 'tiktok', e.target.value)}
+                        />
+                    </div>
+                    <div className="form-group">
                         <label>Email</label>
                         <input
                             value={storeData.socials.email}
                             onChange={(e) => handleInputChange('socials', 'email', e.target.value)}
                         />
                     </div>
+                    <div className="form-group">
+                        <label>Teléfono</label>
+                        <input
+                            value={storeData.socials.phone}
+                            onChange={(e) => handleInputChange('socials', 'phone', e.target.value)}
+                        />
+                    </div>
                 </section>
 
                 {/* 3. Sobre Nosotros */}
                 <section className="form-section">
-                    <h3>3. Sobre Nosotros</h3>
+                    <h3>3. Sobre Nosotros (Micrositio)</h3>
                     <div className="form-group">
-                        <label>Título Hero</label>
+                        <label>Encabezado Hero – título</label>
                         <input
                             value={storeData.about.heroTitle}
                             onChange={(e) => handleInputChange('about', 'heroTitle', e.target.value)}
                         />
                     </div>
                     <div className="form-group">
-                        <label>Misión</label>
+                        <label>Encabezado Hero – frase corta</label>
+                        <textarea
+                            value={storeData.about.heroSubtitle}
+                            onChange={(e) => handleInputChange('about', 'heroSubtitle', e.target.value)}
+                        />
+                    </div>
+                    <div className="form-group">
+                        <label>Nuestro Propósito / Misión</label>
                         <textarea
                             value={storeData.about.mission}
                             onChange={(e) => handleInputChange('about', 'mission', e.target.value)}
+                        />
+                    </div>
+                    <div className="form-group">
+                        <label>Visión</label>
+                        <textarea
+                            value={storeData.about.vision}
+                            onChange={(e) => handleInputChange('about', 'vision', e.target.value)}
                         />
                     </div>
                     <div className="form-group">
@@ -283,34 +340,107 @@ export default function BuilderPage() {
                             rows={3}
                         />
                     </div>
+                    <div className="form-group">
+                        <label>Historia / Timeline (un hito por línea)</label>
+                        <textarea
+                            value={storeData.about.timeline.join('\n')}
+                            onChange={(e) => handleArrayChange('about', 'timeline', e.target.value)}
+                            rows={3}
+                        />
+                    </div>
+                    <div className="form-group">
+                        <label>Qué nos diferencia (uno por línea)</label>
+                        <textarea
+                            value={storeData.about.diff.join('\n')}
+                            onChange={(e) => handleArrayChange('about', 'diff', e.target.value)}
+                            rows={3}
+                        />
+                    </div>
+                    <div className="form-group">
+                        <label>Equipo o cultura</label>
+                        <textarea
+                            value={storeData.about.team}
+                            onChange={(e) => handleInputChange('about', 'team', e.target.value)}
+                        />
+                    </div>
+                    <div className="form-group">
+                        <label>Call to Action (texto del botón)</label>
+                        <input
+                            value={storeData.about.ctaText}
+                            onChange={(e) => handleInputChange('about', 'ctaText', e.target.value)}
+                        />
+                    </div>
+                    <div className="form-group">
+                        <label>Galería de imágenes de la empresa</label>
+                        <input type="file" accept="image/*" multiple onChange={handleGalleryUpload} />
+                        <div className="about-gallery-mini">
+                            {storeData.about.gallery.map((img, i) => (
+                                <img key={i} src={img} alt="Gallery" />
+                            ))}
+                        </div>
+                    </div>
+                </section>
+
+                {/* 4. Trabaja con Nosotros */}
+                <section className="form-section">
+                    <h3>4. Trabaja con Nosotros</h3>
+                    <div className="form-group">
+                        <label>Título "Trabaja con nosotros"</label>
+                        <input
+                            value={storeData.careers.title}
+                            onChange={(e) => handleInputChange('careers', 'title', e.target.value)}
+                        />
+                    </div>
+                    <div className="form-group">
+                        <label>Descripción / Invitación</label>
+                        <textarea
+                            value={storeData.careers.desc}
+                            onChange={(e) => handleInputChange('careers', 'desc', e.target.value)}
+                        />
+                    </div>
+                    <div className="form-group">
+                        <label>Beneficios (uno por línea)</label>
+                        <textarea
+                            value={storeData.careers.benefits.join('\n')}
+                            onChange={(e) => handleArrayChange('careers', 'benefits', e.target.value)}
+                            rows={3}
+                        />
+                    </div>
+                    <div className="form-group">
+                        <label>Texto del botón (WhatsApp)</label>
+                        <input
+                            value={storeData.careers.ctaText}
+                            onChange={(e) => handleInputChange('careers', 'ctaText', e.target.value)}
+                        />
+                    </div>
                 </section>
 
                 {/* 5. Productos */}
                 <section className="form-section">
-                    <h3>5. Agregar Productos</h3>
+                    <h3>5. Agregar / Editar Productos</h3>
                     <div className="form-group">
-                        <label>Nombre</label>
+                        <label>Nombre del Producto *</label>
                         <input
                             value={prodForm.name}
                             onChange={(e) => setProdForm({ ...prodForm, name: e.target.value })}
                         />
                     </div>
                     <div className="form-group">
-                        <label>Descripción</label>
+                        <label>Descripción *</label>
                         <textarea
                             value={prodForm.desc}
                             onChange={(e) => setProdForm({ ...prodForm, desc: e.target.value })}
                         />
                     </div>
                     <div className="form-group">
-                        <label>Categoría</label>
+                        <label>Categoría *</label>
                         <input
                             value={prodForm.category}
                             onChange={(e) => setProdForm({ ...prodForm, category: e.target.value })}
                         />
                     </div>
                     <div className="form-group">
-                        <label>Precio</label>
+                        <label>Precio *</label>
                         <input
                             type="number"
                             value={prodForm.price}
@@ -318,7 +448,7 @@ export default function BuilderPage() {
                         />
                     </div>
                     <div className="form-group">
-                        <label>Imagen</label>
+                        <label>Imagen del Producto</label>
                         <input
                             type="file"
                             accept="image/*"
@@ -336,21 +466,33 @@ export default function BuilderPage() {
                     <div className="product-list-mini">
                         {products.map(p => (
                             <div key={p.id} className="product-item-mini">
-                                <span>{p.name}</span>
-                                <button
-                                    className="btn-danger"
-                                    onClick={() => setProducts(products.filter(x => x.id !== p.id))}
-                                >
-                                    X
-                                </button>
+                                <div className="product-info-mini">
+                                    {p.image ? (
+                                        <img src={p.image} className="product-thumb" alt={p.name} />
+                                    ) : (
+                                        <div className="product-thumb" style={{ background: '#ccc' }}></div>
+                                    )}
+                                    <div>
+                                        <strong>{p.name}</strong><br />
+                                        <small>{p.category} · ${p.price}</small>
+                                    </div>
+                                </div>
+                                <div style={{ display: 'flex', gap: '0.35rem' }}>
+                                    <button
+                                        className="btn btn-danger"
+                                        onClick={() => setProducts(products.filter(x => x.id !== p.id))}
+                                    >
+                                        🗑️
+                                    </button>
+                                </div>
                             </div>
                         ))}
                     </div>
                 </section>
 
                 <section className="form-section" style={{ position: 'sticky', bottom: 0, zIndex: 10 }}>
-                    <button className="btn btn-primary" onClick={handleSave} disabled={isSaving}>
-                        {isSaving ? 'Guardando...' : '💾 Guardar y Publicar'}
+                    <button className="btn btn-primary" onClick={handleSave} disabled={isSaving} style={{ marginBottom: '1rem' }}>
+                        {isSaving ? 'Guardando...' : '🔄 Validar / Actualizar Tienda'}
                     </button>
                 </section>
             </aside>
