@@ -94,16 +94,13 @@ export default function BuilderPage() {
     const handleInputChange = (section: keyof StoreData | null, field: string, value: string) => {
         if (section) {
             setStoreData(prev => {
-                const currentSection = prev[section];
-                // Defensive check: ensure it's an object before spreading
-                const sectionData = (typeof currentSection === 'object' && currentSection !== null)
-                    ? currentSection
-                    : {};
+                const sectionKey = section as keyof StoreData;
+                const previousSection = (prev[sectionKey] as unknown as Record<string, any>) ?? {};
 
                 return {
                     ...prev,
-                    [section]: {
-                        ...sectionData,
+                    [sectionKey]: {
+                        ...previousSection,
                         [field]: value
                     }
                 } as StoreData;
@@ -117,13 +114,18 @@ export default function BuilderPage() {
     };
 
     const handleArrayChange = (section: 'about' | 'careers', field: string, value: string) => {
-        setStoreData(prev => ({
-            ...prev,
-            [section]: {
-                ...prev[section],
-                [field]: value.split('\n')
-            }
-        } as StoreData));
+        setStoreData(prev => {
+            const sectionKey = section as keyof StoreData;
+            const previousSection = (prev[sectionKey] as Record<string, any>) ?? {};
+
+            return {
+                ...prev,
+                [sectionKey]: {
+                    ...previousSection,
+                    [field]: value.split('\n')
+                }
+            } as StoreData;
+        });
     };
 
     const fileToBase64 = (file: File): Promise<string> => {
