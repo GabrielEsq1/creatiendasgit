@@ -13,6 +13,7 @@ const INITIAL_DATA: StoreData = {
     color: '#25D366',
     logo: null,
     heroBg: null,
+    slug: '',
     socials: {
         instagram: 'https://instagram.com/mitiendabonita',
         facebook: '',
@@ -80,6 +81,7 @@ export default function BuilderPage() {
     const [products, setProducts] = useState<Product[]>(INITIAL_PRODUCTS);
     const [viewMode, setViewMode] = useState<'desktop' | 'mobile'>('desktop');
     const [isSaving, setIsSaving] = useState(false);
+    const [publicUrl, setPublicUrl] = useState<string | null>(null);
 
     // Product Form State
     const [prodForm, setProdForm] = useState({
@@ -193,8 +195,9 @@ export default function BuilderPage() {
             });
             const json = await res.json();
             if (json.success) {
-                alert(`Tienda creada! Ver en: /stores/${json.store.slug}`);
-                window.open(`/stores/${json.store.slug}`, '_blank');
+                alert(`Tienda creada! Ver en: ${json.publicUrl}`);
+                setPublicUrl(json.publicUrl);
+                // window.open(json.publicUrl, '_blank'); // Optional: auto-open
             } else {
                 alert('Error: ' + json.message);
             }
@@ -500,6 +503,32 @@ export default function BuilderPage() {
                     <button className="btn btn-primary" onClick={handleSave} disabled={isSaving} style={{ marginBottom: '1rem' }}>
                         {isSaving ? 'Guardando...' : '🔄 Validar / Actualizar Tienda'}
                     </button>
+
+                    {publicUrl && (
+                        <div className="public-url-box" style={{ marginTop: '1rem', padding: '1rem', background: '#e8f5e9', borderRadius: '8px', border: '1px solid #c8e6c9' }}>
+                            <p style={{ margin: '0 0 0.5rem 0', fontWeight: 'bold', color: '#2e7d32' }}>✅ ¡Tu tienda está lista!</p>
+                            <div style={{ display: 'flex', gap: '0.5rem' }}>
+                                <input
+                                    readOnly
+                                    value={publicUrl}
+                                    style={{ flex: 1, padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc' }}
+                                />
+                                <button
+                                    className="btn btn-secondary"
+                                    onClick={() => {
+                                        navigator.clipboard.writeText(publicUrl);
+                                        alert('URL copiada!');
+                                    }}
+                                    style={{ padding: '0.5rem 1rem' }}
+                                >
+                                    Copiar
+                                </button>
+                            </div>
+                            <a href={publicUrl} target="_blank" rel="noopener noreferrer" style={{ display: 'block', marginTop: '0.5rem', color: '#2e7d32', textDecoration: 'underline' }}>
+                                Visitar tienda &rarr;
+                            </a>
+                        </div>
+                    )}
                 </section>
             </aside>
 

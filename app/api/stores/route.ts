@@ -14,7 +14,21 @@ export async function POST(request: Request) {
         }
 
         const store = await StoreService.createStore(name, data, products);
-        return NextResponse.json({ success: true, store });
+
+        // Generate public URL
+        const rootDomain = process.env.NEXT_PUBLIC_ROOT_DOMAIN;
+        const publicBaseUrl = process.env.NEXT_PUBLIC_PUBLIC_BASE_URL;
+        let publicUrl = '';
+
+        if (rootDomain) {
+            publicUrl = `https://${store.slug}.${rootDomain}`;
+        } else if (publicBaseUrl) {
+            publicUrl = `${publicBaseUrl}/stores/${store.slug}`;
+        } else {
+            publicUrl = `http://localhost:3000/stores/${store.slug}`;
+        }
+
+        return NextResponse.json({ success: true, store, publicUrl });
     } catch (error) {
         console.error('Error creating store:', error);
         return NextResponse.json(
