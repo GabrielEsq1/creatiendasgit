@@ -183,6 +183,7 @@ export default function BuilderPage() {
 
     const handleSave = async () => {
         setIsSaving(true);
+        setPublicUrl(null); // Reset previous URL
         try {
             const res = await fetch('/api/stores', {
                 method: 'POST',
@@ -193,16 +194,22 @@ export default function BuilderPage() {
                     products
                 })
             });
+
             const json = await res.json();
-            if (json.success) {
-                alert(`Tienda creada! Ver en: ${json.publicUrl}`);
+
+            if (res.ok && json.success) {
+                // Success
                 setPublicUrl(json.publicUrl);
-                // window.open(json.publicUrl, '_blank'); // Optional: auto-open
+                alert(`¡Tienda guardada con éxito! \n\nTu tienda está lista en:\n${json.publicUrl}`);
             } else {
-                alert('Error: ' + json.message);
+                // Server returned an error (4xx or 5xx) or success: false
+                const msg = json.message || 'Error desconocido en el servidor';
+                alert(`No se pudo guardar la tienda.\nDetalle: ${msg}`);
             }
         } catch (e) {
-            alert('Error al guardar');
+            // Network error or JSON parse error
+            console.error("Save error:", e);
+            alert('Ocurrió un error de conexión al intentar guardar. Por favor intenta de nuevo.');
         } finally {
             setIsSaving(false);
         }

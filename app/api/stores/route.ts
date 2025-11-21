@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server';
 import { StoreService } from '@/lib/store-service';
 
 export async function POST(request: Request) {
+    // Uses StoreService which switches between In-Memory (Vercel) and FileSystem (Local)
+    // to avoid "Read-only filesystem" errors in production.
     try {
         const body = await request.json();
         const { name, data, products } = body;

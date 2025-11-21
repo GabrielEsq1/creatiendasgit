@@ -1,5 +1,4 @@
-import fs from 'fs';
-import path from 'path';
+import { storage } from './storage';
 
 // Types
 export interface Product {
@@ -19,6 +18,7 @@ export interface StoreData {
     color: string;
     logo: string | null;
     heroBg: string | null;
+    slug: string;
     socials: {
         instagram: string;
         facebook: string;
@@ -44,7 +44,6 @@ export interface StoreData {
         benefits: string[];
         ctaText: string;
     };
-    slug: string;
 }
 
 export function slugify(text: string): string {
@@ -66,36 +65,9 @@ export interface Store {
     createdAt: string;
 }
 
-// Mock DB setup
-const DB_FILE = path.join(process.cwd(), 'data', 'stores.json');
-const DATA_DIR = path.join(process.cwd(), 'data');
-
-// Ensure data directory exists
-if (!fs.existsSync(DATA_DIR)) {
-    fs.mkdirSync(DATA_DIR, { recursive: true });
-}
-
-// Helper to read DB
-function readDB(): Store[] {
-    if (!fs.existsSync(DB_FILE)) {
-        return [];
-    }
-    try {
-        const data = fs.readFileSync(DB_FILE, 'utf-8');
-        return JSON.parse(data);
-    } catch (error) {
-        return [];
-    }
-}
-
-// Helper to write DB
-function writeDB(stores: Store[]) {
-    fs.writeFileSync(DB_FILE, JSON.stringify(stores, null, 2));
-}
-
 export const StoreService = {
     createStore: async (name: string, data: StoreData, products: Product[]) => {
-        const stores = readDB();
+        const stores = await storage.getStores();
 
         // Generate slug
         let slug = slugify(name);
@@ -114,30 +86,30 @@ export const StoreService = {
             createdAt: new Date().toISOString(),
         };
 
-        stores.push(newStore);
-        writeDB(stores);
+        await storage.saveStore(newStore);
 
         return newStore;
     },
 
     getStore: async (slug: string) => {
-        const stores = readDB();
-        return stores.find(s => s.slug === slug) || null;
+        const stores = await storage.getStores();
+        const store = stores.find(s => s.slug === slug);
+        return (store as Store) || null;
     },
 
     updateStore: async (slug: string, data: StoreData, products: Product[]) => {
-        const stores = readDB();
+        const stores = await storage.getStores();
         const index = stores.findIndex(s => s.slug === slug);
 
         if (index === -1) return null;
 
-        stores[index] = {
-            ...stores[index],
+        const updatedStore: Store = {
+            ...stores[index] as Store,
             data,
             products,
         };
 
-        writeDB(stores);
-        return stores[index];
+        await storage.updateStore(slug, updatedStore);
+        return updatedStore;
     }
 };
