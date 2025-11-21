@@ -201,6 +201,7 @@ export default function BuilderPage() {
                 // Success
                 setPublicUrl(json.publicUrl);
                 alert(`¡Tienda guardada con éxito! \n\nTu tienda está lista en:\n${json.publicUrl}`);
+                window.open(json.publicUrl, '_blank');
             } else {
                 // Server returned an error (4xx or 5xx) or success: false
                 const msg = json.message || 'Error desconocido en el servidor';
