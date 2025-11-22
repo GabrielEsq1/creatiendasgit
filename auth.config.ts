@@ -23,5 +23,12 @@ export const authConfig = {
             return true;
         },
     },
+    // Session configuration
+    session: {
+        strategy: 'jwt',
+        maxAge: 30 * 24 * 60 * 60, // 30 days
+    },
+    // Secret (NextAuth will also read NEXTAUTH_SECRET env var)
+    secret: process.env.NEXTAUTH_SECRET,
     providers: [], // Se llenan en auth.ts
 } satisfies NextAuthConfig;

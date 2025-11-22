@@ -1,11 +1,22 @@
 import { PrismaClient } from '@prisma/client';
 
-const globalForPrisma = global as unknown as { prisma: PrismaClient };
+// Global variable to hold Prisma client in development to prevent hot-reload issues
+declare global {
+    // eslint-disable-next-line no-var
+    var prisma: PrismaClient | undefined;
+}
 
-export const prisma =
-    globalForPrisma.prisma ||
-    new PrismaClient({
-        log: process.env.NODE_ENV === 'development' ? ['query', 'error', 'warn'] : ['error'],
+const prisma = global.prisma ?? new PrismaClient({
+    log: process.env.NODE_ENV === 'development' ? ['query', 'error', 'warn'] : ['error'],
+});
+
+// Ensure the client is connected early to surface connection errors
+if (process.env.NODE_ENV !== 'production') {
+    // @ts-ignore - global augmentation
+    global.prisma = prisma;
+    prisma.$connect().catch((e) => {
+        console.error('Failed to connect to the database:', e);
     });
+}
 
-if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma;
+export { prisma };
