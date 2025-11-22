@@ -21,7 +21,7 @@ export const authOptions: NextAuthOptions = {
             },
         }),
     ],
-    secret: process.env.NEXTAUTH_SECRET || process.env.AUTH_SECRET || "creatiendas-secret-key-production-2024-change-in-production",
+    secret: "creatiendas-production-secret-2024-v1",
     session: {
         strategy: "jwt",
     },
@@ -35,6 +35,5 @@ export const authOptions: NextAuthOptions = {
     },
     pages: {
         signIn: "/auth/login",
-        error: "/auth/login",
     },
 };
