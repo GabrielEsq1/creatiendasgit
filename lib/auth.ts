@@ -21,10 +21,9 @@ export const authOptions: NextAuthOptions = {
             },
         }),
     ],
-    secret: "creatiendas-production-secret-2024-v1",
-    session: {
-        strategy: "jwt",
-    },
+    secret: process.env.NEXTAUTH_SECRET,
+    session: { strategy: "jwt" },
+    jwt: { secret: process.env.NEXTAUTH_SECRET },
     callbacks: {
         async session({ session, token }) {
             if (token?.sub && session.user) {
