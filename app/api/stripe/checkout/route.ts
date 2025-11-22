@@ -1,75 +1,41 @@
-import { NextResponse } from "next/server";
-import { auth } from "@/auth";
-import { prisma } from "@/lib/prisma";
-import Stripe from "stripe";
-
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-    apiVersion: "2023-10-16",
-});
+import { NextResponse } from 'next/server';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/auth';
+import { prisma } from '@/lib/prisma';
+import { stripe } from '@/lib/stripe';
 
 export async function POST(req: Request) {
-    try {
-        const session = await auth();
-        if (!session?.user?.email) {
-            return new NextResponse("Unauthorized", { status: 401 });
-        }
-
-        const user = await prisma.user.findUnique({
-            where: { email: session.user.email },
-            include: { subscription: true },
-        });
-
-        if (!user) {
-            return new NextResponse("User not found", { status: 404 });
-        }
-
-        // If user already has a stripe customer ID, use it
-        let customerId = user.subscription?.stripeCustomerId;
-
-        if (!customerId) {
-            const customer = await stripe.customers.create({
-                email: user.email ?? undefined,
-                name: user.name ?? undefined,
-            });
-            customerId = customer.id;
-
-            // Update subscription with customer ID
-            if (user.subscription) {
-                await prisma.subscription.update({
-                    where: { userId: user.id },
-                    data: { stripeCustomerId: customerId }
-                });
-            } else {
-                await prisma.subscription.create({
-                    data: {
-                        userId: user.id,
-                        stripeCustomerId: customerId,
-                        planType: "free"
-                    }
-                });
-            }
-        }
-
-        const checkoutSession = await stripe.checkout.sessions.create({
-            customer: customerId,
-            mode: "subscription",
-            payment_method_types: ["card"],
-            line_items: [
-                {
-                    price: process.env.STRIPE_PRICE_ID_PRO,
-                    quantity: 1,
-                },
-            ],
-            success_url: `${process.env.NEXT_PUBLIC_SITE_URL}/dashboard/billing?success=true`,
-            cancel_url: `${process.env.NEXT_PUBLIC_SITE_URL}/dashboard/billing?canceled=true`,
-            metadata: {
-                userId: user.id,
-            },
-        });
-
-        return NextResponse.redirect(checkoutSession.url!);
-    } catch (error) {
-        console.error("Stripe Checkout Error:", error);
-        return new NextResponse("Internal Error", { status: 500 });
+    const session = await getServerSession(authOptions);
+    if (!session?.user?.email) {
+        return NextResponse.json({ error: 'No autenticado' }, { status: 401 });
     }
+
+    const { priceId } = await req.json(); // ID del precio de Stripe
+
+    const user = await prisma.user.findUnique({
+        where: { email: session.user.email },
+        include: { stripeCustomer: true },
+    });
+    if (!user) {
+        return NextResponse.json({ error: 'Usuario no encontrado' }, { status: 404 });
+    }
+
+    // Crear cliente Stripe si no existe
+    let stripeCustomerId = user.stripeCustomer?.stripeCustomerId;
+    if (!stripeCustomerId) {
+        const customer = await stripe.customers.create({ email: user.email, name: user.name ?? undefined });
+        await prisma.stripeCustomer.create({ data: { userId: user.id, stripeCustomerId: customer.id } });
+        stripeCustomerId = customer.id;
+    }
+
+    const checkout = await stripe.checkout.sessions.create({
+        mode: 'subscription',
+        payment_method_types: ['card'],
+        customer: stripeCustomerId,
+        line_items: [{ price: priceId, quantity: 1 }],
+        success_url: `${process.env.NEXTAUTH_URL}/dashboard?session_id={CHECKOUT_SESSION_ID}`,
+        cancel_url: `${process.env.NEXTAUTH_URL}/dashboard`,
+    });
+
+    return NextResponse.json({ url: checkout.url });
 }

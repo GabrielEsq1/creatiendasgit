@@ -1,90 +1,53 @@
 import { NextResponse } from 'next/server';
-import { StoreService } from '@/lib/store-service';
-import { auth } from '@/auth';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
+import { z } from 'zod';
 
-export async function POST(request: Request) {
-    try {
-        const session = await auth();
-        if (!session?.user?.email) {
-            return NextResponse.json(
-                { success: false, message: 'No autorizado. Debes iniciar sesión.' },
-                { status: 401 }
-            );
-        }
-
-        const user = await prisma.user.findUnique({
-            where: { email: session.user.email },
-            include: { subscription: true, stores: true }
-        });
-
-        if (!user) {
-            return NextResponse.json({ success: false, message: 'Usuario no encontrado' }, { status: 404 });
-        }
-
-        const body = await request.json();
-        const { name, data, products } = body;
-
-        if (!name || !data || !products) {
-            return NextResponse.json(
-                { success: false, message: 'Datos incompletos' },
-                { status: 400 }
-            );
-        }
-
-        const currentStoreCount = user.stores.length;
-        const maxStores = user.subscription?.maxStores || 1;
-
-        // Check if updating existing store (by name match)
-        const existingStore = user.stores.find(s => s.name === name);
-
-        if (!existingStore && currentStoreCount >= maxStores) {
-            return NextResponse.json(
-                {
-                    success: false,
-                    message: `Has alcanzado el límite de tiendas (${maxStores}). Actualiza tu plan para crear más.`
-                },
-                { status: 403 }
-            );
-        }
-
-        const store = await StoreService.createStore(name, data, products);
-
-        // Upsert store in DB
-        await prisma.store.upsert({
-            where: { slug: store.slug },
-            update: {
-                name: name,
-                updatedAt: new Date(),
-            },
-            create: {
-                name: name,
-                slug: store.slug,
-                userId: user.id,
-                blobKey: `stores/${store.slug}.json`
-            }
-        });
-
-        // Generate public URL
-        const origin =
-            process.env.NEXT_PUBLIC_SITE_URL ||
-            request.headers.get("origin") ||
-            "https://creatiendasgit1.vercel.app";
-
-        const cleanOrigin = origin.endsWith('/') ? origin.slice(0, -1) : origin;
-        const storeUrl = `${cleanOrigin}/stores/${store.slug}`;
-
-        return NextResponse.json({
-            success: true,
-            url: storeUrl,
-            publicUrl: storeUrl,
-            message: "¡Tienda guardada con éxito!"
-        });
-    } catch (error) {
-        console.error('Error creating store:', error);
-        return NextResponse.json(
-            { success: false, message: 'Error interno del servidor' },
-            { status: 500 }
-        );
+// GET: lista de tiendas del usuario autenticado
+export async function GET() {
+    const session = await getServerSession(authOptions);
+    if (!session?.user?.email) {
+        return NextResponse.json({ error: 'No autenticado' }, { status: 401 });
     }
+
+    const user = await prisma.user.findUnique({
+        where: { email: session.user.email },
+        include: { stores: true },
+    });
+
+    return NextResponse.json(user?.stores ?? []);
+}
+
+// POST: crear nueva tienda
+export async function POST(req: Request) {
+    const session = await getServerSession(authOptions);
+    if (!session?.user?.email) {
+        return NextResponse.json({ error: 'No autenticado' }, { status: 401 });
+    }
+
+    const body = await req.json();
+    const schema = z.object({
+        name: z.string().min(2),
+        slug: z.string().regex(/^[a-z0-9-]+$/),
+    });
+    const result = schema.safeParse(body);
+    if (!result.success) {
+        return NextResponse.json({ error: 'Datos inválidos' }, { status: 400 });
+    }
+
+    const user = await prisma.user.findUnique({ where: { email: session.user.email } });
+    if (!user) {
+        return NextResponse.json({ error: 'Usuario no encontrado' }, { status: 404 });
+    }
+
+    const store = await prisma.store.create({
+        data: {
+            name: result.data.name,
+            slug: result.data.slug,
+            ownerId: user.id,
+        },
+    });
+
+    return NextResponse.json(store, { status: 201 });
 }

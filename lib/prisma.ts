@@ -1,22 +1,16 @@
 import { PrismaClient } from '@prisma/client';
 
-// Global variable to hold Prisma client in development to prevent hot-reload issues
 declare global {
-    // eslint-disable-next-line no-var
+    // Allows TypeScript to recognize the global prisma variable
     var prisma: PrismaClient | undefined;
 }
 
-const prisma = global.prisma ?? new PrismaClient({
-    log: process.env.NODE_ENV === 'development' ? ['query', 'error', 'warn'] : ['error'],
-});
-
-// Ensure the client is connected early to surface connection errors
-if (process.env.NODE_ENV !== 'production') {
-    // @ts-ignore - global augmentation
-    global.prisma = prisma;
-    prisma.$connect().catch((e) => {
-        console.error('Failed to connect to the database:', e);
+export const prisma =
+    global.prisma ||
+    new PrismaClient({
+        log: ['query', 'error', 'warn'],
     });
-}
 
-export { prisma };
+if (process.env.NODE_ENV !== 'production') {
+    global.prisma = prisma;
+}

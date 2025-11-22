@@ -1,9 +1,20 @@
-import NextAuth from 'next-auth';
-import { authConfig } from './auth.config';
+import { NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
+import { getToken } from 'next-auth/jwt';
 
-export default NextAuth(authConfig).auth;
+export async function middleware(request: NextRequest) {
+    const token = await getToken({ req: request, secret: process.env.NEXTAUTH_SECRET });
+    const protectedRoutes = ['/dashboard', '/app/api/stores', '/app/api/stripe'];
+    const isProtected = protectedRoutes.some((p) => request.nextUrl.pathname.startsWith(p));
+
+    if (isProtected && !token) {
+        const loginUrl = new URL('/auth/login', request.url);
+        loginUrl.searchParams.set('callbackUrl', request.nextUrl.pathname);
+        return NextResponse.redirect(loginUrl);
+    }
+    return NextResponse.next();
+}
 
 export const config = {
-    // https://nextjs.org/docs/app/building-your-application/routing/middleware#matcher
-    matcher: ['/dashboard/:path*', '/builder/:path*', '/api/stores/:path*'],
+    matcher: ['/dashboard/:path*', '/app/api/:path*'],
 };
