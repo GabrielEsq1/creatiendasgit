@@ -77,8 +77,8 @@ export async function POST(req: Request) {
                     where: { id: existing.id },
                     data: {
                         name: result.data.name,
-                        data: result.data.data || {},
-                        products: result.data.products || []
+                        data: result.data.data || null,
+                        products: result.data.products || null
                     }
                 });
                 return NextResponse.json({
@@ -98,8 +98,8 @@ export async function POST(req: Request) {
                 name: result.data.name,
                 slug: result.data.slug,
                 ownerId: user.id,
-                data: result.data.data || {},
-                products: result.data.products || []
+                data: result.data.data || null,
+                products: result.data.products || null
             },
         });
 
