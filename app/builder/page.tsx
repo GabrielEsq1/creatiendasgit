@@ -79,6 +79,7 @@ function BuilderContent() {
     const [isSaving, setIsSaving] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [publicUrl, setPublicUrl] = useState<string | null>(null);
+    const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
 
     // Load existing store data when editing
     useEffect(() => {
@@ -90,6 +91,7 @@ function BuilderContent() {
                     if (json.success && json.store) {
                         setStoreData(json.store.data);
                         setProducts(json.store.products || []);
+                        setPublicUrl(`${window.location.origin}/stores/${editSlug}`);
                     } else {
                         alert('No se pudo cargar la tienda para editar');
                     }
@@ -101,6 +103,26 @@ function BuilderContent() {
                 .finally(() => setIsLoading(false));
         }
     }, [editSlug]);
+
+    // Warn user about unsaved changes when leaving page
+    useEffect(() => {
+        const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+            if (hasUnsavedChanges) {
+                e.preventDefault();
+                e.returnValue = '';
+            }
+        };
+
+        window.addEventListener('beforeunload', handleBeforeUnload);
+        return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+    }, [hasUnsavedChanges]);
+
+    // Mark as having unsaved changes when data changes
+    useEffect(() => {
+        if (!isLoading && !isSaving) {
+            setHasUnsavedChanges(true);
+        }
+    }, [storeData, products]);
 
     // Product form state
     const [prodForm, setProdForm] = useState({ name: '', desc: '', category: '', price: '', image: null as string | null });
@@ -198,8 +220,11 @@ function BuilderContent() {
                 const rawUrl = json.url || json.publicUrl;
                 const finalUrl = normalizeUrl(rawUrl);
                 setPublicUrl(finalUrl);
+                setHasUnsavedChanges(false); // Mark as saved
                 alert(`¡Tienda guardada con éxito!\n\nTu tienda está lista en:\n${finalUrl}`);
-                window.open(finalUrl, '_blank');
+                if (!editSlug) {
+                    window.open(finalUrl, '_blank');
+                }
             } else {
                 if (res.status === 401) {
                     alert('Debes iniciar sesión para guardar tu tienda.');
@@ -347,6 +372,11 @@ function BuilderContent() {
                     <button className="btn btn-primary" onClick={handleSave} disabled={isSaving || isLoading} style={{ marginBottom: '1rem' }}>
                         {isSaving ? 'Guardando...' : (editSlug ? '🔄 Actualizar Tienda' : '🔄 Validar / Crear Tienda')}
                     </button>
+                    {editSlug && publicUrl && (
+                        <a href={publicUrl} target="_blank" rel="noopener noreferrer" className="btn btn-secondary" style={{ display: 'block', textAlign: 'center', marginBottom: '1rem', textDecoration: 'none' }}>
+                            👁️ Ver Tienda
+                        </a>
+                    )}
                     {publicUrl && (
                         <div className="public-url-box" style={{ marginTop: '1rem', padding: '1rem', background: '#e8f5e9', borderRadius: '8px', border: '1px solid #c8e6c9' }}>
                             <p style={{ margin: '0 0 0.5rem 0', fontWeight: 'bold', color: '#2e7d32' }}>✅ ¡Tu tienda está lista!</p>
