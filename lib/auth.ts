@@ -27,14 +27,8 @@ export const authOptions: NextAuthOptions = {
     },
     callbacks: {
         async session({ session, token }) {
-            if (token?.sub) {
-                const user = await prisma.user.findUnique({
-                    where: { id: token.sub },
-                    select: { id: true, email: true, name: true },
-                });
-                if (user) {
-                    session.user = { ...session.user, id: user.id, name: user.name ?? "" };
-                }
+            if (token?.sub && session.user) {
+                (session.user as any).id = token.sub;
             }
             return session;
         },
