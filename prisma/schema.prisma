@@ -27,6 +27,8 @@ model Store {
   ownerId   String
   owner     User     @relation(fields: [ownerId], references: [id])
   views     Int      @default(0)
+  data      Json?
+  products  Json?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }

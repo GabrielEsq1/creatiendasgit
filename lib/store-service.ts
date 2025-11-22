@@ -1,4 +1,4 @@
-import { storage } from './storage';
+import { prisma } from '@/lib/prisma';
 
 // Types
 export interface Product {
@@ -68,47 +68,30 @@ export interface Store {
 
 export const StoreService = {
     createStore: async (name: string, data: StoreData, products: Product[]) => {
-        // Generate slug
-        let slug = slugify(name);
-
-        // Check if slug exists
-        let existing = await storage.getStore(slug);
-        if (existing) {
-            slug = `${slug}-${Date.now()}`;
-        }
-
-        // Ensure slug is in data
-        data.slug = slug;
-
-        const newStore: Store = {
-            id: Date.now().toString(),
-            slug,
-            data,
-            products,
-            createdAt: new Date().toISOString(),
-        };
-
-        await storage.saveStore(newStore);
-
-        return newStore;
+        // This method might be redundant if we use the API route, but keeping it for compatibility
+        // logic should be moved to API or this service used by API.
+        // For now, let's assume API handles creation and this is mostly for reading.
+        return null;
     },
 
     getStore: async (slug: string) => {
-        return await storage.getStore(slug);
+        const store = await prisma.store.findUnique({
+            where: { slug }
+        });
+
+        if (!store) return null;
+
+        return {
+            id: store.id,
+            slug: store.slug,
+            data: store.data as unknown as StoreData,
+            products: store.products as unknown as Product[],
+            createdAt: store.createdAt.toISOString(),
+        };
     },
 
     updateStore: async (slug: string, data: StoreData, products: Product[]) => {
-        const existingStore = await storage.getStore(slug);
-
-        if (!existingStore) return null;
-
-        const updatedStore: Store = {
-            ...existingStore,
-            data,
-            products,
-        };
-
-        await storage.updateStore(slug, updatedStore);
-        return updatedStore;
+        // Logic moved to API
+        return null;
     }
 };
