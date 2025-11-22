@@ -21,67 +21,99 @@ export async function GET() {
 
 // POST: crear nueva tienda
 export async function POST(req: Request) {
-    const session = await getServerSession(authOptions);
-    if (!session?.user?.email) {
-        return NextResponse.json({ error: 'No autenticado' }, { status: 401 });
-    }
-
-    const body = await req.json();
-
-    // Generar slug si no viene
-    let slug = body.slug;
-    if (!slug && body.name) {
-        slug = body.name.toLowerCase()
-            .replace(/[^a-z0-9]+/g, '-')
-            .replace(/^-+|-+$/g, '');
-    }
-
-    const schema = z.object({
-        name: z.string().min(2),
-        slug: z.string().min(1),
-        data: z.any(),
-        products: z.any()
-    });
-
-    const payload = { ...body, slug };
-    const result = schema.safeParse(payload);
-
-    if (!result.success) {
-        return NextResponse.json({ error: 'Datos inválidos' }, { status: 400 });
-    }
-
-    const user = await prisma.user.findUnique({ where: { email: session.user.email } });
-    if (!user) {
-        return NextResponse.json({ error: 'Usuario no encontrado' }, { status: 404 });
-    }
-
-    // Verificar si el slug ya existe
-    const existing = await prisma.store.findUnique({ where: { slug: result.data.slug } });
-    if (existing) {
-        // Si existe y es del mismo usuario, actualizamos
-        if (existing.ownerId === user.id) {
-            const updated = await prisma.store.update({
-                where: { id: existing.id },
-                data: {
-                    name: result.data.name,
-                    data: result.data.data,
-                    products: result.data.products
-                }
-            });
-            return NextResponse.json({ success: true, url: `https://creatiendasgit1.vercel.app/stores/${updated.slug}` });
+    try {
+        const session = await getServerSession(authOptions);
+        if (!session?.user?.email) {
+            return NextResponse.json({ error: 'No autenticado', message: 'Debes iniciar sesión para guardar tu tienda.' }, { status: 401 });
         }
-        return NextResponse.json({ error: 'El nombre de la tienda ya está en uso' }, { status: 400 });
+
+        const body = await req.json();
+
+        // Generar slug si no viene
+        let slug = body.slug;
+        if (!slug && body.name) {
+            slug = body.name.toLowerCase()
+                .normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '')
+                .replace(/[^a-z0-9]+/g, '-')
+                .replace(/^-+|-+$/g, '');
+        }
+
+        const schema = z.object({
+            name: z.string().min(2),
+            slug: z.string().min(1),
+            data: z.any().optional(),
+            products: z.any().optional()
+        });
+
+        const payload = { ...body, slug };
+        const result = schema.safeParse(payload);
+
+        if (!result.success) {
+            console.error('Validation error:', result.error);
+            return NextResponse.json({
+                error: 'Datos inválidos',
+                message: 'Los datos de la tienda no son válidos.',
+                details: result.error.errors
+            }, { status: 400 });
+        }
+
+        const user = await prisma.user.findUnique({ where: { email: session.user.email } });
+        if (!user) {
+            return NextResponse.json({ error: 'Usuario no encontrado', message: 'Tu sesión no es válida.' }, { status: 404 });
+        }
+
+        // Get the host from the request
+        const host = req.headers.get('host') || 'creatiendasgit1.vercel.app';
+        const protocol = host.includes('localhost') ? 'http' : 'https';
+        const baseUrl = `${protocol}://${host}`;
+
+        // Verificar si el slug ya existe
+        const existing = await prisma.store.findUnique({ where: { slug: result.data.slug } });
+        if (existing) {
+            // Si existe y es del mismo usuario, actualizamos
+            if (existing.ownerId === user.id) {
+                const updated = await prisma.store.update({
+                    where: { id: existing.id },
+                    data: {
+                        name: result.data.name,
+                        data: result.data.data || {},
+                        products: result.data.products || []
+                    }
+                });
+                return NextResponse.json({
+                    success: true,
+                    url: `${baseUrl}/stores/${updated.slug}`,
+                    publicUrl: `${baseUrl}/stores/${updated.slug}`
+                });
+            }
+            return NextResponse.json({
+                error: 'El nombre de la tienda ya está en uso',
+                message: 'Ese nombre de tienda ya existe. Por favor elige otro nombre.'
+            }, { status: 400 });
+        }
+
+        const store = await prisma.store.create({
+            data: {
+                name: result.data.name,
+                slug: result.data.slug,
+                ownerId: user.id,
+                data: result.data.data || {},
+                products: result.data.products || []
+            },
+        });
+
+        return NextResponse.json({
+            success: true,
+            url: `${baseUrl}/stores/${store.slug}`,
+            publicUrl: `${baseUrl}/stores/${store.slug}`
+        }, { status: 201 });
+    } catch (error: any) {
+        console.error('Error creating store:', error);
+        return NextResponse.json({
+            error: 'Error interno del servidor',
+            message: error.message || 'Ocurrió un error al guardar la tienda. Por favor intenta de nuevo.',
+            details: process.env.NODE_ENV === 'development' ? error.stack : undefined
+        }, { status: 500 });
     }
-
-    const store = await prisma.store.create({
-        data: {
-            name: result.data.name,
-            slug: result.data.slug,
-            ownerId: user.id,
-            data: result.data.data,
-            products: result.data.products
-        },
-    });
-
-    return NextResponse.json({ success: true, url: `https://creatiendasgit1.vercel.app/stores/${store.slug}` }, { status: 201 });
 }
