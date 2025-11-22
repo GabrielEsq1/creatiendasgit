@@ -10,7 +10,7 @@ export const { auth, signIn, signOut, handlers } = NextAuth({
     ...authConfig,
     adapter: PrismaAdapter(prisma),
     session: { strategy: 'jwt' },
-    secret: process.env.AUTH_SECRET, // SOLUCIÓN AL ERROR MISSING SECRET
+    secret: process.env.NEXTAUTH_SECRET,
     providers: [
         Credentials({
             async authorize(credentials) {
