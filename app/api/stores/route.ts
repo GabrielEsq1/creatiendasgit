@@ -82,16 +82,16 @@ export async function POST(req: Request) {
                     }
                 });
 
-                // Generate subdomain URL
-                const subdomainUrl = `https://${updated.slug}.creatiendasgit1.vercel.app`;
+                // Generate URLs - path-based works immediately, subdomain requires Vercel Pro
                 const pathUrl = `${baseUrl}/stores/${updated.slug}`;
+                const subdomainUrl = `https://${updated.slug}.creatiendasgit1.vercel.app`;
 
                 return NextResponse.json({
                     success: true,
-                    url: subdomainUrl, // Primary URL (subdomain)
-                    pathUrl: pathUrl, // Fallback URL (path-based)
-                    publicUrl: subdomainUrl, // Public-facing URL
-                    message: `¡Tienda actualizada! Accede en: ${subdomainUrl}`
+                    url: pathUrl, // Primary URL (path-based - works immediately)
+                    subdomainUrl: subdomainUrl, // Alternative URL (requires Vercel Pro)
+                    publicUrl: pathUrl, // Public-facing URL
+                    message: `¡Tienda actualizada! Accede en: ${pathUrl}`
                 });
             }
             return NextResponse.json({
@@ -110,16 +110,16 @@ export async function POST(req: Request) {
             },
         });
 
-        // Generate subdomain URL
-        const subdomainUrl = `https://${store.slug}.creatiendasgit1.vercel.app`;
+        // Generate URLs - path-based works immediately, subdomain requires Vercel Pro
         const pathUrl = `${baseUrl}/stores/${store.slug}`;
+        const subdomainUrl = `https://${store.slug}.creatiendasgit1.vercel.app`;
 
         return NextResponse.json({
             success: true,
-            url: subdomainUrl, // Primary URL (subdomain)
-            pathUrl: pathUrl, // Fallback URL (path-based)
-            publicUrl: subdomainUrl, // Public-facing URL
-            message: `¡Tienda creada! Accede en: ${subdomainUrl}`
+            url: pathUrl, // Primary URL (path-based - works immediately)
+            subdomainUrl: subdomainUrl, // Alternative URL (requires Vercel Pro)
+            publicUrl: pathUrl, // Public-facing URL
+            message: `¡Tienda creada! Accede en: ${pathUrl}`
         }, { status: 201 });
     } catch (error: any) {
         console.error('Error creating store:', error);
