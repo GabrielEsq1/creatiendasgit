@@ -9,19 +9,19 @@ export const authConfig = {
         authorized({ auth, request: { nextUrl } }) {
             const isLoggedIn = !!auth?.user;
             const isOnDashboard = nextUrl.pathname.startsWith('/dashboard');
-            const isOnBuilder = nextUrl.pathname.startsWith('/builder'); // Assuming builder is protected or we want to protect it
+            const isOnBuilder = nextUrl.pathname.startsWith('/builder');
 
             if (isOnDashboard || isOnBuilder) {
                 if (isLoggedIn) return true;
-                return false; // Redirect unauthenticated users to login page
+                return false; // Redirige a login
             } else if (isLoggedIn) {
-                // Optional: Redirect logged-in users away from login/register pages
-                // if (nextUrl.pathname.startsWith('/auth')) {
-                //   return Response.redirect(new URL('/dashboard', nextUrl));
-                // }
+                // Opcional: Redirigir si ya está logueado e intenta entrar a login
+                if (nextUrl.pathname.startsWith('/auth')) {
+                    return Response.redirect(new URL('/dashboard', nextUrl));
+                }
             }
             return true;
         },
     },
-    providers: [], // Add providers with an empty array for now
+    providers: [], // Se llenan en auth.ts
 } satisfies NextAuthConfig;

@@ -10,6 +10,7 @@ export const { auth, signIn, signOut, handlers } = NextAuth({
     ...authConfig,
     adapter: PrismaAdapter(prisma),
     session: { strategy: 'jwt' },
+    secret: process.env.AUTH_SECRET, // SOLUCIÓN AL ERROR MISSING SECRET
     providers: [
         Credentials({
             async authorize(credentials) {
@@ -20,18 +21,19 @@ export const { auth, signIn, signOut, handlers } = NextAuth({
                 if (parsedCredentials.success) {
                     const { email, password } = parsedCredentials.data;
                     const user = await prisma.user.findUnique({ where: { email } });
+
                     if (!user || !user.password) return null;
 
                     const passwordsMatch = await verifyPassword(password, user.password);
                     if (passwordsMatch) return user;
                 }
 
-                console.log('Invalid credentials');
                 return null;
             },
         }),
     ],
     callbacks: {
+        ...authConfig.callbacks,
         async session({ session, token }) {
             if (token.sub && session.user) {
                 session.user.id = token.sub;
@@ -46,6 +48,3 @@ export const { auth, signIn, signOut, handlers } = NextAuth({
         }
     },
 });
-
-export const runtime = "nodejs";
-
