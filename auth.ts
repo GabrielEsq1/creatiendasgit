@@ -33,3 +33,5 @@ export const { auth, signIn, signOut, handlers } = NextAuth({
     ],
 });
 
+export const runtime = "nodejs";
+
