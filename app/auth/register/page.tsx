@@ -32,8 +32,8 @@ export default function RegisterPage() {
 
             const data = await res.json();
 
-            if (!res.ok) {
-                throw new Error(data.message || 'Error al registrarse');
+            if (!res.ok || !data.success) {
+                throw new Error(data.error || 'Error al registrarse');
             }
 
             // Redirect to login after successful registration

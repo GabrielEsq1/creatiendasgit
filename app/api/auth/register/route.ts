@@ -8,9 +8,9 @@ export async function POST(req: Request) {
     try {
         const { name, email, password } = await req.json();
 
-        if (!email || !password) {
+        if (!name || !email || !password) {
             return NextResponse.json(
-                { message: "Faltan datos requeridos" },
+                { error: "Faltan datos requeridos" },
                 { status: 400 }
             );
         }
@@ -21,14 +21,14 @@ export async function POST(req: Request) {
 
         if (existingUser) {
             return NextResponse.json(
-                { message: "El usuario ya existe" },
+                { error: "El correo electrónico ya está registrado" },
                 { status: 400 }
             );
         }
 
         const hashedPassword = await hashPassword(password);
 
-        const user = await prisma.user.create({
+        await prisma.user.create({
             data: {
                 name,
                 email,
@@ -42,11 +42,11 @@ export async function POST(req: Request) {
             },
         });
 
-        return NextResponse.json({ message: "Usuario creado exitosamente" });
+        return NextResponse.json({ success: true });
     } catch (error) {
         console.error("Error en registro:", error);
         return NextResponse.json(
-            { message: "Error interno del servidor" },
+            { error: "Error interno del servidor" },
             { status: 500 }
         );
     }

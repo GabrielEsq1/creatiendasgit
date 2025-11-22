@@ -1,10 +1,12 @@
-import { createHash } from 'crypto';
-
 export async function hashPassword(password: string): Promise<string> {
-    return createHash('sha256').update(password).digest('hex');
+    const encoder = new TextEncoder();
+    const data = encoder.encode(password);
+    const hash = await crypto.subtle.digest("SHA-256", data);
+    return Array.from(new Uint8Array(hash))
+        .map((b) => b.toString(16).padStart(2, "0"))
+        .join("");
 }
 
-export async function verifyPassword(password: string, hashed: string): Promise<boolean> {
-    const hashedAttempt = await hashPassword(password);
-    return hashedAttempt === hashed;
+export async function verifyPassword(password: string, hashed: string) {
+    return (await hashPassword(password)) === hashed;
 }
