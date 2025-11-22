@@ -6,11 +6,17 @@ import { verifyPassword } from '@/lib/crypto';
 import { z } from 'zod';
 import { authConfig } from './auth.config';
 
+const authSecret = process.env.AUTH_SECRET || process.env.NEXTAUTH_SECRET;
+
+if (!authSecret) {
+    console.error('CRITICAL: No AUTH_SECRET or NEXTAUTH_SECRET found in environment variables');
+}
+
 export const { auth, signIn, signOut, handlers } = NextAuth({
     ...authConfig,
     adapter: PrismaAdapter(prisma),
     session: { strategy: 'jwt' },
-    secret: process.env.AUTH_SECRET || process.env.NEXTAUTH_SECRET,
+    secret: authSecret,
     trustHost: true, // Required for Vercel deployment
     providers: [
         Credentials({
