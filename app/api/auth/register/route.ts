@@ -40,11 +40,15 @@ export async function POST(req: Request) {
         });
 
         return NextResponse.json({ success: true }, { status: 201 });
-    } catch (e) {
+    } catch (e: any) {
         console.error("Error en registro:", e);
         if (e instanceof Prisma.PrismaClientKnownRequestError && e.code === "P2002") {
             return NextResponse.json({ error: "El correo electrónico ya está registrado" }, { status: 400 });
         }
-        return NextResponse.json({ error: "Error interno del servidor" }, { status: 500 });
+        // Return actual error for debugging
+        return NextResponse.json({
+            error: `Error interno: ${e.message}`,
+            details: e.toString()
+        }, { status: 500 });
     }
 }
