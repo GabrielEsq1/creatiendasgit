@@ -36,17 +36,37 @@ export default async function DashboardPage() {
             <section className="mb-8">
                 <h2 className="text-xl font-semibold">Tus tiendas</h2>
                 {user?.stores?.length ? (
-                    <ul className="list-disc pl-5">
+                    <ul className="space-y-3 mt-4">
                         {user.stores.map((store) => (
-                            <li key={store.id}>
-                                <Link href={`/stores/C:\Users\ASUS\Desktop\creatiendas\creatiendasgit{store.slug}`} className="text-indigo-600 hover:underline">{store.name}</Link>
+                            <li key={store.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100">
+                                <div>
+                                    <h3 className="font-medium text-lg">{store.name}</h3>
+                                    <p className="text-sm text-gray-600">
+                                        https://creatiendasgit1.vercel.app/stores/{store.slug}
+                                    </p>
+                                </div>
+                                <div className="flex gap-2">
+                                    <Link
+                                        href={`/builder?edit=${store.slug}`}
+                                        className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 text-sm font-medium"
+                                    >
+                                        ✏️ Editar
+                                    </Link>
+                                    <Link
+                                        href={`/stores/${store.slug}`}
+                                        target="_blank"
+                                        className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 text-sm font-medium"
+                                    >
+                                        👁️ Ver
+                                    </Link>
+                                </div>
                             </li>
                         ))}
                     </ul>
                 ) : (
                     <p>No tienes tiendas creadas.</p>
                 )}
-                <Link href="/builder" className="inline-block mt-2 bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700">Crear nueva tienda</Link>
+                <Link href="/builder" className="inline-block mt-4 bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700">Crear nueva tienda</Link>
             </section>
 
             <section className="mb-8">

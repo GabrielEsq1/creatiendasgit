@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useState, ChangeEvent } from 'react';
+import React, { useState, ChangeEvent, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
 import StorePreview from '@/components/StorePreview';
 import { StoreData, Product } from '@/lib/store-service';
 import '../styles/builder.css';
@@ -78,11 +79,37 @@ const INITIAL_PRODUCTS: Product[] = [
 ];
 
 export default function BuilderPage() {
+    const searchParams = useSearchParams();
+    const editSlug = searchParams.get('edit');
+
     const [storeData, setStoreData] = useState<StoreData>(INITIAL_DATA);
     const [products, setProducts] = useState<Product[]>(INITIAL_PRODUCTS);
     const [viewMode, setViewMode] = useState<'desktop' | 'mobile'>('desktop');
     const [isSaving, setIsSaving] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
     const [publicUrl, setPublicUrl] = useState<string | null>(null);
+
+    // Load existing store data if in edit mode
+    useEffect(() => {
+        if (editSlug) {
+            setIsLoading(true);
+            fetch(`/api/stores/${editSlug}`)
+                .then(res => res.json())
+                .then(json => {
+                    if (json.success && json.store) {
+                        setStoreData(json.store.data);
+                        setProducts(json.store.products || []);
+                    } else {
+                        alert('No se pudo cargar la tienda para editar');
+                    }
+                })
+                .catch(err => {
+                    console.error('Error loading store:', err);
+                    alert('Error al cargar la tienda');
+                })
+                .finally(() => setIsLoading(false));
+        }
+    }, [editSlug]);
 
     // Product Form State
     const [prodForm, setProdForm] = useState({
@@ -235,8 +262,9 @@ export default function BuilderPage() {
             {/* LEFT PANEL */}
             <aside className="builder-panel">
                 <div className="panel-header">
-                    <h2>🛠️ Constructor de Tienda</h2>
-                    <p>Configura tu tienda, añade productos y ve los cambios en tiempo real.</p>
+                    <h2>{editSlug ? '✏️ Editar Tienda' : '🛠️ Constructor de Tienda'}</h2>
+                    <p>{editSlug ? 'Modifica tu tienda y guarda los cambios.' : 'Configura tu tienda, añade productos y ve los cambios en tiempo real.'}</p>
+                    {isLoading && <p style={{ color: '#2196F3', fontWeight: 'bold' }}>🔄 Cargando datos de la tienda...</p>}
                 </div>
 
                 {/* 1. Identidad */}
@@ -536,8 +564,8 @@ export default function BuilderPage() {
                 </section>
 
                 <section className="form-section" style={{ position: 'sticky', bottom: 0, zIndex: 10 }}>
-                    <button className="btn btn-primary" onClick={handleSave} disabled={isSaving} style={{ marginBottom: '1rem' }}>
-                        {isSaving ? 'Guardando...' : '🔄 Validar / Actualizar Tienda'}
+                    <button className="btn btn-primary" onClick={handleSave} disabled={isSaving || isLoading} style={{ marginBottom: '1rem' }}>
+                        {isSaving ? 'Guardando...' : (editSlug ? '🔄 Actualizar Tienda' : '🔄 Validar / Crear Tienda')}
                     </button>
 
                     {publicUrl && (
