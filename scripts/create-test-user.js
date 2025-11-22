@@ -4,7 +4,7 @@ const prisma = new PrismaClient();
 
 async function createTestUser() {
     try {
-        // Hash conocido para password: TestPassword123
+        // Hash known for password: TestPassword123
         const passwordHash = '$2b$12$1QRr1xWOHO/tLUOqyFxn0uxpLazAbOIgYwbkgMXnr98XYtyVL1chW';
 
         const user = await prisma.user.upsert({
@@ -16,6 +16,7 @@ async function createTestUser() {
                 email: 'admin@creatiendas.com',
                 name: 'Admin Test',
                 passwordHash: passwordHash,
+                role: 'ADMIN', // assign admin role
             },
         });
 

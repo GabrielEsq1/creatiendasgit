@@ -1,61 +1,49 @@
 "use client";
 
-import React, { useState, ChangeEvent, useEffect } from 'react';
+import React, { useState, ChangeEvent, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
+import Link from 'next/link';
 import StorePreview from '@/components/StorePreview';
 import { StoreData, Product } from '@/lib/store-service';
 import '../styles/builder.css';
 
+export const dynamic = "force-dynamic";
+
+// Initial store data structure
 const INITIAL_DATA: StoreData = {
     title: 'Especiales del día',
     name: 'Mi Tienda Bonita',
-    desc: 'Personaliza esta descripción con lo mejor de tu negocio.',
-    whatsapp: '573001234567',
-    color: '#25D366',
+    desc: 'Descripción corta de la tienda',
+    whatsapp: '',
+    color: '#ff0000',
     font: 'Inter',
     logo: null,
     heroBg: null,
     slug: '',
     socials: {
-        instagram: 'https://instagram.com/mitiendabonita',
+        instagram: '',
         facebook: '',
         tiktok: '',
-        email: 'hola@mitiendabonita.com',
-        phone: '+57 300 123 4567'
+        email: '',
+        phone: ''
     },
     about: {
-        heroTitle: 'Creamos momentos que se disfrutan en familia',
-        heroSubtitle: 'Somos una marca cercana que combina buen servicio, productos de calidad y precios justos.',
-        mission: 'Ofrecer productos deliciosos y accesibles que hagan el día de nuestros clientes más fácil y feliz.',
-        vision: 'Ser la tienda de referencia de nuestro barrio, reconocida por su servicio cálido y humano.',
-        values: [
-            'Servicio cercano y respetuoso',
-            'Calidad constante en cada producto',
-            'Transparencia en precios y procesos'
-        ],
-        timeline: [
-            '2019 — Nace Mi Tienda Bonita',
-            '2021 — Lanzamos servicio a domicilio',
-            '2023 — Integramos pedidos por WhatsApp'
-        ],
-        diff: [
-            'Preparaciones al momento',
-            'Resolvemos pedidos por WhatsApp en minutos',
-            'Escuchamos a nuestros clientes para mejorar cada día'
-        ],
-        team: 'Somos un equipo pequeño pero apasionado por el servicio y el detalle en cada pedido.',
-        ctaText: 'Conócenos más',
+        heroTitle: '',
+        heroSubtitle: '',
+        mission: '',
+        vision: '',
+        values: [],
+        timeline: [],
+        diff: [],
+        team: '',
+        ctaText: '',
         gallery: []
     },
     careers: {
-        title: 'Únete a nuestro equipo',
-        desc: 'Buscamos personas responsables, con buena actitud y ganas de aprender para crecer junto a nosotros.',
-        benefits: [
-            'Ambiente de trabajo cercano y respetuoso',
-            'Descuentos especiales en productos',
-            'Oportunidad de crecimiento dentro de la tienda'
-        ],
-        ctaText: 'Postular por WhatsApp'
+        title: '',
+        desc: '',
+        benefits: [],
+        ctaText: ''
     }
 };
 
@@ -78,7 +66,10 @@ const INITIAL_PRODUCTS: Product[] = [
     }
 ];
 
-export default function BuilderPage() {
+/**
+ * Core builder UI without Suspense. This component contains all state handling and UI.
+ */
+function BuilderContent() {
     const searchParams = useSearchParams();
     const editSlug = searchParams.get('edit');
 
@@ -89,7 +80,7 @@ export default function BuilderPage() {
     const [isLoading, setIsLoading] = useState(false);
     const [publicUrl, setPublicUrl] = useState<string | null>(null);
 
-    // Load existing store data if in edit mode
+    // Load existing store data when editing
     useEffect(() => {
         if (editSlug) {
             setIsLoading(true);
@@ -111,26 +102,16 @@ export default function BuilderPage() {
         }
     }, [editSlug]);
 
-    // Product Form State
-    const [prodForm, setProdForm] = useState({
-        name: '',
-        desc: '',
-        category: '',
-        price: '',
-        image: null as string | null
-    });
+    // Product form state
+    const [prodForm, setProdForm] = useState({ name: '', desc: '', category: '', price: '', image: null as string | null });
 
-    // Helpers
-    const normalizeUrl = (url: string) => {
-        return url.replace("https://https://", "https://");
-    };
+    const normalizeUrl = (url: string) => url.replace('https://https://', 'https://');
 
     const handleInputChange = (section: keyof StoreData | null, field: string, value: string) => {
         if (section) {
             setStoreData(prev => {
                 const sectionKey = section as keyof StoreData;
                 const previousSection = (prev[sectionKey] as unknown as Record<string, any>) ?? {};
-
                 return {
                     ...prev,
                     [sectionKey]: {
@@ -140,10 +121,7 @@ export default function BuilderPage() {
                 } as StoreData;
             });
         } else {
-            setStoreData(prev => ({
-                ...prev,
-                [field]: value
-            }));
+            setStoreData(prev => ({ ...prev, [field]: value }));
         }
     };
 
@@ -151,25 +129,23 @@ export default function BuilderPage() {
         setStoreData(prev => {
             const sectionKey = section as keyof StoreData;
             const previousSection = (prev[sectionKey] as Record<string, any>) ?? {};
-
             return {
                 ...prev,
                 [sectionKey]: {
                     ...previousSection,
-                    [field]: value.split('\n')
+                    [field]: value.split('\\n')
                 }
             } as StoreData;
         });
     };
 
-    const fileToBase64 = (file: File): Promise<string> => {
-        return new Promise((resolve, reject) => {
+    const fileToBase64 = (file: File): Promise<string> =>
+        new Promise((resolve, reject) => {
             const reader = new FileReader();
             reader.onload = () => resolve(reader.result as string);
-            reader.onerror = error => reject(error);
+            reader.onerror = reject;
             reader.readAsDataURL(file);
         });
-    };
 
     const handleImageUpload = async (field: string, e: ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
@@ -189,17 +165,13 @@ export default function BuilderPage() {
             }
             setStoreData(prev => ({
                 ...prev,
-                about: {
-                    ...prev.about,
-                    gallery: [...prev.about.gallery, ...newImages]
-                }
+                about: { ...prev.about, gallery: [...prev.about.gallery, ...newImages] }
             }));
         }
     };
 
     const handleAddProduct = () => {
         if (!prodForm.name || !prodForm.price) return alert('Nombre y precio requeridos');
-
         const newProduct: Product = {
             id: Date.now(),
             name: prodForm.name,
@@ -208,49 +180,37 @@ export default function BuilderPage() {
             price: prodForm.price,
             image: prodForm.image
         };
-
         setProducts([...products, newProduct]);
         setProdForm({ name: '', desc: '', category: '', price: '', image: null });
     };
 
     const handleSave = async () => {
         setIsSaving(true);
-        setPublicUrl(null); // Reset previous URL
+        setPublicUrl(null);
         try {
             const res = await fetch('/api/stores', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    name: storeData.name,
-                    data: storeData,
-                    products
-                })
+                body: JSON.stringify({ name: storeData.name, data: storeData, products })
             });
-
             const json = await res.json();
-
             if (res.ok && json.success) {
-                // Success
-                const rawUrl = json.url || json.publicUrl; // Prefer 'url' but fallback if needed
+                const rawUrl = json.url || json.publicUrl;
                 const finalUrl = normalizeUrl(rawUrl);
                 setPublicUrl(finalUrl);
                 alert(`¡Tienda guardada con éxito!\n\nTu tienda está lista en:\n${finalUrl}`);
                 window.open(finalUrl, '_blank');
             } else {
-                // Handle 401 specifically
                 if (res.status === 401) {
                     alert('Debes iniciar sesión para guardar tu tienda.');
                     window.location.href = '/auth/login';
                     return;
                 }
-
-                // Server returned an error (4xx or 5xx) or success: false
                 const msg = json.message || 'Error desconocido en el servidor';
                 alert(`No se pudo guardar la tienda.\nDetalle: ${msg}`);
             }
         } catch (e) {
-            // Network error or JSON parse error
-            console.error("Save error:", e);
+            console.error('Save error:', e);
             alert('Ocurrió un error de conexión al intentar guardar. Por favor intenta de nuevo.');
         } finally {
             setIsSaving(false);
@@ -262,6 +222,7 @@ export default function BuilderPage() {
             {/* LEFT PANEL */}
             <aside className="builder-panel">
                 <div className="panel-header">
+                    <Link href="/dashboard" style={{ marginBottom: '0.5rem', display: 'inline-block', color: '#2196F3', textDecoration: 'none', fontSize: '0.9rem' }}>← Back to Dashboard</Link>
                     <h2>{editSlug ? '✏️ Editar Tienda' : '🛠️ Constructor de Tienda'}</h2>
                     <p>{editSlug ? 'Modifica tu tienda y guarda los cambios.' : 'Configura tu tienda, añade productos y ve los cambios en tiempo real.'}</p>
                     {isLoading && <p style={{ color: '#2196F3', fontWeight: 'bold' }}>🔄 Cargando datos de la tienda...</p>}
@@ -272,51 +233,30 @@ export default function BuilderPage() {
                     <h3>1. Identidad de la Tienda</h3>
                     <div className="form-group">
                         <label>Título principal</label>
-                        <input
-                            value={storeData.title}
-                            onChange={(e) => handleInputChange(null, 'title', e.target.value)}
-                            placeholder="Ej: Especiales del día"
-                        />
+                        <input value={storeData.title} onChange={e => handleInputChange(null, 'title', e.target.value)} placeholder="Ej: Especiales del día" />
                     </div>
                     <div className="form-group">
                         <label>Nombre de la Tienda *</label>
-                        <input
-                            value={storeData.name}
-                            onChange={(e) => handleInputChange(null, 'name', e.target.value)}
-                        />
+                        <input value={storeData.name} onChange={e => handleInputChange(null, 'name', e.target.value)} />
                     </div>
                     <div className="form-group">
                         <label>Descripción corta</label>
-                        <textarea
-                            value={storeData.desc}
-                            onChange={(e) => handleInputChange(null, 'desc', e.target.value)}
-                        />
+                        <textarea value={storeData.desc} onChange={e => handleInputChange(null, 'desc', e.target.value)} />
                     </div>
                     <div className="form-group">
                         <label>Número de WhatsApp *</label>
-                        <input
-                            value={storeData.whatsapp}
-                            onChange={(e) => handleInputChange(null, 'whatsapp', e.target.value)}
-                        />
+                        <input value={storeData.whatsapp} onChange={e => handleInputChange(null, 'whatsapp', e.target.value)} />
                     </div>
                     <div className="form-group">
                         <label>Color Principal</label>
                         <div className="color-picker-wrapper">
-                            <input
-                                type="color"
-                                value={storeData.color}
-                                onChange={(e) => handleInputChange(null, 'color', e.target.value)}
-                            />
+                            <input type="color" value={storeData.color} onChange={e => handleInputChange(null, 'color', e.target.value)} />
                             <span>{storeData.color}</span>
                         </div>
                     </div>
                     <div className="form-group">
                         <label>Tipografía</label>
-                        <select
-                            value={storeData.font || 'Inter'}
-                            onChange={(e) => handleInputChange(null, 'font', e.target.value)}
-                            className="w-full p-2 border rounded"
-                        >
+                        <select value={storeData.font || 'Inter'} onChange={e => handleInputChange(null, 'font', e.target.value)} className="w-full p-2 border rounded">
                             <option value="Inter">Inter (Moderna)</option>
                             <option value="Roboto">Roboto (Clásica)</option>
                             <option value="Open Sans">Open Sans (Legible)</option>
@@ -326,237 +266,77 @@ export default function BuilderPage() {
                     </div>
                     <div className="form-group">
                         <label>Logo</label>
-                        <input type="file" accept="image/*" onChange={(e) => handleImageUpload('logo', e)} />
+                        <input type="file" accept="image/*" onChange={e => handleImageUpload('logo', e)} />
                     </div>
                     <div className="form-group">
                         <label>Imagen de fondo del encabezado (opcional)</label>
-                        <input type="file" accept="image/*" onChange={(e) => handleImageUpload('heroBg', e)} />
+                        <input type="file" accept="image/*" onChange={e => handleImageUpload('heroBg', e)} />
                     </div>
                 </section>
 
                 {/* 2. Redes */}
                 <section className="form-section">
-                    <h3>2. Redes Sociales & Contacto</h3>
-                    <div className="form-group">
-                        <label>Instagram</label>
-                        <input
-                            value={storeData.socials.instagram}
-                            onChange={(e) => handleInputChange('socials', 'instagram', e.target.value)}
-                        />
-                    </div>
-                    <div className="form-group">
-                        <label>Facebook</label>
-                        <input
-                            value={storeData.socials.facebook}
-                            onChange={(e) => handleInputChange('socials', 'facebook', e.target.value)}
-                        />
-                    </div>
-                    <div className="form-group">
-                        <label>TikTok</label>
-                        <input
-                            value={storeData.socials.tiktok}
-                            onChange={(e) => handleInputChange('socials', 'tiktok', e.target.value)}
-                        />
-                    </div>
-                    <div className="form-group">
-                        <label>Email</label>
-                        <input
-                            value={storeData.socials.email}
-                            onChange={(e) => handleInputChange('socials', 'email', e.target.value)}
-                        />
-                    </div>
-                    <div className="form-group">
-                        <label>Teléfono</label>
-                        <input
-                            value={storeData.socials.phone}
-                            onChange={(e) => handleInputChange('socials', 'phone', e.target.value)}
-                        />
-                    </div>
+                    <h3>2. Redes Sociales &amp; Contacto</h3>
+                    <div className="form-group"><label>Instagram</label><input value={storeData.socials.instagram} onChange={e => handleInputChange('socials', 'instagram', e.target.value)} /></div>
+                    <div className="form-group"><label>Facebook</label><input value={storeData.socials.facebook} onChange={e => handleInputChange('socials', 'facebook', e.target.value)} /></div>
+                    <div className="form-group"><label>TikTok</label><input value={storeData.socials.tiktok} onChange={e => handleInputChange('socials', 'tiktok', e.target.value)} /></div>
+                    <div className="form-group"><label>Email</label><input value={storeData.socials.email} onChange={e => handleInputChange('socials', 'email', e.target.value)} /></div>
+                    <div className="form-group"><label>Teléfono</label><input value={storeData.socials.phone} onChange={e => handleInputChange('socials', 'phone', e.target.value)} /></div>
                 </section>
 
                 {/* 3. Sobre Nosotros */}
                 <section className="form-section">
                     <h3>3. Sobre Nosotros (Micrositio)</h3>
-                    <div className="form-group">
-                        <label>Encabezado Hero – título</label>
-                        <input
-                            value={storeData.about.heroTitle}
-                            onChange={(e) => handleInputChange('about', 'heroTitle', e.target.value)}
-                        />
-                    </div>
-                    <div className="form-group">
-                        <label>Encabezado Hero – frase corta</label>
-                        <textarea
-                            value={storeData.about.heroSubtitle}
-                            onChange={(e) => handleInputChange('about', 'heroSubtitle', e.target.value)}
-                        />
-                    </div>
-                    <div className="form-group">
-                        <label>Nuestro Propósito / Misión</label>
-                        <textarea
-                            value={storeData.about.mission}
-                            onChange={(e) => handleInputChange('about', 'mission', e.target.value)}
-                        />
-                    </div>
-                    <div className="form-group">
-                        <label>Visión</label>
-                        <textarea
-                            value={storeData.about.vision}
-                            onChange={(e) => handleInputChange('about', 'vision', e.target.value)}
-                        />
-                    </div>
-                    <div className="form-group">
-                        <label>Valores (uno por línea)</label>
-                        <textarea
-                            value={storeData.about.values.join('\n')}
-                            onChange={(e) => handleArrayChange('about', 'values', e.target.value)}
-                            rows={3}
-                        />
-                    </div>
-                    <div className="form-group">
-                        <label>Historia / Timeline (un hito por línea)</label>
-                        <textarea
-                            value={storeData.about.timeline.join('\n')}
-                            onChange={(e) => handleArrayChange('about', 'timeline', e.target.value)}
-                            rows={3}
-                        />
-                    </div>
-                    <div className="form-group">
-                        <label>Qué nos diferencia (uno por línea)</label>
-                        <textarea
-                            value={storeData.about.diff.join('\n')}
-                            onChange={(e) => handleArrayChange('about', 'diff', e.target.value)}
-                            rows={3}
-                        />
-                    </div>
-                    <div className="form-group">
-                        <label>Equipo o cultura</label>
-                        <textarea
-                            value={storeData.about.team}
-                            onChange={(e) => handleInputChange('about', 'team', e.target.value)}
-                        />
-                    </div>
-                    <div className="form-group">
-                        <label>Call to Action (texto del botón)</label>
-                        <input
-                            value={storeData.about.ctaText}
-                            onChange={(e) => handleInputChange('about', 'ctaText', e.target.value)}
-                        />
-                    </div>
-                    <div className="form-group">
-                        <label>Galería de imágenes de la empresa</label>
-                        <input type="file" accept="image/*" multiple onChange={handleGalleryUpload} />
-                        <div className="about-gallery-mini">
-                            {storeData.about.gallery.map((img, i) => (
-                                <img key={i} src={img} alt="Gallery" />
-                            ))}
-                        </div>
+                    <div className="form-group"><label>Encabezado Hero – título</label><input value={storeData.about.heroTitle} onChange={e => handleInputChange('about', 'heroTitle', e.target.value)} /></div>
+                    <div className="form-group"><label>Encabezado Hero – frase corta</label><textarea value={storeData.about.heroSubtitle} onChange={e => handleInputChange('about', 'heroSubtitle', e.target.value)} /></div>
+                    <div className="form-group"><label>Nuestro Propósito / Misión</label><textarea value={storeData.about.mission} onChange={e => handleInputChange('about', 'mission', e.target.value)} /></div>
+                    <div className="form-group"><label>Visión</label><textarea value={storeData.about.vision} onChange={e => handleInputChange('about', 'vision', e.target.value)} /></div>
+                    <div className="form-group"><label>Valores (uno por línea)</label><textarea value={storeData.about.values.join('\\n')} onChange={e => handleArrayChange('about', 'values', e.target.value)} rows={3} /></div>
+                    <div className="form-group"><label>Historia / Timeline (un hito por línea)</label><textarea value={storeData.about.timeline.join('\\n')} onChange={e => handleArrayChange('about', 'timeline', e.target.value)} rows={3} /></div>
+                    <div className="form-group"><label>Qué nos diferencia (uno por línea)</label><textarea value={storeData.about.diff.join('\\n')} onChange={e => handleArrayChange('about', 'diff', e.target.value)} rows={3} /></div>
+                    <div className="form-group"><label>Equipo o cultura</label><textarea value={storeData.about.team} onChange={e => handleInputChange('about', 'team', e.target.value)} /></div>
+                    <div className="form-group"><label>Call to Action (texto del botón)</label><input value={storeData.about.ctaText} onChange={e => handleInputChange('about', 'ctaText', e.target.value)} /></div>
+                    <div className="form-group"><label>Galería de imágenes de la empresa</label><input type="file" accept="image/*" multiple onChange={handleGalleryUpload} />
+                        <div className="about-gallery-mini">{storeData.about.gallery.map((img, i) => (<img key={i} src={img} alt="Gallery" />))}</div>
                     </div>
                 </section>
 
                 {/* 4. Trabaja con Nosotros */}
                 <section className="form-section">
                     <h3>4. Trabaja con Nosotros</h3>
-                    <div className="form-group">
-                        <label>Título "Trabaja con nosotros"</label>
-                        <input
-                            value={storeData.careers.title}
-                            onChange={(e) => handleInputChange('careers', 'title', e.target.value)}
-                        />
-                    </div>
-                    <div className="form-group">
-                        <label>Descripción / Invitación</label>
-                        <textarea
-                            value={storeData.careers.desc}
-                            onChange={(e) => handleInputChange('careers', 'desc', e.target.value)}
-                        />
-                    </div>
-                    <div className="form-group">
-                        <label>Beneficios (uno por línea)</label>
-                        <textarea
-                            value={storeData.careers.benefits.join('\n')}
-                            onChange={(e) => handleArrayChange('careers', 'benefits', e.target.value)}
-                            rows={3}
-                        />
-                    </div>
-                    <div className="form-group">
-                        <label>Texto del botón (WhatsApp)</label>
-                        <input
-                            value={storeData.careers.ctaText}
-                            onChange={(e) => handleInputChange('careers', 'ctaText', e.target.value)}
-                        />
-                    </div>
+                    <div className="form-group"><label>Título "Trabaja con nosotros"</label><input value={storeData.careers.title} onChange={e => handleInputChange('careers', 'title', e.target.value)} /></div>
+                    <div className="form-group"><label>Descripción / Invitación</label><textarea value={storeData.careers.desc} onChange={e => handleInputChange('careers', 'desc', e.target.value)} /></div>
+                    <div className="form-group"><label>Beneficios (uno por línea)</label><textarea value={storeData.careers.benefits.join('\\n')} onChange={e => handleArrayChange('careers', 'benefits', e.target.value)} rows={3} /></div>
+                    <div className="form-group"><label>Texto del botón (WhatsApp)</label><input value={storeData.careers.ctaText} onChange={e => handleInputChange('careers', 'ctaText', e.target.value)} /></div>
                 </section>
 
                 {/* 5. Productos */}
                 <section className="form-section">
                     <h3>5. Agregar / Editar Productos</h3>
-                    <div className="form-group">
-                        <label>Nombre del Producto *</label>
-                        <input
-                            value={prodForm.name}
-                            onChange={(e) => setProdForm({ ...prodForm, name: e.target.value })}
-                        />
-                    </div>
-                    <div className="form-group">
-                        <label>Descripción *</label>
-                        <textarea
-                            value={prodForm.desc}
-                            onChange={(e) => setProdForm({ ...prodForm, desc: e.target.value })}
-                        />
-                    </div>
-                    <div className="form-group">
-                        <label>Categoría *</label>
-                        <input
-                            value={prodForm.category}
-                            onChange={(e) => setProdForm({ ...prodForm, category: e.target.value })}
-                        />
-                    </div>
-                    <div className="form-group">
-                        <label>Precio *</label>
-                        <input
-                            type="number"
-                            value={prodForm.price}
-                            onChange={(e) => setProdForm({ ...prodForm, price: e.target.value })}
-                        />
-                    </div>
-                    <div className="form-group">
-                        <label>Imagen del Producto</label>
-                        <input
-                            type="file"
-                            accept="image/*"
-                            onChange={async (e) => {
-                                const file = e.target.files?.[0];
-                                if (file) {
-                                    const base64 = await fileToBase64(file);
-                                    setProdForm({ ...prodForm, image: base64 });
-                                }
-                            }}
-                        />
-                    </div>
+                    <div className="form-group"><label>Nombre del Producto *</label><input value={prodForm.name} onChange={e => setProdForm({ ...prodForm, name: e.target.value })} /></div>
+                    <div className="form-group"><label>Descripción *</label><textarea value={prodForm.desc} onChange={e => setProdForm({ ...prodForm, desc: e.target.value })} /></div>
+                    <div className="form-group"><label>Categoría *</label><input value={prodForm.category} onChange={e => setProdForm({ ...prodForm, category: e.target.value })} /></div>
+                    <div className="form-group"><label>Precio *</label><input type="number" value={prodForm.price} onChange={e => setProdForm({ ...prodForm, price: e.target.value })} /></div>
+                    <div className="form-group"><label>Imagen del Producto</label><input type="file" accept="image/*" onChange={async e => {
+                        const file = e.target.files?.[0];
+                        if (file) {
+                            const base64 = await fileToBase64(file);
+                            setProdForm({ ...prodForm, image: base64 });
+                        }
+                    }} /></div>
                     <button className="btn btn-secondary" onClick={handleAddProduct}>➕ Agregar Producto</button>
-
                     <div className="product-list-mini">
                         {products.map(p => (
                             <div key={p.id} className="product-item-mini">
                                 <div className="product-info-mini">
-                                    {p.image ? (
-                                        <img src={p.image} className="product-thumb" alt={p.name} />
-                                    ) : (
-                                        <div className="product-thumb" style={{ background: '#ccc' }}></div>
-                                    )}
+                                    {p.image ? (<img src={p.image} className="product-thumb" alt={p.name} />) : (<div className="product-thumb" style={{ background: '#ccc' }} />)}
                                     <div>
                                         <strong>{p.name}</strong><br />
                                         <small>{p.category} · ${p.price}</small>
                                     </div>
                                 </div>
                                 <div style={{ display: 'flex', gap: '0.35rem' }}>
-                                    <button
-                                        className="btn btn-danger"
-                                        onClick={() => setProducts(products.filter(x => x.id !== p.id))}
-                                    >
-                                        🗑️
-                                    </button>
+                                    <button className="btn btn-danger" onClick={() => setProducts(products.filter(x => x.id !== p.id))}>🗑️</button>
                                 </div>
                             </div>
                         ))}
@@ -567,30 +347,14 @@ export default function BuilderPage() {
                     <button className="btn btn-primary" onClick={handleSave} disabled={isSaving || isLoading} style={{ marginBottom: '1rem' }}>
                         {isSaving ? 'Guardando...' : (editSlug ? '🔄 Actualizar Tienda' : '🔄 Validar / Crear Tienda')}
                     </button>
-
                     {publicUrl && (
                         <div className="public-url-box" style={{ marginTop: '1rem', padding: '1rem', background: '#e8f5e9', borderRadius: '8px', border: '1px solid #c8e6c9' }}>
                             <p style={{ margin: '0 0 0.5rem 0', fontWeight: 'bold', color: '#2e7d32' }}>✅ ¡Tu tienda está lista!</p>
                             <div style={{ display: 'flex', gap: '0.5rem' }}>
-                                <input
-                                    readOnly
-                                    value={publicUrl}
-                                    style={{ flex: 1, padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc' }}
-                                />
-                                <button
-                                    className="btn btn-secondary"
-                                    onClick={() => {
-                                        navigator.clipboard.writeText(publicUrl);
-                                        alert('URL copiada!');
-                                    }}
-                                    style={{ padding: '0.5rem 1rem' }}
-                                >
-                                    Copiar
-                                </button>
+                                <input readOnly value={publicUrl} style={{ flex: 1, padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc' }} />
+                                <button className="btn btn-secondary" onClick={() => { navigator.clipboard.writeText(publicUrl); alert('URL copiada!'); }} style={{ padding: '0.5rem 1rem' }}>Copiar</button>
                             </div>
-                            <a href={publicUrl} target="_blank" rel="noopener noreferrer" style={{ display: 'block', marginTop: '0.5rem', color: '#2e7d32', textDecoration: 'underline' }}>
-                                Visitar tienda &rarr;
-                            </a>
+                            <a href={publicUrl} target="_blank" rel="noopener noreferrer" style={{ display: 'block', marginTop: '0.5rem', color: '#2e7d32', textDecoration: 'underline' }}>Visitar tienda →</a>
                         </div>
                     )}
                 </section>
@@ -599,25 +363,19 @@ export default function BuilderPage() {
             {/* RIGHT PANEL */}
             <main className="preview-panel">
                 <div className="device-toggle">
-                    <button
-                        className={`device-btn ${viewMode === 'desktop' ? 'active' : ''}`}
-                        onClick={() => setViewMode('desktop')}
-                    >
-                        🖥 Vista escritorio
-                    </button>
-                    <button
-                        className={`device-btn ${viewMode === 'mobile' ? 'active' : ''}`}
-                        onClick={() => setViewMode('mobile')}
-                    >
-                        📱 Vista móvil
-                    </button>
+                    <button className={`device-btn ${viewMode === 'desktop' ? 'active' : ''}`} onClick={() => setViewMode('desktop')}>🖥 Vista escritorio</button>
+                    <button className={`device-btn ${viewMode === 'mobile' ? 'active' : ''}`} onClick={() => setViewMode('mobile')}>📱 Vista móvil</button>
                 </div>
-                <StorePreview
-                    data={storeData}
-                    products={products}
-                    viewMode={viewMode}
-                />
+                <StorePreview data={storeData} products={products} viewMode={viewMode} />
             </main>
         </div>
+    );
+}
+
+export default function BuilderPage() {
+    return (
+        <Suspense fallback={<div>Loading...</div>}>
+            <BuilderContent />
+        </Suspense>
     );
 }

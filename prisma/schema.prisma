@@ -7,6 +7,12 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// Role enum for user permissions
+enum Role {
+  USER
+  ADMIN
+}
+
 model User {
   id                String   @id @default(cuid())
   email             String   @unique
@@ -14,6 +20,8 @@ model User {
   passwordHash      String   @default("")
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
+
+  role              Role     @default(USER)
 
   stores            Store[]
   stripeCustomer    StripeCustomer?
