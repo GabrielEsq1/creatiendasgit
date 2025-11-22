@@ -1,11 +1,10 @@
 'use client';
 import { useSearchParams, useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useState, Suspense } from 'react';
 
 export const dynamic = 'force-dynamic';
 
-
-export default function ResetPasswordPage() {
+function ResetPasswordForm() {
     const router = useRouter();
     const token = useSearchParams().get('token');
     const [newPass, setNewPass] = useState('');
@@ -42,5 +41,13 @@ export default function ResetPasswordPage() {
                 <button type="submit" className="w-full bg-indigo-600 text-white py-2 rounded hover:bg-indigo-700">Cambiar contraseña</button>
             </form>
         </section>
+    );
+}
+
+export default function ResetPasswordPage() {
+    return (
+        <Suspense fallback={<div>Cargando...</div>}>
+            <ResetPasswordForm />
+        </Suspense>
     );
 }

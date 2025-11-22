@@ -1,12 +1,11 @@
 'use client';
 import { signIn } from 'next-auth/react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useState } from 'react';
+import { useState, Suspense } from 'react';
 
 export const dynamic = 'force-dynamic';
 
-
-export default function LoginPage() {
+function LoginForm() {
     const router = useRouter();
     const search = useSearchParams();
     const [email, setEmail] = useState('');
@@ -38,5 +37,13 @@ export default function LoginPage() {
                 <a href="/auth/reset-request" className="text-gray-600 hover:underline">¿Olvidaste tu contraseña?</a>
             </p>
         </section>
+    );
+}
+
+export default function LoginPage() {
+    return (
+        <Suspense fallback={<div>Cargando...</div>}>
+            <LoginForm />
+        </Suspense>
     );
 }
