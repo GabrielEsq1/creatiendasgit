@@ -54,7 +54,7 @@ export async function POST(req: Request) {
             return NextResponse.json({
                 error: 'Datos inválidos',
                 message: 'Los datos de la tienda no son válidos.',
-                details: result.error.errors
+                details: result.error.issues
             }, { status: 400 });
         }
 
