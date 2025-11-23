@@ -144,9 +144,9 @@ export async function POST(req: Request) {
     if (user.role !== 'ADMIN' && storeCount >= 1) {
         return NextResponse.json(
             {
-                error: 'Requiere validación de pago',
-                message: 'Para diseñar una segunda tienda, se exige validar el pago de un plan.',
-                upgradeUrl: '/dashboard/billing',
+                error: 'Límite de tiendas alcanzado',
+                message: 'Para crear más tiendas, por favor contáctanos para recibir asesoría personalizada antes de continuar.',
+                upgradeUrl: 'https://wa.me/573026687991?text=Hola,%20estoy%20interesado%20en%20crear%20mas%20tiendas,%20necesito%20asesoria',
             },
             { status: 403 }
         );

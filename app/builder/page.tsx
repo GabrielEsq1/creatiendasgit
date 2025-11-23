@@ -279,8 +279,8 @@ function BuilderContent() {
                     return;
                 }
                 if (res.status === 403 && json.upgradeUrl) {
-                    alert(`${json.message}\n\nSerás redirigido a la página de planes de suscripción.`);
-                    window.location.href = 'https://creatiendasgit1.vercel.app/dashboard/billing';
+                    alert(`${json.message}\n\nSerás redirigido a WhatsApp para recibir asesoría personalizada.`);
+                    window.location.href = json.upgradeUrl;
                     return;
                 }
                 const msg = json.message || 'Error desconocido en el servidor';
