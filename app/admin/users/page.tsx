@@ -40,6 +40,7 @@ export default function AdminUsersPage() {
             const msg = err instanceof Error ? err.message : 'Error desconocido';
             setError(`Error al cargar usuarios: ${msg}`);
             console.error('Admin Panel Error:', err);
+            console.error('Toggle Plan Error:', err);
         } finally {
             setLoading(false);
         }
@@ -48,6 +49,7 @@ export default function AdminUsersPage() {
     const togglePlan = async (userId: string, currentPlan: string) => {
         const newPlan = currentPlan === 'FREE' ? 'PRO' : 'FREE';
         const confirmMsg = `¿Cambiar plan de ${currentPlan} a ${newPlan}?`;
+
         if (!window.confirm(confirmMsg)) return;
 
         try {
@@ -57,7 +59,10 @@ export default function AdminUsersPage() {
                 body: JSON.stringify({ userId, plan: newPlan }),
             });
 
-            if (!res.ok) throw new Error('Error updating plan');
+            if (!res.ok) {
+                const errData = await res.json();
+                throw new Error(errData.error || 'Error updating plan');
+            }
 
             // Update local state
             setUsers(users.map(u =>
@@ -65,7 +70,7 @@ export default function AdminUsersPage() {
             ));
         } catch (err) {
             alert('Error al actualizar el plan');
-            console.error(err);
+            console.error('Toggle Plan Error:', err);
         }
     };
 
