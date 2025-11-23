@@ -1,13 +1,9 @@
 "use client";
 
 import { Check } from "lucide-react";
-import { useState, useEffect } from "react";
-import Script from "next/script";
 import Link from "next/link";
 
 export default function BillingPage() {
-    const [paypalLoaded, setPaypalLoaded] = useState(false);
-
     const plans = [
         {
             id: "trimestral",
@@ -15,7 +11,6 @@ export default function BillingPage() {
             price: "$60.000",
             duration: "3 Meses",
             permanency: 3,
-            paypalContainerId: "paypal-container-trimestral",
             features: [
                 "Tiendas ilimitadas",
                 "Productos ilimitados",
@@ -30,7 +25,6 @@ export default function BillingPage() {
             price: "$60.000",
             duration: "6 Meses",
             permanency: 6,
-            paypalContainerId: "paypal-container-semestral",
             features: [
                 "Tiendas ilimitadas",
                 "Productos ilimitados",
@@ -46,7 +40,6 @@ export default function BillingPage() {
             price: "$60.000",
             duration: "1 Año",
             permanency: 12,
-            paypalContainerId: "paypal-container-anual",
             features: [
                 "Tiendas ilimitadas",
                 "Productos ilimitados",
@@ -65,55 +58,14 @@ export default function BillingPage() {
         window.open(whatsappUrl, '_blank');
     };
 
-    // Render PayPal buttons when SDK is loaded - one for each plan
-    useEffect(() => {
-        if (paypalLoaded && typeof window !== 'undefined' && (window as any).paypal) {
-            plans.forEach((plan) => {
-                const container = document.getElementById(plan.paypalContainerId);
-                if (container && container.children.length === 0) {
-                    (window as any).paypal.HostedButtons({
-                        hostedButtonId: "ZV5752VRE8FDE",
-                    }).render(`#${plan.paypalContainerId}`);
-                }
-            });
-        }
-    }, [paypalLoaded]);
+    const handlePayPalPayment = () => {
+        // URL de PayPal con el hosted button ID
+        const paypalUrl = 'https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=ZV5752VRE8FDE';
+        window.open(paypalUrl, '_blank');
+    };
 
     return (
         <>
-            {/* Load PayPal SDK */}
-            <Script
-                src="https://www.paypal.com/sdk/js?client-id=BAAR9Enl5qJamrlUSNcq295R7uFOG7K_UEfE4ashGwgFigXE98rldIix1s_T5b1C3wz7MRPFWYs5Nl6iWg&components=hosted-buttons&disable-funding=venmo&currency=USD"
-                onLoad={() => setPaypalLoaded(true)}
-                strategy="lazyOnload"
-            />
-
-            {/* Custom CSS to style PayPal buttons */}
-            <style jsx global>{`
-                /* Style PayPal button containers to match Nequi button layout */
-                #paypal-container-trimestral iframe,
-                #paypal-container-semestral iframe,
-                #paypal-container-anual iframe {
-                    min-height: 48px !important;
-                    height: 48px !important;
-                    border-radius: 0.5rem !important;
-                }
-
-                #paypal-container-trimestral,
-                #paypal-container-semestral,
-                #paypal-container-anual {
-                    width: 100%;
-                }
-
-                /* Ensure PayPal buttons have consistent sizing */
-                #paypal-container-trimestral > div,
-                #paypal-container-semestral > div,
-                #paypal-container-anual > div {
-                    width: 100% !important;
-                    min-height: 48px !important;
-                }
-            `}</style>
-
             <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 py-12 px-4 sm:px-6 lg:px-8">
                 <div className="max-w-7xl mx-auto">
                     {/* Back to Dashboard */}
@@ -180,20 +132,16 @@ export default function BillingPage() {
                                 </div>
 
                                 <div className="px-8 pb-8 space-y-4">
-                                    {/* PayPal Button Container - Unique per plan */}
-                                    <div>
-                                        <div
-                                            id={plan.paypalContainerId}
-                                            className="w-full min-h-[48px] flex items-center justify-center"
-                                        >
-                                            {!paypalLoaded && (
-                                                <div className="flex items-center justify-center space-x-2">
-                                                    <div className="w-5 h-5 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
-                                                    <span className="text-sm text-gray-500">Cargando PayPal...</span>
-                                                </div>
-                                            )}
-                                        </div>
-                                    </div>
+                                    {/* PayPal Payment Button */}
+                                    <button
+                                        className="w-full flex items-center justify-center px-6 py-3 border-2 border-blue-600 text-base font-semibold rounded-lg text-white bg-blue-600 hover:bg-blue-700 transition-all duration-200 shadow-sm hover:shadow-md"
+                                        onClick={handlePayPalPayment}
+                                    >
+                                        <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M20.067 8.478c.492.88.556 2.014.3 3.327-.74 3.806-3.276 5.12-6.514 5.12h-.5a.805.805 0 00-.794.68l-.04.22-.63 3.993-.028.15a.806.806 0 01-.795.68H8.29c-.497 0-.863-.453-.752-.936l.002-.01 1.254-7.946a.803.803 0 01.793-.679h2.557c3.738 0 6.308-1.522 7.14-5.123.362-1.578.14-2.88-.72-3.735-.346-.344-.78-.62-1.293-.83l-.257-.09a6.023 6.023 0 00-2.045-.35H9.577a.804.804 0 00-.794.679L7.296 14.41a.803.803 0 01-.793.679h-2.22c-.497 0-.863-.453-.752-.936l.002-.01L5.67 3.185A.803.803 0 016.464 2.5h7.043c1.398 0 2.55.183 3.476.556 1.22.493 2.133 1.426 2.67 2.726l.414.696z" />
+                                        </svg>
+                                        Pagar con PayPal
+                                    </button>
 
                                     <div className="relative">
                                         <div className="absolute inset-0 flex items-center">
