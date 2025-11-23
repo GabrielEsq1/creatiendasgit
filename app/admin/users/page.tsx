@@ -302,8 +302,8 @@ export default function AdminUsersPage() {
 
             {/* Edit User Modal */}
             {showEditModal && selectedUser && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-[2000]">
-                    <div className="bg-white rounded-lg p-6 max-w-md w-full shadow-xl">
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-[2000] pointer-events-none">
+                    <div className="bg-white rounded-lg p-6 max-w-md w-full shadow-xl pointer-events-auto">
                         <h2 className="text-xl font-bold mb-4">Editar Usuario</h2>
                         <form onSubmit={handleEditSubmit}>
                             <div className="space-y-4">
@@ -390,8 +390,8 @@ export default function AdminUsersPage() {
 
             {/* Password Reset Modal */}
             {showPasswordModal && selectedUser && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-[100]">
-                    <div className="bg-white rounded-lg p-6 max-w-md w-full shadow-xl">
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-[2000] pointer-events-none">
+                    <div className="bg-white rounded-lg p-6 max-w-md w-full shadow-xl pointer-events-auto">
                         <h2 className="text-xl font-bold mb-4">Contraseña Temporal</h2>
                         <p className="text-sm text-gray-600 mb-4">
                             Nueva contraseña para <strong>{selectedUser.email}</strong>:
@@ -419,8 +419,8 @@ export default function AdminUsersPage() {
 
             {/* Reset Confirmation Modal */}
             {showResetConfirmModal && selectedUser && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-[100]">
-                    <div className="bg-white rounded-lg p-6 max-w-md w-full shadow-xl">
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-[2000] pointer-events-none">
+                    <div className="bg-white rounded-lg p-6 max-w-md w-full shadow-xl pointer-events-auto">
                         <h2 className="text-xl font-bold mb-4">¿Resetear Contraseña?</h2>
                         <p className="text-gray-600 mb-6">
                             ¿Estás seguro de que deseas resetear la contraseña para <strong>{selectedUser.email}</strong>?
@@ -447,8 +447,8 @@ export default function AdminUsersPage() {
 
             {/* Stores Modal */}
             {showStoresModal && selectedUser && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-[100]">
-                    <div className="bg-white rounded-lg p-6 max-w-2xl w-full max-h-[80vh] overflow-y-auto">
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-[2000] pointer-events-none">
+                    <div className="bg-white rounded-lg p-6 max-w-2xl w-full max-h-[80vh] overflow-y-auto pointer-events-auto">
                         <h2 className="text-xl font-bold mb-4">
                             Tiendas de {selectedUser.name || selectedUser.email}
                         </h2>
