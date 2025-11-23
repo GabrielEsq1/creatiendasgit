@@ -95,7 +95,7 @@ function BuilderContent() {
                 })
                 .then(data => {
                     if (data && data.data) {
-                        setStoreData(data.data);
+                        setStoreData({ ...data.data, id: data.id });
                         if (data.products) setProducts(data.products);
                     } else {
                         alert('No se pudo cargar la tienda para editar');
@@ -218,7 +218,7 @@ function BuilderContent() {
             const res = await fetch('/api/stores', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ name: storeData.name, data: storeData, products })
+                body: JSON.stringify({ name: storeData.name, data: storeData, products, id: storeData.id })
             });
             const json = await res.json();
             if (res.ok && json.success) {

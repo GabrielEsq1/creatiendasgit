@@ -11,6 +11,7 @@ export interface Product {
 }
 
 export interface StoreData {
+    id?: string;
     title: string;
     name: string;
     desc: string;

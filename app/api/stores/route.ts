@@ -75,7 +75,45 @@ export async function POST(req: Request) {
     const protocol = host.includes('localhost') ? 'http' : 'https';
     const baseUrl = `${protocol}://${host}`;
 
-    // Check if slug already exists
+    // Check if ID is provided for update
+    if (body.id) {
+        const existingStore = await prisma.store.findUnique({ where: { id: body.id } });
+        if (existingStore) {
+            if (existingStore.ownerId !== user.id) {
+                return NextResponse.json({ error: 'No autorizado', message: 'No tienes permiso para editar esta tienda.' }, { status: 403 });
+            }
+
+            // Check if new slug is already taken by ANOTHER store
+            if (result.data.slug !== existingStore.slug) {
+                const slugTaken = await prisma.store.findUnique({ where: { slug: result.data.slug } });
+                if (slugTaken) {
+                    return NextResponse.json({
+                        error: 'El nombre de la tienda ya está en uso',
+                        message: 'Ese nombre de tienda ya existe. Por favor elige otro nombre.',
+                    }, { status: 400 });
+                }
+            }
+
+            const updated = await prisma.store.update({
+                where: { id: body.id },
+                data: {
+                    name: result.data.name,
+                    slug: result.data.slug,
+                    data: result.data.data || null,
+                    products: result.data.products || null,
+                },
+            });
+            const pathUrl = `${baseUrl}/stores/${updated.slug}`;
+            return NextResponse.json({
+                success: true,
+                url: pathUrl,
+                publicUrl: pathUrl,
+                message: `¡Tienda actualizada! Accede en: ${pathUrl}`,
+            });
+        }
+    }
+
+    // Check if slug already exists (Legacy update by slug)
     const existing = await prisma.store.findUnique({ where: { slug: result.data.slug } });
     if (existing) {
         if (existing.ownerId === user.id) {
