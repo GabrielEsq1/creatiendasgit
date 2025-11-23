@@ -48,7 +48,6 @@ export default function AdminUsersPage() {
     const togglePlan = async (userId: string, currentPlan: string) => {
         const newPlan = currentPlan === 'FREE' ? 'PRO' : 'FREE';
         const confirmMsg = `¿Cambiar plan de ${currentPlan} a ${newPlan}?`;
-
         if (!window.confirm(confirmMsg)) return;
 
         try {
