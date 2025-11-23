@@ -72,13 +72,20 @@ export default async function DashboardPage() {
             <section className="mb-8">
                 <h2 className="text-xl font-semibold">Plan de suscripción</h2>
                 <p>{plan}</p>
-                <form action="/api/stripe/portal" method="POST" className="mt-2">
-                    <button type="submit" className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">Gestionar suscripción</button>
-                </form>
-                <form action="/api/stripe/checkout" method="POST" className="mt-4">
-                    <input type="hidden" name="priceId" value="price_XXXXXXXXXXXX" />
-                    <button type="submit" className="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700">Cambiar a plan Pro</button>
-                </form>
+                <div className="mt-4 flex flex-col gap-3">
+                    <Link
+                        href="/dashboard/billing"
+                        className="inline-block bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 text-center font-medium"
+                    >
+                        💳 Gestionar suscripción
+                    </Link>
+                    <Link
+                        href="/dashboard/billing"
+                        className="inline-block bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 text-center font-medium"
+                    >
+                        ⭐ Ver planes disponibles
+                    </Link>
+                </div>
             </section>
         </section>
     );

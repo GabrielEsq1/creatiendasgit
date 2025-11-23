@@ -264,6 +264,10 @@ function BuilderContent() {
                 const finalUrl = normalizeUrl(rawUrl);
                 setPublicUrl(finalUrl);
                 setHasUnsavedChanges(false); // Mark as saved
+                // Store the returned id for future updates
+                if (json.id) {
+                    setStoreData(prev => ({ ...prev, id: json.id }));
+                }
                 alert(`¡Tienda guardada con éxito!\n\nTu tienda está lista en:\n${finalUrl}`);
                 if (!editSlug) {
                     window.open(finalUrl, '_blank');
@@ -275,9 +279,8 @@ function BuilderContent() {
                     return;
                 }
                 if (res.status === 403 && json.upgradeUrl) {
-                    if (confirm(`${json.message}\n\n¿Deseas ver los planes disponibles?`)) {
-                        window.location.href = json.upgradeUrl;
-                    }
+                    alert(`${json.message}\n\nSerás redirigido a la página de planes de suscripción.`);
+                    window.location.href = 'https://creatiendasgit1.vercel.app/dashboard/billing';
                     return;
                 }
                 const msg = json.message || 'Error desconocido en el servidor';
