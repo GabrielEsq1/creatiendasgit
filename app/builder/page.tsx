@@ -80,6 +80,7 @@ function BuilderContent() {
     const [isLoading, setIsLoading] = useState(false);
     const [publicUrl, setPublicUrl] = useState<string | null>(null);
     const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+    const [editingProductId, setEditingProductId] = useState<number | null>(null);
 
     // Load existing store data when editing
     useEffect(() => {
@@ -129,9 +130,13 @@ function BuilderContent() {
     // Mark as having unsaved changes when data changes
     useEffect(() => {
         if (!isLoading && !isSaving) {
-            setHasUnsavedChanges(true);
+            // Add small delay to avoid marking as unsaved immediately after load
+            const timer = setTimeout(() => {
+                setHasUnsavedChanges(true);
+            }, 200);
+            return () => clearTimeout(timer);
         }
-    }, [storeData, products]);
+    }, [storeData, products, isLoading, isSaving]);
 
     // Product form state
     const [prodForm, setProdForm] = useState({ name: '', desc: '', category: '', price: '', image: null as string | null });
@@ -201,18 +206,47 @@ function BuilderContent() {
         }
     };
 
-    const handleAddProduct = () => {
+    const handleSaveProduct = () => {
         if (!prodForm.name || !prodForm.price) return alert('Nombre y precio requeridos');
-        const newProduct: Product = {
-            id: Date.now(),
-            name: prodForm.name,
-            description: prodForm.desc,
-            category: prodForm.category,
-            price: prodForm.price,
-            image: prodForm.image
-        };
-        setProducts([...products, newProduct]);
+
+        if (editingProductId) {
+            // Modo edición
+            setProducts(products.map(p =>
+                p.id === editingProductId
+                    ? { ...p, name: prodForm.name, description: prodForm.desc, category: prodForm.category, price: prodForm.price, image: prodForm.image }
+                    : p
+            ));
+            setEditingProductId(null);
+        } else {
+            // Modo creación
+            const newProduct: Product = {
+                id: Date.now(),
+                name: prodForm.name,
+                description: prodForm.desc,
+                category: prodForm.category,
+                price: prodForm.price,
+                image: prodForm.image
+            };
+            setProducts([...products, newProduct]);
+        }
+
         setProdForm({ name: '', desc: '', category: '', price: '', image: null });
+    };
+
+    const handleEditProduct = (product: Product) => {
+        setProdForm({
+            name: product.name,
+            desc: product.description,
+            category: product.category,
+            price: product.price,
+            image: product.image
+        });
+        setEditingProductId(product.id);
+    };
+
+    const handleCancelEdit = () => {
+        setProdForm({ name: '', desc: '', category: '', price: '', image: null });
+        setEditingProductId(null);
     };
 
     const handleSave = async () => {
@@ -238,6 +272,12 @@ function BuilderContent() {
                 if (res.status === 401) {
                     alert('Debes iniciar sesión para guardar tu tienda.');
                     window.location.href = '/auth/login';
+                    return;
+                }
+                if (res.status === 403 && json.upgradeUrl) {
+                    if (confirm(`${json.message}\n\n¿Deseas ver los planes disponibles?`)) {
+                        window.location.href = json.upgradeUrl;
+                    }
                     return;
                 }
                 const msg = json.message || 'Error desconocido en el servidor';
@@ -358,7 +398,14 @@ function BuilderContent() {
                             setProdForm({ ...prodForm, image: base64 });
                         }
                     }} /></div>
-                    <button className="btn btn-secondary" onClick={handleAddProduct}>➕ Agregar Producto</button>
+                    <div style={{ display: 'flex', gap: '0.5rem' }}>
+                        <button className="btn btn-secondary" onClick={handleSaveProduct}>
+                            {editingProductId ? '💾 Actualizar Producto' : '➕ Agregar Producto'}
+                        </button>
+                        {editingProductId && (
+                            <button className="btn btn-danger" onClick={handleCancelEdit}>❌ Cancelar</button>
+                        )}
+                    </div>
                     <div className="product-list-mini">
                         {/* Products list */}
                         {products.map(p => (
@@ -371,7 +418,8 @@ function BuilderContent() {
                                     </div>
                                 </div>
                                 <div style={{ display: 'flex', gap: '0.35rem' }}>
-                                    <button className="btn btn-danger" onClick={() => setProducts(products.filter(x => x.id !== p.id))}>🗑️</button>
+                                    <button className="btn btn-secondary" onClick={() => handleEditProduct(p)} title="Editar producto">✏️</button>
+                                    <button className="btn btn-danger" onClick={() => setProducts(products.filter(x => x.id !== p.id))} title="Eliminar producto">🗑️</button>
                                 </div>
                             </div>
                         ))}

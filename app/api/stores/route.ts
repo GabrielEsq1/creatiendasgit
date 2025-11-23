@@ -145,8 +145,8 @@ export async function POST(req: Request) {
         return NextResponse.json(
             {
                 error: 'Límite de tienda gratuita alcanzado',
-                message: 'Los usuarios gratuitos pueden crear solo una tienda. Por favor suscríbete para crear más.',
-                subscribeUrl: `${baseUrl}/dashboard?plan=subscription`,
+                message: 'Los usuarios gratuitos pueden crear solo una tienda.',
+                upgradeUrl: '/dashboard/billing',
             },
             { status: 403 }
         );
