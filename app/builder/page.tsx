@@ -96,9 +96,31 @@ function BuilderContent() {
 
                         setStoreData(json.store.data);
 
-                        // Ensure products is always an array
-                        const loadedProducts = Array.isArray(json.store.products) ? json.store.products : [];
-                        console.log('Setting products to:', loadedProducts); // Debug log
+                        // Handle products - they might come as string, object, or array
+                        let loadedProducts = [];
+                        try {
+                            const rawProducts = json.store.products;
+                            console.log('Raw products type:', typeof rawProducts);
+
+                            if (typeof rawProducts === 'string') {
+                                // If it's a string, parse it
+                                loadedProducts = JSON.parse(rawProducts);
+                                console.log('Parsed from string:', loadedProducts);
+                            } else if (Array.isArray(rawProducts)) {
+                                // If it's already an array, use it
+                                loadedProducts = rawProducts;
+                                console.log('Already an array:', loadedProducts);
+                            } else if (rawProducts && typeof rawProducts === 'object') {
+                                // If it's an object but not an array, try to convert it
+                                loadedProducts = Object.values(rawProducts);
+                                console.log('Converted from object:', loadedProducts);
+                            }
+                        } catch (e) {
+                            console.error('Error parsing products:', e);
+                            loadedProducts = [];
+                        }
+
+                        console.log('Final products to set:', loadedProducts);
                         setProducts(loadedProducts);
 
                         setPublicUrl(`${window.location.origin}/stores/${editSlug}`);
