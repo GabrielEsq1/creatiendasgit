@@ -94,7 +94,11 @@ function BuilderContent() {
                     }
                 })
                 .then(data => {
-                    if (data && data.data) {
+                    if (data && data.store) {
+                        setStoreData({ ...data.store.data, id: data.store.id });
+                        if (data.store.products) setProducts(data.store.products);
+                    } else if (data && data.data) {
+                        // Fallback for potential legacy API structure
                         setStoreData({ ...data.data, id: data.id });
                         if (data.products) setProducts(data.products);
                     } else {
