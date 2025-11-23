@@ -94,9 +94,8 @@ function LoginForm() {
                                 Contraseña
                             </label>
                             <Link
-                                href="#"
+                                href="/auth/forgot-password"
                                 className="text-xs font-medium text-blue-600 hover:text-blue-500 transition-colors"
-                                onClick={(e) => { e.preventDefault(); alert('Funcionalidad en desarrollo'); }}
                             >
                                 ¿Olvidaste tu contraseña?
                             </Link>

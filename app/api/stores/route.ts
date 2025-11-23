@@ -70,22 +70,6 @@ export async function POST(req: Request) {
         return NextResponse.json({ error: 'Usuario no encontrado', message: 'Tu sesión no es válida.' }, { status: 404 });
     }
 
-    // Enforce free tier limit (1 store) unless ADMIN
-    const storeCount = user.stores?.length ?? 0;
-    if (user.role !== 'ADMIN' && storeCount >= 1) {
-        const host = req.headers.get('host') || 'creatiendasgit1.vercel.app';
-        const protocol = host.includes('localhost') ? 'http' : 'https';
-        const baseUrl = `${protocol}://${host}`;
-        return NextResponse.json(
-            {
-                error: 'Límite de tienda gratuita alcanzado',
-                message: 'Los usuarios gratuitos pueden crear solo una tienda. Por favor suscríbete para crear más.',
-                subscribeUrl: `${baseUrl}/dashboard?plan=subscription`,
-            },
-            { status: 403 }
-        );
-    }
-
     // Determine host for URL generation
     const host = req.headers.get('host') || 'creatiendasgit1.vercel.app';
     const protocol = host.includes('localhost') ? 'http' : 'https';
@@ -115,6 +99,19 @@ export async function POST(req: Request) {
             error: 'El nombre de la tienda ya está en uso',
             message: 'Ese nombre de tienda ya existe. Por favor elige otro nombre.',
         }, { status: 400 });
+    }
+
+    // Enforce free tier limit (1 store) unless ADMIN
+    const storeCount = user.stores?.length ?? 0;
+    if (user.role !== 'ADMIN' && storeCount >= 1) {
+        return NextResponse.json(
+            {
+                error: 'Límite de tienda gratuita alcanzado',
+                message: 'Los usuarios gratuitos pueden crear solo una tienda. Por favor suscríbete para crear más.',
+                subscribeUrl: `${baseUrl}/dashboard?plan=subscription`,
+            },
+            { status: 403 }
+        );
     }
 
     // Create new store

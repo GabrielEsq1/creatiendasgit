@@ -82,50 +82,6 @@ function BuilderContent() {
     const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
 
     // Load existing store data when editing
-    useEffect(() => {
-        if (editSlug) {
-            setIsLoading(true);
-            fetch(`/api/stores/${editSlug}`)
-                .then(res => res.json())
-                .then(json => {
-                    console.log('Loaded store data:', json); // Debug log
-                    if (json.success && json.store) {
-                        console.log('Store products:', json.store.products); // Debug log
-                        console.log('Products type:', typeof json.store.products); // Debug log
-                        console.log('Products is array?:', Array.isArray(json.store.products)); // Debug log
-
-                        setStoreData(json.store.data);
-
-                        // Handle products - they might come as string, object, or array
-                        let loadedProducts = [];
-                        try {
-                            const rawProducts = json.store.products;
-                            console.log('Raw products type:', typeof rawProducts);
-
-                            if (typeof rawProducts === 'string') {
-                                // If it's a string, parse it
-                                loadedProducts = JSON.parse(rawProducts);
-                                console.log('Parsed from string:', loadedProducts);
-                            } else if (Array.isArray(rawProducts)) {
-                                // If it's already an array, use it
-                                loadedProducts = rawProducts;
-                                console.log('Already an array:', loadedProducts);
-                            } else if (rawProducts && typeof rawProducts === 'object') {
-                                // If it's an object but not an array, try to convert it
-                                loadedProducts = Object.values(rawProducts);
-                                console.log('Converted from object:', loadedProducts);
-                            }
-                        } catch (e) {
-                            console.error('Error parsing products:', e);
-                            loadedProducts = [];
-                        }
-
-                        console.log('Final products to set:', loadedProducts);
-                        setProducts(loadedProducts);
-
-                        setPublicUrl(`${window.location.origin}/stores/${editSlug}`);
-                        setHasUnsavedChanges(false); // Don't mark as unsaved when loading
-                    } else {
                         alert('No se pudo cargar la tienda para editar');
                     }
                 })
