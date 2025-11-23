@@ -34,6 +34,8 @@ export default function AdminUsersPage() {
     const [showPasswordModal, setShowPasswordModal] = useState(false);
     const [tempPassword, setTempPassword] = useState('');
     const [editForm, setEditForm] = useState({ name: '', email: '', plan: '', role: '', newPassword: '' });
+    const [isSaving, setIsSaving] = useState(false);
+    const [successMessage, setSuccessMessage] = useState('');
     const router = useRouter();
 
     useEffect(() => {
@@ -73,6 +75,7 @@ export default function AdminUsersPage() {
         e.preventDefault();
         if (!selectedUser) return;
 
+        setIsSaving(true);
         try {
             const res = await fetch(`/api/admin/users/${selectedUser.id}`, {
                 method: 'PATCH',
@@ -80,13 +83,19 @@ export default function AdminUsersPage() {
                 body: JSON.stringify(editForm),
             });
 
-            if (!res.ok) throw new Error('Error updating user');
+            if (!res.ok) {
+                const errorData = await res.json();
+                throw new Error(errorData.error || 'Error updating user');
+            }
 
             await fetchUsers();
             setShowEditModal(false);
-            alert('Usuario actualizado exitosamente');
-        } catch (err) {
-            alert('Error al actualizar usuario');
+            setSuccessMessage('✅ Usuario actualizado exitosamente');
+            setTimeout(() => setSuccessMessage(''), 3000);
+        } catch (err: any) {
+            alert(`Error: ${err.message}`);
+        } finally {
+            setIsSaving(false);
         }
     };
 
@@ -168,6 +177,12 @@ export default function AdminUsersPage() {
 
     return (
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+            {/* Success Toast */}
+            {successMessage && (
+                <div className="fixed top-4 right-4 z-50 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg flex items-center gap-2 animate-fade-in">
+                    <span className="text-lg">{successMessage}</span>
+                </div>
+            )}
             <div className="sm:flex sm:items-center mb-8">
                 <div className="sm:flex-auto">
                     <h1 className="text-2xl font-semibold text-gray-900">Panel de Administración</h1>
@@ -334,9 +349,18 @@ export default function AdminUsersPage() {
                             <div className="mt-6 flex gap-3">
                                 <button
                                     type="submit"
-                                    className="flex-1 bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700"
+                                    disabled={isSaving}
+                                    className="flex-1 bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                                 >
-                                    Guardar
+                                    {isSaving ? (
+                                        <>
+                                            <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                            </svg>
+                                            Guardando...
+                                        </>
+                                    ) : 'Guardar'}
                                 </button>
                                 <button
                                     type="button"
