@@ -93,7 +93,7 @@ export default function BillingPage() {
                     </p>
                 </div>
 
-                <div className="mt-12 space-y-4 sm:mt-16 sm:space-y-0 sm:grid sm:grid-cols-3 sm:gap-6 lg:max-w-4xl lg:mx-auto xl:max-w-none xl:mx-0 xl:grid-cols-3">
+                <div className="mt-12 space-y-4 sm:mt-16 sm:space-y-0 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:max-w-6xl lg:mx-auto">
                     {plans.map((plan) => (
                         <div
                             key={plan.name}
