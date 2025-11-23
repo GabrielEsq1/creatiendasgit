@@ -16,10 +16,24 @@ interface User {
     };
 }
 
+interface Store {
+    id: string;
+    name: string;
+    slug: string;
+    createdAt: string;
+}
+
 export default function AdminUsersPage() {
     const [users, setUsers] = useState<User[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
+    const [selectedUser, setSelectedUser] = useState<User | null>(null);
+    const [userStores, setUserStores] = useState<Store[]>([]);
+    const [showEditModal, setShowEditModal] = useState(false);
+    const [showStoresModal, setShowStoresModal] = useState(false);
+    const [showPasswordModal, setShowPasswordModal] = useState(false);
+    const [tempPassword, setTempPassword] = useState('');
+    const [editForm, setEditForm] = useState({ name: '', email: '', plan: '', role: '' });
     const router = useRouter();
 
     useEffect(() => {
@@ -30,43 +44,122 @@ export default function AdminUsersPage() {
         try {
             const res = await fetch('/api/admin/users');
             if (res.status === 403 || res.status === 401) {
-                router.push('/'); // redirect non-admins
+                router.push('/');
                 return;
             }
             if (!res.ok) throw new Error('Error fetching users');
             const data = await res.json();
             setUsers(data);
         } catch (err: any) {
-            const msg = err instanceof Error ? err.message : 'Error desconocido';
-            setError(`Error al cargar usuarios: ${msg}`);
-            console.error('Admin Panel Error:', err);
+            setError(`Error al cargar usuarios: ${err.message}`);
         } finally {
             setLoading(false);
         }
     };
 
-    const togglePlan = async (userId: string, currentPlan: string) => {
-        const newPlan = currentPlan === 'FREE' ? 'PRO' : 'FREE';
-        const confirmMsg = `¿Cambiar plan de ${currentPlan} a ${newPlan}?`;
-        if (!window.confirm(confirmMsg)) return;
+    const openEditModal = (user: User) => {
+        setSelectedUser(user);
+        setEditForm({
+            name: user.name || '',
+            email: user.email,
+            plan: user.plan,
+            role: user.role,
+        });
+        setShowEditModal(true);
+    };
+
+    const handleEditSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!selectedUser) return;
+
         try {
-            const res = await fetch('/api/admin/users', {
+            const res = await fetch(`/api/admin/users/${selectedUser.id}`, {
                 method: 'PATCH',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ userId, plan: newPlan }),
+                body: JSON.stringify(editForm),
             });
-            if (!res.ok) {
-                const errData = await res.json();
-                throw new Error(errData.error || 'Error updating plan');
-            }
-            // Update local state
-            setUsers((prev) =>
-                prev.map((u) => (u.id === userId ? { ...u, plan: newPlan } : u))
-            );
+
+            if (!res.ok) throw new Error('Error updating user');
+
+            await fetchUsers();
+            setShowEditModal(false);
+            alert('Usuario actualizado exitosamente');
         } catch (err) {
-            alert('Error al actualizar el plan');
-            console.error('Toggle Plan Error:', err);
+            alert('Error al actualizar usuario');
         }
+    };
+
+    const handleResetPassword = async (user: User) => {
+        if (!confirm(`¿Resetear contraseña para ${user.email}?`)) return;
+
+        try {
+            const res = await fetch(`/api/admin/users/${user.id}/reset-password`, {
+                method: 'POST',
+            });
+
+            if (!res.ok) throw new Error('Error resetting password');
+
+            const data = await res.json();
+            setTempPassword(data.temporaryPassword);
+            setSelectedUser(user);
+            setShowPasswordModal(true);
+        } catch (err) {
+            alert('Error al resetear contraseña');
+        }
+    };
+
+    const handleViewStores = async (user: User) => {
+        setSelectedUser(user);
+        try {
+            const res = await fetch(`/api/admin/users/${user.id}`);
+            if (!res.ok) throw new Error('Error fetching user stores');
+            const data = await res.json();
+            setUserStores(data.user.stores || []);
+            setShowStoresModal(true);
+        } catch (err) {
+            alert('Error al cargar tiendas');
+        }
+    };
+
+    const handleDeleteStore = async (storeId: string) => {
+        if (!confirm('¿Eliminar esta tienda permanentemente?')) return;
+
+        try {
+            const res = await fetch(`/api/admin/stores/${storeId}`, {
+                method: 'DELETE',
+            });
+
+            if (!res.ok) throw new Error('Error deleting store');
+
+            setUserStores(prev => prev.filter(s => s.id !== storeId));
+            await fetchUsers();
+            alert('Tienda eliminada exitosamente');
+        } catch (err) {
+            alert('Error al eliminar tienda');
+        }
+    };
+
+    const handleDeleteUser = async (user: User) => {
+        if (!confirm(`¿Eliminar usuario ${user.email} y TODAS sus tiendas?`)) return;
+        if (!confirm('Esta acción NO se puede deshacer. ¿Continuar?')) return;
+
+        try {
+            const res = await fetch(`/api/admin/users/${user.id}`, {
+                method: 'DELETE',
+            });
+
+            if (!res.ok) throw new Error('Error deleting user');
+
+            await fetchUsers();
+            alert('Usuario eliminado exitosamente');
+        } catch (err) {
+            alert('Error al eliminar usuario');
+        }
+    };
+
+    const copyToClipboard = (text: string) => {
+        navigator.clipboard.writeText(text);
+        alert('Contraseña copiada al portapapeles');
     };
 
     if (loading) return <div className="p-8 text-center">Cargando panel de administración...</div>;
@@ -77,7 +170,7 @@ export default function AdminUsersPage() {
             <div className="sm:flex sm:items-center mb-8">
                 <div className="sm:flex-auto">
                     <h1 className="text-2xl font-semibold text-gray-900">Panel de Administración</h1>
-                    <p className="mt-2 text-sm text-gray-700">Gestión de usuarios y activación manual de planes.</p>
+                    <p className="mt-2 text-sm text-gray-700">Control total sobre usuarios, planes y tiendas.</p>
                 </div>
                 <div className="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
                     <Link
@@ -93,7 +186,7 @@ export default function AdminUsersPage() {
                 <div className="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
                     <div className="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
                         <div className="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
-                            <table className="min-w-100 divide-y divide-gray-300">
+                            <table className="min-w-full divide-y divide-gray-300">
                                 <thead className="bg-gray-50">
                                     <tr>
                                         <th scope="col" className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">
@@ -106,7 +199,7 @@ export default function AdminUsersPage() {
                                             Tiendas
                                         </th>
                                         <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                                            Plan Actual
+                                            Plan
                                         </th>
                                         <th scope="col" className="relative py-3.5 pl-3 pr-4 sm:pr-6">
                                             <span className="sr-only">Acciones</span>
@@ -142,14 +235,32 @@ export default function AdminUsersPage() {
                                                 </span>
                                             </td>
                                             <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
-                                                <button
-                                                    onClick={() => togglePlan(user.id, user.plan)}
-                                                    className={`text-indigo-600 hover:text-indigo-900 font-bold ${user.role === 'ADMIN' ? 'opacity-50 cursor-not-allowed' : ''
-                                                        }`}
-                                                    disabled={user.role === 'ADMIN'}
-                                                >
-                                                    {user.plan === 'FREE' ? 'Activar PRO' : 'Desactivar PRO'}
-                                                </button>
+                                                <div className="flex gap-2 justify-end">
+                                                    <button
+                                                        onClick={() => openEditModal(user)}
+                                                        className="text-indigo-600 hover:text-indigo-900"
+                                                    >
+                                                        Editar
+                                                    </button>
+                                                    <button
+                                                        onClick={() => handleResetPassword(user)}
+                                                        className="text-blue-600 hover:text-blue-900"
+                                                    >
+                                                        Reset Pass
+                                                    </button>
+                                                    <button
+                                                        onClick={() => handleViewStores(user)}
+                                                        className="text-green-600 hover:text-green-900"
+                                                    >
+                                                        Tiendas
+                                                    </button>
+                                                    <button
+                                                        onClick={() => handleDeleteUser(user)}
+                                                        className="text-red-600 hover:text-red-900"
+                                                    >
+                                                        Eliminar
+                                                    </button>
+                                                </div>
                                             </td>
                                         </tr>
                                     ))}
@@ -159,6 +270,152 @@ export default function AdminUsersPage() {
                     </div>
                 </div>
             </div>
+
+            {/* Edit User Modal */}
+            {showEditModal && selectedUser && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+                    <div className="bg-white rounded-lg p-6 max-w-md w-full">
+                        <h2 className="text-xl font-bold mb-4">Editar Usuario</h2>
+                        <form onSubmit={handleEditSubmit}>
+                            <div className="space-y-4">
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700">Nombre</label>
+                                    <input
+                                        type="text"
+                                        value={editForm.name}
+                                        onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
+                                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm px-3 py-2 border"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700">Email</label>
+                                    <input
+                                        type="email"
+                                        value={editForm.email}
+                                        onChange={(e) => setEditForm({ ...editForm, email: e.target.value })}
+                                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm px-3 py-2 border"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700">Plan</label>
+                                    <select
+                                        value={editForm.plan}
+                                        onChange={(e) => setEditForm({ ...editForm, plan: e.target.value })}
+                                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm px-3 py-2 border"
+                                    >
+                                        <option value="FREE">FREE</option>
+                                        <option value="PRO">PRO</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700">Rol</label>
+                                    <select
+                                        value={editForm.role}
+                                        onChange={(e) => setEditForm({ ...editForm, role: e.target.value })}
+                                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm px-3 py-2 border"
+                                    >
+                                        <option value="USER">USER</option>
+                                        <option value="ADMIN">ADMIN</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div className="mt-6 flex gap-3">
+                                <button
+                                    type="submit"
+                                    className="flex-1 bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700"
+                                >
+                                    Guardar
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => setShowEditModal(false)}
+                                    className="flex-1 bg-gray-200 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-300"
+                                >
+                                    Cancelar
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
+
+            {/* Password Reset Modal */}
+            {showPasswordModal && selectedUser && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+                    <div className="bg-white rounded-lg p-6 max-w-md w-full">
+                        <h2 className="text-xl font-bold mb-4">Contraseña Temporal</h2>
+                        <p className="text-sm text-gray-600 mb-4">
+                            Nueva contraseña para <strong>{selectedUser.email}</strong>:
+                        </p>
+                        <div className="bg-gray-100 p-4 rounded-md mb-4">
+                            <code className="text-lg font-mono">{tempPassword}</code>
+                        </div>
+                        <div className="flex gap-3">
+                            <button
+                                onClick={() => copyToClipboard(tempPassword)}
+                                className="flex-1 bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
+                            >
+                                Copiar
+                            </button>
+                            <button
+                                onClick={() => setShowPasswordModal(false)}
+                                className="flex-1 bg-gray-200 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-300"
+                            >
+                                Cerrar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Stores Modal */}
+            {showStoresModal && selectedUser && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+                    <div className="bg-white rounded-lg p-6 max-w-2xl w-full max-h-[80vh] overflow-y-auto">
+                        <h2 className="text-xl font-bold mb-4">
+                            Tiendas de {selectedUser.name || selectedUser.email}
+                        </h2>
+                        {userStores.length === 0 ? (
+                            <p className="text-gray-500">No tiene tiendas creadas</p>
+                        ) : (
+                            <div className="space-y-3">
+                                {userStores.map((store) => (
+                                    <div key={store.id} className="border rounded-lg p-4 flex justify-between items-center">
+                                        <div>
+                                            <h3 className="font-medium">{store.name}</h3>
+                                            <p className="text-sm text-gray-500">/{store.slug}</p>
+                                            <p className="text-xs text-gray-400">
+                                                Creada: {new Date(store.createdAt).toLocaleDateString()}
+                                            </p>
+                                        </div>
+                                        <div className="flex gap-2">
+                                            <a
+                                                href={`/stores/${store.slug}`}
+                                                target="_blank"
+                                                className="text-blue-600 hover:text-blue-900 text-sm"
+                                            >
+                                                Ver
+                                            </a>
+                                            <button
+                                                onClick={() => handleDeleteStore(store.id)}
+                                                className="text-red-600 hover:text-red-900 text-sm"
+                                            >
+                                                Eliminar
+                                            </button>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                        <button
+                            onClick={() => setShowStoresModal(false)}
+                            className="mt-6 w-full bg-gray-200 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-300"
+                        >
+                            Cerrar
+                        </button>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
