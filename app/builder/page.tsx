@@ -82,6 +82,22 @@ function BuilderContent() {
     const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
 
     // Load existing store data when editing
+    useEffect(() => {
+        if (editSlug) {
+            setIsLoading(true);
+            fetch(`/api/stores/${editSlug}`)
+                .then(res => {
+                    if (res.ok) {
+                        return res.json();
+                    } else {
+                        throw new Error('Failed to load store');
+                    }
+                })
+                .then(data => {
+                    if (data && data.data) {
+                        setStoreData(data.data);
+                        if (data.products) setProducts(data.products);
+                    } else {
                         alert('No se pudo cargar la tienda para editar');
                     }
                 })
@@ -340,7 +356,7 @@ function BuilderContent() {
                     }} /></div>
                     <button className="btn btn-secondary" onClick={handleAddProduct}>➕ Agregar Producto</button>
                     <div className="product-list-mini">
-                        {console.log('Rendering products, count:', products.length, 'products:', products)}
+                        {/* Products list */}
                         {products.map(p => (
                             <div key={p.id} className="product-item-mini">
                                 <div className="product-info-mini">

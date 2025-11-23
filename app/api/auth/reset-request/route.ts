@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import crypto from 'crypto';
+import { sendPasswordResetEmail } from '@/lib/email';
 
 export async function POST(req: Request) {
     const { email } = await req.json();
@@ -17,9 +18,19 @@ export async function POST(req: Request) {
         data: { token, expiresAt, userId: user.id },
     });
 
-    // En producción aquí se enviaría el email. Por ahora devolvemos el enlace para pruebas.
+    // En producción aquí se enviaría el email.
     const resetLink = `${process.env.NEXTAUTH_URL}/auth/reset-password?token=${token}`;
-    console.log('🔗 Enlace de reset (simulado):', resetLink);
 
-    return NextResponse.json({ message: 'Si el correo está registrado, recibirás un email', debugLink: resetLink });
+    const emailSent = await sendPasswordResetEmail(email, resetLink);
+
+    if (emailSent) {
+        return NextResponse.json({ message: 'Si el correo está registrado, recibirás un email con las instrucciones.' });
+    } else {
+        // Fallback para desarrollo o si falla el envío (y no hay API Key)
+        console.log('🔗 Enlace de reset (simulado):', resetLink);
+        return NextResponse.json({
+            message: 'Si el correo está registrado, recibirás un email. (Modo Debug: Revisa el enlace abajo)',
+            debugLink: resetLink
+        });
+    }
 }
