@@ -77,12 +77,21 @@ export default async function StoresPage() {
                                                 </span>
                                             </td>
                                             <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
-                                                <Link href={`/stores/${store.slug}`} target="_blank" className="text-green-600 hover:text-green-900 mr-4">
-                                                    Ver Tienda
-                                                </Link>
-                                                <Link href={`/builder?store=${store.slug}`} className="text-blue-600 hover:text-blue-900 mr-4">
-                                                    Editar
-                                                </Link>
+                                                <div className="flex justify-end gap-2">
+                                                    <Link
+                                                        href={`/builder?edit=${store.slug}`}
+                                                        className="bg-blue-600 text-white px-3 py-1.5 rounded hover:bg-blue-700 text-sm font-medium inline-flex items-center gap-1"
+                                                    >
+                                                        ✏️ Editar
+                                                    </Link>
+                                                    <Link
+                                                        href={`/stores/${store.slug}`}
+                                                        target="_blank"
+                                                        className="bg-green-600 text-white px-3 py-1.5 rounded hover:bg-green-700 text-sm font-medium inline-flex items-center gap-1"
+                                                    >
+                                                        👁️ Ver
+                                                    </Link>
+                                                </div>
                                             </td>
                                         </tr>
                                     ))}
