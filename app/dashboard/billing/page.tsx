@@ -126,18 +126,15 @@ export default function BillingPage() {
                                 </div>
 
                                 <div className="px-8 pb-8 space-y-4">
-                                    {/* PayPal Payment Link */}
-                                    <a
-                                        href="https://www.paypal.com/ncp/payment/ZV5752VRE8FDE"
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="w-full flex items-center justify-center px-6 py-3 border-2 border-blue-600 text-base font-semibold rounded-lg text-white bg-blue-600 hover:bg-blue-700 transition-all duration-200 shadow-sm hover:shadow-md no-underline"
+                                    {/* PayPal Payment Button - Link to be added manually */}
+                                    <div
+                                        className="w-full flex items-center justify-center px-6 py-3 border-2 border-blue-600 text-base font-semibold rounded-lg text-white bg-blue-600 hover:bg-blue-700 transition-all duration-200 shadow-sm hover:shadow-md no-underline cursor-pointer"
                                     >
                                         <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24" fill="currentColor">
                                             <path d="M20.067 8.478c.492.88.556 2.014.3 3.327-.74 3.806-3.276 5.12-6.514 5.12h-.5a.805.805 0 00-.794.68l-.04.22-.63 3.993-.028.15a.806.806 0 01-.795.68H8.29c-.497 0-.863-.453-.752-.936l.002-.01 1.254-7.946a.803.803 0 01.793-.679h2.557c3.738 0 6.308-1.522 7.14-5.123.362-1.578.14-2.88-.72-3.735-.346-.344-.78-.62-1.293-.83l-.257-.09a6.023 6.023 0 00-2.045-.35H9.577a.804.804 0 00-.794.679L7.296 14.41a.803.803 0 01-.793.679h-2.22c-.497 0-.863-.453-.752-.936l.002-.01L5.67 3.185A.803.803 0 016.464 2.5h7.043c1.398 0 2.55.183 3.476.556 1.22.493 2.133 1.426 2.67 2.726l.414.696z" />
                                         </svg>
                                         Pagar con PayPal
-                                    </a>
+                                    </div>
 
                                     <div className="relative">
                                         <div className="absolute inset-0 flex items-center">
