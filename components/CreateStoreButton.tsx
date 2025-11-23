@@ -7,18 +7,19 @@ import { useRouter } from 'next/navigation';
 interface CreateStoreButtonProps {
     storeCount: number;
     userRole?: string;
+    userPlan?: string;
     className?: string;
     text?: string;
 }
 
-export default function CreateStoreButton({ storeCount, userRole, className, text = "Crear Tienda" }: CreateStoreButtonProps) {
+export default function CreateStoreButton({ storeCount, userRole, userPlan, className, text = "Crear Tienda" }: CreateStoreButtonProps) {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const router = useRouter();
 
     const handleClick = (e: React.MouseEvent) => {
         e.preventDefault();
-        // If user is ADMIN or has 0 stores, allow creation
-        if (userRole === 'ADMIN' || storeCount < 1) {
+        // If user is ADMIN or PRO or has 0 stores, allow creation
+        if (userRole === 'ADMIN' || userPlan === 'PRO' || storeCount < 1) {
             router.push('/builder');
         } else {
             // Otherwise show modal

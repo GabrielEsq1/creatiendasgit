@@ -139,9 +139,12 @@ export async function POST(req: Request) {
         }, { status: 400 });
     }
 
-    // Enforce free tier limit (1 store) unless ADMIN
+    // Enforce free tier limit (1 store) unless ADMIN or PRO plan
     const storeCount = user.stores?.length ?? 0;
-    if (user.role !== 'ADMIN' && storeCount >= 1) {
+    const hasProPlan = user.plan === 'PRO';
+    const isAdmin = user.role === 'ADMIN';
+
+    if (!isAdmin && !hasProPlan && storeCount >= 1) {
         return NextResponse.json(
             {
                 error: 'Límite de tiendas alcanzado',
