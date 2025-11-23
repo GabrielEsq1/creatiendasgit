@@ -88,10 +88,13 @@ function BuilderContent() {
             fetch(`/api/stores/${editSlug}`)
                 .then(res => res.json())
                 .then(json => {
+                    console.log('Loaded store data:', json); // Debug log
                     if (json.success && json.store) {
+                        console.log('Store products:', json.store.products); // Debug log
                         setStoreData(json.store.data);
                         setProducts(json.store.products || []);
                         setPublicUrl(`${window.location.origin}/stores/${editSlug}`);
+                        setHasUnsavedChanges(false); // Don't mark as unsaved when loading
                     } else {
                         alert('No se pudo cargar la tienda para editar');
                     }
