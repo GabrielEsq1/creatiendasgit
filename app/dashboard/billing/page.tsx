@@ -128,7 +128,7 @@ export default function BillingPage() {
                                 <div className="px-8 pb-8 space-y-4">
                                     {/* PayPal Payment Link */}
                                     <a
-                                        href="https://www.paypal.com/ncp/payment/ZV5752VRE8FDE?v=2"
+                                        href="https://www.paypal.com/ncp/payment/ZV5752VRE8FDE"
                                         target="_blank"
                                         rel="noopener noreferrer"
                                         className="w-full flex items-center justify-center px-6 py-3 border-2 border-blue-600 text-base font-semibold rounded-lg text-white bg-blue-600 hover:bg-blue-700 transition-all duration-200 shadow-sm hover:shadow-md no-underline"
