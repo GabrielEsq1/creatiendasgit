@@ -19,7 +19,7 @@ export async function POST(req: Request) {
     });
 
     // En producción aquí se enviaría el email.
-    const resetLink = `${process.env.NEXTAUTH_URL}/auth/reset-password?token=${token}`;
+    const resetLink = `${process.env.NEXTAUTH_URL}/reset-password?token=${token}`;
 
     const emailSent = await sendPasswordResetEmail(email, resetLink);
 

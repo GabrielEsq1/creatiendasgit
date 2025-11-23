@@ -94,7 +94,7 @@ function LoginForm() {
                                 Contraseña
                             </label>
                             <Link
-                                href="/auth/forgot-password"
+                                href="/reset-request"
                                 className="text-xs font-medium text-blue-600 hover:text-blue-500 transition-colors"
                             >
                                 ¿Olvidaste tu contraseña?
