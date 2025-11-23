@@ -91,8 +91,16 @@ function BuilderContent() {
                     console.log('Loaded store data:', json); // Debug log
                     if (json.success && json.store) {
                         console.log('Store products:', json.store.products); // Debug log
+                        console.log('Products type:', typeof json.store.products); // Debug log
+                        console.log('Products is array?:', Array.isArray(json.store.products)); // Debug log
+
                         setStoreData(json.store.data);
-                        setProducts(json.store.products || []);
+
+                        // Ensure products is always an array
+                        const loadedProducts = Array.isArray(json.store.products) ? json.store.products : [];
+                        console.log('Setting products to:', loadedProducts); // Debug log
+                        setProducts(loadedProducts);
+
                         setPublicUrl(`${window.location.origin}/stores/${editSlug}`);
                         setHasUnsavedChanges(false); // Don't mark as unsaved when loading
                     } else {
@@ -354,6 +362,7 @@ function BuilderContent() {
                     }} /></div>
                     <button className="btn btn-secondary" onClick={handleAddProduct}>➕ Agregar Producto</button>
                     <div className="product-list-mini">
+                        {console.log('Rendering products, count:', products.length, 'products:', products)}
                         {products.map(p => (
                             <div key={p.id} className="product-item-mini">
                                 <div className="product-info-mini">
