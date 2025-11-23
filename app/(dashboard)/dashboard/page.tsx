@@ -2,6 +2,7 @@
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import Link from 'next/link';
+import CreateStoreButton from '@/components/CreateStoreButton';
 
 export const dynamic = 'force-dynamic';
 
@@ -66,7 +67,12 @@ export default async function DashboardPage() {
                 ) : (
                     <p>No tienes tiendas creadas.</p>
                 )}
-                <Link href="/builder" className="inline-block mt-4 bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700">Crear nueva tienda</Link>
+                <CreateStoreButton
+                    storeCount={user.stores.length}
+                    userRole={user.role}
+                    className="inline-block mt-4 bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700"
+                    text="Crear nueva tienda"
+                />
             </section>
 
             <section className="mb-8">

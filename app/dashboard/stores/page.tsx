@@ -3,6 +3,7 @@ import { authOptions } from "@/lib/auth";
 import { prisma } from '@/lib/prisma';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
+import CreateStoreButton from '@/components/CreateStoreButton';
 
 export default async function StoresPage() {
     const session = await getServerSession(authOptions);
@@ -30,12 +31,10 @@ export default async function StoresPage() {
                     </p>
                 </div>
                 <div className="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
-                    <Link
-                        href="/builder"
-                        className="inline-flex items-center justify-center rounded-md border border-transparent bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 sm:w-auto"
-                    >
-                        Crear Tienda
-                    </Link>
+                    <CreateStoreButton
+                        storeCount={user.stores.length}
+                        userRole={user.role}
+                    />
                 </div>
             </div>
 
