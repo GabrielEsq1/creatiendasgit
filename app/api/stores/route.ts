@@ -79,7 +79,8 @@ export async function POST(req: Request) {
     if (body.id) {
         const existingStore = await prisma.store.findUnique({ where: { id: body.id } });
         if (existingStore) {
-            if (existingStore.ownerId !== user.id) {
+            // Allow Admins to bypass ownership check
+            if (existingStore.ownerId !== user.id && user.role !== 'ADMIN') {
                 return NextResponse.json({ error: 'No autorizado', message: 'No tienes permiso para editar esta tienda.' }, { status: 403 });
             }
 

@@ -266,8 +266,9 @@ function BuilderContent() {
 
             if (!res.ok) {
                 if (res.status === 413) {
-                    throw new Error('La tienda contiene demasiados datos o imágenes muy pesadas. Intenta reducir el número de imágenes.');
+                    throw new Error('La tienda contiene demasiados datos o imágenes muy pesadas. Por favor, intenta reducir el tamaño de las imágenes o eliminar algunas.');
                 }
+
                 const contentType = res.headers.get("content-type");
                 if (contentType && contentType.indexOf("application/json") !== -1) {
                     const json = await res.json();
@@ -277,13 +278,14 @@ function BuilderContent() {
                         return;
                     }
                     if (res.status === 403 && json.upgradeUrl) {
+                        // This case should not be hit for edits anymore, but keeping for safety
                         alert(`${json.message}\n\nSerás redirigido a WhatsApp para recibir asesoría personalizada.`);
                         window.location.href = json.upgradeUrl;
                         return;
                     }
                     throw new Error(json.message || 'Error desconocido en el servidor');
                 } else {
-                    throw new Error(`Error del servidor: ${res.status} ${res.statusText}`);
+                    throw new Error(`Error del servidor: ${res.status} ${res.statusText}. Es posible que el contenido sea demasiado grande.`);
                 }
             }
 
@@ -306,7 +308,7 @@ function BuilderContent() {
             }
         } catch (e: any) {
             console.error('Save error:', e);
-            alert(`No se pudo guardar la tienda.\n${e.message || 'Error de conexión.'}`);
+            alert(`No se pudo guardar la tienda.\n${e.message || 'Error de conexión. Intenta reducir el tamaño de las imágenes.'}`);
         } finally {
             setIsSaving(false);
         }

@@ -35,7 +35,8 @@ export async function GET(
             where: { slug: params.slug }
         });
 
-        if (storeRecord?.ownerId !== user?.id) {
+        // Allow Admins to bypass ownership check
+        if (storeRecord?.ownerId !== user?.id && user?.role !== 'ADMIN') {
             return NextResponse.json(
                 { success: false, message: 'No autorizado' },
                 { status: 403 }
