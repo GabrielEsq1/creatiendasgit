@@ -28,6 +28,17 @@ export const authOptions: NextAuthOptions = {
         async session({ session, token }) {
             if (token?.sub && session.user) {
                 (session.user as any).id = token.sub;
+
+                // Fetch user role and plan from database
+                const user = await prisma.user.findUnique({
+                    where: { id: token.sub },
+                    select: { role: true, plan: true }
+                });
+
+                if (user) {
+                    (session.user as any).role = user.role;
+                    (session.user as any).plan = user.plan;
+                }
             }
             return session;
         },
