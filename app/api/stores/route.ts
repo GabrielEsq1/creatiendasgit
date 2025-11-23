@@ -144,8 +144,8 @@ export async function POST(req: Request) {
     if (user.role !== 'ADMIN' && storeCount >= 1) {
         return NextResponse.json(
             {
-                error: 'Límite de tienda gratuita alcanzado',
-                message: 'Los usuarios gratuitos pueden crear solo una tienda.',
+                error: 'Requiere validación de pago',
+                message: 'Para diseñar una segunda tienda, se exige validar el pago de un plan.',
                 upgradeUrl: '/dashboard/billing',
             },
             { status: 403 }
