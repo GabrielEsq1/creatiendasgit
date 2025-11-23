@@ -1,13 +1,18 @@
 "use client";
 
 import { Check } from "lucide-react";
+import { useState } from "react";
 
 export default function BillingPage() {
+    const [loading, setLoading] = useState(false);
+
     const plans = [
         {
+            id: "trimestral",
             name: "Trimestral",
             price: "$60.000",
             duration: "3 Meses",
+            permanency: 3,
             features: [
                 "Tiendas ilimitadas",
                 "Productos ilimitados",
@@ -17,9 +22,11 @@ export default function BillingPage() {
             recommended: false,
         },
         {
+            id: "semestral",
             name: "Semestral",
             price: "$60.000",
             duration: "6 Meses",
+            permanency: 6,
             features: [
                 "Tiendas ilimitadas",
                 "Productos ilimitados",
@@ -30,9 +37,11 @@ export default function BillingPage() {
             recommended: false,
         },
         {
+            id: "anual",
             name: "Anual",
             price: "$60.000",
             duration: "1 Año",
+            permanency: 12,
             features: [
                 "Tiendas ilimitadas",
                 "Productos ilimitados",
@@ -44,6 +53,33 @@ export default function BillingPage() {
             recommended: true,
         },
     ];
+
+    const handleStripeCheckout = async (planId: string) => {
+        setLoading(true);
+        try {
+            const res = await fetch('/api/checkout', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ planId }),
+            });
+            const data = await res.json();
+            if (data.url) {
+                window.location.href = data.url;
+            } else {
+                alert('No se pudo iniciar el pago. Inténtalo de nuevo.');
+                setLoading(false);
+            }
+        } catch (error) {
+            alert('No se pudo iniciar el pago. Inténtalo de nuevo.');
+            setLoading(false);
+        }
+    };
+
+    const handleNequiPayment = (planName: string) => {
+        const message = `Hola, quiero pagar mi plan por Nequi. Mi plan es: ${planName}`;
+        const whatsappUrl = `https://wa.me/573026687991?text=${encodeURIComponent(message)}`;
+        window.open(whatsappUrl, '_blank');
+    };
 
     return (
         <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
@@ -62,8 +98,8 @@ export default function BillingPage() {
                         <div
                             key={plan.name}
                             className={`rounded-lg shadow-lg divide-y divide-gray-200 bg-white flex flex-col ${plan.recommended
-                                    ? "border-2 border-blue-500 relative transform scale-105 z-10"
-                                    : "border border-gray-200"
+                                ? "border-2 border-blue-500 relative transform scale-105 z-10"
+                                : "border border-gray-200"
                                 }`}
                         >
                             {plan.recommended && (
@@ -94,16 +130,28 @@ export default function BillingPage() {
                                     ))}
                                 </ul>
                             </div>
-                            <div className="p-6 bg-gray-50 rounded-b-lg">
+                            <div className="p-6 bg-gray-50 rounded-b-lg space-y-3">
                                 <button
                                     className={`w-full flex items-center justify-center px-4 py-2 border border-transparent text-base font-medium rounded-md text-white ${plan.recommended
-                                            ? "bg-blue-600 hover:bg-blue-700"
-                                            : "bg-gray-800 hover:bg-gray-900"
-                                        } md:py-3 md:text-lg transition-colors duration-200`}
-                                    onClick={() => alert(`Has seleccionado el plan ${plan.name}`)}
+                                        ? "bg-blue-600 hover:bg-blue-700"
+                                        : "bg-gray-800 hover:bg-gray-900"
+                                        } md:py-3 md:text-lg transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed`}
+                                    onClick={() => handleStripeCheckout(plan.id)}
+                                    disabled={loading}
                                 >
-                                    Suscribirse
+                                    {loading ? 'Procesando...' : 'Pagar con tarjeta (Stripe)'}
                                 </button>
+
+                                <button
+                                    className="w-full flex items-center justify-center px-4 py-2 border-2 border-green-600 text-base font-medium rounded-md text-green-600 bg-white hover:bg-green-50 md:py-3 md:text-lg transition-colors duration-200"
+                                    onClick={() => handleNequiPayment(plan.name)}
+                                >
+                                    Pagar por Nequi (asesoría)
+                                </button>
+
+                                <p className="text-xs text-center text-gray-500 mt-2">
+                                    Este plan tiene permanencia mínima de {plan.permanency} meses.
+                                </p>
                             </div>
                         </div>
                     ))}

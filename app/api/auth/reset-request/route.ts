@@ -26,11 +26,17 @@ export async function POST(req: Request) {
     if (emailSent) {
         return NextResponse.json({ message: 'Si el correo está registrado, recibirás un email con las instrucciones.' });
     } else {
-        // Fallback para desarrollo o si falla el envío (y no hay API Key)
-        console.log('🔗 Enlace de reset (simulado):', resetLink);
-        return NextResponse.json({
-            message: 'Si el correo está registrado, recibirás un email. (Modo Debug: Revisa el enlace abajo)',
-            debugLink: resetLink
-        });
+        // Solo mostrar debug link en desarrollo
+        if (process.env.NODE_ENV === 'development') {
+            console.log('🔗 Enlace de reset (simulado):', resetLink);
+            return NextResponse.json({
+                message: 'Si el correo está registrado, recibirás un email. (Modo Debug: Revisa el enlace abajo)',
+                debugLink: resetLink
+            });
+        } else {
+            // En producción, nunca exponer el link
+            console.error('❌ Fallo al enviar email de recuperación para:', email);
+            return NextResponse.json({ message: 'Si el correo está registrado, recibirás un email con las instrucciones.' });
+        }
     }
 }
