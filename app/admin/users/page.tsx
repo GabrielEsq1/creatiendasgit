@@ -31,7 +31,9 @@ export default function AdminUsersPage() {
     const [userStores, setUserStores] = useState<Store[]>([]);
     const [showEditModal, setShowEditModal] = useState(false);
     const [showStoresModal, setShowStoresModal] = useState(false);
+    const [isStoresLoading, setIsStoresLoading] = useState(false);
     const [showPasswordModal, setShowPasswordModal] = useState(false);
+    const [showResetConfirmModal, setShowResetConfirmModal] = useState(false);
     const [tempPassword, setTempPassword] = useState('');
     const [editForm, setEditForm] = useState({ name: '', email: '', plan: '', role: '', newPassword: '' });
     const [isSaving, setIsSaving] = useState(false);
@@ -99,11 +101,17 @@ export default function AdminUsersPage() {
         }
     };
 
-    const handleResetPassword = async (user: User) => {
-        if (!confirm(`¿Resetear contraseña para ${user.email}?`)) return;
+    const handleResetPassword = (user: User) => {
+        setSelectedUser(user);
+        setShowResetConfirmModal(true);
+    };
 
+    const confirmResetPassword = async () => {
+        if (!selectedUser) return;
+
+        setShowResetConfirmModal(false);
         try {
-            const res = await fetch(`/api/admin/users/${user.id}/reset-password`, {
+            const res = await fetch(`/api/admin/users/${selectedUser.id}/reset-password`, {
                 method: 'POST',
             });
 
@@ -111,7 +119,6 @@ export default function AdminUsersPage() {
 
             const data = await res.json();
             setTempPassword(data.temporaryPassword);
-            setSelectedUser(user);
             setShowPasswordModal(true);
         } catch (err) {
             alert('Error al resetear contraseña');
@@ -120,14 +127,18 @@ export default function AdminUsersPage() {
 
     const handleViewStores = async (user: User) => {
         setSelectedUser(user);
+        setIsStoresLoading(true);
+        setShowStoresModal(true); // Show modal immediately with loading state
         try {
             const res = await fetch(`/api/admin/users/${user.id}`);
             if (!res.ok) throw new Error('Error fetching user stores');
             const data = await res.json();
             setUserStores(data.user.stores || []);
-            setShowStoresModal(true);
         } catch (err) {
             alert('Error al cargar tiendas');
+            setShowStoresModal(false); // Close if error
+        } finally {
+            setIsStoresLoading(false);
         }
     };
 
@@ -404,6 +415,34 @@ export default function AdminUsersPage() {
                 </div>
             )}
 
+            {/* Reset Confirmation Modal */}
+            {showResetConfirmModal && selectedUser && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+                    <div className="bg-white rounded-lg p-6 max-w-md w-full">
+                        <h2 className="text-xl font-bold mb-4">¿Resetear Contraseña?</h2>
+                        <p className="text-gray-600 mb-6">
+                            ¿Estás seguro de que deseas resetear la contraseña para <strong>{selectedUser.email}</strong>?
+                            <br />
+                            Esta acción generará una contraseña temporal.
+                        </p>
+                        <div className="flex gap-3">
+                            <button
+                                onClick={confirmResetPassword}
+                                className="flex-1 bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
+                            >
+                                Confirmar
+                            </button>
+                            <button
+                                onClick={() => setShowResetConfirmModal(false)}
+                                className="flex-1 bg-gray-200 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-300"
+                            >
+                                Cancelar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
             {/* Stores Modal */}
             {showStoresModal && selectedUser && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
@@ -411,7 +450,14 @@ export default function AdminUsersPage() {
                         <h2 className="text-xl font-bold mb-4">
                             Tiendas de {selectedUser.name || selectedUser.email}
                         </h2>
-                        {userStores.length === 0 ? (
+                        {isStoresLoading ? (
+                            <div className="flex justify-center py-8">
+                                <svg className="animate-spin h-8 w-8 text-indigo-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                </svg>
+                            </div>
+                        ) : userStores.length === 0 ? (
                             <p className="text-gray-500">No tiene tiendas creadas</p>
                         ) : (
                             <div className="space-y-3">
