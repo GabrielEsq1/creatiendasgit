@@ -60,13 +60,19 @@ export async function PATCH(
         }
 
         const body = await request.json();
-        const { name, email, plan, role } = body;
+        const { name, email, plan, role, newPassword } = body;
 
         const updateData: any = {};
         if (name !== undefined) updateData.name = name;
         if (email !== undefined) updateData.email = email;
         if (plan !== undefined) updateData.plan = plan;
         if (role !== undefined) updateData.role = role;
+
+        // Handle password change if provided
+        if (newPassword && newPassword.trim().length >= 6) {
+            const passwordHash = await bcrypt.hash(newPassword, 10);
+            updateData.passwordHash = passwordHash;
+        }
 
         const updated = await prisma.user.update({
             where: { id: params.id },
