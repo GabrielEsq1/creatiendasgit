@@ -7,7 +7,7 @@ import Providers from "@/components/Providers";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-    title: "Constructor de Tienda WhatsApp",
+    title: "Creatiendas - Constructor de Tienda WhatsApp",
     description: "Crea tu tienda online en minutos",
 };
 

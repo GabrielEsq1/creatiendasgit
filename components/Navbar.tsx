@@ -18,8 +18,8 @@ export default function Navbar() {
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex justify-between h-16">
                     <div className="flex items-center">
-                        <Link href={session ? "/dashboard" : "/"} className="text-xl font-bold text-blue-600">
-                            Creatiendas
+                        <Link href={session ? "/dashboard" : "/"} className="flex items-center">
+                            <img src="/logo.png" alt="Creatiendas" className="h-8" />
                         </Link>
                         {session && (
                             <div className="hidden md:flex ml-10 space-x-8">

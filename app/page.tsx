@@ -4,7 +4,7 @@ export default function LandingPage() {
     return (
         <div className="min-h-screen bg-gray-50 flex flex-col">
             <header className="bg-white shadow-sm p-6 flex justify-between items-center">
-                <h1 className="text-2xl font-bold text-blue-600">Creatiendas</h1>
+                <img src="/logo.png" alt="Creatiendas" className="h-8" />
                 <div className="space-x-4">
                     <Link href="/auth/login" className="text-gray-600 hover:text-gray-900">
                         Entrar
