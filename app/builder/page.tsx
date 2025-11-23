@@ -5,6 +5,7 @@ import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import StorePreview from '@/components/StorePreview';
 import { StoreData, Product } from '@/lib/store-service';
+import { compressImage } from '@/lib/image-utils';
 import '../styles/builder.css';
 
 export const dynamic = "force-dynamic";
@@ -175,19 +176,19 @@ function BuilderContent() {
         });
     };
 
-    const fileToBase64 = (file: File): Promise<string> =>
-        new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.onload = () => resolve(reader.result as string);
-            reader.onerror = reject;
-            reader.readAsDataURL(file);
-        });
+    // fileToBase64 removed in favor of compressImage utility
+
 
     const handleImageUpload = async (field: string, e: ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
-            const base64 = await fileToBase64(file);
-            setStoreData(prev => ({ ...prev, [field]: base64 }));
+            try {
+                const base64 = await compressImage(file);
+                setStoreData(prev => ({ ...prev, [field]: base64 }));
+            } catch (err) {
+                console.error('Error compressing image:', err);
+                alert('Error al procesar la imagen. Intenta con una más pequeña.');
+            }
         }
     };
 
@@ -196,8 +197,12 @@ function BuilderContent() {
         if (files) {
             const newImages: string[] = [];
             for (let i = 0; i < files.length; i++) {
-                const base64 = await fileToBase64(files[i]);
-                newImages.push(base64);
+                try {
+                    const base64 = await compressImage(files[i]);
+                    newImages.push(base64);
+                } catch (err) {
+                    console.error('Error compressing gallery image:', err);
+                }
             }
             setStoreData(prev => ({
                 ...prev,
@@ -258,8 +263,32 @@ function BuilderContent() {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ name: storeData.name, data: storeData, products, id: storeData.id })
             });
+
+            if (!res.ok) {
+                if (res.status === 413) {
+                    throw new Error('La tienda contiene demasiados datos o imágenes muy pesadas. Intenta reducir el número de imágenes.');
+                }
+                const contentType = res.headers.get("content-type");
+                if (contentType && contentType.indexOf("application/json") !== -1) {
+                    const json = await res.json();
+                    if (res.status === 401) {
+                        alert('Debes iniciar sesión para guardar tu tienda.');
+                        window.location.href = '/auth/login';
+                        return;
+                    }
+                    if (res.status === 403 && json.upgradeUrl) {
+                        alert(`${json.message}\n\nSerás redirigido a WhatsApp para recibir asesoría personalizada.`);
+                        window.location.href = json.upgradeUrl;
+                        return;
+                    }
+                    throw new Error(json.message || 'Error desconocido en el servidor');
+                } else {
+                    throw new Error(`Error del servidor: ${res.status} ${res.statusText}`);
+                }
+            }
+
             const json = await res.json();
-            if (res.ok && json.success) {
+            if (json.success) {
                 const rawUrl = json.url || json.publicUrl;
                 const finalUrl = normalizeUrl(rawUrl);
                 setPublicUrl(finalUrl);
@@ -273,22 +302,11 @@ function BuilderContent() {
                     window.open(finalUrl, '_blank');
                 }
             } else {
-                if (res.status === 401) {
-                    alert('Debes iniciar sesión para guardar tu tienda.');
-                    window.location.href = '/auth/login';
-                    return;
-                }
-                if (res.status === 403 && json.upgradeUrl) {
-                    alert(`${json.message}\n\nSerás redirigido a WhatsApp para recibir asesoría personalizada.`);
-                    window.location.href = json.upgradeUrl;
-                    return;
-                }
-                const msg = json.message || 'Error desconocido en el servidor';
-                alert(`No se pudo guardar la tienda.\nDetalle: ${msg}`);
+                throw new Error(json.message || 'Error inesperado');
             }
-        } catch (e) {
+        } catch (e: any) {
             console.error('Save error:', e);
-            alert('Ocurrió un error de conexión al intentar guardar. Por favor intenta de nuevo.');
+            alert(`No se pudo guardar la tienda.\n${e.message || 'Error de conexión.'}`);
         } finally {
             setIsSaving(false);
         }
@@ -397,8 +415,13 @@ function BuilderContent() {
                     <div className="form-group"><label>Imagen del Producto</label><input type="file" accept="image/*" onChange={async e => {
                         const file = e.target.files?.[0];
                         if (file) {
-                            const base64 = await fileToBase64(file);
-                            setProdForm({ ...prodForm, image: base64 });
+                            try {
+                                const base64 = await compressImage(file);
+                                setProdForm({ ...prodForm, image: base64 });
+                            } catch (err) {
+                                console.error('Error compressing product image:', err);
+                                alert('Error al procesar la imagen');
+                            }
                         }
                     }} /></div>
                     <div style={{ display: 'flex', gap: '0.5rem' }}>
