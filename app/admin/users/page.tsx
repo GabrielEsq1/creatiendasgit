@@ -36,9 +36,10 @@ export default function AdminUsersPage() {
             if (!res.ok) throw new Error('Error fetching users');
             const data = await res.json();
             setUsers(data);
-        } catch (err) {
-            setError('Error al cargar usuarios');
-            console.error(err);
+        } catch (err: any) {
+            const msg = err instanceof Error ? err.message : 'Error desconocido';
+            setError(`Error al cargar usuarios: ${msg}`);
+            console.error('Admin Panel Error:', err);
         } finally {
             setLoading(false);
         }
