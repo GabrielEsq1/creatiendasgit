@@ -183,7 +183,7 @@ function BuilderContent() {
         const file = e.target.files?.[0];
         if (file) {
             try {
-                const base64 = await compressImage(file);
+                const base64 = await compressImage(file, 600, 0.6);
                 setStoreData(prev => ({ ...prev, [field]: base64 }));
             } catch (err) {
                 console.error('Error compressing image:', err);
@@ -198,7 +198,7 @@ function BuilderContent() {
             const newImages: string[] = [];
             for (let i = 0; i < files.length; i++) {
                 try {
-                    const base64 = await compressImage(files[i]);
+                    const base64 = await compressImage(files[i], 600, 0.6);
                     newImages.push(base64);
                 } catch (err) {
                     console.error('Error compressing gallery image:', err);
@@ -418,7 +418,7 @@ function BuilderContent() {
                         const file = e.target.files?.[0];
                         if (file) {
                             try {
-                                const base64 = await compressImage(file);
+                                const base64 = await compressImage(file, 600, 0.6);
                                 setProdForm({ ...prodForm, image: base64 });
                             } catch (err) {
                                 console.error('Error compressing product image:', err);
