@@ -59,8 +59,8 @@ export default function BillingPage() {
     };
 
     const handlePayPalPayment = () => {
-        // URL de PayPal con el hosted button ID
-        const paypalUrl = 'https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=ZV5752VRE8FDE';
+        // URL directa de PayPal para el pago
+        const paypalUrl = 'https://www.paypal.com/ncp/payment/ZV5752VRE8FDE';
         window.open(paypalUrl, '_blank');
     };
 
