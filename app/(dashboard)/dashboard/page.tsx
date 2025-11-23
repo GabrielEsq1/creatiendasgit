@@ -22,6 +22,14 @@ export default async function DashboardPage() {
         include: { stores: true, stripeCustomer: true },
     });
 
+    if (!user) {
+        return (
+            <div className="text-center mt-20">
+                <p>Usuario no encontrado.</p>
+            </div>
+        );
+    }
+
     const plan = user?.stripeCustomer ? 'Plan activo (consulta Stripe)' : 'Plan gratuito';
 
     return (

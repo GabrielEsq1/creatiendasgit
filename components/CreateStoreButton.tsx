@@ -16,6 +16,8 @@ export default function CreateStoreButton({ storeCount, userRole, userPlan, clas
     const [isModalOpen, setIsModalOpen] = useState(false);
     const router = useRouter();
 
+    console.log('CreateStoreButton props:', { storeCount, userRole, userPlan });
+
     const handleClick = (e: React.MouseEvent) => {
         e.preventDefault();
 
@@ -60,7 +62,10 @@ export default function CreateStoreButton({ storeCount, userRole, userPlan, clas
                                 Límite de Tiendas Alcanzado
                             </h3>
                             <p className="text-sm text-gray-500 mb-6">
-                                Tu plan actual permite crear solo 1 tienda gratuita. Para expandir tu negocio y crear más tiendas, necesitas activar un plan profesional.
+                                {userPlan === 'PRO'
+                                    ? "Has alcanzado el límite de 5 tiendas de tu plan PRO. Para crear más tiendas, contáctanos para una solución personalizada."
+                                    : "Tu plan actual permite crear solo 1 tienda gratuita. Para expandir tu negocio y crear más tiendas, necesitas activar un plan profesional."
+                                }
                             </p>
 
                             <div className="space-y-3">
