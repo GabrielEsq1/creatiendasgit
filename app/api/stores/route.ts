@@ -139,17 +139,20 @@ export async function POST(req: Request) {
         }, { status: 400 });
     }
 
-    // Enforce free tier limit (1 store) unless ADMIN or PRO plan
+    // Enforce limits: FREE=1, PRO=5, ADMIN=Infinity
     const storeCount = user.stores?.length ?? 0;
     const hasProPlan = user.plan === 'PRO';
     const isAdmin = user.role === 'ADMIN';
+    const limit = hasProPlan ? 5 : 1;
 
-    if (!isAdmin && !hasProPlan && storeCount >= 1) {
+    if (!isAdmin && storeCount >= limit) {
         return NextResponse.json(
             {
                 error: 'Límite de tiendas alcanzado',
-                message: 'Para crear más tiendas, por favor contáctanos para recibir asesoría personalizada antes de continuar.',
-                upgradeUrl: 'https://wa.me/573026687991?text=Hola,%20estoy%20interesado%20en%20crear%20mas%20tiendas,%20necesito%20asesoria',
+                message: hasProPlan
+                    ? 'Has alcanzado el límite de 5 tiendas de tu plan PRO. Contáctanos para más capacidad.'
+                    : 'Tu plan actual permite crear solo 1 tienda gratuita. Actualiza a PRO para crear hasta 5 tiendas.',
+                upgradeUrl: 'https://wa.me/573026687991?text=Hola,%20necesito%20mas%20tiendas',
             },
             { status: 403 }
         );

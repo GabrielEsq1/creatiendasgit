@@ -18,8 +18,13 @@ export default function CreateStoreButton({ storeCount, userRole, userPlan, clas
 
     const handleClick = (e: React.MouseEvent) => {
         e.preventDefault();
-        // If user is ADMIN or PRO or has 0 stores, allow creation
-        if (userRole === 'ADMIN' || userPlan === 'PRO' || storeCount < 1) {
+
+        const isPro = userPlan === 'PRO';
+        const isAdmin = userRole === 'ADMIN';
+        const limit = isPro ? 5 : 1;
+
+        // Allow if ADMIN, or if store count is below the limit
+        if (isAdmin || storeCount < limit) {
             router.push('/builder');
         } else {
             // Otherwise show modal
