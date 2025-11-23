@@ -58,10 +58,10 @@ export default function BillingPage() {
         window.open(whatsappUrl, '_blank');
     };
 
+
     const handlePayPalPayment = () => {
-        // URL directa de PayPal para el pago
-        const paypalUrl = 'https://www.paypal.com/ncp/payment/ZV5752VRE8FDE';
-        window.open(paypalUrl, '_blank');
+        // Redirige a la página de pago de PayPal
+        window.open('https://www.paypal.com/ncp/payment/ZV5752VRE8FDE', '_blank');
     };
 
     return (
