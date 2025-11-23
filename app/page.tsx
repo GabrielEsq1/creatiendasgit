@@ -1,8 +1,19 @@
-<Link href="/auth/register" className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
-    Crear Cuenta
-</Link>
-                </div >
-            </header >
+import Link from 'next/link';
+
+export default function LandingPage() {
+    return (
+        <div className="min-h-screen bg-gray-50 flex flex-col">
+            <header className="bg-white shadow-sm p-6 flex justify-between items-center">
+                <h1 className="text-2xl font-bold text-blue-600">Creatiendas</h1>
+                <div className="space-x-4">
+                    <Link href="/auth/login" className="text-gray-600 hover:text-gray-900">
+                        Entrar
+                    </Link>
+                    <Link href="/auth/register" className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
+                        Crear Cuenta
+                    </Link>
+                </div>
+            </header>
 
             <main className="flex-1 flex flex-col items-center justify-center text-center p-6">
                 <h2 className="text-5xl font-extrabold text-gray-900 mb-6">
@@ -25,6 +36,6 @@
             <footer className="bg-gray-100 p-6 text-center text-gray-500">
                 &copy; {new Date().getFullYear()} Creatiendas. Todos los derechos reservados.
             </footer>
-        </div >
+        </div>
     );
 }
