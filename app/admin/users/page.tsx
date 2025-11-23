@@ -428,13 +428,14 @@ export default function AdminUsersPage() {
                                             <a
                                                 href={`/stores/${store.slug}`}
                                                 target="_blank"
-                                                className="text-blue-600 hover:text-blue-900 text-sm"
+                                                rel="noopener noreferrer"
+                                                className="bg-blue-600 text-white px-3 py-1.5 rounded-md hover:bg-blue-700 text-sm font-medium"
                                             >
-                                                Ver
+                                                Ver Tienda
                                             </a>
                                             <button
                                                 onClick={() => handleDeleteStore(store.id)}
-                                                className="text-red-600 hover:text-red-900 text-sm"
+                                                className="bg-red-600 text-white px-3 py-1.5 rounded-md hover:bg-red-700 text-sm font-medium"
                                             >
                                                 Eliminar
                                             </button>
