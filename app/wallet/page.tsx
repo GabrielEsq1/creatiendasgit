@@ -95,21 +95,39 @@ export default function WalletPage() {
                     </div>
 
                     <div className="mt-4 border-t pt-4">
-                        <h4 className="text-sm font-semibold mb-2">Debug Tools</h4>
+                        <h4 className="text-sm font-semibold mb-2">🔧 Debug Tools - Nequi Integration</h4>
                         <button
                             onClick={async () => {
                                 try {
                                     const res = await fetch('/api/nequi/auth', { method: 'POST' });
                                     const data = await res.json();
-                                    alert(JSON.stringify(data, null, 2));
-                                } catch (e) {
-                                    alert('Error fetching token');
+
+                                    if (data.error) {
+                                        alert(`❌ Error: ${data.error}`);
+                                    } else if (data.access_token) {
+                                        const expiresInMinutes = Math.floor(parseInt(data.expires_in) / 60);
+                                        const message = `✅ Nequi Token Generated Successfully!\n\n` +
+                                            `Token Type: ${data.token_type}\n` +
+                                            `Expires In: ${expiresInMinutes} minutes (${data.expires_in}s)\n` +
+                                            `Token Preview: ${data.access_token.substring(0, 30)}...\n\n` +
+                                            `Full response logged to console.`;
+                                        console.log('Nequi Token Response:', data);
+                                        alert(message);
+                                    } else {
+                                        alert('Unexpected response: ' + JSON.stringify(data, null, 2));
+                                    }
+                                } catch (e: any) {
+                                    alert(`❌ Error fetching token: ${e.message}`);
+                                    console.error('Nequi token error:', e);
                                 }
                             }}
-                            className="w-full bg-gray-200 text-gray-800 px-4 py-2 rounded hover:bg-gray-300 text-sm"
+                            className="w-full bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 text-sm font-medium transition-colors"
                         >
-                            Test Nequi Token Generation
+                            🔐 Test Nequi Token Generation
                         </button>
+                        <p className="text-xs text-gray-500 mt-2">
+                            Tests OAuth2 authentication with Nequi Conecta API
+                        </p>
                     </div>
                 </div>
             </div>
