@@ -1,0 +1,197 @@
+<!-- SNIPPET 2: B2BCHAT + MONEDERO -->
+<!-- Widget para Chat Empresarial y Billetera Digital -->
+
+<script>
+    (function () {
+        const B2BCHAT_URL = 'https://creatiendasgit1.vercel.app';
+
+        // Crear botón flotante
+        const btn = document.createElement('button');
+        btn.innerHTML = '💬 B2BChat';
+        btn.style.cssText = `
+    position: fixed;
+    bottom: 90px;
+    right: 20px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    padding: 15px 25px;
+    border-radius: 50px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    z-index: 9998;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    transition: all 0.3s ease;
+  `;
+
+        btn.onmouseover = () => {
+            btn.style.transform = 'scale(1.05)';
+            btn.style.boxShadow = '0 6px 20px rgba(102, 126, 234, 0.5)';
+        };
+
+        btn.onmouseout = () => {
+            btn.style.transform = 'scale(1)';
+            btn.style.boxShadow = '0 4px 15px rgba(102, 126, 234, 0.3)';
+        };
+
+        // Crear modal
+        const modal = document.createElement('div');
+        modal.style.cssText = `
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.6);
+    z-index: 9999;
+    backdrop-filter: blur(5px);
+  `;
+
+        const container = document.createElement('div');
+        container.style.cssText = `
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 10px 50px rgba(0,0,0,0.3);
+    width: 90%;
+    max-width: 450px;
+    max-height: 90vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  `;
+
+        const header = document.createElement('div');
+        header.style.cssText = `
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  `;
+        header.innerHTML = `
+    <h3 style="margin: 0; font-size: 20px;">💬 B2BChat + Monedero</h3>
+    <button id="close-b2bchat" style="
+      background: rgba(255,255,255,0.2);
+      border: none;
+      color: white;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 18px;
+    ">×</button>
+  `;
+
+        // Tabs de navegación
+        const nav = document.createElement('div');
+        nav.style.cssText = `
+    display: flex;
+    border-bottom: 1px solid #e0e0e0;
+    background: #f8f9fa;
+  `;
+        nav.innerHTML = `
+    <button class="b2b-tab active" data-tab="chat" style="
+      flex: 1;
+      padding: 15px;
+      border: none;
+      background: white;
+      cursor: pointer;
+      font-weight: 600;
+      border-bottom: 3px solid #667eea;
+    ">Chat</button>
+    <button class="b2b-tab" data-tab="wallet" style="
+      flex: 1;
+      padding: 15px;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      border-bottom: 3px solid transparent;
+    ">Monedero</button>
+    <button class="b2b-tab" data-tab="enterprise" style="
+      flex: 1;
+      padding: 15px;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      border-bottom: 3px solid transparent;
+    ">Tienda</button>
+  `;
+
+        const content = document.createElement('div');
+        content.style.cssText = `
+    flex: 1;
+    overflow: hidden;
+    position: relative;
+  `;
+
+        const iframe = document.createElement('iframe');
+        iframe.style.cssText = `
+    width: 100%;
+    height: 100%;
+    border: none;
+  `;
+        iframe.src = `${B2BCHAT_URL}/b2chat/B2Chat-main`;
+
+        content.appendChild(iframe);
+        container.appendChild(header);
+        container.appendChild(nav);
+        container.appendChild(content);
+        modal.appendChild(container);
+        document.body.appendChild(btn);
+        document.body.appendChild(modal);
+
+        // Event listeners
+        btn.onclick = () => {
+            modal.style.display = 'flex';
+        };
+
+        document.getElementById('close-b2bchat').onclick = () => {
+            modal.style.display = 'none';
+        };
+
+        modal.onclick = (e) => {
+            if (e.target === modal) modal.style.display = 'none';
+        };
+
+        // Tab navigation
+        document.querySelectorAll('.b2b-tab').forEach(tab => {
+            tab.onclick = function () {
+                document.querySelectorAll('.b2b-tab').forEach(t => {
+                    t.classList.remove('active');
+                    t.style.background = 'transparent';
+                    t.style.borderBottom = '3px solid transparent';
+                });
+
+                this.classList.add('active');
+                this.style.background = 'white';
+                this.style.borderBottom = '3px solid #667eea';
+
+                const tabName = this.dataset.tab;
+                const urls = {
+                    chat: `${B2BCHAT_URL}/b2chat/B2Chat-main`,
+                    wallet: `${B2BCHAT_URL}/wallet`,
+                    enterprise: `${B2BCHAT_URL}/enterprise`
+                };
+                iframe.src = urls[tabName];
+            };
+        });
+    })();
+</script>
+
+<!-- 
+USO:
+1. Copiar este código
+2. Pegar antes del </body> en tu página web
+3. Aparecerá un botón "💬 B2BChat"
+4. Al hacer clic, abre:
+   - Chat B2B empresarial
+   - Monedero digital con PayPal
+   - Vista de tienda integrada
+-->
