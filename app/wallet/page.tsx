@@ -94,6 +94,39 @@ export default function WalletPage() {
                         </button>
                     </div>
 
+                    <div className="flex gap-3 mt-2">
+                        <button
+                            onClick={async () => {
+                                try {
+                                    setLoading(true);
+                                    const res = await fetch('/api/paypal/create-order', {
+                                        method: 'POST',
+                                        headers: { 'Content-Type': 'application/json' },
+                                        body: JSON.stringify({
+                                            amount: (amount / 100).toFixed(2),
+                                            currency: 'USD',
+                                            returnPath: '/wallet'
+                                        })
+                                    });
+                                    const data = await res.json();
+                                    if (data.approvalUrl) {
+                                        window.location.href = data.approvalUrl;
+                                    } else {
+                                        alert('Error creating PayPal order');
+                                    }
+                                } catch (e) {
+                                    console.error(e);
+                                    alert('Error connecting to PayPal');
+                                } finally {
+                                    setLoading(false);
+                                }
+                            }}
+                            className="flex-1 bg-[#0070BA] text-white px-4 py-2 rounded hover:bg-[#003087] transition-colors flex items-center justify-center gap-2"
+                        >
+                            <span>💳</span> Pagar con PayPal
+                        </button>
+                    </div>
+
                     <div className="mt-4 border-t pt-4">
                         <h4 className="text-sm font-semibold mb-2">🔧 Debug Tools - Nequi Integration</h4>
                         <button

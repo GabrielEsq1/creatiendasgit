@@ -21,12 +21,17 @@ export default function RootLayout({
         <html lang="es">
             <head>
                 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+                <link rel="manifest" href="/manifest.json" />
+                <meta name="theme-color" content="#2563eb" />
+                <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0" />
             </head>
             <body className={inter.className}>
                 <Providers>
                     <Navbar />
                     {children}
                     <WhatsAppButton />
+                    {/* B2Chat Widget - Adjust path if necessary based on B2Chat-main contents */}
+                    <script src="/b2chat/B2Chat-main/widget.js" async></script>
                 </Providers>
             </body>
         </html>
