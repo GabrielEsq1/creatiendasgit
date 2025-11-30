@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vista Unificada - Creatiendas + B2BChat</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #0a0a0f;
+            overflow: hidden;
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            height: 100vh;
+            gap: 0;
+        }
+
+        .panel {
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .panel-header {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            padding: 10px 15px;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .panel-title {
+            color: #fff;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .panel-iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            padding-top: 40px;
+        }
+
+        .wallet-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            border: none;
+            color: #000;
+            font-size: 28px;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(79, 172, 254, 0.5);
+            z-index: 1000;
+            transition: all 0.3s ease;
+            animation: pulse 2s infinite;
+        }
+
+        .wallet-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 30px rgba(79, 172, 254, 0.7);
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                box-shadow: 0 4px 20px rgba(79, 172, 254, 0.5);
+            }
+
+            50% {
+                box-shadow: 0 4px 30px rgba(79, 172, 254, 0.8);
+            }
+        }
+
+        .wallet-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(8px);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .wallet-modal.active {
+            display: flex;
+        }
+
+        .wallet-content {
+            background: linear-gradient(180deg, #1a1a2e 0%, #0f0f1a 100%);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            width: 90%;
+            max-width: 450px;
+            max-height: 85vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+        }
+
+        .wallet-header {
+            padding: 25px;
+            background: rgba(255, 255, 255, 0.03);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .wallet-header h2 {
+            color: #4facfe;
+            font-size: 22px;
+            margin: 0;
+        }
+
+        .close-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            border: none;
+            background: rgba(255, 255, 255, 0.05);
+            color: #fff;
+            font-size: 24px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .close-btn:hover {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            transform: rotate(90deg);
+        }
+
+        .wallet-body {
+            padding: 25px;
+            color: #fff;
+        }
+
+        .balance-card {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            padding: 30px;
+            border-radius: 20px;
+            margin-bottom: 25px;
+            color: #000;
+        }
+
+        .balance-label {
+            font-size: 13px;
+            opacity: 0.9;
+            margin-bottom: 8px;
+        }
+
+        .balance-amount {
+            font-size: 38px;
+            font-weight: 800;
+            margin-bottom: 20px;
+        }
+
+        .balance-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .balance-buttons button {
+            padding: 12px;
+            border-radius: 12px;
+            border: none;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .balance-buttons button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 1024px) {
+            .container {
+                grid-template-columns: 1fr;
+                grid-template-rows: 1fr 1fr;
+            }
+
+            .panel-iframe {
+                padding-top: 40px;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .container {
+                grid-template-rows: 60vh 40vh;
+            }
+
+            .wallet-btn {
+                width: 50px;
+                height: 50px;
+                font-size: 24px;
+                bottom: 15px;
+                right: 15px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <!-- Panel Izquierdo: Creatiendas Store -->
+        <div class="panel">
+            <div class="panel-header">
+                <span class="panel-title">🛍️ Creatiendas Store</span>
+            </div>
+            <iframe class="panel-iframe" src="http://localhost:3002" title="Creatiendas Store"></iframe>
+        </div>
+
+        <!-- Panel Derecho: B2BChat -->
+        <div class="panel">
+            <div class="panel-header">
+                <span class="panel-title">💬 B2BChat</span>
+            </div>
+            <iframe class="panel-iframe" src="https://b2-chat-ruddy.vercel.app" title="B2BChat"></iframe>
+        </div>
+    </div>
+
+    <!-- Botón Flotante de Wallet -->
+    <button class="wallet-btn" onclick="toggleWallet()">💰</button>
+
+    <!-- Modal de Wallet -->
+    <div class="wallet-modal" id="walletModal" onclick="closeWalletOnOverlay(event)">
+        <div class="wallet-content">
+            <div class="wallet-header">
+                <h2>💰 Mi Billetera</h2>
+                <button class="close-btn" onclick="toggleWallet()">×</button>
+            </div>
+            <div class="wallet-body">
+                <div class="balance-card">
+                    <div class="balance-label">Saldo Disponible</div>
+                    <div class="balance-amount">$2,450,000</div>
+                    <div class="balance-buttons">
+                        <button onclick="alert('Próximamente: Recargar')">Recargar</button>
+                        <button onclick="alert('Próximamente: Retirar')">Retirar</button>
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 20px;">
+                    <div
+                        style="font-size: 12px; font-weight: 700; color: #6b6b8c; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 15px;">
+                        Acciones Rápidas
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                        <div style="background: rgba(255, 255, 255, 0.03); padding: 18px; border-radius: 14px; text-align: center; cursor: pointer;"
+                            onclick="alert('Próximamente: Enviar')">
+                            <div style="font-size: 32px; margin-bottom: 8px;">💸</div>
+                            <div style="font-size: 13px; font-weight: 600;">Enviar</div>
+                        </div>
+                        <div style="background: rgba(255, 255, 255, 0.03); padding: 18px; border-radius: 14px; text-align: center; cursor: pointer;"
+                            onclick="alert('Próximamente: Solicitar')">
+                            <div style="font-size: 32px; margin-bottom: 8px;">👇</div>
+                            <div style="font-size: 13px; font-weight: 600;">Solicitar</div>
+                        </div>
+                        <div style="background: rgba(255, 255, 255, 0.03); padding: 18px; border-radius: 14px; text-align: center; cursor: pointer;"
+                            onclick="alert('Próximamente: Pagar')">
+                            <div style="font-size: 32px; margin-bottom: 8px;">🧾</div>
+                            <div style="font-size: 13px; font-weight: 600;">Pagar</div>
+                        </div>
+                        <div style="background: rgba(255, 255, 255, 0.03); padding: 18px; border-radius: 14px; text-align: center; cursor: pointer;"
+                            onclick="alert('Próximamente: Historial')">
+                            <div style="font-size: 32px; margin-bottom: 8px;">📊</div>
+                            <div style="font-size: 13px; font-weight: 600;">Historial</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleWallet() {
+            const modal = document.getElementById('walletModal');
+            modal.classList.toggle('active');
+        }
+
+        function closeWalletOnOverlay(event) {
+            if (event.target.id === 'walletModal') {
+                toggleWallet();
+            }
+        }
+
+        // Cerrar con tecla ESC
+        document.addEventListener('keydown', function (event) {
+            if (event.key === 'Escape') {
+                const modal = document.getElementById('walletModal');
+                if (modal.classList.contains('active')) {
+                    toggleWallet();
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>

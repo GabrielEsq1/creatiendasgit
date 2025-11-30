@@ -10,18 +10,18 @@ interface Props {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
     const store = await StoreService.getStore(params.slug);
-    if (!store) return { title: 'Tienda no encontrada' };
+    if (!store || !store.data) return { title: 'Tienda no encontrada' };
 
     return {
-        title: store.data.name,
-        description: store.data.desc,
+        title: store.data.name || 'Tienda',
+        description: store.data.desc || '',
     };
 }
 
 export default async function StorePage({ params }: Props) {
     const store = await StoreService.getStore(params.slug);
 
-    if (!store) {
+    if (!store || !store.data) {
         notFound();
     }
 

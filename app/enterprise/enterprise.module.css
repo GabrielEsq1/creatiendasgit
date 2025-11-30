@@ -1,0 +1,1074 @@
+/* Main Layout */
+.enterpriseContainer {
+    display: grid;
+    grid-template-columns: 1fr 400px;
+    height: 100vh;
+    gap: 0;
+    overflow: hidden;
+    background: #0a0a0f;
+    color: #ffffff;
+    font-family: 'Inter', sans-serif;
+}
+
+/* ===================== STORE SECTION (LEFT) ===================== */
+.storeSection {
+    display: flex;
+    flex-direction: column;
+    background: linear-gradient(180deg, #1a1a2e 0%, #0f0f1a 100%);
+    overflow: hidden;
+    border-right: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.storeHeader {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(20px);
+    padding: 20px 30px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    z-index: 100;
+}
+
+.storeLogo {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.logoIcon {
+    width: 45px;
+    height: 45px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    align-items: center;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.05);
+    color: #ffffff;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+.storeSearch input:focus {
+    outline: none;
+    background: rgba(255, 255, 255, 0.08);
+    border-color: #667eea;
+    box-shadow: 0 0 20px rgba(102, 126, 234, 0.2);
+}
+
+.searchIcon {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 18px;
+    color: #a0a0c0;
+}
+
+.storeActions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.btnHeader {
+    padding: 10px 20px;
+    border-radius: 10px;
+    border: none;
+    background: rgba(255, 255, 255, 0.03);
+    color: #ffffff;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btnHeader:hover {
+    background: rgba(255, 255, 255, 0.06);
+    transform: translateY(-2px);
+}
+
+.btnWalletOpen {
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    animation: pulseGlow 2s infinite;
+    color: #000;
+    /* Ensure text is readable on bright background */
+}
+
+@keyframes pulseGlow {
+
+    0%,
+    100% {
+        box-shadow: 0 0 15px rgba(0, 242, 254, 0.3);
+    }
+
+    50% {
+        box-shadow: 0 0 25px rgba(0, 242, 254, 0.5);
+    }
+}
+
+.cartBadge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 20px;
+    height: 20px;
+    padding: 0 6px;
+    border-radius: 10px;
+    background: #f5576c;
+    font-size: 11px;
+    font-weight: 700;
+    color: white;
+}
+
+/* Store Content */
+.storeContent {
+    flex: 1;
+    overflow-y: auto;
+    padding: 30px;
+}
+
+.storeContent::-webkit-scrollbar {
+    width: 10px;
+}
+
+.storeContent::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.storeContent::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 5px;
+}
+
+.categoryNav {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 30px;
+    overflow-x: auto;
+    padding-bottom: 10px;
+}
+
+.categoryNav::-webkit-scrollbar {
+    height: 4px;
+}
+
+.categoryBtn {
+    padding: 10px 20px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.03);
+    color: #a0a0c0;
+    font-weight: 600;
+    font-size: 13px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.3s ease;
+}
+
+.categoryBtn:hover,
+.categoryBtnActive {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-color: transparent;
+    transform: translateY(-2px);
+}
+
+.productsGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 25px;
+}
+
+.productCard {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 18px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.productCard:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.4);
+    border-color: #667eea;
+}
+
+.productImage {
+    width: 100%;
+    height: 220px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    position: relative;
+    overflow: hidden;
+}
+
+.productBadge {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    padding: 6px 12px;
+    border-radius: 8px;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(10px);
+    font-size: 11px;
+    font-weight: 700;
+    color: white;
+}
+
+.productBadgeNew {
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    color: #000;
+}
+
+.productInfo {
+    padding: 20px;
+}
+
+.productCategory {
+    font-size: 11px;
+    color: #6b6b8c;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+}
+
+.productName {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: #ffffff;
+}
+
+.productPrice {
+    font-size: 24px;
+    font-weight: 700;
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 15px;
+}
+
+.productActions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.btnProduct {
+    padding: 10px;
+    border-radius: 10px;
+    border: none;
+    font-weight: 600;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+.btnCart {
+    background: rgba(255, 255, 255, 0.03);
+    color: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.btnCart:hover {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: #667eea;
+}
+
+.btnBuy {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.btnBuy:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}
+
+/* ===================== CHAT SECTION (RIGHT) ===================== */
+.chatSection {
+    display: flex;
+    flex-direction: column;
+    background: linear-gradient(180deg, #16213e 0%, #0a0e1a 100%);
+    border-left: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.chatHeader {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(20px);
+    padding: 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.chatUserInfo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 15px;
+}
+
+.chatAvatar {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    font-weight: 700;
+    box-shadow: 0 4px 12px rgba(245, 87, 108, 0.4);
+}
+
+.chatUserDetails h3 {
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 3px;
+    margin-top: 0;
+}
+
+.chatStatus {
+    font-size: 12px;
+    color: #a0a0c0;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.statusIndicator {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #00ff88;
+    animation: blink 2s infinite;
+}
+
+@keyframes blink {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.3;
+    }
+}
+
+.chatTabs {
+    display: flex;
+    gap: 8px;
+}
+
+.chatTab {
+    flex: 1;
+    padding: 8px;
+    border-radius: 8px;
+    border: none;
+    background: transparent;
+    color: #a0a0c0;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.chatTabActive {
+    background: rgba(102, 126, 234, 0.2);
+    color: #667eea;
+}
+
+.chatMessages {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.chatMessages::-webkit-scrollbar {
+    width: 6px;
+}
+
+.chatMessages::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.chatMessages::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 3px;
+}
+
+.chatMessage {
+    display: flex;
+    gap: 10px;
+    animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.chatMessageSent {
+    flex-direction: row-reverse;
+}
+
+.messageAvatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    flex-shrink: 0;
+}
+
+.messageContent {
+    max-width: 75%;
+}
+
+.messageBubble {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(10px);
+    padding: 12px 16px;
+    border-radius: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    font-size: 13px;
+    line-height: 1.5;
+    margin-bottom: 4px;
+}
+
+.chatMessageSent .messageBubble {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+}
+
+.messageTime {
+    font-size: 10px;
+    color: #6b6b8c;
+    padding: 0 8px;
+}
+
+.productShare {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    overflow: hidden;
+    max-width: 280px;
+}
+
+.productShareImage {
+    width: 100%;
+    height: 140px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.productShareInfo {
+    padding: 12px;
+}
+
+.productShareName {
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+
+.productSharePrice {
+    font-size: 18px;
+    font-weight: 700;
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.chatInput {
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(20px);
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.inputWrapper {
+    position: relative;
+    display: flex;
+    gap: 8px;
+}
+
+.chatInput input {
+    flex: 1;
+    padding: 12px 40px 12px 16px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.05);
+    color: #ffffff;
+    font-size: 13px;
+    transition: all 0.3s ease;
+}
+
+.chatInput input:focus {
+    outline: none;
+    background: rgba(255, 255, 255, 0.08);
+    border-color: #667eea;
+}
+
+.btnAttach {
+    position: absolute;
+    right: 50px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    border: none;
+    background: transparent;
+    color: #a0a0c0;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.btnSend {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    border: none;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    cursor: pointer;
+    font-size: 18px;
+    transition: all 0.3s ease;
+}
+
+.btnSend:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+}
+
+/* ===================== WALLET MODAL (POPUP) ===================== */
+.walletOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.walletModal {
+    background: linear-gradient(180deg, #1a1a2e 0%, #0f0f1a 100%);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 24px;
+    width: 90%;
+    max-width: 480px;
+    max-height: 85vh;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+    animation: slideDown 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-50px) scale(0.9);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.walletHeader {
+    padding: 25px;
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.walletHeader h2 {
+    font-size: 22px;
+    font-weight: 700;
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0;
+}
+
+.btnCloseWallet {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    border: none;
+    background: rgba(255, 255, 255, 0.05);
+    color: #ffffff;
+    cursor: pointer;
+    font-size: 20px;
+    transition: all 0.3s ease;
+}
+
+.btnCloseWallet:hover {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    transform: rotate(90deg);
+}
+
+.walletContent {
+    padding: 25px;
+    max-height: calc(85vh - 90px);
+    overflow-y: auto;
+}
+
+.walletContent::-webkit-scrollbar {
+    width: 6px;
+}
+
+.walletContent::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.walletContent::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    border-radius: 3px;
+}
+
+.balanceCard {
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    padding: 30px;
+    border-radius: 20px;
+    margin-bottom: 25px;
+    box-shadow: 0 10px 40px rgba(79, 172, 254, 0.3);
+    color: #000;
+}
+
+.balanceLabel {
+    font-size: 13px;
+    opacity: 0.9;
+    margin-bottom: 8px;
+}
+
+.balanceAmount {
+    font-size: 38px;
+    font-weight: 800;
+    margin-bottom: 20px;
+}
+
+.balanceButtons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.btnBalance {
+    padding: 12px;
+    border-radius: 12px;
+    border: none;
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    color: white;
+    font-weight: 600;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btnBalance:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: translateY(-2px);
+}
+
+.quickActions {
+    margin-bottom: 25px;
+}
+
+.sectionTitle {
+    font-size: 12px;
+    font-weight: 700;
+    color: #6b6b8c;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 15px;
+}
+
+.actionsGrid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+}
+
+.actionItem {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(10px);
+    padding: 18px;
+    border-radius: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+}
+
+.actionItem:hover {
+    background: rgba(255, 255, 255, 0.06);
+    transform: translateY(-4px);
+    border-color: #667eea;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.actionIcon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    margin: 0 auto 10px;
+}
+
+.actionItem:nth-child(2) .actionIcon {
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+}
+
+.actionItem:nth-child(3) .actionIcon {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
+.actionItem:nth-child(4) .actionIcon {
+    background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+}
+
+.actionLabel {
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.transactionsList {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.transaction {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(10px);
+    padding: 16px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: all 0.3s ease;
+}
+
+.transaction:hover {
+    background: rgba(255, 255, 255, 0.06);
+    transform: translateX(4px);
+}
+
+.transactionLeft {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.transactionIcon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+}
+
+.transactionIconReceived {
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+}
+
+.transactionDetails h4 {
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 3px;
+    margin-top: 0;
+}
+
+.transactionDate {
+    font-size: 11px;
+    color: #6b6b8c;
+}
+
+.transactionAmount {
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.btnCloseWallet:hover {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    transform: rotate(90deg);
+}
+
+.walletContent {
+    padding: 25px;
+    max-height: calc(85vh - 90px);
+    overflow-y: auto;
+}
+
+.walletContent::-webkit-scrollbar {
+    width: 6px;
+}
+
+.walletContent::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.walletContent::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    border-radius: 3px;
+}
+
+.balanceCard {
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    padding: 30px;
+    border-radius: 20px;
+    margin-bottom: 25px;
+    box-shadow: 0 10px 40px rgba(79, 172, 254, 0.3);
+    color: #000;
+}
+
+.balanceLabel {
+    font-size: 13px;
+    opacity: 0.9;
+    margin-bottom: 8px;
+}
+
+.balanceAmount {
+    font-size: 38px;
+    font-weight: 800;
+    margin-bottom: 20px;
+}
+
+.balanceButtons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.btnBalance {
+    padding: 12px;
+    border-radius: 12px;
+    border: none;
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    color: white;
+    font-weight: 600;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btnBalance:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: translateY(-2px);
+}
+
+.quickActions {
+    margin-bottom: 25px;
+}
+
+.sectionTitle {
+    font-size: 12px;
+    font-weight: 700;
+    color: #6b6b8c;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 15px;
+}
+
+.actionsGrid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+}
+
+.actionItem {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(10px);
+    padding: 18px;
+    border-radius: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+}
+
+.actionItem:hover {
+    background: rgba(255, 255, 255, 0.06);
+    transform: translateY(-4px);
+    border-color: #667eea;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.actionIcon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    margin: 0 auto 10px;
+}
+
+.actionItem:nth-child(2) .actionIcon {
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+}
+
+.actionItem:nth-child(3) .actionIcon {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
+.actionItem:nth-child(4) .actionIcon {
+    background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+}
+
+.actionLabel {
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.transactionsList {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.transaction {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(10px);
+    padding: 16px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: all 0.3s ease;
+}
+
+.transaction:hover {
+    background: rgba(255, 255, 255, 0.06);
+    transform: translateX(4px);
+}
+
+.transactionLeft {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.transactionIcon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+}
+
+.transactionIconReceived {
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+}
+
+.transactionDetails h4 {
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 3px;
+    margin-top: 0;
+}
+
+.transactionDate {
+    font-size: 11px;
+    color: #6b6b8c;
+}
+
+.transactionAmount {
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.transactionAmountPositive {
+    color: #00ff88;
+}
+
+@media (max-width: 640px) {
+    .storeHeader {
+        flex-wrap: wrap;
+        padding: 15px;
+    }
+
+    .storeSearch {
+        order: 3;
+        width: 100%;
+        max-width: 100%;
+        margin: 15px 0 0 0;
+    }
+
+    .productsGrid {
+        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+        gap: 15px;
+    }
+
+    .productInfo {
+        padding: 15px;
+    }
+
+    .walletModal {
+        width: 95%;
+        max-height: 90vh;
+    }
+}

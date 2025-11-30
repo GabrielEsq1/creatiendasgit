@@ -1,0 +1,227 @@
+<!-- Creatiendas Widget - Login y Monedero -->
+<!-- Copiar este snippet en cualquier página web -->
+
+<!-- Paso 1: Agregar este script en el <head> o antes del </body> -->
+<script>
+    (function () {
+        // Configuración
+        const CREATIENDAS_URL = 'http://localhost:3001'; // Cambiar en producción
+
+        // Crear botón flotante
+        const button = document.createElement('button');
+        button.id = 'creatiendas-widget-btn';
+        button.innerHTML = '🏪 Creatiendas';
+        button.style.cssText = `
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    padding: 15px 25px;
+    border-radius: 50px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    z-index: 9998;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    transition: all 0.3s ease;
+  `;
+
+        button.onmouseover = () => {
+            button.style.transform = 'scale(1.05)';
+            button.style.boxShadow = '0 6px 20px rgba(0,0,0,0.3)';
+        };
+
+        button.onmouseout = () => {
+            button.style.transform = 'scale(1)';
+            button.style.boxShadow = '0 4px 15px rgba(0,0,0,0.2)';
+        };
+
+        // Crear modal/popup
+        const modal = document.createElement('div');
+        modal.id = 'creatiendas-widget-modal';
+        modal.style.cssText = `
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    z-index: 9999;
+    backdrop-filter: blur(5px);
+  `;
+
+        // Contenedor del widget
+        const container = document.createElement('div');
+        container.style.cssText = `
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 10px 50px rgba(0,0,0,0.3);
+    width: 90%;
+    max-width: 400px;
+    max-height: 90vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  `;
+
+        // Header del widget
+        const header = document.createElement('div');
+        header.style.cssText = `
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  `;
+        header.innerHTML = `
+    <h3 style="margin: 0; font-size: 20px;">🏪 Creatiendas</h3>
+    <button id="creatiendas-close-btn" style="
+      background: rgba(255,255,255,0.2);
+      border: none;
+      color: white;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 18px;
+    ">×</button>
+  `;
+
+        // Menú de navegación
+        const nav = document.createElement('div');
+        nav.style.cssText = `
+    display: flex;
+    border-bottom: 1px solid #e0e0e0;
+    background: #f8f9fa;
+  `;
+        nav.innerHTML = `
+    <button class="creatiendas-tab active" data-tab="login" style="
+      flex: 1;
+      padding: 15px;
+      border: none;
+      background: white;
+      cursor: pointer;
+      font-weight: 600;
+      border-bottom: 3px solid #667eea;
+    ">Login</button>
+    <button class="creatiendas-tab" data-tab="wallet" style="
+      flex: 1;
+      padding: 15px;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      border-bottom: 3px solid transparent;
+    ">Monedero</button>
+    <button class="creatiendas-tab" data-tab="chat" style="
+      flex: 1;
+      padding: 15px;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      border-bottom: 3px solid transparent;
+    ">Chat B2B</button>
+  `;
+
+        // Contenido del iframe
+        const content = document.createElement('div');
+        content.style.cssText = `
+    flex: 1;
+    overflow: hidden;
+    position: relative;
+  `;
+
+        const iframe = document.createElement('iframe');
+        iframe.id = 'creatiendas-iframe';
+        iframe.style.cssText = `
+    width: 100%;
+    height: 100%;
+    border: none;
+  `;
+        iframe.src = `${CREATIENDAS_URL}/login`;
+
+        content.appendChild(iframe);
+        container.appendChild(header);
+        container.appendChild(nav);
+        container.appendChild(content);
+        modal.appendChild(container);
+
+        // Agregar al DOM
+        document.body.appendChild(button);
+        document.body.appendChild(modal);
+
+        // Event listeners
+        button.onclick = () => {
+            modal.style.display = 'flex';
+            modal.style.animation = 'fadeIn 0.3s ease';
+        };
+
+        document.getElementById('creatiendas-close-btn').onclick = () => {
+            modal.style.display = 'none';
+        };
+
+        modal.onclick = (e) => {
+            if (e.target === modal) {
+                modal.style.display = 'none';
+            }
+        };
+
+        // Navegación entre tabs
+        document.querySelectorAll('.creatiendas-tab').forEach(tab => {
+            tab.onclick = function () {
+                // Remover active de todos
+                document.querySelectorAll('.creatiendas-tab').forEach(t => {
+                    t.classList.remove('active');
+                    t.style.background = 'transparent';
+                    t.style.borderBottom = '3px solid transparent';
+                });
+
+                // Activar el clickeado
+                this.classList.add('active');
+                this.style.background = 'white';
+                this.style.borderBottom = '3px solid #667eea';
+
+                // Cambiar iframe
+                const tabName = this.dataset.tab;
+                const urls = {
+                    login: `${CREATIENDAS_URL}/login`,
+                    wallet: `${CREATIENDAS_URL}/wallet`,
+                    chat: `${CREATIENDAS_URL}/chat`
+                };
+                iframe.src = urls[tabName];
+            };
+        });
+
+        // Estilos para animación
+        const style = document.createElement('style');
+        style.textContent = `
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+  `;
+        document.head.appendChild(style);
+    })();
+</script>
+
+<!-- 
+USO:
+1. Copiar todo este código
+2. Pegar en cualquier página HTML antes del </body>
+3. Cambiar CREATIENDAS_URL a tu dominio en producción
+4. ¡Listo! Aparecerá un botón flotante con todo integrado
+
+CARACTERÍSTICAS:
+- Botón flotante en esquina inferior derecha
+- Popup modal con 3 tabs: Login, Monedero, Chat B2B
+- Funciona en cualquier sitio web
+- Completamente responsive
+- Con PayPal integrado
+-->
