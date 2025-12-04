@@ -1,58 +1,65 @@
-
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import bcrypt from "bcryptjs";
-import { z } from "zod";
-import { Prisma } from "@prisma/client";
-
-// Esquema de validación de los datos de registro
-const registerSchema = z.object({
-    name: z.string().min(2, "El nombre debe tener al menos 2 caracteres"),
-    email: z.string().email("Correo electrónico inválido"),
-    password: z.string().min(6, "La contraseña debe tener al menos 6 caracteres"),
-});
 
 export async function POST(req: Request) {
     try {
-        const body = await req.json();
-        const result = registerSchema.safeParse(body);
-        if (!result.success) {
-            return NextResponse.json({ error: result.error.issues[0].message }, { status: 400 });
-        }
-        const { name, email, password } = result.data;
+        const { name, email, password } = await req.json();
 
-        // Verificar si el email ya está registrado
-        const existingUser = await prisma.user.findUnique({ where: { email } });
-        if (existingUser) {
-            return NextResponse.json({ error: "El correo electrónico ya está registrado" }, { status: 400 });
+        if (!email || !password) {
+            return NextResponse.json(
+                { message: "Faltan datos requeridos" },
+                { status: 400 }
+            );
         }
 
-        // Generar hash de la contraseña
-        const passwordHash = await bcrypt.hash(password, 12);
-
-        // Crear el nuevo usuario
-        await prisma.user.create({
-            data: {
-                name,
-                email,
-                passwordHash,
-            },
+        // Check if user exists
+        const existingUser = await prisma.user.findUnique({
+            where: { email },
         });
 
-        return NextResponse.json({ success: true }, { status: 201 });
-    } catch (e: any) {
-        console.error("Error en registro:", e);
-        if (e instanceof Prisma.PrismaClientKnownRequestError && e.code === "P2002") {
-            return NextResponse.json({ error: "El correo electrónico ya está registrado" }, { status: 400 });
+        if (existingUser) {
+            return NextResponse.json(
+                { message: "El usuario ya existe" },
+                { status: 400 }
+            );
         }
-        // Return actual error for debugging
-        const dbUrl = process.env.DATABASE_URL || "NOT_SET";
-        const maskedUrl = dbUrl.replace(/:[^:@]+@/, ":***@");
 
-        return NextResponse.json({
-            error: `Error interno: ${e.message}`,
-            details: e.toString(),
-            dbUrl: maskedUrl
-        }, { status: 500 });
+        // Hash password
+        const passwordHash = await bcrypt.hash(password, 10);
+
+        // Create user and wallet in a transaction
+        const user = await prisma.$transaction(async (tx) => {
+            // 1. Create User
+            const newUser = await tx.user.create({
+                data: {
+                    name,
+                    email,
+                    passwordHash,
+                },
+            });
+
+            // 2. Create Wallet
+            await tx.walletAccount.create({
+                data: {
+                    userId: newUser.id,
+                    balance: 0,
+                    currency: "COP",
+                },
+            });
+
+            return newUser;
+        });
+
+        return NextResponse.json(
+            { message: "Usuario creado exitosamente", userId: user.id },
+            { status: 201 }
+        );
+    } catch (error) {
+        console.error("Registration error:", error);
+        return NextResponse.json(
+            { message: "Error interno del servidor" },
+            { status: 500 }
+        );
     }
 }

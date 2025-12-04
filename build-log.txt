@@ -1,0 +1,27 @@
+
+> whatsapp-store-builder@1.0.0 build
+> prisma generate && next build
+
+Environment variables loaded from .env
+Prisma schema loaded from prisma\schema.prisma
+
+✔ Generated Prisma Client (v5.22.0) to .\node_modules\@prisma\client in 712ms
+
+Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+
+Tip: Curious about the SQL queries Prisma ORM generates? Optimize helps you enhance your visibility: https://pris.ly/tip-2-optimize
+
+  ▲ Next.js 14.2.33
+  - Environments: .env.local, .env.production, .env
+
+   Creating an optimized production build ...
+Failed to compile.
+
+app\(dashboard)\dashboard\page.tsx
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/dashboard/page and /dashboard/page. Refer to the route group docs for more information: https://nextjs.org/docs/app/building-your-application/routing/route-groups
+
+app\dashboard\page.tsx
+You cannot have two parallel pages that resolve to the same path. Please check /(dashboard)/dashboard/page and /dashboard/page. Refer to the route group docs for more information: https://nextjs.org/docs/app/building-your-application/routing/route-groups
+
+
+> Build failed because of webpack errors

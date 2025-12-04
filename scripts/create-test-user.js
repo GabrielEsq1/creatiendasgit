@@ -1,34 +1,34 @@
 const { PrismaClient } = require('@prisma/client');
+const bcrypt = require('bcryptjs');
 
 const prisma = new PrismaClient();
 
-async function createTestUser() {
-    try {
-        // Hash known for password: TestPassword123
-        const passwordHash = '$2b$12$1QRr1xWOHO/tLUOqyFxn0uxpLazAbOIgYwbkgMXnr98XYtyVL1chW';
+async function main() {
+    const email = 'demo@monedera.com';
+    const password = 'demo123';
+    const hashedPassword = await bcrypt.hash(password, 10);
 
-        const user = await prisma.user.upsert({
-            where: { email: 'admin@creatiendas.com' },
-            update: {
-                passwordHash: passwordHash,
-            },
-            create: {
-                email: 'admin@creatiendas.com',
-                name: 'Admin Test',
-                passwordHash: passwordHash,
-                role: 'ADMIN', // assign admin role
-            },
-        });
+    const user = await prisma.user.upsert({
+        where: { email },
+        update: {
+            passwordHash: hashedPassword
+        },
+        create: {
+            email,
+            name: 'Demo User',
+            passwordHash: hashedPassword,
+            role: 'USER'
+        },
+    });
 
-        console.log('✅ Usuario de prueba creado/actualizado:');
-        console.log('Email: admin@creatiendas.com');
-        console.log('Password: TestPassword123');
-        console.log('ID:', user.id);
-    } catch (error) {
-        console.error('❌ Error:', error);
-    } finally {
-        await prisma.$disconnect();
-    }
+    console.log({ user });
 }
 
-createTestUser();
+main()
+    .catch((e) => {
+        console.error(e);
+        process.exit(1);
+    })
+    .finally(async () => {
+        await prisma.$disconnect();
+    });

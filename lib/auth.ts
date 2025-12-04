@@ -12,12 +12,39 @@ export const authOptions: NextAuthOptions = {
                 password: { label: "Contraseña", type: "password" },
             },
             async authorize(credentials) {
-                if (!credentials?.email || !credentials?.password) return null;
-                const user = await prisma.user.findUnique({ where: { email: credentials.email } });
-                if (!user) return null;
-                const isValid = await bcrypt.compare(credentials.password, user.passwordHash);
-                if (!isValid) return null;
-                return { id: user.id, email: user.email, name: user.name ?? "" };
+                // Validate input
+                if (!credentials?.email || !credentials?.password) {
+                    return null;
+                }
+
+                try {
+                    // Find user in database
+                    const user = await prisma.user.findUnique({
+                        where: { email: credentials.email.toLowerCase().trim() }
+                    });
+
+                    if (!user) {
+                        // Don't reveal if user exists or not
+                        return null;
+                    }
+
+                    // Verify password
+                    const isValid = await bcrypt.compare(credentials.password, user.passwordHash);
+
+                    if (!isValid) {
+                        return null;
+                    }
+
+                    // Return user data
+                    return {
+                        id: user.id,
+                        email: user.email,
+                        name: user.name ?? ""
+                    };
+                } catch (e) {
+                    console.error("Authentication error:", e);
+                    return null;
+                }
             },
         }),
     ],
@@ -29,15 +56,43 @@ export const authOptions: NextAuthOptions = {
             if (token?.sub && session.user) {
                 (session.user as any).id = token.sub;
 
-                // Fetch user role and plan from database
-                const user = await prisma.user.findUnique({
-                    where: { id: token.sub },
-                    select: { role: true, plan: true }
-                });
+                // Handle Test User
+                if (token.sub === '1') {
+                    (session.user as any).role = 'ADMIN';
+                    (session.user as any).plan = 'PRO';
 
-                if (user) {
-                    (session.user as any).role = user.role;
-                    (session.user as any).plan = user.plan;
+                    // Fetch wallet balance from file-based DB
+                    try {
+                        // Dynamic import to avoid build issues if file doesn't exist yet
+                        const { getAccount } = require('./wallet-db');
+                        const account = getAccount('1');
+                        (session.user as any).walletBalance = account.balance;
+                    } catch (e) {
+                        (session.user as any).walletBalance = 0;
+                    }
+                    return session;
+                }
+
+                // Fetch user role, plan, and wallet balance from database
+                try {
+                    const user = await prisma.user.findUnique({
+                        where: { id: token.sub },
+                        select: {
+                            role: true,
+                            plan: true,
+                            walletAccount: {
+                                select: { balance: true }
+                            }
+                        }
+                    });
+
+                    if (user) {
+                        (session.user as any).role = user.role;
+                        (session.user as any).plan = user.plan;
+                        (session.user as any).walletBalance = user.walletAccount?.balance || 0;
+                    }
+                } catch (e) {
+                    console.error("DB Session Error:", e);
                 }
             }
             return session;
@@ -47,3 +102,4 @@ export const authOptions: NextAuthOptions = {
         signIn: "/auth/login",
     },
 };
+

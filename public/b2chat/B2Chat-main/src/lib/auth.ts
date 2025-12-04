@@ -8,32 +8,38 @@ export const authOptions: AuthOptions = {
         CredentialsProvider({
             name: "Credentials",
             credentials: {
+                email: { label: "Email", type: "text" },
                 phone: { label: "Phone", type: "text" },
                 password: { label: "Password", type: "password" },
                 otpCode: { label: "OTP Code", type: "text" },
             },
             async authorize(credentials) {
-                if (!credentials?.phone) {
-                    throw new Error("Phone number is required");
+                const email = credentials?.email;
+                const phone = credentials?.phone;
+                const password = credentials?.password;
+                const otpCode = credentials?.otpCode;
+
+                if (!email && !phone) {
+                    throw new Error("Email or Phone is required");
                 }
 
-                const user = await prisma.user.findUnique({
-                    where: { phone: credentials.phone },
-                });
+                let user;
+                if (email) {
+                    user = await prisma.user.findUnique({ where: { email } });
+                } else if (phone) {
+                    user = await prisma.user.findUnique({ where: { phone } });
+                }
 
                 if (!user) {
                     throw new Error("User not found");
                 }
-
-                const otpCode = credentials.otpCode;
-                const password = credentials.password;
 
                 const isOtpLogin = otpCode && otpCode !== "undefined" && otpCode !== "null" && otpCode !== "";
                 const isPasswordLogin = password && password !== "undefined" && password !== "null" && password !== "";
 
                 // Check if using OTP or password
                 if (isOtpLogin) {
-                    // OTP-based authentication
+                    // OTP-based authentication (only for phone)
                     if (!user.otpCode || !user.otpExpiresAt) {
                         throw new Error("No active OTP code");
                     }
@@ -47,10 +53,12 @@ export const authOptions: AuthOptions = {
                     }
 
                     // Clear OTP after successful login
-                    await prisma.user.update({
-                        where: { phone: credentials.phone },
-                        data: { otpCode: null, otpExpiresAt: null },
-                    });
+                    if (phone) {
+                        await prisma.user.update({
+                            where: { phone },
+                            data: { otpCode: null, otpExpiresAt: null },
+                        });
+                    }
                 } else if (isPasswordLogin) {
                     // Password-based authentication
                     const isValid = await bcrypt.compare(password, user.passwordHash);

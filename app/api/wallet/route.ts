@@ -1,29 +1,24 @@
 import { NextResponse } from 'next/server';
-import { db } from '@/lib/db-pg';
-
-// Simple dev auth: expects `x-user-id` header. Replace with NextAuth in production.
-async function getUserFromHeader(req: Request) {
-    const id = req.headers.get('x-user-id');
-    if (!id) return null;
-    const res = await db.query('SELECT * FROM users WHERE id=$1', [id]);
-    return res.rows[0] || null;
-}
+import { getAccount, getTransactions } from '@/lib/wallet-db';
 
 export async function GET(req: Request) {
     try {
-        const user = await getUserFromHeader(req);
-        if (!user) return NextResponse.json({ error: 'missing x-user-id header (dev auth)' }, { status: 401 });
+        // In a real app, get userId from session. 
+        // For now, we accept it from headers for flexibility with our unified login.
+        const userId = req.headers.get('x-user-id');
 
-        const accRes = await db.query('SELECT * FROM accounts WHERE user_id=$1', [user.id]);
-        const account = accRes.rows[0];
-
-        let ledger: any[] = [];
-        if (account) {
-            const ledgerRes = await db.query('SELECT * FROM ledger_entries WHERE account_id=$1 ORDER BY created_at DESC LIMIT 20', [account.id]);
-            ledger = ledgerRes.rows;
+        if (!userId) {
+            return NextResponse.json({ error: 'User ID required' }, { status: 401 });
         }
 
-        return NextResponse.json({ user, account, ledger });
+        const account = getAccount(userId);
+        const ledger = getTransactions(userId);
+
+        return NextResponse.json({
+            user: { id: userId },
+            account,
+            ledger
+        });
     } catch (error) {
         console.error('Wallet API Error:', error);
         return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });

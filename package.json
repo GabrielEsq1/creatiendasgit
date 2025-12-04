@@ -4,10 +4,13 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "prisma generate && prisma db push --accept-data-loss && next build ",
+    "build": "prisma generate && next build",
     "start": "next start",
     "lint": "next lint",
-    "postinstall": "prisma generate"
+    "postinstall": "prisma generate",
+    "security:generate-keys": "node scripts/generate-keys.js",
+    "security:validate": "node scripts/validate-security.js",
+    "security:audit": "npm audit --audit-level=moderate"
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.11.1",
@@ -35,6 +38,7 @@
     "@types/bcryptjs": "^2.4.6",
     "@types/node": "^20",
     "@types/paypal__checkout-server-sdk": "^1.0.8",
+    "@types/pg": "^8.15.6",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "autoprefixer": "^10.4.22",

@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enterprise Hub - Tour Virtual</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background-color: #0f172a;
+            color: white;
+        }
+
+        .slide {
+            display: none;
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        .slide.active {
+            display: block;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .progress-bar {
+            height: 4px;
+            background: #3b82f6;
+            width: 0%;
+            transition: width 0.1s linear;
+        }
+    </style>
+</head>
+
+<body class="flex flex-col items-center justify-center min-h-screen p-4">
+
+    <div class="max-w-6xl w-full space-y-6">
+        <div class="text-center space-y-2">
+            <h1 class="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-600">
+                Enterprise Hub Walkthrough
+            </h1>
+            <p class="text-slate-400">Demostración automática de funcionalidades</p>
+        </div>
+
+        <div class="relative bg-slate-800 p-2 rounded-xl border border-slate-700">
+            <!-- Progress Bar -->
+            <div class="absolute top-0 left-0 right-0 h-1 bg-slate-700 rounded-t-xl overflow-hidden">
+                <div id="progress" class="progress-bar"></div>
+            </div>
+
+            <!-- Slides -->
+            <img src="/walkthrough/step1_dashboard.png" class="slide active" alt="Dashboard Inicial">
+            <img src="/walkthrough/step2_b2bchat.png" class="slide" alt="Vista B2BChat">
+            <img src="/walkthrough/step3_creatiendas.png" class="slide" alt="Vista Creatiendas">
+            <img src="/walkthrough/step4_wallet.png" class="slide" alt="Modal Billetera">
+
+            <!-- Controls -->
+            <div
+                class="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2 bg-black/50 backdrop-blur-sm px-4 py-2 rounded-full">
+                <button onclick="prevSlide()" class="hover:text-blue-400 transition">←</button>
+                <button onclick="togglePlay()" id="playBtn" class="hover:text-blue-400 transition">❚❚</button>
+                <button onclick="nextSlide()" class="hover:text-blue-400 transition">→</button>
+            </div>
+
+            <!-- Caption -->
+            <div class="absolute bottom-4 right-4 bg-black/70 backdrop-blur-sm px-3 py-1 rounded text-sm text-slate-200"
+                id="caption">
+                1/4: Dashboard Unificado
+            </div>
+        </div>
+
+        <div class="grid grid-cols-4 gap-4">
+            <button onclick="setSlide(0)"
+                class="text-xs text-center p-2 rounded bg-slate-800 hover:bg-slate-700 border border-slate-700 transition">
+                1. Dashboard
+            </button>
+            <button onclick="setSlide(1)"
+                class="text-xs text-center p-2 rounded bg-slate-800 hover:bg-slate-700 border border-slate-700 transition">
+                2. B2BChat
+            </button>
+            <button onclick="setSlide(2)"
+                class="text-xs text-center p-2 rounded bg-slate-800 hover:bg-slate-700 border border-slate-700 transition">
+                3. Creatiendas
+            </button>
+            <button onclick="setSlide(3)"
+                class="text-xs text-center p-2 rounded bg-slate-800 hover:bg-slate-700 border border-slate-700 transition">
+                4. Billetera
+            </button>
+        </div>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const captions = [
+            "1/4: Dashboard Unificado - Vista Principal",
+            "2/4: Integración B2BChat - Mensajería Empresarial",
+            "3/4: Integración Creatiendas - Constructor de Tiendas",
+            "4/4: Billetera Digital - Gestión de Pagos y Saldo"
+        ];
+        let isPlaying = true;
+        let progress = 0;
+        let interval;
+        const DURATION = 3000; // 3 seconds per slide
+
+        function showSlide(index) {
+            slides.forEach(s => s.classList.remove('active'));
+            currentSlide = (index + slides.length) % slides.length;
+            slides[currentSlide].classList.add('active');
+            document.getElementById('caption').innerText = captions[currentSlide];
+            progress = 0;
+        }
+
+        function nextSlide() {
+            showSlide(currentSlide + 1);
+        }
+
+        function prevSlide() {
+            showSlide(currentSlide - 1);
+        }
+
+        function setSlide(index) {
+            showSlide(index);
+            isPlaying = false;
+            updatePlayBtn();
+        }
+
+        function togglePlay() {
+            isPlaying = !isPlaying;
+            updatePlayBtn();
+        }
+
+        function updatePlayBtn() {
+            document.getElementById('playBtn').innerText = isPlaying ? '❚❚' : '▶';
+        }
+
+        setInterval(() => {
+            if (!isPlaying) return;
+            progress += (100 / (DURATION / 100));
+            document.getElementById('progress').style.width = progress + '%';
+
+            if (progress >= 100) {
+                nextSlide();
+            }
+        }, 100);
+    </script>
+</body>
+
+</html>

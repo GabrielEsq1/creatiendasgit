@@ -4,6 +4,7 @@ import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Providers from "@/components/Providers";
 import WhatsAppButton from "@/components/WhatsAppButton";
+import { AnalyticsTracker } from "@/components/Analytics";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -27,6 +28,7 @@ export default function RootLayout({
             </head>
             <body className={inter.className}>
                 <Providers>
+                    <AnalyticsTracker />
                     <Navbar />
                     {children}
                     <WhatsAppButton />

@@ -13,10 +13,12 @@ enum Role {
   ADMIN
 }
 
+// Unified User model for B2BChat + Creatiendas + Monedera
 model User {
   id                String   @id @default(cuid())
   email             String   @unique
   name              String?
+  phone             String?
   passwordHash      String   @default("")
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
@@ -24,10 +26,24 @@ model User {
   role              Role     @default(USER)
   plan              String   @default("FREE") // "FREE" or "PRO"
 
+  // Creatiendas relations
   stores            Store[]
   stripeCustomer    StripeCustomer?
   passwordResetTokens PasswordResetToken[]
+  
+  // Monedera relations
+  walletAccount     WalletAccount?
+  
+  // B2BChat relations  
+  conversations     Conversation[]
+  sentMessages      Message[]       @relation("SentMessages")
+  contacts          Contact[]       @relation("UserContacts")
+  contactOf         Contact[]       @relation("ContactUser")
 }
+
+// ============================================
+// CREATIENDAS MODELS
+// ============================================
 
 model Store {
   id        String   @id @default(cuid())
@@ -58,4 +74,126 @@ model PasswordResetToken {
   userId    String
   user      User     @relation(fields: [userId], references: [id])
   createdAt DateTime @default(now())
+}
+
+// ============================================
+// MONEDERA (WALLET) MODELS
+// ============================================
+
+model WalletAccount {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id])
+  balance   Decimal  @default(0) @db.Decimal(12, 2)
+  currency  String   @default("COP")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  transactions Transaction[]
+}
+
+model Transaction {
+  id          String        @id @default(cuid())
+  accountId   String
+  account     WalletAccount @relation(fields: [accountId], references: [id])
+  type        String        // "credit" or "debit"
+  amount      Decimal       @db.Decimal(12, 2)
+  description String
+  metadata    Json?         // Store recipient, sender, method, etc.
+  status      String        @default("completed") // "pending", "completed", "failed"
+  createdAt   DateTime      @default(now())
+  
+  @@index([accountId])
+  @@index([createdAt])
+}
+
+// ============================================
+// B2BCHAT MODELS
+// ============================================
+
+model Conversation {
+  id          String    @id @default(cuid())
+  title       String?
+  userId      String
+  user        User      @relation(fields: [userId], references: [id])
+  isGroup     Boolean   @default(false)
+  lastMessage String?
+  lastMessageAt DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  
+  messages    Message[]
+  participants ConversationParticipant[]
+  
+  @@index([userId])
+  @@index([lastMessageAt])
+}
+
+model ConversationParticipant {
+  id             String       @id @default(cuid())
+  conversationId String
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  userId         String
+  joinedAt       DateTime     @default(now())
+  
+  @@unique([conversationId, userId])
+  @@index([conversationId])
+  @@index([userId])
+}
+
+model Message {
+  id             String       @id @default(cuid())
+  conversationId String
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  senderId       String
+  sender         User         @relation("SentMessages", fields: [senderId], references: [id])
+  content        String       @db.Text
+  type           String       @default("text") // "text", "image", "file", "payment"
+  metadata       Json?        // For attachments, payment info, etc.
+  read           Boolean      @default(false)
+  createdAt      DateTime     @default(now())
+  
+  @@index([conversationId])
+  @@index([senderId])
+  @@index([createdAt])
+}
+
+model Contact {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation("UserContacts", fields: [userId], references: [id])
+  contactId   String
+  contact     User     @relation("ContactUser", fields: [contactId], references: [id])
+  name        String?  // Optional custom name for the contact
+  email       String?
+  phone       String?
+  company     String?
+  tags        String[] // For segmentation
+  notes       String?  @db.Text
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  @@unique([userId, contactId])
+  @@index([userId])
+  @@index([contactId])
+}
+
+
+// ============================================
+// ANALYTICS MODELS
+// ============================================
+
+model AnalyticsEvent {
+  id        String   @id @default(cuid())
+  eventType String   // "page_view", "click", "signup", "create_store"
+  eventName String?  // Optional specific name
+  userId    String?  // Optional, if user is logged in
+  path      String?  // URL path
+  metadata  Json?    // Any extra data
+  ipAddress String?  // Anonymized IP
+  userAgent String?
+  createdAt DateTime @default(now())
+
+  @@index([eventType])
+  @@index([createdAt])
 }
