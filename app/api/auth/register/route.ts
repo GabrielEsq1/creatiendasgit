@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import bcrypt from "bcryptjs";
+import { alertNewUser, alertMilestone } from "@/lib/alerts";
 
 export async function POST(req: Request) {
     try {
@@ -50,6 +51,13 @@ export async function POST(req: Request) {
 
             return newUser;
         });
+
+        // Send alerts (fire and forget - don't block response)
+        alertNewUser({ email, name, plan: 'FREE' }).catch(console.error);
+
+        // Check for milestones
+        const totalUsers = await prisma.user.count();
+        alertMilestone('users', totalUsers).catch(console.error);
 
         return NextResponse.json(
             { message: "Usuario creado exitosamente", userId: user.id },
