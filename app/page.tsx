@@ -4,6 +4,7 @@ import Hero from '@/components/Hero';
 import WhatIs from '@/components/WhatIs';
 import Benefits from '@/components/Benefits';
 import HowItWorks from '@/components/HowItWorks';
+import LiveDemo from '@/components/LiveDemo';
 import Features from '@/components/Features';
 import Testimonials from '@/components/Testimonials';
 import FinalCTA from '@/components/FinalCTA';
@@ -17,6 +18,9 @@ export default function LandingPage() {
                 <WhatIs />
                 <Benefits />
                 <HowItWorks />
+                <div id="demo">
+                    <LiveDemo />
+                </div>
                 <Features />
                 <Testimonials />
                 <FinalCTA />
