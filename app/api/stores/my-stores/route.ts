@@ -29,6 +29,7 @@ export async function GET() {
                 slug: true,
                 views: true,
                 createdAt: true,
+                products: true,
             }
         });
 

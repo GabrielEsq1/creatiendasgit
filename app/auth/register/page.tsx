@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { MessageSquare, Mail, Lock, User, ArrowRight } from "lucide-react";
+import { Mail, Lock, User, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { useAnalytics } from "@/components/Analytics";
 
@@ -47,11 +47,11 @@ export default function RegisterPage() {
             <div className="w-full max-w-md">
                 {/* Logo & Branding */}
                 <div className="text-center mb-8">
-                    <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-600 rounded-2xl mb-4 shadow-lg shadow-blue-600/30">
-                        <MessageSquare className="w-8 h-8 text-white" fill="currentColor" />
+                    <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl mb-4 shadow-lg shadow-green-500/30">
+                        <span className="text-3xl">🏪</span>
                     </div>
-                    <h1 className="text-3xl font-bold text-gray-900 mb-2">Enterprise Hub</h1>
-                    <p className="text-gray-600">Únete al ecosistema de comercio unificado</p>
+                    <h1 className="text-3xl font-bold text-gray-900 mb-2">Creatiendas</h1>
+                    <p className="text-gray-600">Crea tu tienda online en minutos</p>
                 </div>
 
                 {/* Register Card */}
@@ -170,9 +170,8 @@ export default function RegisterPage() {
                     </Link>
                 </div>
 
-                {/* Footer */}
                 <p className="text-center text-sm text-gray-500 mt-6">
-                    © 2024 Enterprise Hub. Todos los derechos reservados.
+                    © 2024 Creatiendas. Todos los derechos reservados.
                 </p>
             </div>
         </div>

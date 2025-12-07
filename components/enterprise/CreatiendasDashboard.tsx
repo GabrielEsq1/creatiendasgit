@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
-import { Store, Plus, Settings, Eye, Trash2, Edit } from 'lucide-react';
+import { Store, Plus, Settings, Eye, Trash2, Edit, Package } from 'lucide-react';
 import WalletBadge from './WalletBadge';
 
 interface StoreData {
@@ -11,7 +11,9 @@ interface StoreData {
     slug: string;
     views: number;
     createdAt: string;
+    productCount: number;
 }
+
 
 export default function CreatiendasDashboard() {
     const { data: session } = useSession();
@@ -49,7 +51,11 @@ export default function CreatiendasDashboard() {
             const response = await fetch('/api/stores/my-stores');
             if (response.ok) {
                 const data = await response.json();
-                setStores(data.stores || []);
+                const storesWithCount = data.stores.map((store: any) => ({
+                    ...store,
+                    productCount: Array.isArray(store.products) ? store.products.length : 0
+                }));
+                setStores(storesWithCount || []);
             }
         } catch (error) {
             console.error('Error fetching stores:', error);
@@ -197,6 +203,10 @@ export default function CreatiendasDashboard() {
                                     <span className="text-slate-600">
                                         {store.views} visitas
                                     </span>
+                                    <span className="text-slate-600 flex items-center gap-1">
+                                        <Package className="w-4 h-4" />
+                                        {store.productCount}
+                                    </span>
                                     <span className="text-slate-400">
                                         {new Date(store.createdAt).toLocaleDateString()}
                                     </span>
@@ -208,7 +218,7 @@ export default function CreatiendasDashboard() {
 
                 {/* Quick Stats */}
                 {stores.length > 0 && (
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-8">
                         <div className="bg-white rounded-2xl p-6 border border-slate-200">
                             <div className="flex items-center gap-4">
                                 <div className="w-12 h-12 rounded-xl bg-blue-100 flex items-center justify-center">
@@ -246,64 +256,79 @@ export default function CreatiendasDashboard() {
                                 </div>
                             </div>
                         </div>
+                        <div className="bg-white rounded-2xl p-6 border border-slate-200">
+                            <div className="flex items-center gap-4">
+                                <div className="w-12 h-12 rounded-xl bg-orange-100 flex items-center justify-center">
+                                    <Package className="w-6 h-6 text-orange-600" />
+                                </div>
+                                <div>
+                                    <p className="text-sm text-slate-600">Total Productos</p>
+                                    <p className="text-2xl font-bold text-slate-800">
+                                        {stores.reduce((sum, store) => sum + (store.productCount || 0), 0)}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 )}
             </div>
 
             {/* Create Store Modal */}
-            {showCreateModal && (
-                <div
-                    className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4"
-                    onClick={() => setShowCreateModal(false)}
-                >
+            {
+                showCreateModal && (
                     <div
-                        className="bg-white rounded-2xl p-8 max-w-md w-full shadow-2xl"
-                        onClick={(e) => e.stopPropagation()}
+                        className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+                        onClick={() => setShowCreateModal(false)}
                     >
-                        <h2 className="text-2xl font-bold text-slate-800 mb-6">Crear Nueva Tienda</h2>
-                        <form onSubmit={createStore}>
-                            <div className="mb-6">
-                                <label className="block text-sm font-semibold text-slate-700 mb-2">
-                                    Nombre de la Tienda
-                                </label>
-                                <input
-                                    type="text"
-                                    value={newStoreName}
-                                    onChange={(e) => setNewStoreName(e.target.value)}
-                                    placeholder="Mi Tienda"
-                                    className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none"
-                                    required
-                                />
-                                {newStoreName && (
-                                    <p className="text-sm text-slate-500 mt-2">
-                                        URL: /{newStoreName.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '')}
-                                    </p>
-                                )}
-                            </div>
-                            <div className="flex gap-3">
-                                <button
-                                    type="button"
-                                    onClick={() => setShowCreateModal(false)}
-                                    className="flex-1 px-6 py-3 border border-slate-300 rounded-xl font-semibold text-slate-700 hover:bg-slate-50 transition-colors"
-                                >
-                                    Cancelar
-                                </button>
-                                <button
-                                    type="submit"
-                                    disabled={creating}
-                                    className="flex-1 px-6 py-3 bg-purple-600 text-white rounded-xl font-semibold hover:bg-purple-700 transition-colors disabled:opacity-50"
-                                >
-                                    {creating ? 'Creando...' : 'Crear Tienda'}
-                                </button>
-                            </div>
-                        </form>
+                        <div
+                            className="bg-white rounded-2xl p-8 max-w-md w-full shadow-2xl"
+                            onClick={(e) => e.stopPropagation()}
+                        >
+                            <h2 className="text-2xl font-bold text-slate-800 mb-6">Crear Nueva Tienda</h2>
+                            <form onSubmit={createStore}>
+                                <div className="mb-6">
+                                    <label className="block text-sm font-semibold text-slate-700 mb-2">
+                                        Nombre de la Tienda
+                                    </label>
+                                    <input
+                                        type="text"
+                                        value={newStoreName}
+                                        onChange={(e) => setNewStoreName(e.target.value)}
+                                        placeholder="Mi Tienda"
+                                        className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none"
+                                        required
+                                    />
+                                    {newStoreName && (
+                                        <p className="text-sm text-slate-500 mt-2">
+                                            URL: /{newStoreName.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '')}
+                                        </p>
+                                    )}
+                                </div>
+                                <div className="flex gap-3">
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowCreateModal(false)}
+                                        className="flex-1 px-6 py-3 border border-slate-300 rounded-xl font-semibold text-slate-700 hover:bg-slate-50 transition-colors"
+                                    >
+                                        Cancelar
+                                    </button>
+                                    <button
+                                        type="submit"
+                                        disabled={creating}
+                                        className="flex-1 px-6 py-3 bg-purple-600 text-white rounded-xl font-semibold hover:bg-purple-700 transition-colors disabled:opacity-50"
+                                    >
+                                        {creating ? 'Creando...' : 'Crear Tienda'}
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
                     </div>
-                </div>
-            )}
+                )
+            }
             <WalletBadge
                 balance={walletBalance}
                 onClick={() => window.location.href = '/wallet'}
             />
-        </div>
+        </div >
     );
 }
