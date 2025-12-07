@@ -132,11 +132,11 @@ export default function LiveDemo() {
                                 </div>
 
                                 {/* Screenshot */}
-                                <div className="bg-gray-900 rounded-b-xl overflow-hidden" style={{ aspectRatio: '16/10' }}>
+                                <div className="bg-white rounded-b-xl overflow-hidden">
                                     <img
                                         src={demoSteps[activeStep].image}
                                         alt={demoSteps[activeStep].title}
-                                        className="w-full h-full object-cover object-top transition-opacity duration-500"
+                                        className="w-full h-auto transition-opacity duration-500"
                                     />
                                 </div>
 
