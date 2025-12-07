@@ -83,8 +83,8 @@ export default function LiveDemo() {
                                         setIsAutoPlaying(false);
                                     }}
                                     className={`w-full text-left p-4 rounded-xl transition-all duration-300 ${activeStep === idx
-                                            ? 'bg-gradient-to-r from-green-500 to-emerald-600 text-white shadow-lg shadow-green-500/25'
-                                            : 'bg-white/5 text-gray-300 hover:bg-white/10'
+                                        ? 'bg-gradient-to-r from-green-500 to-emerald-600 text-white shadow-lg shadow-green-500/25'
+                                        : 'bg-white/5 text-gray-300 hover:bg-white/10'
                                         }`}
                                 >
                                     <div className="flex items-center gap-3">
@@ -132,12 +132,11 @@ export default function LiveDemo() {
                                 </div>
 
                                 {/* Screenshot */}
-                                <div className="bg-gray-900 rounded-b-xl overflow-hidden">
+                                <div className="bg-gray-900 rounded-b-xl overflow-hidden" style={{ aspectRatio: '16/10' }}>
                                     <img
                                         src={demoSteps[activeStep].image}
                                         alt={demoSteps[activeStep].title}
-                                        className="w-full h-auto transition-opacity duration-500"
-                                        style={{ minHeight: '300px', objectFit: 'cover' }}
+                                        className="w-full h-full object-cover object-top transition-opacity duration-500"
                                     />
                                 </div>
 
@@ -159,10 +158,10 @@ export default function LiveDemo() {
                                     <div
                                         key={idx}
                                         className={`h-1 flex-1 rounded-full transition-all duration-300 ${idx === activeStep
-                                                ? 'bg-green-500'
-                                                : idx < activeStep
-                                                    ? 'bg-green-500/50'
-                                                    : 'bg-white/20'
+                                            ? 'bg-green-500'
+                                            : idx < activeStep
+                                                ? 'bg-green-500/50'
+                                                : 'bg-white/20'
                                             }`}
                                     />
                                 ))}
