@@ -77,14 +77,14 @@ export async function POST(req: Request) {
         // Return more specific error message
         const errorMessage = error?.message || "Error desconocido";
         const errorCode = error?.code || "UNKNOWN";
+        const errorMeta = JSON.stringify(error?.meta || {});
 
         return NextResponse.json(
             {
-                message: "Error al crear la cuenta. Por favor intenta de nuevo.",
-                debug: process.env.NODE_ENV === 'development' ? { errorMessage, errorCode } : undefined
+                message: `Error DB: ${errorCode} - ${errorMessage} - ${errorMeta}`,
+                debug: { errorMessage, errorCode }
             },
             { status: 500 }
         );
     }
 }
-
