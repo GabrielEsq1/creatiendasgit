@@ -258,10 +258,18 @@ function BuilderContent() {
         setIsSaving(true);
         setPublicUrl(null);
         try {
+            // Generate slug from store name
+            const slug = storeData.name.toLowerCase()
+                .normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '')
+                .replace(/[^a-z0-9]+/g, '-')
+                .replace(/^-+|-+$/g, '')
+                .replace(/-+/g, '-') + '-' + Date.now().toString(36);
+
             const res = await fetch('/api/stores', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ name: storeData.name, data: storeData, products, id: storeData.id })
+                body: JSON.stringify({ name: storeData.name, slug, data: storeData, products, id: storeData.id })
             });
 
             if (!res.ok) {

@@ -47,7 +47,18 @@ export async function POST(request: Request) {
             }
         });
 
-        return NextResponse.json({ success: true, store });
+        // Get the base URL for constructing the public store URL
+        const protocol = process.env.NODE_ENV === 'production' ? 'https' : 'http';
+        const host = request.headers.get('host') || 'localhost:3000';
+        const publicUrl = `${protocol}://${host}/stores/${slug}`;
+
+        return NextResponse.json({
+            success: true,
+            store,
+            id: store.id,
+            url: publicUrl,
+            publicUrl
+        });
     } catch (error) {
         console.error('Error creating store:', error);
         return NextResponse.json(
