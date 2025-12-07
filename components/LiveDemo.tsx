@@ -132,11 +132,12 @@ export default function LiveDemo() {
                                 </div>
 
                                 {/* Screenshot */}
-                                <div className="bg-white rounded-b-xl overflow-hidden h-[400px]">
+                                <div className="bg-gray-100 rounded-b-xl overflow-hidden h-[350px]">
                                     <img
                                         src={demoSteps[activeStep].image}
                                         alt={demoSteps[activeStep].title}
-                                        className="w-full h-full object-cover object-top transition-opacity duration-500"
+                                        className="w-full h-full transition-opacity duration-500"
+                                        style={{ objectFit: 'fill' }}
                                     />
                                 </div>
 
