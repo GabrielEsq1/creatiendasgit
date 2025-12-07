@@ -34,7 +34,7 @@ export async function POST(req: Request) {
             // 1. Create User
             const newUser = await tx.user.create({
                 data: {
-                    name,
+                    name: name || "",
                     email,
                     passwordHash,
                 },
@@ -53,21 +53,38 @@ export async function POST(req: Request) {
         });
 
         // Send alerts (fire and forget - don't block response)
-        alertNewUser({ email, name, plan: 'FREE' }).catch(console.error);
+        try {
+            alertNewUser({ email, name, plan: 'FREE' }).catch(() => { });
+        } catch {
+            // Ignore alert errors
+        }
 
         // Check for milestones
-        const totalUsers = await prisma.user.count();
-        alertMilestone('users', totalUsers).catch(console.error);
+        try {
+            const totalUsers = await prisma.user.count();
+            alertMilestone('users', totalUsers).catch(() => { });
+        } catch {
+            // Ignore milestone errors
+        }
 
         return NextResponse.json(
             { message: "Usuario creado exitosamente", userId: user.id },
             { status: 201 }
         );
-    } catch (error) {
+    } catch (error: any) {
         console.error("Registration error:", error);
+
+        // Return more specific error message
+        const errorMessage = error?.message || "Error desconocido";
+        const errorCode = error?.code || "UNKNOWN";
+
         return NextResponse.json(
-            { message: "Error interno del servidor" },
+            {
+                message: "Error al crear la cuenta. Por favor intenta de nuevo.",
+                debug: process.env.NODE_ENV === 'development' ? { errorMessage, errorCode } : undefined
+            },
             { status: 500 }
         );
     }
 }
+
