@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { Store, Plus, Settings, Eye, Trash2, Edit, Package } from 'lucide-react';
-import WalletBadge from './WalletBadge';
+
 
 interface StoreData {
     id: string;
@@ -22,29 +22,14 @@ export default function CreatiendasDashboard() {
     const [showCreateModal, setShowCreateModal] = useState(false);
     const [newStoreName, setNewStoreName] = useState('');
     const [creating, setCreating] = useState(false);
-    const [walletBalance, setWalletBalance] = useState(0);
+
 
     // Fetch user's stores
     useEffect(() => {
         fetchStores();
-        if (session?.user?.id) {
-            fetchWallet();
-        }
     }, [session]);
 
-    const fetchWallet = async () => {
-        try {
-            const response = await fetch('/api/wallet', {
-                headers: { 'x-user-id': session?.user?.id || '' }
-            });
-            if (response.ok) {
-                const data = await response.json();
-                setWalletBalance(data.account?.balance || 0);
-            }
-        } catch (error) {
-            console.error('Error fetching wallet:', error);
-        }
-    };
+
 
     const fetchStores = async () => {
         try {
@@ -325,10 +310,7 @@ export default function CreatiendasDashboard() {
                     </div>
                 )
             }
-            <WalletBadge
-                balance={walletBalance}
-                onClick={() => window.location.href = '/wallet'}
-            />
+
         </div >
     );
 }

@@ -32,9 +32,7 @@ export default function Navbar() {
                                 <Link href="/dashboard/billing" className={isActive('/dashboard/billing')}>
                                     Mi Plan
                                 </Link>
-                                <Link href="/wallet" className={isActive('/wallet')}>
-                                    Billetera
-                                </Link>
+
                             </div>
                         )}
                     </div>
