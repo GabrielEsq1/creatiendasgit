@@ -59,10 +59,14 @@ export async function POST(request: Request) {
             url: publicUrl,
             publicUrl
         });
-    } catch (error) {
+    } catch (error: any) {
         console.error('Error creating store:', error);
         return NextResponse.json(
-            { error: 'Error al crear la tienda' },
+            {
+                error: 'Error al crear la tienda',
+                details: error?.message || 'Unknown error',
+                code: error?.code
+            },
             { status: 500 }
         );
     }
