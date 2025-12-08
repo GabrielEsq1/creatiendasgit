@@ -12,8 +12,8 @@ export const dynamic = "force-dynamic";
 
 // Initial store data structure
 const INITIAL_DATA: StoreData = {
-    title: 'Especiales del día',
-    name: 'Mi Tienda Bonita',
+    title: 'Mi Nueva Tienda',
+    name: 'Mi Nueva Tienda',
     desc: 'Descripción corta de la tienda',
     whatsapp: '',
     color: '#ff0000',
