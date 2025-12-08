@@ -34,3 +34,38 @@ export async function sendPasswordResetEmail(email: string, resetLink: string) {
     return false;
   }
 }
+
+export async function sendVerificationEmail(email: string, token: string) {
+  if (!process.env.RESEND_API_KEY) {
+    console.warn('⚠️ RESEND_API_KEY no está configurada. El correo de verificación no se enviará.');
+    return false;
+  }
+
+  // Use configured URL or Vercel default or localhost
+  const baseUrl = process.env.NEXTAUTH_URL || 'https://creatiendasgit1.vercel.app';
+  const verifyLink = `${baseUrl}/api/auth/verify?token=${token}`;
+
+  try {
+    await resend.emails.send({
+      from: 'Soporte <onboarding@resend.dev>',
+      to: email,
+      subject: 'Verifica tu cuenta - Creatiendas',
+      html: `
+        <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
+          <h2>Bienvenido a Creatiendas</h2>
+          <p>Para activar tu cuenta y comenzar a crear tu tienda, por favor verifica tu correo electrónico.</p>
+          <a href="${verifyLink}" style="display: inline-block; background-color: #2563eb; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; margin-top: 10px;">
+            Verificar mi Correo
+          </a>
+          <p style="margin-top: 20px; font-size: 12px; color: #666;">
+            Si no creaste esta cuenta, puedes ignorar este correo.
+          </p>
+        </div>
+      `,
+    });
+    return true;
+  } catch (error) {
+    console.error('Error enviando correo de verificación:', error);
+    return false;
+  }
+}

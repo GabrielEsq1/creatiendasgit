@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import bcrypt from "bcryptjs";
 import { alertNewUser, alertMilestone } from "@/lib/alerts";
+import { sendVerificationEmail } from "@/lib/email";
+import crypto from "crypto";
 
 export async function POST(req: Request) {
     try {
@@ -29,6 +31,9 @@ export async function POST(req: Request) {
         // Hash password
         const passwordHash = await bcrypt.hash(password, 10);
 
+        // Generate verification token
+        const verificationToken = crypto.randomBytes(32).toString('hex');
+
         // Create user and wallet in a transaction
         const user = await prisma.$transaction(async (tx) => {
             // 1. Create User
@@ -37,6 +42,7 @@ export async function POST(req: Request) {
                     name: name || "",
                     email,
                     passwordHash,
+                    verificationToken,
                 },
             });
 
@@ -52,23 +58,20 @@ export async function POST(req: Request) {
             return newUser;
         });
 
-        // Send alerts (fire and forget - don't block response)
+        // Send alerts (fire and forget)
         try {
             alertNewUser({ email, name, plan: 'FREE' }).catch(() => { });
-        } catch {
-            // Ignore alert errors
-        }
+        } catch { }
 
-        // Check for milestones
+        // Send verification email
         try {
-            const totalUsers = await prisma.user.count();
-            alertMilestone('users', totalUsers).catch(() => { });
-        } catch {
-            // Ignore milestone errors
+            await sendVerificationEmail(email, verificationToken);
+        } catch (error) {
+            console.error("Failed to send verification email:", error);
         }
 
         return NextResponse.json(
-            { message: "Usuario creado exitosamente", userId: user.id },
+            { message: "Cuenta creada. Por favor verifica tu correo.", userId: user.id },
             { status: 201 }
         );
     } catch (error: any) {
