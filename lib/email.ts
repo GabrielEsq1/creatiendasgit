@@ -1,16 +1,39 @@
-import { Resend } from 'resend';
+import nodemailer from 'nodemailer';
 
-const resend = new Resend(process.env.RESEND_API_KEY || 're_123456789');
+// Helper to get a transporter. Uses environment variables if provided, otherwise falls back to an Ethereal test account.
+async function getTransporter() {
+  const host = process.env.SMTP_HOST;
+  const port = process.env.SMTP_PORT ? Number(process.env.SMTP_PORT) : undefined;
+  const user = process.env.SMTP_USER;
+  const pass = process.env.SMTP_PASS;
 
-export async function sendPasswordResetEmail(email: string, resetLink: string) {
-  if (!process.env.RESEND_API_KEY) {
-    console.warn('⚠️ RESEND_API_KEY no está configurada. El correo no se enviará.');
-    return false;
+  if (host && port && user && pass) {
+    return nodemailer.createTransport({
+      host,
+      port,
+      secure: port === 465, // true for 465, false for other ports
+      auth: { user, pass },
+    });
   }
 
+  // Fallback to Ethereal (free testing account)
+  const testAccount = await nodemailer.createTestAccount();
+  return nodemailer.createTransport({
+    host: testAccount.smtp.host,
+    port: testAccount.smtp.port,
+    secure: testAccount.smtp.secure,
+    auth: {
+      user: testAccount.user,
+      pass: testAccount.pass,
+    },
+  });
+}
+
+export async function sendPasswordResetEmail(email: string, resetLink: string) {
   try {
-    await resend.emails.send({
-      from: 'Soporte <onboarding@resend.dev>', // Usamos el dominio de pruebas de Resend por defecto
+    const transporter = await getTransporter();
+    const info = await transporter.sendMail({
+      from: process.env.EMAIL_FROM || '"Soporte" <no-reply@creatiendas.com>',
       to: email,
       subject: 'Recuperación de Contraseña - Creatiendas',
       html: `
@@ -28,26 +51,25 @@ export async function sendPasswordResetEmail(email: string, resetLink: string) {
         </div>
       `,
     });
+    console.log('Password reset email sent: %s', info.messageId);
+    // If using Ethereal, log preview URL
+    if (nodemailer.getTestMessageUrl) {
+      console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
+    }
     return true;
   } catch (error) {
-    console.error('Error enviando correo:', error);
+    console.error('Error enviando correo de restablecimiento:', error);
     return false;
   }
 }
 
 export async function sendVerificationEmail(email: string, token: string) {
-  if (!process.env.RESEND_API_KEY) {
-    console.warn('⚠️ RESEND_API_KEY no está configurada. El correo de verificación no se enviará.');
-    return false;
-  }
-
-  // Use configured URL or Vercel default or localhost
-  const baseUrl = process.env.NEXTAUTH_URL || 'https://creatiendasgit1.vercel.app';
-  const verifyLink = `${baseUrl}/api/auth/verify?token=${token}`;
-
   try {
-    await resend.emails.send({
-      from: 'Soporte <onboarding@resend.dev>',
+    const transporter = await getTransporter();
+    const baseUrl = process.env.NEXTAUTH_URL || 'https://creatiendasgit1.vercel.app';
+    const verifyLink = `${baseUrl}/api/auth/verify?token=${token}`;
+    const info = await transporter.sendMail({
+      from: process.env.EMAIL_FROM || '"Soporte" <no-reply@creatiendas.com>',
       to: email,
       subject: 'Verifica tu cuenta - Creatiendas',
       html: `
@@ -63,9 +85,14 @@ export async function sendVerificationEmail(email: string, token: string) {
         </div>
       `,
     });
+    console.log('Verification email sent: %s', info.messageId);
+    if (nodemailer.getTestMessageUrl) {
+      console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
+    }
     return true;
   } catch (error) {
     console.error('Error enviando correo de verificación:', error);
     return false;
   }
 }
+
