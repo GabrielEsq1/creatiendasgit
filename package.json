@@ -27,6 +27,7 @@
     "next-auth": "^4.24.13",
     "nodemailer": "^7.0.11",
     "pg": "^8.16.3",
+    "postcss-preset-env": "^10.5.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "resend": "^6.5.2",
@@ -38,6 +39,7 @@
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",
     "@types/node": "^20",
+    "@types/nodemailer": "^7.0.4",
     "@types/paypal__checkout-server-sdk": "^1.0.8",
     "@types/pg": "^8.15.6",
     "@types/react": "^18",
