@@ -71,46 +71,8 @@ export async function GET(
 }
 
 // UPDATE store
-export async function PUT(
-    request: Request,
-    { params }: { params: { storeId: string } }
-) {
-    try {
-        const body = await request.json();
-        const { data, products } = body;
-
-        // Find store by ID or slug
-        const storeRecord = await prisma.store.findFirst({
-            where: {
-                OR: [
-                    { slug: params.storeId },
-                    { id: params.storeId }
-                ]
-            }
-        });
-
-        if (!storeRecord) {
-            return NextResponse.json(
-                { success: false, message: 'Tienda no encontrada' },
-                { status: 404 }
-            );
-        }
-
-        const updatedStore = await StoreService.updateStore(storeRecord.slug, data, products);
-
-        if (!updatedStore) {
-            return NextResponse.json(
-                { success: false, message: 'Error al actualizar' },
-                { status: 500 }
-            );
-        }
-
-        return NextResponse.json({ success: true, store: updatedStore });
-    } catch (error) {
-        console.error('Error updating store:', error);
-        return NextResponse.json(
-            { success: false, message: 'Error interno' },
-            { status: 500 }
+{ success: false, message: 'Error interno' },
+{ status: 500 }
         );
     }
 }

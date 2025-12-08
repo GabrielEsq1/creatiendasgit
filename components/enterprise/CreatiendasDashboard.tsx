@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 import { Store, Plus, Settings, Eye, Trash2, Edit, Package } from 'lucide-react';
 
 
@@ -16,20 +17,15 @@ interface StoreData {
 
 
 export default function CreatiendasDashboard() {
+    const router = useRouter();
     const { data: session } = useSession();
     const [stores, setStores] = useState<StoreData[]>([]);
     const [loading, setLoading] = useState(true);
-    const [showCreateModal, setShowCreateModal] = useState(false);
-    const [newStoreName, setNewStoreName] = useState('');
-    const [creating, setCreating] = useState(false);
-
 
     // Fetch user's stores
     useEffect(() => {
         fetchStores();
     }, [session]);
-
-
 
     const fetchStores = async () => {
         try {
@@ -49,43 +45,16 @@ export default function CreatiendasDashboard() {
         }
     };
 
-    const createStore = async (e: React.FormEvent) => {
-        e.preventDefault();
-        if (!newStoreName.trim()) return;
+    const handleCreateStore = () => {
+        const plan = (session?.user as any)?.plan || 'FREE';
+        const limit = plan === 'PRO' ? 10 : 1; // Limit 1 for FREE, 10 for PRO
 
-        setCreating(true);
-        try {
-            const slug = newStoreName.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
-            const response = await fetch('/api/stores', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    name: newStoreName,
-                    slug,
-                    data: {
-                        theme: 'modern',
-                        colors: {
-                            primary: '#667eea',
-                            secondary: '#764ba2'
-                        }
-                    },
-                    products: []
-                }),
-            });
-
-            if (response.ok) {
-                setNewStoreName('');
-                setShowCreateModal(false);
-                fetchStores();
-            } else {
-                alert('Error al crear la tienda');
-            }
-        } catch (error) {
-            console.error('Error creating store:', error);
-            alert('Error al crear la tienda');
-        } finally {
-            setCreating(false);
+        if (stores.length >= limit) {
+            alert(`Has alcanzado el límite de tiendas para tu plan ${plan}. Actualiza tu plan para crear más.`);
+            return;
         }
+
+        router.push('/builder');
     };
 
     const deleteStore = async (storeId: string) => {
@@ -130,7 +99,7 @@ export default function CreatiendasDashboard() {
                         </p>
                     </div>
                     <button
-                        onClick={() => setShowCreateModal(true)}
+                        onClick={handleCreateStore}
                         className="flex items-center gap-2 bg-purple-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-purple-700 transition-all shadow-lg hover:shadow-xl"
                     >
                         <Plus className="w-5 h-5" />
@@ -147,7 +116,7 @@ export default function CreatiendasDashboard() {
                             Crea tu primera tienda online en minutos
                         </p>
                         <button
-                            onClick={() => setShowCreateModal(true)}
+                            onClick={handleCreateStore}
                             className="inline-flex items-center gap-2 bg-purple-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-purple-700 transition-all"
                         >
                             <Plus className="w-5 h-5" />
@@ -166,6 +135,13 @@ export default function CreatiendasDashboard() {
                                         <Store className="w-6 h-6 text-purple-600" />
                                     </div>
                                     <div className="flex gap-2">
+                                        <button
+                                            onClick={() => router.push(`/builder?edit=${store.slug}`)}
+                                            className="p-2 hover:bg-blue-50 rounded-lg transition-colors"
+                                            title="Editar tienda"
+                                        >
+                                            <Edit className="w-4 h-4 text-blue-600" />
+                                        </button>
                                         <button
                                             onClick={() => window.open(`/stores/${store.slug}`, '_blank')}
                                             className="p-2 hover:bg-slate-100 rounded-lg transition-colors"
@@ -257,60 +233,6 @@ export default function CreatiendasDashboard() {
                     </div>
                 )}
             </div>
-
-            {/* Create Store Modal */}
-            {
-                showCreateModal && (
-                    <div
-                        className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4"
-                        onClick={() => setShowCreateModal(false)}
-                    >
-                        <div
-                            className="bg-white rounded-2xl p-8 max-w-md w-full shadow-2xl"
-                            onClick={(e) => e.stopPropagation()}
-                        >
-                            <h2 className="text-2xl font-bold text-slate-800 mb-6">Crear Nueva Tienda</h2>
-                            <form onSubmit={createStore}>
-                                <div className="mb-6">
-                                    <label className="block text-sm font-semibold text-slate-700 mb-2">
-                                        Nombre de la Tienda
-                                    </label>
-                                    <input
-                                        type="text"
-                                        value={newStoreName}
-                                        onChange={(e) => setNewStoreName(e.target.value)}
-                                        placeholder="Mi Tienda"
-                                        className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none"
-                                        required
-                                    />
-                                    {newStoreName && (
-                                        <p className="text-sm text-slate-500 mt-2">
-                                            URL: /{newStoreName.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '')}
-                                        </p>
-                                    )}
-                                </div>
-                                <div className="flex gap-3">
-                                    <button
-                                        type="button"
-                                        onClick={() => setShowCreateModal(false)}
-                                        className="flex-1 px-6 py-3 border border-slate-300 rounded-xl font-semibold text-slate-700 hover:bg-slate-50 transition-colors"
-                                    >
-                                        Cancelar
-                                    </button>
-                                    <button
-                                        type="submit"
-                                        disabled={creating}
-                                        className="flex-1 px-6 py-3 bg-purple-600 text-white rounded-xl font-semibold hover:bg-purple-700 transition-colors disabled:opacity-50"
-                                    >
-                                        {creating ? 'Creando...' : 'Crear Tienda'}
-                                    </button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                )
-            }
-
-        </div >
+        </div>
     );
 }

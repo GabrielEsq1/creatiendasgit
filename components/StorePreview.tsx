@@ -157,52 +157,6 @@ export default function StorePreview({ data, products, viewMode = 'desktop', rea
                                             <span>📱</span> Comprar por WhatsApp
                                         </a>
 
-                                        <button
-                                            onClick={async () => {
-                                                try {
-                                                    // Remove non-numeric chars (except dot/comma if needed, but assuming simple string)
-                                                    const price = product.price.replace(/[^0-9.]/g, '');
-
-                                                    const res = await fetch('/api/paypal/create-order', {
-                                                        method: 'POST',
-                                                        headers: { 'Content-Type': 'application/json' },
-                                                        body: JSON.stringify({
-                                                            amount: price,
-                                                            currency: 'USD', // Defaulting to USD as per Wallet example
-                                                            returnPath: window.location.pathname // Return to current store page
-                                                        })
-                                                    });
-                                                    const resData = await res.json();
-                                                    if (resData.approvalUrl) {
-                                                        window.location.href = resData.approvalUrl;
-                                                    } else {
-                                                        alert('Error creating PayPal order');
-                                                    }
-                                                } catch (e) {
-                                                    console.error(e);
-                                                    alert('Error connecting to PayPal');
-                                                }
-                                            }}
-                                            className="btn-paypal"
-                                            style={{
-                                                backgroundColor: '#0070BA',
-                                                color: 'white',
-                                                display: 'flex',
-                                                alignItems: 'center',
-                                                justifyContent: 'center',
-                                                gap: '0.5rem',
-                                                padding: '0.75rem',
-                                                borderRadius: 'var(--border-radius)',
-                                                textDecoration: 'none',
-                                                fontWeight: 600,
-                                                marginTop: '0.5rem',
-                                                border: 'none',
-                                                cursor: 'pointer',
-                                                width: '100%'
-                                            }}
-                                        >
-                                            <span>💳</span> Comprar con PayPal
-                                        </button>
                                     </div>
                                 </div>
                             ))}

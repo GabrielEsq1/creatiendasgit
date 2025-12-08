@@ -267,10 +267,24 @@ function BuilderContent() {
                 .replace(/^-+|-+$/g, '')
                 .replace(/-+/g, '-') + '-' + Date.now().toString(36);
 
-            const res = await fetch('/api/stores', {
-                method: 'POST',
+            // Determine method and URL
+            const method = storeData.id ? 'PUT' : 'POST';
+            const url = storeData.id ? `/api/stores/${storeData.id}` : '/api/stores';
+
+            const payload = {
+                name: storeData.name,
+                slug,
+                data: storeData,
+                products
+            };
+
+            // If creating (POST), we might need ID if we want to force it? No, DB creates ID.
+            // If updating, we don't strictly need to send ID in body if URL has it, but it's fine.
+
+            const res = await fetch(url, {
+                method,
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ name: storeData.name, slug, data: storeData, products, id: storeData.id })
+                body: JSON.stringify(payload)
             });
 
             if (!res.ok) {
