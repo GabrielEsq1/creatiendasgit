@@ -71,8 +71,46 @@ export async function GET(
 }
 
 // UPDATE store
-{ success: false, message: 'Error interno' },
-{ status: 500 }
+export async function PUT(
+    request: Request,
+    { params }: { params: { storeId: string } }
+) {
+    try {
+        const body = await request.json();
+        const { name, data, products } = body;
+
+        // Find store by ID or slug
+        const storeRecord = await prisma.store.findFirst({
+            where: {
+                OR: [
+                    { slug: params.storeId },
+                    { id: params.storeId }
+                ]
+            }
+        });
+
+        if (!storeRecord) {
+            return NextResponse.json(
+                { success: false, message: 'Tienda no encontrada' },
+                { status: 404 }
+            );
+        }
+
+        const updatedStore = await prisma.store.update({
+            where: { id: storeRecord.id },
+            data: {
+                name: name || storeRecord.name,
+                data: data,
+                products: products
+            }
+        });
+
+        return NextResponse.json({ success: true, store: updatedStore });
+    } catch (error) {
+        console.error('Error updating store:', error);
+        return NextResponse.json(
+            { success: false, message: 'Error interno' },
+            { status: 500 }
         );
     }
 }
