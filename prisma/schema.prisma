@@ -5,7 +5,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("CREATIENDAS_FINAL_DB")
+  url      = env("DATABASE_URL")
 }
 
 // Role enum for user permissions
