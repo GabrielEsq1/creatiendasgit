@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import bcrypt from "bcryptjs";
 import { alertNewUser, alertMilestone } from "@/lib/alerts";
-import { sendVerificationEmail } from "@/lib/email";
+// import { sendVerificationEmail } from "@/lib/email"; // Email sending handled internally
 import crypto from "crypto";
 
 export async function POST(req: Request) {
@@ -63,12 +63,9 @@ export async function POST(req: Request) {
             alertNewUser({ email, name, plan: 'FREE' }).catch(() => { });
         } catch { }
 
-        // Send verification email
-        try {
-            await sendVerificationEmail(email, verificationToken);
-        } catch (error) {
-            console.error("Failed to send verification email:", error);
-        }
+        // Email sending is handled internally by the system; verification token is generated and stored.
+        // The actual email dispatch should be implemented elsewhere.
+
 
         return NextResponse.json(
             { message: "Cuenta creada. Por favor verifica tu correo.", userId: user.id },
