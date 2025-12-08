@@ -74,16 +74,8 @@ export async function POST(req: Request) {
     } catch (error: any) {
         console.error("Registration error:", error);
 
-        // Return more specific error message
-        const errorMessage = error?.message || "Error desconocido";
-        const errorCode = error?.code || "UNKNOWN";
-        const errorMeta = JSON.stringify(error?.meta || {});
-
         return NextResponse.json(
-            {
-                message: `Error DB: ${errorCode} - ${errorMessage} - ${errorMeta}`,
-                debug: { errorMessage, errorCode }
-            },
+            { message: "Error al crear la cuenta. Por favor intenta de nuevo." },
             { status: 500 }
         );
     }
