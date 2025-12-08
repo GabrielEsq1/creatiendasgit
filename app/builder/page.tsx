@@ -18,6 +18,7 @@ const INITIAL_DATA: StoreData = {
     whatsapp: '',
     color: '#ff0000',
     font: 'Inter',
+    borderRadius: '16px',
     logo: null,
     heroBg: null,
     slug: '',
@@ -362,11 +363,28 @@ function BuilderContent() {
                     <div className="form-group">
                         <label>Tipografía</label>
                         <select value={storeData.font || 'Inter'} onChange={e => handleInputChange(null, 'font', e.target.value)} className="w-full p-2 border rounded">
-                            <option value="Inter">Inter (Moderna)</option>
+                            <option value="Inter">Inter (Estándar)</option>
                             <option value="Roboto">Roboto (Clásica)</option>
                             <option value="Open Sans">Open Sans (Legible)</option>
                             <option value="Lato">Lato (Elegante)</option>
                             <option value="Montserrat">Montserrat (Geométrica)</option>
+                            <option value="Poppins">Poppins (Moderna)</option>
+                            <option value="Playfair Display">Playfair Display (Lujo/Serif)</option>
+                            <option value="Merriweather">Merriweather (Editorial)</option>
+                            <option value="Raleway">Raleway (Sofisticada)</option>
+                            <option value="Oswald">Oswald (Urbano/Título)</option>
+                            <option value="Nunito">Nunito (Amigable)</option>
+                        </select>
+                    </div>
+                    <div className="form-group">
+                        <label>Estilo de Bordes</label>
+                        <select value={storeData.borderRadius || '16px'} onChange={e => handleInputChange(null, 'borderRadius', e.target.value)} className="w-full p-2 border rounded">
+                            <option value="0px">Cuadrado (0px)</option>
+                            <option value="4px">Sutil (4px)</option>
+                            <option value="8px">Estándar (8px)</option>
+                            <option value="16px">Moderno (16px)</option>
+                            <option value="24px">Muy Redondeado (24px)</option>
+                            <option value="30px">Curvo (30px)</option>
                         </select>
                     </div>
                     <div className="form-group">
