@@ -73,6 +73,33 @@ export const authOptions: NextAuthOptions = {
     session: { strategy: "jwt" },
     jwt: { secret: process.env.NEXTAUTH_SECRET },
     callbacks: {
+        async signIn({ user, account, profile }) {
+            // Create wallet for new users from social login (Google/GitHub)
+            if (account?.provider === 'google' || account?.provider === 'github') {
+                try {
+                    // Check if user already has a wallet
+                    const existingWallet = await prisma.walletAccount.findUnique({
+                        where: { userId: user.id }
+                    });
+
+                    // Create wallet if doesn't exist
+                    if (!existingWallet) {
+                        await prisma.walletAccount.create({
+                            data: {
+                                userId: user.id,
+                                balance: 0,
+                                currency: 'COP'
+                            }
+                        });
+                        console.log(`✅ Created wallet for social login user: ${user.email}`);
+                    }
+                } catch (error) {
+                    console.error('Error creating wallet for social user:', error);
+                    // Don't block login if wallet creation fails
+                }
+            }
+            return true;
+        },
         async session({ session, token }) {
             if (token?.sub && session.user) {
                 (session.user as any).id = token.sub;
