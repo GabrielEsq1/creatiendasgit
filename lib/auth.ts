@@ -85,16 +85,22 @@ export const authOptions: NextAuthOptions = {
     jwt: { secret: process.env.NEXTAUTH_SECRET1 || process.env.NEXTAUTH_SECRET },
     callbacks: {
         async signIn({ user, account, profile }) {
+            console.log('[SIGNIN] Provider:', account?.provider, 'User:', user.email);
+
             // Create wallet for new users from social login (Google/GitHub)
             if (account?.provider === 'google' || account?.provider === 'github') {
                 try {
+                    console.log('[WALLET] Checking for existing wallet for user:', user.id);
+
                     // Check if user already has a wallet
                     const existingWallet = await prisma.walletAccount.findUnique({
                         where: { userId: user.id }
                     });
 
-                    // Create wallet if doesn't exist
-                    if (!existingWallet) {
+                    if (existingWallet) {
+                        console.log('[WALLET] Wallet already exists');
+                    } else {
+                        console.log('[WALLET] Creating new wallet...');
                         await prisma.walletAccount.create({
                             data: {
                                 userId: user.id,
@@ -102,13 +108,15 @@ export const authOptions: NextAuthOptions = {
                                 currency: 'COP'
                             }
                         });
-                        console.log(`✅ Created wallet for social login user: ${user.email}`);
+                        console.log('[WALLET] ✅ Wallet created successfully');
                     }
                 } catch (error) {
-                    console.error('Error creating wallet for social user:', error);
-                    // Don't block login if wallet creation fails
+                    console.error('[WALLET] ⚠️ Error creating wallet (allowing login anyway):', error);
+                    // Don't block login if wallet creation fails - user can create it later
                 }
             }
+
+            console.log('[SIGNIN] Returning true - allowing login');
             return true;
         },
         async session({ session, token }) {
