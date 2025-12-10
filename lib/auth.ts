@@ -6,27 +6,16 @@ import { PrismaAdapter } from "@auth/prisma-adapter";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
 
-// Force NEXTAUTH_URL from NEXTAUTH_URL1
-import '../nextauth.config';
-
-// Debug logging (remove after fixing)
-if (typeof window === 'undefined') {
-    console.log('[AUTH DEBUG] NEXTAUTH_URL:', process.env.NEXTAUTH_URL);
-    console.log('[AUTH DEBUG] NEXTAUTH_URL1:', process.env.NEXTAUTH_URL1);
-    console.log('[AUTH DEBUG] GOOGLE_CLIENT_ID:', process.env.GOOGLE_CLIENT_ID ? 'Set' : 'Missing');
-    console.log('[AUTH DEBUG] GITHUB_ID:', process.env.GITHUB_ID ? 'Set' : 'Missing');
-}
-
 export const authOptions: NextAuthOptions = {
     adapter: PrismaAdapter(prisma),
     providers: [
         GoogleProvider({
-            clientId: process.env.GOOGLE_CLIENT_ID || "",
-            clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
+            clientId: process.env.GOOGLE_CLIENT_ID!,
+            clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
         }),
         GithubProvider({
-            clientId: process.env.GITHUB_ID || "",
-            clientSecret: process.env.GITHUB_SECRET || "",
+            clientId: process.env.GITHUB_ID!,
+            clientSecret: process.env.GITHUB_SECRET!,
         }),
         CredentialsProvider({
             name: "Credenciales",
@@ -80,9 +69,9 @@ export const authOptions: NextAuthOptions = {
             },
         }),
     ],
-    secret: process.env.NEXTAUTH_SECRET1 || process.env.NEXTAUTH_SECRET,
+    secret: process.env.NEXTAUTH_SECRET,
     session: { strategy: "jwt" },
-    jwt: { secret: process.env.NEXTAUTH_SECRET1 || process.env.NEXTAUTH_SECRET },
+    jwt: { secret: process.env.NEXTAUTH_SECRET },
     callbacks: {
         async signIn({ user, account, profile }) {
             console.log('[SIGNIN] Provider:', account?.provider, 'User:', user.email);
