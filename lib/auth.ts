@@ -1,10 +1,22 @@
 import { NextAuthOptions } from "next-auth";
+import GoogleProvider from "next-auth/providers/google";
+import GithubProvider from "next-auth/providers/github";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { prisma } from "@/lib/prisma";
+import { PrismaAdapter } from "@auth/prisma-adapter";
 import bcrypt from "bcryptjs";
+import { prisma } from "@/lib/prisma";
 
 export const authOptions: NextAuthOptions = {
+    adapter: PrismaAdapter(prisma),
     providers: [
+        GoogleProvider({
+            clientId: process.env.GOOGLE_CLIENT_ID || "",
+            clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
+        }),
+        GithubProvider({
+            clientId: process.env.GITHUB_ID || "",
+            clientSecret: process.env.GITHUB_SECRET || "",
+        }),
         CredentialsProvider({
             name: "Credenciales",
             credentials: {
@@ -24,13 +36,16 @@ export const authOptions: NextAuthOptions = {
                     });
 
                     if (!user) {
-                        // Don't reveal if user exists or not
+                        return null;
+                    }
+
+                    // Check if password exists (social login users might not have one)
+                    if (!user.passwordHash) {
                         return null;
                     }
 
                     // Block login if email not verified
                     if (!user.emailVerified) {
-                        // Optionally, you could return a specific error, but NextAuth expects null for failure
                         return null;
                     }
 

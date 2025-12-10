@@ -33,7 +33,7 @@ export async function GET() {
             include: { stores: true }
         });
 
-        const users = usersRaw.map(u => ({
+        const users = usersRaw.map((u: typeof usersRaw[0]) => ({
             id: u.id,
             name: u.name,
             email: u.email,

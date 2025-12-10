@@ -1,0 +1,41 @@
+USER REPORT:
+ID: cmina1c3y00011015b6xdssbj
+Email: testuser@example.com
+Role: USER
+Stores: 
+----------------
+ID: cmincyone0002ev9ndvox4r9f
+Email: recipient@monedera.com
+Role: USER
+Stores: 
+----------------
+ID: cminfw6tj000lr0fxpzq6zpo7
+Email: testuser_1764611107660@example.com
+Role: USER
+Stores: Test Store 1764611107660
+----------------
+ID: cminfwae80000xlpoyh6j1m77
+Email: recipient_1764611107660@example.com
+Role: USER
+Stores: 
+----------------
+ID: cmin7jh8u0000wohug30fp3lf
+Email: demo@monedera.com
+Role: USER
+Stores: 
+----------------
+ID: cmis2hduo00007pkdsj4u9npv
+Email: demo@creatiendas.com
+Role: ADMIN
+Stores: Tienda Demo Oficial
+----------------
+ID: cmivvwzbe0007bhm9n5c3pmud
+Email: testcampaign@test.com
+Role: USER
+Stores: Tienda Campaña TestMi Tienda Bonita
+----------------
+ID: cmivx2j6a001zbhm9cb06my7u
+Email: maria.rodriguez.final@test.com
+Role: USER
+Stores: Las mejores empanadas caseras de la ciudadMi Tienda Bonita
+----------------
