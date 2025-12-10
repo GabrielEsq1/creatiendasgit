@@ -6,6 +6,9 @@ import { PrismaAdapter } from "@auth/prisma-adapter";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
 
+// Override NEXTAUTH_URL to use NEXTAUTH_URL1
+require('./env-override');
+
 export const authOptions: NextAuthOptions = {
     adapter: PrismaAdapter(prisma),
     providers: [
