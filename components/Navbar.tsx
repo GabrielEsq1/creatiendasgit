@@ -33,6 +33,23 @@ export default function Navbar() {
                                     Mi Plan
                                 </Link>
 
+                                {/* Admin-Only Menu */}
+                                {(session.user as any)?.role === 'ADMIN' && (
+                                    <>
+                                        <div className="border-l border-gray-300 mx-2"></div>
+                                        <Link
+                                            href="/admin"
+                                            className={`${isActive('/admin')} flex items-center gap-1`}
+                                        >
+                                            <span className="px-2 py-0.5 bg-red-600 text-white text-xs rounded-full font-bold">ADMIN</span>
+                                            Panel
+                                        </Link>
+                                        <Link href="/admin/users" className={isActive('/admin/users')}>
+                                            Gestión Usuarios
+                                        </Link>
+                                    </>
+                                )}
+
                             </div>
                         )}
                     </div>
@@ -41,7 +58,14 @@ export default function Navbar() {
                             <span className="text-gray-400">Cargando...</span>
                         ) : session ? (
                             <div className="flex items-center gap-4">
-                                <span className="text-sm text-gray-500 hidden sm:inline">Hola, {session.user?.name}</span>
+                                <div className="flex items-center gap-2">
+                                    <span className="text-sm text-gray-500 hidden sm:inline">Hola, {session.user?.name}</span>
+                                    {(session.user as any)?.role === 'ADMIN' && (
+                                        <span className="px-2 py-0.5 bg-gradient-to-r from-red-600 to-red-700 text-white text-xs rounded-full font-bold shadow-lg">
+                                            ADMIN
+                                        </span>
+                                    )}
+                                </div>
                                 <button
                                     onClick={() => signOut({ callbackUrl: '/' })}
                                     className="text-sm text-red-600 hover:text-red-800"
