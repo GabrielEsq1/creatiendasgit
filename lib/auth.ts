@@ -69,9 +69,9 @@ export const authOptions: NextAuthOptions = {
             },
         }),
     ],
-    secret: process.env.NEXTAUTH_SECRET,
+    secret: process.env.NEXTAUTH_SECRET_CREATIENDAS || process.env.NEXTAUTH_SECRET1 || process.env.NEXTAUTH_SECRET,
     session: { strategy: "jwt" },
-    jwt: { secret: process.env.NEXTAUTH_SECRET },
+    jwt: { secret: process.env.NEXTAUTH_SECRET_CREATIENDAS || process.env.NEXTAUTH_SECRET1 || process.env.NEXTAUTH_SECRET },
     callbacks: {
         async signIn({ user, account, profile }) {
             // Create wallet for new users from social login (Google/GitHub)
