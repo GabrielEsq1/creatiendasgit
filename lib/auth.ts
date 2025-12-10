@@ -74,38 +74,21 @@ export const authOptions: NextAuthOptions = {
     jwt: { secret: process.env.NEXTAUTH_SECRET },
     callbacks: {
         async signIn({ user, account, profile }) {
-            console.log('[SIGNIN] Provider:', account?.provider, 'User:', user.email);
-
-            // Create wallet for new users from social login (Google/GitHub)
+            // For social logins, create wallet in background (don't wait)
             if (account?.provider === 'google' || account?.provider === 'github') {
-                try {
-                    console.log('[WALLET] Checking for existing wallet for user:', user.id);
-
-                    // Check if user already has a wallet
-                    const existingWallet = await prisma.walletAccount.findUnique({
-                        where: { userId: user.id }
-                    });
-
-                    if (existingWallet) {
-                        console.log('[WALLET] Wallet already exists');
-                    } else {
-                        console.log('[WALLET] Creating new wallet...');
-                        await prisma.walletAccount.create({
-                            data: {
-                                userId: user.id,
-                                balance: 0,
-                                currency: 'COP'
-                            }
-                        });
-                        console.log('[WALLET] ✅ Wallet created successfully');
-                    }
-                } catch (error) {
-                    console.error('[WALLET] ⚠️ Error creating wallet (allowing login anyway):', error);
-                    // Don't block login if wallet creation fails - user can create it later
-                }
+                // Fire and forget - create wallet without blocking login
+                prisma.walletAccount.findUnique({ where: { userId: user.id } })
+                    .then(existing => {
+                        if (!existing) {
+                            return prisma.walletAccount.create({
+                                data: { userId: user.id, balance: 0, currency: 'COP' }
+                            });
+                        }
+                    })
+                    .catch(err => console.error('[WALLET] Background creation failed:', err));
             }
 
-            console.log('[SIGNIN] Returning true - allowing login');
+            // Always allow login - don't block on wallet creation
             return true;
         },
         async session({ session, token }) {
