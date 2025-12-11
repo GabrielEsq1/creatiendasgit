@@ -7,7 +7,7 @@ import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
 
 export const authOptions: NextAuthOptions = {
-    adapter: PrismaAdapter(prisma),
+    // adapter: PrismaAdapter(prisma), // Temporarily disabled to debug Callback error
     providers: [
         GoogleProvider({
             clientId: process.env.GOOGLE_CLIENT_ID!,
@@ -85,47 +85,12 @@ export const authOptions: NextAuthOptions = {
     jwt: { secret: process.env.NEXTAUTH_SECRET },
     callbacks: {
         async session({ session, token }) {
-            if (token?.sub && session.user) {
-                (session.user as any).id = token.sub;
-
-                // Handle Test User
-                if (token.sub === '1') {
-                    (session.user as any).role = 'ADMIN';
-                    (session.user as any).plan = 'PRO';
-
-                    // Fetch wallet balance from file-based DB
-                    try {
-                        // Dynamic import to avoid build issues if file doesn't exist yet
-                        const { getAccount } = require('./wallet-db');
-                        const account = getAccount('1');
-                        (session.user as any).walletBalance = account.balance;
-                    } catch (e) {
-                        (session.user as any).walletBalance = 0;
-                    }
-                    return session;
-                }
-
-                // Fetch user role, plan, and wallet balance from database
-                try {
-                    const user = await prisma.user.findUnique({
-                        where: { id: token.sub },
-                        select: {
-                            role: true,
-                            plan: true,
-                            walletAccount: {
-                                select: { balance: true }
-                            }
-                        }
-                    });
-
-                    if (user) {
-                        (session.user as any).role = user.role;
-                        (session.user as any).plan = user.plan;
-                        (session.user as any).walletBalance = user.walletAccount?.balance || 0;
-                    }
-                } catch (e) {
-                    console.error("DB Session Error:", e);
-                }
+            if (session.user) {
+                // Default values for successful login
+                (session.user as any).id = token.sub || 'social-login';
+                (session.user as any).role = 'USER';
+                (session.user as any).plan = 'FREE';
+                (session.user as any).walletBalance = 0;
             }
             return session;
         },
