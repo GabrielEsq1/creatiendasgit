@@ -63,33 +63,6 @@ export default function RegisterPage() {
                 <div className="bg-white rounded-3xl shadow-xl border border-gray-100 p-8">
                     <h2 className="text-2xl font-semibold text-gray-900 mb-6">Crear Cuenta</h2>
 
-                    {/* Social Registration */}
-                    <div className="grid grid-cols-2 gap-3 mb-6">
-                        <button
-                            type="button"
-                            onClick={() => handleSocialRegister('google')}
-                            className="flex items-center justify-center gap-2 py-2.5 px-4 bg-white border border-gray-300 rounded-xl text-sm font-medium text-gray-700 hover:bg-gray-50 hover:border-gray-400 transition-all hover:-translate-y-0.5"
-                        >
-                            <Chrome className="w-4 h-4 text-rose-500" />
-                            Google
-                        </button>
-                        <button
-                            type="button"
-                            onClick={() => handleSocialRegister('github')}
-                            className="flex items-center justify-center gap-2 py-2.5 px-4 bg-[#24292F] border border-[#24292F] rounded-xl text-sm font-medium text-white hover:bg-[#24292F]/90 transition-all hover:-translate-y-0.5"
-                        >
-                            <Github className="w-4 h-4" />
-                            GitHub
-                        </button>
-                    </div>
-
-                    <div className="relative mb-6">
-                        <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-gray-200"></div></div>
-                        <div className="relative flex justify-center text-xs uppercase tracking-wide text-gray-400 font-medium">
-                            <span className="px-3 bg-white">O regístrate con email</span>
-                        </div>
-                    </div>
-
                     <form onSubmit={handleRegister} className="space-y-5">
                         {/* Name Input */}
                         <div>

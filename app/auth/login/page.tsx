@@ -66,31 +66,6 @@ function LoginForm() {
                     <p className="text-slate-500 text-sm">Ingresa a tu cuenta para gestionar tu tienda</p>
                 </div>
 
-                {/* Social Login */}
-                <div className="grid grid-cols-2 gap-3 mb-6 relative z-10">
-                    <button
-                        onClick={() => handleSocialLogin('google')}
-                        className="flex items-center justify-center gap-2 py-2.5 px-4 bg-white border border-slate-200 rounded-xl text-sm font-medium text-slate-700 hover:bg-slate-50 hover:border-slate-300 transition-all hover:-translate-y-0.5"
-                    >
-                        <Chrome className="w-4 h-4 text-rose-500" />
-                        Google
-                    </button>
-                    <button
-                        onClick={() => handleSocialLogin('github')}
-                        className="flex items-center justify-center gap-2 py-2.5 px-4 bg-[#24292F] border border-[#24292F] rounded-xl text-sm font-medium text-white hover:bg-[#24292F]/90 transition-all hover:-translate-y-0.5"
-                    >
-                        <Github className="w-4 h-4" />
-                        GitHub
-                    </button>
-                </div>
-
-                <div className="relative mb-6">
-                    <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-slate-100"></div></div>
-                    <div className="relative flex justify-center text-xs uppercase tracking-wide text-slate-400 font-medium">
-                        <span className="px-3 bg-white/80 backdrop-blur-xl">O continúa con email</span>
-                    </div>
-                </div>
-
                 {/* Credentials Form */}
                 <form onSubmit={handleLogin} className="space-y-4">
                     <div className="space-y-1.5">

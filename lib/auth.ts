@@ -1,33 +1,12 @@
 import { NextAuthOptions } from "next-auth";
-import GoogleProvider from "next-auth/providers/google";
-import GithubProvider from "next-auth/providers/github";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
 
 export const authOptions: NextAuthOptions = {
-    // adapter: PrismaAdapter(prisma), // Temporarily disabled to debug Callback error
+    adapter: PrismaAdapter(prisma),
     providers: [
-        GoogleProvider({
-            clientId: process.env.GOOGLE_CLIENT_ID!,
-            clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
-            allowDangerousEmailAccountLinking: true,
-            checks: ['none'], // Bypass state check to avoid Vercel proxy issues
-            authorization: {
-                params: {
-                    prompt: "select_account",
-                    access_type: "offline",
-                    response_type: "code"
-                }
-            }
-        }),
-        GithubProvider({
-            clientId: process.env.GITHUB_ID!,
-            clientSecret: process.env.GITHUB_SECRET!,
-            allowDangerousEmailAccountLinking: true,
-            checks: ['none'], // Bypass state check
-        }),
         CredentialsProvider({
             name: "Credenciales",
             credentials: {
@@ -50,14 +29,15 @@ export const authOptions: NextAuthOptions = {
                         return null;
                     }
 
-                    // Check if password exists (social login users might not have one)
+                    // Check if password exists
                     if (!user.passwordHash) {
                         return null;
                     }
 
                     // Block login if email not verified
+                    // IMPORTANT: You must manually set emailVerified: true in DB for new users if SMTP fails
                     if (!user.emailVerified) {
-                        return null;
+                        throw new Error("Email not verified");
                     }
 
                     // Verify password
@@ -85,18 +65,36 @@ export const authOptions: NextAuthOptions = {
     jwt: { secret: process.env.NEXTAUTH_SECRET },
     callbacks: {
         async session({ session, token }) {
-            if (session.user) {
-                // Default values for successful login
-                (session.user as any).id = token.sub || 'social-login';
-                (session.user as any).role = 'USER';
-                (session.user as any).plan = 'FREE';
-                (session.user as any).walletBalance = 0;
+            if (token?.sub && session.user) {
+                (session.user as any).id = token.sub;
+
+                // Fetch user role, plan, and wallet balance from database
+                try {
+                    const user = await prisma.user.findUnique({
+                        where: { id: token.sub },
+                        select: {
+                            role: true,
+                            plan: true,
+                            walletAccount: {
+                                select: { balance: true }
+                            }
+                        }
+                    });
+
+                    if (user) {
+                        (session.user as any).role = user.role;
+                        (session.user as any).plan = user.plan;
+                        (session.user as any).walletBalance = user.walletAccount?.balance || 0;
+                    }
+                } catch (e) {
+                    console.error("DB Session Error:", e);
+                }
             }
             return session;
         },
     },
     pages: {
         signIn: "/auth/login",
-        error: "/auth/login", // Redirect errors back to login
+        error: "/auth/login",
     },
 };
