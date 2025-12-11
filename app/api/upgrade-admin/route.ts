@@ -8,7 +8,7 @@ export async function GET() {
     try {
         // Update admin1@creatiendas.com to ADMIN role
         const updated = await prisma.user.update({
-            where: { email: 'admin1@creatiendas.com' },
+            where: { email: 'admin2@creatiendas.com' },
             data: {
                 role: 'ADMIN',
                 plan: 'PRO',
