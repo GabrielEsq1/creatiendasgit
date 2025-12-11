@@ -46,7 +46,7 @@ export async function POST(req: Request) {
                         email,
                         passwordHash,
                         verificationToken,
-                        emailVerified: null, // Require verification
+                        emailVerified: new Date(), // Auto-verify as per user request
                     },
                 });
                 await tx.walletAccount.create({
@@ -69,7 +69,7 @@ export async function POST(req: Request) {
                             email,
                             passwordHash,
                             verificationToken,
-                            emailVerified: null,
+                            emailVerified: new Date(),
                         },
                     });
                     await tx.walletAccount.create({
@@ -91,18 +91,18 @@ export async function POST(req: Request) {
             alertNewUser({ email, name, plan: "FREE" }).catch(() => { });
         } catch { }
 
-        // Send verification email
-        try {
-            console.log("Sending verification email to:", email);
-            await sendVerificationEmail(email, verificationToken);
-            console.log("Verification email sent.");
-        } catch (emailError) {
-            console.error("Failed to send verification email:", emailError);
-            // We continue, but the user might need to request a resend later
-        }
+        // Verification email disabled as per user request
+        // try {
+        //     console.log("Sending verification email to:", email);
+        //     await sendVerificationEmail(email, verificationToken);
+        //     console.log("Verification email sent.");
+        // } catch (emailError) {
+        //     console.error("Failed to send verification email:", emailError);
+        //     // We continue, but the user might need to request a resend later
+        // }
 
         return NextResponse.json(
-            { message: "Cuenta creada. Por favor verifica tu correo.", userId: user.id },
+            { message: "Cuenta creada exitosamente. Ya puedes iniciar sesión.", userId: user.id },
             { status: 201 }
         );
     } catch (error: any) {

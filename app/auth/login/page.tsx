@@ -18,7 +18,7 @@ function LoginForm() {
 
     useEffect(() => {
         if (searchParams.get("registered") === "true") {
-            setSuccessMessage("Cuenta creada exitosamente. Por favor verifica tu correo e inicia sesión.");
+            setSuccessMessage("Cuenta creada exitosamente. Ya puedes iniciar sesión.");
         }
     }, [searchParams]);
 
@@ -35,7 +35,7 @@ function LoginForm() {
             });
 
             if (result?.error) {
-                setError("Credenciales inválidas o correo no verificado");
+                setError("Credenciales inválidas");
             } else {
                 router.push(callbackUrl);
                 router.refresh();

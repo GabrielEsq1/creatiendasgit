@@ -34,11 +34,10 @@ export const authOptions: NextAuthOptions = {
                         return null;
                     }
 
-                    // Block login if email not verified
-                    // IMPORTANT: You must manually set emailVerified: true in DB for new users if SMTP fails
-                    if (!user.emailVerified) {
-                        throw new Error("Email not verified");
-                    }
+                    // Email verification check removed as per user request for simple login
+                    // if (!user.emailVerified) {
+                    //    throw new Error("Email not verified");
+                    // }
 
                     // Verify password
                     const isValid = await bcrypt.compare(credentials.password, user.passwordHash);
