@@ -13,6 +13,7 @@ export const authOptions: NextAuthOptions = {
             clientId: process.env.GOOGLE_CLIENT_ID!,
             clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
             allowDangerousEmailAccountLinking: true,
+            checks: ['none'], // Bypass state check to avoid Vercel proxy issues
             authorization: {
                 params: {
                     prompt: "select_account",
@@ -25,6 +26,7 @@ export const authOptions: NextAuthOptions = {
             clientId: process.env.GITHUB_ID!,
             clientSecret: process.env.GITHUB_SECRET!,
             allowDangerousEmailAccountLinking: true,
+            checks: ['none'], // Bypass state check
         }),
         CredentialsProvider({
             name: "Credenciales",
@@ -82,24 +84,6 @@ export const authOptions: NextAuthOptions = {
     session: { strategy: "jwt" },
     jwt: { secret: process.env.NEXTAUTH_SECRET },
     callbacks: {
-        async signIn({ user, account, profile }) {
-            // For social logins, create wallet in background (don't wait)
-            if (account?.provider === 'google' || account?.provider === 'github') {
-                // Fire and forget - create wallet without blocking login
-                prisma.walletAccount.findUnique({ where: { userId: user.id } })
-                    .then(existing => {
-                        if (!existing) {
-                            return prisma.walletAccount.create({
-                                data: { userId: user.id, balance: 0, currency: 'COP' }
-                            });
-                        }
-                    })
-                    .catch(err => console.error('[WALLET] Background creation failed:', err));
-            }
-
-            // Always allow login - don't block on wallet creation
-            return true;
-        },
         async session({ session, token }) {
             if (token?.sub && session.user) {
                 (session.user as any).id = token.sub;
@@ -148,6 +132,6 @@ export const authOptions: NextAuthOptions = {
     },
     pages: {
         signIn: "/auth/login",
+        error: "/auth/login", // Redirect errors back to login
     },
 };
-
