@@ -1,9 +1,8 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import bcrypt from "bcryptjs";
-import { alertNewUser, alertMilestone } from "@/lib/alerts";
-// import { sendVerificationEmail } from "@/lib/email"; // Email sending handled internally
-import crypto from "crypto";
+import { alertNewUser } from "@/lib/alerts";
+import { sendVerificationEmail } from "@/lib/email";
 
 // Helper to generate a token that is virtually guaranteed to be unique
 function generateVerificationToken(): string {
@@ -37,7 +36,9 @@ export async function POST(req: Request) {
         // Generate verification token
         let verificationToken = generateVerificationToken();
         let user;
+
         try {
+            // Attempt creation inside transaction
             user = await prisma.$transaction(async (tx) => {
                 const newUser = await tx.user.create({
                     data: {
@@ -45,7 +46,7 @@ export async function POST(req: Request) {
                         email,
                         passwordHash,
                         verificationToken,
-                        emailVerified: new Date(), // Auto-verify for immediate login
+                        emailVerified: null, // Require verification
                     },
                 });
                 await tx.walletAccount.create({
@@ -58,7 +59,7 @@ export async function POST(req: Request) {
                 return newUser;
             });
         } catch (e: any) {
-            // If token collision, retry once with a new token
+            // If token collision (very rare), retry once with a new token
             if (e.code === "P2002" && e.meta?.target?.includes("verificationToken")) {
                 verificationToken = generateVerificationToken();
                 user = await prisma.$transaction(async (tx) => {
@@ -68,7 +69,7 @@ export async function POST(req: Request) {
                             email,
                             passwordHash,
                             verificationToken,
-                            emailVerified: new Date(), // Auto-verify for immediate login
+                            emailVerified: null,
                         },
                     });
                     await tx.walletAccount.create({
@@ -90,23 +91,28 @@ export async function POST(req: Request) {
             alertNewUser({ email, name, plan: "FREE" }).catch(() => { });
         } catch { }
 
-        // Email sending is handled internally – token is stored; actual dispatch should be implemented elsewhere.
+        // Send verification email
+        try {
+            console.log("Sending verification email to:", email);
+            await sendVerificationEmail(email, verificationToken);
+            console.log("Verification email sent.");
+        } catch (emailError) {
+            console.error("Failed to send verification email:", emailError);
+            // We continue, but the user might need to request a resend later
+        }
 
         return NextResponse.json(
             { message: "Cuenta creada. Por favor verifica tu correo.", userId: user.id },
             { status: 201 }
         );
     } catch (error: any) {
-        console.error("Registration error FULL:", error, error.message, error.stack);
+        console.error("Registration error FULL:", error);
         return NextResponse.json(
             {
                 message: "Error al crear la cuenta. Por favor intenta de nuevo.",
-                debugError: error.message,
-                debugStack: error.stack
+                debugError: error.message
             },
             { status: 500 }
         );
     }
 }
-
-
