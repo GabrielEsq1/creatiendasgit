@@ -105,7 +105,19 @@ export async function PUT(
             }
         });
 
-        return NextResponse.json({ success: true, store: updatedStore });
+        // Get the base URL for constructing the public store URL
+        const protocol = process.env.NODE_ENV === 'production' ? 'https' : 'http';
+        const host = request.headers.get('host') || 'localhost:3000';
+        // Handle subdomain vs path based on host
+        const publicUrl = `${protocol}://${host}/stores/${updatedStore.slug}`;
+
+        return NextResponse.json({
+            success: true,
+            store: updatedStore,
+            id: updatedStore.id,
+            url: publicUrl,
+            publicUrl
+        });
     } catch (error) {
         console.error('Error updating store:', error);
         return NextResponse.json(
