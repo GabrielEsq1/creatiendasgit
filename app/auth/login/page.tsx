@@ -14,7 +14,7 @@ function LoginForm() {
     const [successMessage, setSuccessMessage] = useState("");
     const router = useRouter();
     const searchParams = useSearchParams();
-    const callbackUrl = searchParams.get("callbackUrl") || "/dashboard";
+    const callbackUrl = searchParams?.get("callbackUrl") || "/dashboard";
 
     useEffect(() => {
         if (searchParams.get("registered") === "true") {
