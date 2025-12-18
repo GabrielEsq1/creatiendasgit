@@ -123,10 +123,6 @@ async function createSampleStores() {
                 owner: {
                     connect: { id: ownerUserId }
                 },
-                ownerUserId, // Keep this if schema allows redundancy, but usually connect sets it. 
-                // Wait, if I use connect, I shouldn't pass ownerUserId manually in strict inputs unless unchecked.
-                // Safest is to rely on 'owner: { connect }'.
-                // Let's remove ownerUserId from data object to be safe from 'unknown argument' errors if strict.
                 products: {
                     create: products,
                 },
