@@ -16,7 +16,7 @@ export default function Hero() {
     // though purely visual generic rendering is usually fine.
 
     return (
-        <section className="relative overflow-hidden bg-white pt-16 pb-24 lg:pt-24 lg:pb-32 px-4 md:px-8">
+        <section className="relative overflow-hidden bg-white pt-8 pb-24 lg:pt-12 lg:pb-32 px-4 md:px-8">
             {/* Soft Ambient Background */}
             <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-green-50 rounded-full blur-[120px] -translate-y-1/2 translate-x-1/2 opacity-70" />
             <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-blue-50 rounded-full blur-[120px] translate-y-1/2 -translate-x-1/2 opacity-70" />

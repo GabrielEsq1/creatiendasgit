@@ -3,7 +3,9 @@ import Link from 'next/link';
 export default function Header() {
     return (
         <header className="bg-white shadow-sm p-6 flex justify-between items-center">
-            <h1 className="text-2xl font-bold text-gray-800">Creatiendas</h1>
+            <Link href="/">
+                <img src="/logo.png" className="h-8 w-auto" alt="CreaTiendas" />
+            </Link>
             <div className="space-x-4">
                 <Link href="/auth/login" className="text-gray-600 hover:text-gray-900">
                     Entrar

@@ -30,7 +30,9 @@ export default function RootLayout({
                 <Providers>
                     <AnalyticsTracker />
                     <Navbar />
-                    {children}
+                    <main className="pt-16">
+                        {children}
+                    </main>
                     <WhatsAppButton />
                     {/* B2Chat Widget - Adjust path if necessary based on B2Chat-main contents */}
                     <script src="/b2chat/B2Chat-main/widget.js" async></script>
