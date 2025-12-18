@@ -1,4 +1,5 @@
 import React from 'react';
+export const dynamic = 'force-dynamic';
 
 import Hero from '@/components/Hero';
 import WhatIs from '@/components/WhatIs';

@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { Paperclip, Send, MoreVertical, Search, Smile } from "lucide-react";
-import { useSocket } from "@/hooks/useSocket";
+// import { useSocket } from "@/hooks/useSocket";
 
 interface Message {
   id: string;
@@ -20,7 +20,8 @@ interface ChatWindowProps {
 
 export default function ChatWindow({ conversation }: ChatWindowProps) {
   const { data: session } = useSession();
-  const { socket } = useSocket();
+  // const { socket } = useSocket();
+  const socket = null as any; // Emergency: socket disabled
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState<Message[]>([]);
   const [loading, setLoading] = useState(false);
