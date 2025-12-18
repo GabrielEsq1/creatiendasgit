@@ -1,6 +1,9 @@
 import Link from 'next/link';
+import { useState } from 'react';
+import VideoModal from './VideoModal';
 
 export default function Hero() {
+    const [showVideo, setShowVideo] = useState(false);
     return (
         <section className="relative overflow-hidden bg-gradient-to-br from-slate-50 via-white to-green-50 py-16 px-4 md:px-8 lg:px-16">
             {/* Background decoration */}
@@ -87,7 +90,7 @@ export default function Hero() {
                 </div>
 
                 {/* CTA Buttons */}
-                <div className="flex flex-col sm:flex-row justify-center gap-4 mb-8">
+                <div className="flex flex-col sm:flex-row justify-center gap-4 mb-4">
                     <Link
                         href="/auth/register"
                         className="group inline-flex items-center justify-center gap-2 bg-gradient-to-r from-green-500 to-emerald-600 text-white px-8 py-4 rounded-xl font-bold text-lg hover:from-green-600 hover:to-emerald-700 transition-all shadow-lg shadow-green-500/25 hover:shadow-green-500/40 hover:scale-105"
@@ -97,12 +100,37 @@ export default function Hero() {
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
                         </svg>
                     </Link>
-                    <Link
-                        href="#demo"
+                    <button
+                        onClick={() => setShowVideo(true)}
                         className="inline-flex items-center justify-center gap-2 border-2 border-gray-300 text-gray-700 px-8 py-4 rounded-xl font-semibold text-lg hover:bg-gray-50 hover:border-gray-400 transition-all"
                     >
                         ▶️ Ver demo en vivo
-                    </Link>
+                    </button>
+                </div>
+
+                {/* Video Modal */}
+                <VideoModal
+                    isOpen={showVideo}
+                    onClose={() => setShowVideo(false)}
+                    videoSrc="https://youtu.be/XQQfQYZ0Phk"
+                />
+
+                {/* SPECIAL ONBOARDING CTA */}
+                <div className="flex justify-center mb-8">
+                    <a
+                        href="https://meet.brevo.com/gabriel-esquivia"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="relative group inline-flex items-center justify-center gap-2 bg-gradient-to-r from-amber-500 to-orange-600 text-white px-6 py-3 rounded-full font-bold text-base hover:from-amber-600 hover:to-orange-700 transition-all shadow-lg shadow-orange-500/30 hover:shadow-orange-500/50 hover:-translate-y-0.5 animate-pulse"
+                    >
+                        <span className="absolute -top-3 -right-3 bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-sm animate-bounce">
+                            ¡NUEVO!
+                        </span>
+                        🚀 Agenda tu Onboarding GRATIS (10 min)
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                    </a>
                 </div>
 
                 {/* Trust Elements */}

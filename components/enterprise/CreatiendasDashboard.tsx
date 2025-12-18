@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { Store, Plus, Settings, Eye, Trash2, Edit, Package } from 'lucide-react';
+import ActivationChecklist from '../dashboard/ActivationChecklist';
 
 
 interface StoreData {
@@ -106,6 +107,9 @@ export default function CreatiendasDashboard() {
                         Nueva Tienda
                     </button>
                 </div>
+
+                {/* Activation Checklist (Gamification) */}
+                <ActivationChecklist stores={stores} />
 
                 {/* Stores Grid */}
                 {stores.length === 0 ? (
