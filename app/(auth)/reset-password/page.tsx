@@ -6,7 +6,8 @@ export const dynamic = 'force-dynamic';
 
 function ResetPasswordForm() {
     const router = useRouter();
-    const token = useSearchParams().get('token');
+    const searchParams = useSearchParams();
+    const token = searchParams?.get('token');
     const [newPass, setNewPass] = useState('');
     const [confirm, setConfirm] = useState('');
     const [msg, setMsg] = useState<string | null>(null);
