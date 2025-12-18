@@ -23,6 +23,7 @@
     ],
     "paths": {
       "@/*": [
+        "./src/*",
         "./*"
       ]
     },
@@ -38,7 +39,6 @@
   "exclude": [
     "node_modules",
     "public/b2chat/**/*",
-    "scripts",
-    "src"
+    "scripts"
   ]
 }
