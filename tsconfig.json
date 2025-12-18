@@ -37,6 +37,8 @@
   ],
   "exclude": [
     "node_modules",
-    "public/b2chat/**/*"
+    "public/b2chat/**/*",
+    "scripts",
+    "src"
   ]
 }
