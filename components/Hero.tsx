@@ -1,185 +1,154 @@
-'use client';
+"use client";
 
 import Link from 'next/link';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import VideoModal from './VideoModal';
 
 export default function Hero() {
     const [showVideo, setShowVideo] = useState(false);
+    const [mounted, setMounted] = useState(false);
+
+    useEffect(() => {
+        setMounted(true);
+    }, []);
+
+    // Prevent hydration mismatch for interactive elements if needed, 
+    // though purely visual generic rendering is usually fine.
+
     return (
-        <section className="relative overflow-hidden bg-gradient-to-br from-slate-50 via-white to-green-50 py-16 px-4 md:px-8 lg:px-16">
-            {/* Background decoration */}
-            <div className="absolute top-0 right-0 w-96 h-96 bg-green-200/30 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
-            <div className="absolute bottom-0 left-0 w-80 h-80 bg-purple-200/30 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
+        <section className="relative overflow-hidden bg-[#0f172a] text-white py-20 lg:py-28 px-4 md:px-8">
+            {/* Ambient Background */}
+            <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-green-500/20 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/2" />
+            <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-blue-500/10 rounded-full blur-[100px] translate-y-1/2 -translate-x-1/2" />
 
-            <div className="max-w-6xl mx-auto relative">
-                {/* Trust Badge */}
-                <div className="flex justify-center mb-6">
-                    <div className="inline-flex items-center gap-2 bg-white/80 backdrop-blur-sm border border-green-200 rounded-full px-4 py-2 shadow-sm">
-                        <span className="flex gap-0.5">
-                            {[1, 2, 3, 4, 5].map((i) => (
-                                <svg key={i} className="w-4 h-4 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
-                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                                </svg>
-                            ))}
-                        </span>
-                        <span className="text-sm text-gray-600 font-medium">+500 tiendas creadas</span>
-                    </div>
-                </div>
+            <div className="max-w-7xl mx-auto relative z-10">
 
-                {/* Main Headline */}
-                <div className="text-center mb-8">
-                    <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-gray-900 mb-6 leading-tight">
-                        El <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-500 to-emerald-600">Shopify de WhatsApp</span>
-                        <br />
-                        <span className="text-3xl md:text-4xl lg:text-5xl">para negocios latinoamericanos</span>
-                    </h1>
-                    <p className="text-xl md:text-2xl text-gray-600 mb-4 max-w-3xl mx-auto">
-                        Crea tu tienda online en <span className="font-bold text-green-600">2 minutos</span>, no en 2 días.
-                        <br className="hidden md:block" />
-                        Recibe pedidos directo a tu WhatsApp. <span className="font-bold text-green-600">100% GRATIS.</span>
-                    </p>
-                </div>
-
-                {/* Shopify Comparison Box */}
-                <div className="max-w-2xl mx-auto mb-10">
-                    <div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
-                        <div className="grid grid-cols-3 text-center">
-                            <div className="p-4 border-b border-gray-100">
-                                <span className="text-xs text-gray-500 uppercase tracking-wider">Característica</span>
-                            </div>
-                            <div className="p-4 border-b border-gray-100 bg-gray-50">
-                                <span className="text-xs text-gray-500 uppercase tracking-wider">Otros</span>
-                            </div>
-                            <div className="p-4 border-b border-gray-100 bg-gradient-to-r from-green-500 to-emerald-600">
-                                <span className="text-xs text-white uppercase tracking-wider font-bold">Creatiendas</span>
-                            </div>
-
-                            {/* Row 1 */}
-                            <div className="p-4 flex items-center justify-center border-b border-gray-50">
-                                <span className="text-sm text-gray-700">Precio mensual</span>
-                            </div>
-                            <div className="p-4 flex items-center justify-center border-b border-gray-50 bg-gray-50">
-                                <span className="text-red-500 font-semibold">$29+ USD</span>
-                            </div>
-                            <div className="p-4 flex items-center justify-center border-b border-gray-50 bg-green-50">
-                                <span className="text-green-600 font-bold text-lg">¡GRATIS!</span>
-                            </div>
-
-                            {/* Row 2 */}
-                            <div className="p-4 flex items-center justify-center border-b border-gray-50">
-                                <span className="text-sm text-gray-700">Tiempo de setup</span>
-                            </div>
-                            <div className="p-4 flex items-center justify-center border-b border-gray-50 bg-gray-50">
-                                <span className="text-gray-500">Horas / Días</span>
-                            </div>
-                            <div className="p-4 flex items-center justify-center border-b border-gray-50 bg-green-50">
-                                <span className="text-green-600 font-bold">2 minutos ⚡</span>
-                            </div>
-
-                            {/* Row 3 */}
-                            <div className="p-4 flex items-center justify-center">
-                                <span className="text-sm text-gray-700">WhatsApp nativo</span>
-                            </div>
-                            <div className="p-4 flex items-center justify-center bg-gray-50">
-                                <span className="text-red-500">❌ Plugins extra</span>
-                            </div>
-                            <div className="p-4 flex items-center justify-center bg-green-50">
-                                <span className="text-green-600 font-bold">✅ Integrado</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                {/* CTA Buttons */}
-                <div className="flex flex-col sm:flex-row justify-center gap-4 mb-4">
-                    <Link
-                        href="/auth/register"
-                        className="group inline-flex items-center justify-center gap-2 bg-gradient-to-r from-green-500 to-emerald-600 text-white px-8 py-4 rounded-xl font-bold text-lg hover:from-green-600 hover:to-emerald-700 transition-all shadow-lg shadow-green-500/25 hover:shadow-green-500/40 hover:scale-105"
-                    >
-                        🏪 Crear mi tienda GRATIS
-                        <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                        </svg>
-                    </Link>
-                    <button
-                        onClick={() => setShowVideo(true)}
-                        className="inline-flex items-center justify-center gap-2 border-2 border-gray-300 text-gray-700 px-8 py-4 rounded-xl font-semibold text-lg hover:bg-gray-50 hover:border-gray-400 transition-all"
-                    >
-                        ▶️ Ver demo en vivo
-                    </button>
-                </div>
-
-                {/* Video Modal */}
-                <VideoModal
-                    isOpen={showVideo}
-                    onClose={() => setShowVideo(false)}
-                    videoSrc="https://youtu.be/XQQfQYZ0Phk"
-                />
-
-                {/* SPECIAL ONBOARDING CTA */}
+                {/* 1. Onboarding Badge (NEW) */}
                 <div className="flex justify-center mb-8">
                     <a
                         href="https://meet.brevo.com/gabriel-esquivia"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="relative group inline-flex items-center justify-center gap-2 bg-gradient-to-r from-amber-500 to-orange-600 text-white px-6 py-3 rounded-full font-bold text-base hover:from-amber-600 hover:to-orange-700 transition-all shadow-lg shadow-orange-500/30 hover:shadow-orange-500/50 hover:-translate-y-0.5 animate-pulse"
+                        className="group relative inline-flex items-center gap-3 bg-white/5 border border-white/10 hover:border-green-500/50 backdrop-blur-md rounded-full px-4 py-2 transition-all hover:bg-white/10"
                     >
-                        <span className="absolute -top-3 -right-3 bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-sm animate-bounce">
-                            ¡NUEVO!
+                        <span className="flex h-3 w-3">
+                            <span className="animate-ping absolute inline-flex h-3 w-3 rounded-full bg-green-400 opacity-75"></span>
+                            <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
                         </span>
-                        🚀 Agenda tu Onboarding GRATIS (10 min)
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        <span className="text-sm font-medium text-green-300 group-hover:text-green-200">
+                            Agenda tu Onboarding GRATIS
+                        </span>
+                        <svg className="w-4 h-4 text-green-500 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                         </svg>
                     </a>
                 </div>
 
-                {/* Trust Elements */}
-                <div className="flex flex-wrap justify-center gap-6 text-sm text-gray-500">
-                    <div className="flex items-center gap-2">
-                        <svg className="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                        </svg>
-                        Sin tarjeta de crédito
+                {/* 2. Main Headline */}
+                <div className="text-center max-w-4xl mx-auto mb-12">
+                    <h1 className="text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight mb-6 leading-tight">
+                        El <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-emerald-500">Shopify de WhatsApp</span>
+                        <br />
+                        <span className="text-3xl md:text-5xl lg:text-6xl font-bold text-slate-300">para Latinoamérica</span>
+                    </h1>
+                    <p className="text-xl md:text-2xl text-slate-400 max-w-2xl mx-auto leading-relaxed">
+                        Crea tu tienda en <span className="text-white font-semibold">2 minutos</span>. Recibe pedidos directo en tu WhatsApp.
+                        <br className="hidden md:block" />
+                        Sin comisiones. Sin tarjeta de crédito. <span className="text-green-400 font-bold">100% Gratis.</span>
+                    </p>
+                </div>
+
+                {/* 3. CTA Buttons */}
+                <div className="flex flex-col sm:flex-row justify-center items-center gap-5 mb-16">
+                    <Link
+                        href="/auth/register"
+                        className="group relative inline-flex h-14 items-center justify-center overflow-hidden rounded-xl bg-green-500 px-8 font-bold text-white shadow-2xl shadow-green-500/40 transition-all duration-300 hover:bg-green-600 hover:scale-105 active:scale-95 text-lg"
+                    >
+                        <span className="mr-2 text-2xl">⚡</span> Crear mi tienda YA
+                        <div className="absolute inset-0 -z-10 bg-gradient-to-r from-transparent via-white/20 to-transparent skew-x-12 -translate-x-full group-hover:animate-shine" />
+                    </Link>
+
+                    <button
+                        onClick={() => setShowVideo(true)}
+                        className="group inline-flex h-14 items-center justify-center rounded-xl border border-white/20 bg-white/5 px-8 font-semibold text-white backdrop-blur-sm transition-all hover:bg-white/10 hover:border-white/30 text-lg"
+                    >
+                        <div className="mr-3 flex h-8 w-8 items-center justify-center rounded-full bg-white/10 group-hover:bg-green-500/20 group-hover:text-green-400 transition-colors">
+                            <svg className="h-4 w-4 fill-current ml-0.5" viewBox="0 0 24 24">
+                                <path d="M8 5v14l11-7z" />
+                            </svg>
+                        </div>
+                        Ver Demo
+                    </button>
+                </div>
+
+                {/* 4. Comparison Cards (Redesigned) */}
+                <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+                    {/* The "Others" Card */}
+                    <div className="bg-white/5 border border-white/5 rounded-2xl p-6 md:p-8 backdrop-blur-sm opacity-75 hover:opacity-100 transition-opacity">
+                        <div className="flex items-center gap-3 mb-4 text-slate-400">
+                            <div className="p-2 bg-slate-800 rounded-lg">
+                                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+                            </div>
+                            <span className="text-sm font-bold uppercase tracking-wider">Otras Plataformas</span>
+                        </div>
+                        <ul className="space-y-3 text-slate-300">
+                            <li className="flex gap-2"><span className="text-red-400">✖</span> Cobros mensuales ($29 USD+)</li>
+                            <li className="flex gap-2"><span className="text-red-400">✖</span> Comisiones por venta</li>
+                            <li className="flex gap-2"><span className="text-red-400">✖</span> Configuración compleja</li>
+                        </ul>
                     </div>
-                    <div className="flex items-center gap-2">
-                        <svg className="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                        </svg>
-                        Sin comisiones
-                    </div>
-                    <div className="flex items-center gap-2">
-                        <svg className="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                        </svg>
-                        100% en español
+
+                    {/* The "Creatiendas" Card */}
+                    <div className="relative bg-gradient-to-b from-green-500/10 to-emerald-500/5 border border-green-500/30 rounded-2xl p-6 md:p-8 backdrop-blur-md transform md:-translate-y-4 shadow-2xl shadow-green-900/20">
+                        <div className="absolute top-0 right-0 p-3">
+                            <span className="bg-green-500 text-white text-xs font-bold px-2 py-1 rounded-full shadow-lg">RECOMENDADO</span>
+                        </div>
+                        <div className="flex items-center gap-3 mb-4 text-white">
+                            <div className="p-2 bg-green-500 rounded-lg shadow-lg shadow-green-500/30">
+                                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
+                            </div>
+                            <span className="text-sm font-bold uppercase tracking-wider">Creatiendas</span>
+                        </div>
+                        <ul className="space-y-4 text-white font-medium">
+                            <li className="flex gap-3 items-center">
+                                <div className="h-6 w-6 rounded-full bg-green-500/20 flex items-center justify-center border border-green-500/50 text-green-400 text-xs">✓</div>
+                                <span>Totalmente <span className="text-green-400 font-bold text-lg">GRATIS</span></span>
+                            </li>
+                            <li className="flex gap-3 items-center">
+                                <div className="h-6 w-6 rounded-full bg-green-500/20 flex items-center justify-center border border-green-500/50 text-green-400 text-xs">✓</div>
+                                <span>0% Comisiones</span>
+                            </li>
+                            <li className="flex gap-3 items-center">
+                                <div className="h-6 w-6 rounded-full bg-green-500/20 flex items-center justify-center border border-green-500/50 text-green-400 text-xs">✓</div>
+                                <span>Tienda lista en 2 minutos</span>
+                            </li>
+                        </ul>
                     </div>
                 </div>
 
-                {/* Steps Card */}
-                <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
-                    {[
-                        { title: 'Regístrate gratis', icon: '📝', desc: 'Solo email, sin tarjeta' },
-                        { title: 'Crea tu tienda', icon: '🎨', desc: 'Constructor visual fácil' },
-                        { title: 'Recibe pedidos por WhatsApp', icon: '📲', desc: '¡Empieza a vender!' },
-                    ].map((step, idx) => (
-                        <div
-                            key={idx}
-                            className="group bg-white rounded-2xl shadow-lg hover:shadow-xl p-6 flex flex-col items-center text-center transition-all hover:-translate-y-1 border border-gray-100"
-                        >
-                            <div className="w-16 h-16 bg-gradient-to-br from-green-100 to-emerald-100 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                                <span className="text-3xl">{step.icon}</span>
-                            </div>
-                            <div className="bg-green-100 text-green-700 text-xs font-bold px-2 py-1 rounded-full mb-2">
-                                Paso {idx + 1}
-                            </div>
-                            <h3 className="text-lg font-bold text-gray-800 mb-1">{step.title}</h3>
-                            <p className="text-sm text-gray-500">{step.desc}</p>
-                        </div>
-                    ))}
+                {/* 5. Social Proof / Stats */}
+                <div className="mt-16 pt-8 border-t border-white/10 flex flex-wrap justify-center gap-12 text-center">
+                    <div>
+                        <div className="text-3xl font-bold text-white mb-1">+500</div>
+                        <div className="text-xs text-slate-400 uppercase tracking-widest">Tiendas Activas</div>
+                    </div>
+                    <div>
+                        <div className="text-3xl font-bold text-white mb-1">100%</div>
+                        <div className="text-xs text-slate-400 uppercase tracking-widest">Latinoamericano</div>
+                    </div>
+                    <div>
+                        <div className="text-3xl font-bold text-white mb-1">24/7</div>
+                        <div className="text-xs text-slate-400 uppercase tracking-widest">Soporte Auto</div>
+                    </div>
                 </div>
             </div>
+
+            {/* Video Modal Component */}
+            <VideoModal
+                isOpen={showVideo}
+                onClose={() => setShowVideo(false)}
+                videoSrc="https://youtu.be/XQQfQYZ0Phk"
+            />
         </section>
     );
 }
