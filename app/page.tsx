@@ -1,5 +1,5 @@
 import React from 'react';
-import Header from '@/components/Header';
+
 import Hero from '@/components/Hero';
 import WhatIs from '@/components/WhatIs';
 import Benefits from '@/components/Benefits';
@@ -11,8 +11,7 @@ import FinalCTA from '@/components/FinalCTA';
 
 export default function LandingPage() {
     return (
-        <div className="min-h-screen bg-gray-50 flex flex-col">
-            <Header />
+        <div className="min-h-screen bg-white flex flex-col">
             <main className="flex-1">
                 <Hero />
                 <WhatIs />

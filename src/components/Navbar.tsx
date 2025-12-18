@@ -1,198 +1,157 @@
 "use client";
 
-import Link from "next/link";
-import { useSession, signOut } from "next-auth/react";
-import { usePathname } from "next/navigation";
-import {
-    MessageSquare,
-    Store,
-    Megaphone,
-    LayoutDashboard,
-    Share2,
-    User,
-    CreditCard,
-    Menu,
-    X
-} from "lucide-react";
-import { useState } from "react";
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { useSession, signOut } from 'next-auth/react';
+import { useState, useEffect } from 'react';
 
 export default function Navbar() {
-    const { data: session, status } = useSession();
     const pathname = usePathname();
-    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+    const { data: session, status } = useSession();
+    const [scrolled, setScrolled] = useState(false);
+    const [isOpen, setIsOpen] = useState(false);
 
-    const navLinks = [
-        { href: "/chat", label: "Chat", icon: MessageSquare },
-        { href: "/ads-manager", label: "Ads Manager", icon: Megaphone, authRequired: true },
-        { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard, authRequired: true },
-    ];
+    useEffect(() => {
+        const handleScroll = () => {
+            setScrolled(window.scrollY > 10);
+        };
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
 
-    const isActive = (href: string) => pathname === href || pathname?.startsWith(href + "/");
+    const isActive = (path: string) =>
+        pathname === path
+            ? 'text-green-600 font-bold border-b-2 border-green-600 h-full flex items-center'
+            : 'text-gray-600 hover:text-green-600 transition-colors h-full flex items-center';
+
+    const isHome = pathname === '/';
 
     return (
-        <nav className="fixed top-0 left-0 right-0 z-50 border-b border-gray-200 bg-white shadow-sm">
-            <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                <div className="flex h-16 items-center justify-between">
-                    {/* Logo */}
+        <nav className={`sticky top-0 left-0 right-0 z-[100] transition-all bg-white border-b border-gray-100 ${scrolled ? 'py-2 shadow-md' : 'py-4'
+            }`}>
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div className="flex justify-between items-center h-16">
+                    {/* Logo Area */}
                     <div className="flex items-center">
-                        <Link href="/" className="flex items-center space-x-2">
-                            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-600 text-white font-bold">
-                                B2B
-                            </div>
-                            <span className="text-xl font-bold text-gray-900">B2BChat</span>
+                        <Link href={session ? "/dashboard" : "/"} className="flex items-center">
+                            <img src="/logo.png" alt="Creatiendas" className="h-10 transition-transform hover:scale-105" />
                         </Link>
-                    </div>
 
-                    {/* Desktop Navigation */}
-                    <div className="hidden md:flex md:items-center md:space-x-1">
-                        {navLinks.map((link) => {
-                            if (link.authRequired && !session) return null;
-                            const Icon = link.icon;
-                            return (
-                                <Link
-                                    key={link.href}
-                                    href={link.href}
-                                    className={`flex items-center space-x-1 rounded-md px-3 py-2 text-sm font-medium transition-colors ${isActive(link.href)
-                                        ? "bg-blue-50 text-blue-600"
-                                        : "text-gray-700 hover:bg-gray-100"
-                                        }`}
-                                >
-                                    <Icon className="h-4 w-4" />
-                                    <span>{link.label}</span>
+                        {/* Desktop Menu */}
+                        {session && (
+                            <div className="hidden lg:flex ml-10 space-x-8 items-center h-16">
+                                <Link href="/dashboard" className={isActive('/dashboard')}>
+                                    Dashboard
                                 </Link>
-                            );
-                        })}
-                    </div>
+                                <Link href="/dashboard/stores" className={isActive('/dashboard/stores')}>
+                                    Mis Tiendas
+                                </Link>
+                                <Link href="/dashboard/billing" className={isActive('/dashboard/billing')}>
+                                    Mi Plan
+                                </Link>
 
-                    {/* Right Side Actions */}
-                    <div className="hidden md:flex md:items-center md:space-x-4">
-                        {status === "loading" ? (
-                            <div className="text-sm text-gray-500">Cargando...</div>
-                        ) : session ? (
-                            <>
-                                <Link
-                                    href="/dashboard/billing"
-                                    className="flex items-center space-x-1 text-sm text-gray-700 hover:text-blue-600"
-                                >
-                                    <CreditCard className="h-4 w-4" />
-                                    <span>Planes</span>
-                                </Link>
-                                <Link
-                                    href="/dashboard/profile"
-                                    className="flex items-center space-x-1 text-sm text-gray-700 hover:text-blue-600"
-                                >
-                                    <User className="h-4 w-4" />
-                                    <span>{session.user?.name}</span>
-                                </Link>
-                                <button
-                                    onClick={() => signOut({ callbackUrl: "/" })}
-                                    className="rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
-                                >
-                                    Cerrar Sesión
-                                </button>
-                            </>
-                        ) : (
-                            <>
-                                <Link
-                                    href="/login"
-                                    className="rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
-                                >
-                                    Iniciar Sesión
-                                </Link>
-                                <Link
-                                    href="/register"
-                                    className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
-                                >
-                                    Registrarse
-                                </Link>
-                            </>
+                                {/* Admin-Only Menu */}
+                                {(session.user as any)?.role === 'ADMIN' && (
+                                    <div className="flex items-center gap-6 pl-6 border-l border-gray-100 h-16">
+                                        <Link
+                                            href="/admin"
+                                            className={`${isActive('/admin')} flex items-center gap-2`}
+                                        >
+                                            <span className="px-2 py-0.5 bg-red-100 text-red-600 border border-red-200 text-[10px] rounded font-black uppercase tracking-tighter">Admin</span>
+                                            Panel
+                                        </Link>
+                                        <Link href="/admin/users" className={isActive('/admin/users')}>
+                                            Usuarios
+                                        </Link>
+                                    </div>
+                                )}
+                            </div>
+                        )}
+                        {!session && (
+                            <div className="hidden lg:flex ml-10 space-x-8 items-center h-16">
+                                <Link href="/#demo" className="text-gray-600 hover:text-green-600 font-medium h-full flex items-center">Demo</Link>
+                                <Link href="/#features" className="text-gray-600 hover:text-green-600 font-medium h-full flex items-center">Características</Link>
+                            </div>
                         )}
                     </div>
 
-                    {/* Mobile menu button */}
-                    <div className="md:hidden">
+                    {/* Right Side Actions */}
+                    <div className="flex items-center gap-4">
+                        {status === 'loading' ? (
+                            <div className="h-4 w-20 bg-gray-100 animate-pulse rounded" />
+                        ) : session ? (
+                            <div className="flex items-center gap-4">
+                                <div className="hidden sm:flex flex-col items-end">
+                                    <span className="text-xs text-gray-400 leading-none mb-1">Sesión de</span>
+                                    <span className="text-sm font-bold text-gray-800 leading-none">{session.user?.name}</span>
+                                </div>
+                                <button
+                                    onClick={() => signOut({ callbackUrl: '/' })}
+                                    className="flex items-center gap-2 bg-gray-50 border border-gray-200 px-4 py-2 rounded-xl text-sm font-semibold text-gray-600 transition-all hover:bg-red-50 hover:border-red-200 hover:text-red-600"
+                                >
+                                    <span>Salir</span>
+                                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                                    </svg>
+                                </button>
+                            </div>
+                        ) : (
+                            <div className="flex items-center gap-3">
+                                <Link
+                                    href="/auth/login"
+                                    className="hidden sm:block text-gray-600 hover:text-gray-900 px-4 py-2 text-sm font-bold transition-colors"
+                                >
+                                    Log In
+                                </Link>
+                                <Link
+                                    href="/auth/register"
+                                    className="bg-green-500 hover:bg-green-600 text-white px-6 py-2.5 rounded-xl text-sm font-extrabold shadow-lg shadow-green-100 transition-all active:scale-95"
+                                >
+                                    Empezar Gratis
+                                </Link>
+                            </div>
+                        )}
+
+                        {/* Mobile Toggle */}
                         <button
-                            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                            className="rounded-md p-2 text-gray-700 hover:bg-gray-100"
+                            onClick={() => setIsOpen(!isOpen)}
+                            className="lg:hidden p-2 rounded-lg hover:bg-gray-100 text-gray-600"
                         >
-                            {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+                            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                {isOpen ? (
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                ) : (
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16m-7 6h7" />
+                                )}
+                            </svg>
                         </button>
                     </div>
                 </div>
             </div>
 
-            {/* Mobile menu */}
-            {mobileMenuOpen && (
-                <div className="border-t border-gray-200 md:hidden">
-                    <div className="space-y-1 px-4 pb-3 pt-2">
-                        {navLinks.map((link) => {
-                            if (link.authRequired && !session) return null;
-                            const Icon = link.icon;
-                            return (
-                                <Link
-                                    key={link.href}
-                                    href={link.href}
-                                    onClick={() => setMobileMenuOpen(false)}
-                                    className={`flex items-center space-x-2 rounded-md px-3 py-2 text-base font-medium ${isActive(link.href)
-                                        ? "bg-blue-50 text-blue-600"
-                                        : "text-gray-700 hover:bg-gray-100"
-                                        }`}
-                                >
-                                    <Icon className="h-5 w-5" />
-                                    <span>{link.label}</span>
-                                </Link>
-                            );
-                        })}
-                        {session ? (
-                            <>
-                                <Link
-                                    href="/dashboard/billing"
-                                    onClick={() => setMobileMenuOpen(false)}
-                                    className="flex items-center space-x-2 rounded-md px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-100"
-                                >
-                                    <CreditCard className="h-5 w-5" />
-                                    <span>Planes</span>
-                                </Link>
-                                <Link
-                                    href="/dashboard/profile"
-                                    onClick={() => setMobileMenuOpen(false)}
-                                    className="flex items-center space-x-2 rounded-md px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-100"
-                                >
-                                    <User className="h-5 w-5" />
-                                    <span>Perfil</span>
-                                </Link>
-                                <button
-                                    onClick={() => {
-                                        setMobileMenuOpen(false);
-                                        signOut({ callbackUrl: "/" });
-                                    }}
-                                    className="w-full rounded-md bg-gray-100 px-3 py-2 text-left text-base font-medium text-gray-700 hover:bg-gray-200"
-                                >
-                                    Cerrar Sesión
-                                </button>
-                            </>
-                        ) : (
-                            <>
-                                <Link
-                                    href="/login"
-                                    onClick={() => setMobileMenuOpen(false)}
-                                    className="block rounded-md px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-100"
-                                >
-                                    Iniciar Sesión
-                                </Link>
-                                <Link
-                                    href="/register"
-                                    onClick={() => setMobileMenuOpen(false)}
-                                    className="block rounded-md bg-blue-600 px-3 py-2 text-base font-medium text-white hover:bg-blue-700"
-                                >
-                                    Registrarse
-                                </Link>
-                            </>
-                        )}
-                    </div>
+            {/* Mobile Menu */}
+            {isOpen && (
+                <div className="lg:hidden bg-white border-t border-gray-100 py-4 px-4 space-y-3 shadow-xl animate-in fade-in slide-in-from-top-4">
+                    {session ? (
+                        <>
+                            <Link href="/dashboard" className="block p-3 rounded-xl bg-gray-50 font-bold text-gray-700" onClick={() => setIsOpen(false)}>Dashboard</Link>
+                            <Link href="/dashboard/stores" className="block p-3 rounded-xl hover:bg-gray-50 font-semibold text-gray-600" onClick={() => setIsOpen(false)}>Mis Tiendas</Link>
+                            <Link href="/dashboard/billing" className="block p-3 rounded-xl hover:bg-gray-50 font-semibold text-gray-600" onClick={() => setIsOpen(false)}>Mi Plan</Link>
+                            <button
+                                onClick={() => { setIsOpen(false); signOut({ callbackUrl: '/' }); }}
+                                className="w-full text-left p-3 rounded-xl text-red-600 font-bold hover:bg-red-50"
+                            >
+                                Cerrar Sesión
+                            </button>
+                        </>
+                    ) : (
+                        <>
+                            <Link href="/auth/login" className="block p-4 rounded-xl hover:bg-gray-50 font-bold text-gray-700" onClick={() => setIsOpen(false)}>Log In</Link>
+                            <Link href="/auth/register" className="block p-4 rounded-xl bg-green-500 text-white font-black text-center shadow-lg" onClick={() => setIsOpen(false)}>EMPEZAR GRATIS</Link>
+                        </>
+                    )}
                 </div>
             )}
         </nav>
     );
 }
-

@@ -1,200 +1,269 @@
-"use client";
+'use client';
 
-import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 import {
     Users,
-    Building2,
     Store,
     TrendingUp,
-    DollarSign,
-    Eye,
-    MessageSquare,
-    Share2
-} from "lucide-react";
+    Activity,
+    AlertCircle,
+    CheckCircle,
+    Clock,
+    DollarSign
+} from 'lucide-react';
 
-export default function AdminPage() {
-    const { data: session, status } = useSession();
+interface Stats {
+    totalUsers: number;
+    totalStores: number;
+    todayUsers: number;
+    todayStores: number;
+    growthPercent: number;
+}
+
+interface Alert {
+    type: string;
+    priority: 'high' | 'medium' | 'low';
+    title: string;
+    message: string;
+}
+
+interface RecentUser {
+    id: string;
+    email: string;
+    name: string | null;
+    createdAt: string;
+}
+
+interface RecentStore {
+    id: string;
+    name: string;
+    slug: string;
+    createdAt: string;
+}
+
+export default function AdminDashboard() {
+    const { data: session } = useSession();
     const router = useRouter();
-    const [stats, setStats] = useState({
-        totalUsers: 0,
-        totalCompanies: 0,
-        totalStores: 0,
-        totalProducts: 0,
-        activeConversations: 0,
-        socialConnections: 0,
-        adConnections: 0,
-        totalRevenue: 0,
-    });
+    const [stats, setStats] = useState<Stats | null>(null);
+    const [alerts, setAlerts] = useState<Alert[]>([]);
+    const [recentUsers, setRecentUsers] = useState<RecentUser[]>([]);
+    const [recentStores, setRecentStores] = useState<RecentStore[]>([]);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        if (status === "unauthenticated") {
-            router.push("/login");
-        } else if (status === "authenticated") {
-            // Check if user is SUPERADMIN
-            if (session?.user?.role !== "SUPERADMIN") {
-                router.push("/dashboard");
-                return;
-            }
-            fetchAdminStats();
+        // Check if user is admin
+        if (session && (session.user as any)?.role !== 'ADMIN') {
+            router.push('/dashboard');
+            return;
         }
-    }, [status, session, router]);
 
-    const fetchAdminStats = async () => {
+        fetchDashboardData();
+
+        // Refresh every 30 seconds
+        const interval = setInterval(fetchDashboardData, 30000);
+        return () => clearInterval(interval);
+    }, [session, router]);
+
+    const fetchDashboardData = async () => {
         try {
-            const response = await fetch("/api/admin/stats");
-            if (response.ok) {
-                const data = await response.json();
-                setStats(data);
+            const res = await fetch('/api/admin/alerts');
+            if (res.ok) {
+                const data = await res.json();
+                setStats(data.stats);
+                setAlerts(data.alerts || []);
+                setRecentUsers(data.recentUsers || []);
+                setRecentStores(data.recentStores || []);
             }
         } catch (error) {
-            console.error("Error fetching admin stats:", error);
+            console.error('Error fetching dashboard data:', error);
+        } finally {
+            setLoading(false);
         }
     };
 
-    if (status === "loading") {
+    if (loading) {
         return (
-            <div className="flex min-h-screen items-center justify-center">
-                <div className="text-gray-500">Cargando...</div>
+            <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center">
+                <div className="text-white text-xl">Cargando Panel Admin...</div>
             </div>
         );
     }
 
-    if (session?.user?.role !== "SUPERADMIN") {
-        return null;
-    }
-
     return (
-        <div className="min-h-screen bg-gray-50 py-8">
-            <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-6">
+            <div className="max-w-7xl mx-auto">
                 {/* Header */}
                 <div className="mb-8">
-                    <h1 className="text-3xl font-bold text-gray-900">Admin Center</h1>
-                    <p className="mt-2 text-gray-600">
-                        Panel de administración del ecosistema B2BChat
-                    </p>
+                    <h1 className="text-4xl font-bold text-white flex items-center gap-3">
+                        <Activity className="w-10 h-10 text-emerald-400" />
+                        Panel de Administración
+                    </h1>
+                    <p className="text-slate-400 mt-2">Monitoreo en tiempo real de Creatiendas</p>
                 </div>
 
                 {/* Stats Grid */}
-                <div className="mb-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-                    <AdminStatCard
-                        icon={Users}
-                        label="Usuarios Totales"
-                        value={stats.totalUsers}
-                        color="bg-blue-500"
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                    <StatCard
+                        icon={<Users className="w-8 h-8" />}
+                        title="Total Usuarios"
+                        value={stats?.totalUsers || 0}
+                        change={`+${stats?.todayUsers || 0} hoy`}
+                        color="blue"
                     />
-                    <AdminStatCard
-                        icon={Building2}
-                        label="Empresas"
-                        value={stats.totalCompanies}
-                        color="bg-purple-500"
+                    <StatCard
+                        icon={<Store className="w-8 h-8" />}
+                        title="Total Tiendas"
+                        value={stats?.totalStores || 0}
+                        change={`+${stats?.todayStores || 0} hoy`}
+                        color="purple"
                     />
-                    <AdminStatCard
-                        icon={Store}
-                        label="Tiendas Públicas"
-                        value={stats.totalStores}
-                        color="bg-green-500"
+                    <StatCard
+                        icon={<TrendingUp className="w-8 h-8" />}
+                        title="Crecimiento"
+                        value={`${stats?.growthPercent || 0}%`}
+                        change="Esta semana"
+                        color="emerald"
                     />
-                    <AdminStatCard
-                        icon={TrendingUp}
-                        label="Productos"
-                        value={stats.totalProducts}
-                        color="bg-orange-500"
-                    />
-                    <AdminStatCard
-                        icon={MessageSquare}
-                        label="Conversaciones Activas"
-                        value={stats.activeConversations}
-                        color="bg-pink-500"
-                    />
-                    <AdminStatCard
-                        icon={Share2}
-                        label="Conexiones Sociales"
-                        value={stats.socialConnections}
-                        color="bg-indigo-500"
-                    />
-                    <AdminStatCard
-                        icon={Eye}
-                        label="Cuentas Publicitarias"
-                        value={stats.adConnections}
-                        color="bg-red-500"
-                    />
-                    <AdminStatCard
-                        icon={DollarSign}
-                        label="Ingresos Totales"
-                        value={`$${stats.totalRevenue.toLocaleString()}`}
-                        color="bg-emerald-500"
+                    <StatCard
+                        icon={<Clock className="w-8 h-8" />}
+                        title="Actividad Hoy"
+                        value={(stats?.todayUsers || 0) + (stats?.todayStores || 0)}
+                        change="Acciones totales"
+                        color="orange"
                     />
                 </div>
 
-                {/* Quick Links */}
-                <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                    <AdminLinkCard
-                        title="Gestión de Usuarios"
-                        description="Ver y administrar usuarios del sistema"
-                        href="/admin/usuarios"
-                        icon={Users}
-                    />
-                    <AdminLinkCard
-                        title="Gestión de Empresas"
-                        description="Administrar empresas registradas"
-                        href="/admin/empresas"
-                        icon={Building2}
-                    />
-                    <AdminLinkCard
-                        title="Marketplace"
-                        description="Moderar tiendas y productos"
-                        href="/admin/marketplace"
-                        icon={Store}
-                    />
-                    <AdminLinkCard
-                        title="Campañas Internas"
-                        description="Gestionar anuncios internos"
-                        href="/admin/campanas-internas"
-                        icon={TrendingUp}
-                    />
-                    <AdminLinkCard
-                        title="Campañas Externas"
-                        description="Ver campañas publicitarias"
-                        href="/admin/campanas-externas"
-                        icon={Eye}
-                    />
-                    <AdminLinkCard
-                        title="Configuración"
-                        description="Configuración global del sistema"
-                        href="/admin/configuracion"
-                        icon={DollarSign}
-                    />
+                {/* Alerts */}
+                {alerts.length > 0 && (
+                    <div className="mb-8">
+                        <h2 className="text-2xl font-bold text-white mb-4 flex items-center gap-2">
+                            <AlertCircle className="w-6 h-6 text-yellow-400" />
+                            Alertas
+                        </h2>
+                        <div className="space-y-3">
+                            {alerts.map((alert, idx) => (
+                                <AlertCard key={idx} alert={alert} />
+                            ))}
+                        </div>
+                    </div>
+                )}
+
+                {/* Recent Activity */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    {/* Recent Users */}
+                    <div className="bg-slate-800/50 backdrop-blur rounded-2xl p-6 border border-slate-700">
+                        <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                            <Users className="w-5 h-5 text-blue-400" />
+                            Usuarios Recientes
+                        </h3>
+                        <div className="space-y-3">
+                            {recentUsers.map(user => (
+                                <div key={user.id} className="flex items-center justify-between p-3 bg-slate-900/50 rounded-lg">
+                                    <div>
+                                        <p className="text-white font-medium">{user.name || 'Sin nombre'}</p>
+                                        <p className="text-slate-400 text-sm">{user.email}</p>
+                                    </div>
+                                    <span className="text-xs text-slate-500">
+                                        {new Date(user.createdAt).toLocaleDateString()}
+                                    </span>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Recent Stores */}
+                    <div className="bg-slate-800/50 backdrop-blur rounded-2xl p-6 border border-slate-700">
+                        <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                            <Store className="w-5 h-5 text-purple-400" />
+                            Tiendas Recientes
+                        </h3>
+                        <div className="space-y-3">
+                            {recentStores.map(store => (
+                                <div key={store.id} className="flex items-center justify-between p-3 bg-slate-900/50 rounded-lg">
+                                    <div>
+                                        <p className="text-white font-medium">{store.name}</p>
+                                        <p className="text-slate-400 text-sm">/{store.slug}</p>
+                                    </div>
+                                    <span className="text-xs text-slate-500">
+                                        {new Date(store.createdAt).toLocaleDateString()}
+                                    </span>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+
+                {/* Quick Actions */}
+                <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <button
+                        onClick={() => router.push('/admin/users')}
+                        className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-4 rounded-xl font-semibold transition-all flex items-center justify-center gap-2"
+                    >
+                        <Users className="w-5 h-5" />
+                        Gestionar Usuarios
+                    </button>
+                    <button
+                        onClick={() => router.push('/dashboard')}
+                        className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-4 rounded-xl font-semibold transition-all flex items-center justify-center gap-2"
+                    >
+                        <Store className="w-5 h-5" />
+                        Ver Tiendas
+                    </button>
+                    <button
+                        onClick={fetchDashboardData}
+                        className="bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-4 rounded-xl font-semibold transition-all flex items-center justify-center gap-2"
+                    >
+                        <Activity className="w-5 h-5" />
+                        Actualizar Datos
+                    </button>
                 </div>
             </div>
         </div>
     );
 }
 
-function AdminStatCard({ icon: Icon, label, value, color }: any) {
+function StatCard({ icon, title, value, change, color }: {
+    icon: React.ReactNode;
+    title: string;
+    value: string | number;
+    change: string;
+    color: 'blue' | 'purple' | 'emerald' | 'orange';
+}) {
+    const colorClasses = {
+        blue: 'from-blue-600 to-blue-700 text-blue-400',
+        purple: 'from-purple-600 to-purple-700 text-purple-400',
+        emerald: 'from-emerald-600 to-emerald-700 text-emerald-400',
+        orange: 'from-orange-600 to-orange-700 text-orange-400'
+    };
+
     return (
-        <div className="rounded-lg border border-gray-200 bg-white p-6">
-            <div className="flex items-center justify-between">
-                <div className={`${color} flex h-12 w-12 items-center justify-center rounded-lg text-white`}>
-                    <Icon className="h-6 w-6" />
-                </div>
-            </div>
-            <p className="mt-4 text-3xl font-bold text-gray-900">{value}</p>
-            <p className="text-sm text-gray-600">{label}</p>
+        <div className={`bg-gradient-to-br ${colorClasses[color].split(' ')[0]} ${colorClasses[color].split(' ')[1]} bg-opacity-10 backdrop-blur rounded-2xl p-6 border border-slate-700`}>
+            <div className={`${colorClasses[color].split(' ')[2]} mb-3`}>{icon}</div>
+            <h3 className="text-slate-400 text-sm font-medium mb-1">{title}</h3>
+            <p className="text-white text-3xl font-bold mb-1">{value}</p>
+            <p className="text-slate-500 text-xs">{change}</p>
         </div>
     );
 }
 
-function AdminLinkCard({ title, description, href, icon: Icon }: any) {
+function AlertCard({ alert }: { alert: Alert }) {
+    const priorityColors = {
+        high: 'border-red-500 bg-red-500/10',
+        medium: 'border-yellow-500 bg-yellow-500/10',
+        low: 'border-blue-500 bg-blue-500/10'
+    };
+
     return (
-        <a
-            href={href}
-            className="block rounded-lg border border-gray-200 bg-white p-6 transition-shadow hover:shadow-lg"
-        >
-            <Icon className="h-8 w-8 text-blue-600" />
-            <h3 className="mt-4 text-lg font-semibold text-gray-900">{title}</h3>
-            <p className="mt-2 text-sm text-gray-600">{description}</p>
-        </a>
+        <div className={`p-4 rounded-xl border ${priorityColors[alert.priority]}`}>
+            <div className="flex items-start gap-3">
+                <AlertCircle className="w-5 h-5 text-yellow-400 mt-0.5" />
+                <div className="flex-1">
+                    <h4 className="text-white font-semibold mb-1">{alert.title}</h4>
+                    <p className="text-slate-300 text-sm">{alert.message}</p>
+                </div>
+            </div>
+        </div>
     );
 }

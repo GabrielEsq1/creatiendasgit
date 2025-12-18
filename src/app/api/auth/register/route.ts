@@ -1,32 +1,31 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import bcrypt from "bcryptjs";
+import { alertNewUser } from "@/lib/alerts";
+import { sendVerificationEmail } from "@/lib/email";
 
-export async function POST(request: Request) {
+// Helper to generate a token that is virtually guaranteed to be unique
+function generateVerificationToken(): string {
+    // timestamp (base36) + random part (base36)
+    return Date.now().toString(36) + Math.random().toString(36).substring(2);
+}
+
+export async function POST(req: Request) {
     try {
-        const { name, email, phone, password, companyName } = await request.json();
+        const { name, email, password } = await req.json();
 
-        // Validate required fields
-        if (!name || !email || !phone || !password) {
+        if (!email || !password) {
             return NextResponse.json(
-                { success: false, error: "Todos los campos requeridos deben ser completados" },
+                { message: "Faltan datos requeridos" },
                 { status: 400 }
             );
         }
 
-        // Check if user already exists
-        const existingUser = await prisma.user.findFirst({
-            where: {
-                OR: [
-                    { email },
-                    { phone }
-                ]
-            }
-        });
-
+        // Check if user exists
+        const existingUser = await prisma.user.findUnique({ where: { email } });
         if (existingUser) {
             return NextResponse.json(
-                { success: false, error: "El email o teléfono ya está registrado" },
+                { message: "El usuario ya existe" },
                 { status: 400 }
             );
         }
@@ -34,41 +33,85 @@ export async function POST(request: Request) {
         // Hash password
         const passwordHash = await bcrypt.hash(password, 10);
 
-        // Create company if provided
-        let company = null;
-        if (companyName) {
-            company = await prisma.company.create({
-                data: {
-                    name: companyName,
-                }
+        // Generate verification token
+        let verificationToken = generateVerificationToken();
+        let user;
+
+        try {
+            // Attempt creation inside transaction
+            user = await prisma.$transaction(async (tx) => {
+                const newUser = await tx.user.create({
+                    data: {
+                        name: name || "",
+                        email,
+                        passwordHash,
+                        verificationToken,
+                        emailVerified: new Date(), // Auto-verify as per user request
+                    },
+                });
+                await tx.walletAccount.create({
+                    data: {
+                        userId: newUser.id,
+                        balance: 0,
+                        currency: "COP",
+                    },
+                });
+                return newUser;
             });
+        } catch (e: any) {
+            // If token collision (very rare), retry once with a new token
+            if (e.code === "P2002" && e.meta?.target?.includes("verificationToken")) {
+                verificationToken = generateVerificationToken();
+                user = await prisma.$transaction(async (tx) => {
+                    const newUser = await tx.user.create({
+                        data: {
+                            name: name || "",
+                            email,
+                            passwordHash,
+                            verificationToken,
+                            emailVerified: new Date(),
+                        },
+                    });
+                    await tx.walletAccount.create({
+                        data: {
+                            userId: newUser.id,
+                            balance: 0,
+                            currency: "COP",
+                        },
+                    });
+                    return newUser;
+                });
+            } else {
+                throw e;
+            }
         }
 
-        // Create user
-        const user = await prisma.user.create({
-            data: {
-                name,
-                email,
-                phone,
-                passwordHash,
-                role: "USUARIO",
-                companyId: company?.id,
-            }
-        });
+        // Send alerts (fire and forget)
+        try {
+            alertNewUser({ email, name, plan: "FREE" }).catch(() => { });
+        } catch { }
 
-        return NextResponse.json({
-            success: true,
-            message: "Usuario creado exitosamente",
-            user: {
-                id: user.id,
-                name: user.name,
-                email: user.email,
-            }
-        });
-    } catch (error) {
-        console.error("Error creating user:", error);
+        // Verification email disabled as per user request
+        // try {
+        //     console.log("Sending verification email to:", email);
+        //     await sendVerificationEmail(email, verificationToken);
+        //     console.log("Verification email sent.");
+        // } catch (emailError) {
+        //     console.error("Failed to send verification email:", emailError);
+        //     // We continue, but the user might need to request a resend later
+        // }
+
         return NextResponse.json(
-            { success: false, error: "Error al crear el usuario" },
+            { message: "Cuenta creada exitosamente. Ya puedes iniciar sesión.", userId: user.id },
+            { status: 201 }
+        );
+    } catch (error: any) {
+        console.error("Registration error FULL:", error);
+        return NextResponse.json(
+            {
+                message: "Error al crear la cuenta. Por favor intenta de nuevo.",
+                debugError: error.message
+            },
             { status: 500 }
         );
     }
