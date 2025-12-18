@@ -17,7 +17,7 @@ function LoginForm() {
     const callbackUrl = searchParams?.get("callbackUrl") || "/dashboard";
 
     useEffect(() => {
-        if (searchParams.get("registered") === "true") {
+        if (searchParams?.get("registered") === "true") {
             setSuccessMessage("Cuenta creada exitosamente. Ya puedes iniciar sesión.");
         }
     }, [searchParams]);
