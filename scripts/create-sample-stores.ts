@@ -106,7 +106,7 @@ async function createSampleStores() {
     ];
 
     for (const storeData of stores) {
-        const { products, ...store } = storeData;
+        const { products, ownerUserId, ...store } = storeData;
 
         const existingStore = await prisma.store.findUnique({
             where: { slug: store.slug },
@@ -120,6 +120,13 @@ async function createSampleStores() {
         const createdStore = await prisma.store.create({
             data: {
                 ...store,
+                owner: {
+                    connect: { id: ownerUserId }
+                },
+                ownerUserId, // Keep this if schema allows redundancy, but usually connect sets it. 
+                // Wait, if I use connect, I shouldn't pass ownerUserId manually in strict inputs unless unchecked.
+                // Safest is to rely on 'owner: { connect }'.
+                // Let's remove ownerUserId from data object to be safe from 'unknown argument' errors if strict.
                 products: {
                     create: products,
                 },
