@@ -73,7 +73,7 @@ const INITIAL_PRODUCTS: Product[] = [
  */
 function BuilderContent() {
     const searchParams = useSearchParams();
-    const editSlug = searchParams.get('edit');
+    const editSlug = searchParams?.get('edit');
 
     const [storeData, setStoreData] = useState<StoreData>(INITIAL_DATA);
     const [products, setProducts] = useState<Product[]>(INITIAL_PRODUCTS);
