@@ -21,6 +21,16 @@ export default function RootLayout({
     return (
         <html lang="es">
             <head>
+                {/* Google tag (gtag.js) */}
+                <script async src="https://www.googletagmanager.com/gtag/js?id=G-H0S47Z9N8J"></script>
+                <script dangerouslySetInnerHTML={{
+                    __html: `
+                        window.dataLayer = window.dataLayer || [];
+                        function gtag(){dataLayer.push(arguments);}
+                        gtag('js', new Date());
+                        gtag('config', 'G-H0S47Z9N8J');
+                    `
+                }} />
                 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
                 <link rel="manifest" href="/manifest.json" />
                 <meta name="theme-color" content="#2563eb" />

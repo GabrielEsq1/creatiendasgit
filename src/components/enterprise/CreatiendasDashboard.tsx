@@ -40,7 +40,7 @@ const AdvisorModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => voi
 
                     <div className="flex flex-col gap-3">
                         <a
-                            href="https://wa.me/573012345678?text=Hola,%20alcancé%20el%20límite%20de%20tiendas%20y%20me%20gustaría%20subir%20de%20plan."
+                            href="https://wa.me/573026687991?text=Hola,%20alcancé%20el%20límite%20de%20tiendas%20y%20me%20gustaría%20subir%20de%20plan."
                             target="_blank"
                             rel="noopener noreferrer"
                             className="bg-green-500 hover:bg-green-600 text-white py-4 px-8 rounded-2xl font-black text-lg shadow-xl shadow-green-200 transition-all hover:-translate-y-1 flex items-center justify-center gap-3"
