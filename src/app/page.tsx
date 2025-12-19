@@ -7,6 +7,7 @@ import Benefits from '@/components/Benefits';
 import HowItWorks from '@/components/HowItWorks';
 import LiveDemo from '@/components/LiveDemo';
 import Features from '@/components/Features';
+import BlogSection from '@/components/BlogSection';
 import Testimonials from '@/components/Testimonials';
 import FinalCTA from '@/components/FinalCTA';
 
@@ -22,6 +23,7 @@ export default function LandingPage() {
                     <LiveDemo />
                 </div>
                 <Features />
+                <BlogSection />
                 <Testimonials />
                 <FinalCTA />
             </main>
