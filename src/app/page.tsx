@@ -15,7 +15,7 @@ import FestiveManager from '@/components/FestiveManager';
 
 export default function LandingPage() {
     return (
-        <div className="min-h-screen bg-white flex flex-col">
+        <div className="min-h-screen bg-slate-950 text-white flex flex-col selection:bg-green-500/30">
             <FestiveManager />
             <main className="flex-1">
                 <Hero />
@@ -30,8 +30,13 @@ export default function LandingPage() {
                 <Testimonials />
                 <FinalCTA />
             </main>
-            <footer className="bg-gray-100 p-6 text-center text-gray-500">
-                © {new Date().getFullYear()} Creatiendas. Todos los derechos reservados.
+            <footer className="bg-slate-900 p-12 text-center border-t border-slate-800">
+                <div className="flex justify-center gap-4 mb-4 text-2xl">
+                    <span>🎄</span><span>❄️</span><span>🎁</span><span>✨</span>
+                </div>
+                <p className="text-slate-500 font-medium">
+                    © {new Date().getFullYear()} Creatiendas. Hecho con ❤️ en LATAM 🎅
+                </p>
             </footer>
         </div>
     );
