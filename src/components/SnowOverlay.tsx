@@ -1,65 +1,116 @@
 'use client';
 
-import React from 'react';
+import { useEffect, useRef } from 'react';
 
 interface Props {
-    enabled: boolean;
+  enabled: boolean;
 }
 
 export default function SnowOverlay({ enabled }: Props) {
-    if (!enabled) return null;
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const rafRef = useRef<number>(0);
 
-    return (
-        <>
-            <style jsx global>{`
-        .snow-layer {
-          position: fixed;
-          inset: 0;
-          pointer-events: none;
-          z-index: 50;
-          overflow: hidden;
+  useEffect(() => {
+    if (!enabled) return;
+
+    const canvas = canvasRef.current!;
+    const ctx = canvas.getContext('2d')!;
+    let w = canvas.width = window.innerWidth;
+    let h = canvas.height = window.innerHeight;
+
+    const mouse = { x: -9999, y: -9999 };
+    // Increased flake count for "embobada" effect
+    const flakeCount = 250;
+    const flakes = new Array(flakeCount).fill(0).map(() => ({
+      x: Math.random() * w,
+      y: Math.random() * h,
+      r: Math.random() * 2.5 + 1.5,
+      vy: Math.random() * 1.2 + 0.5,
+      vx: Math.random() * 1 - 0.5,
+      opacity: Math.random() * 0.5 + 0.3
+    }));
+
+    const onResize = () => {
+      w = canvas.width = window.innerWidth;
+      h = canvas.height = window.innerHeight;
+    };
+
+    const onMove = (e: MouseEvent) => {
+      mouse.x = e.clientX;
+      mouse.y = e.clientY;
+    };
+
+    const onTouch = (e: TouchEvent) => {
+      if (e.touches.length > 0) {
+        mouse.x = e.touches[0].clientX;
+        mouse.y = e.touches[0].clientY;
+      }
+    };
+
+    window.addEventListener('resize', onResize);
+    window.addEventListener('mousemove', onMove);
+    window.addEventListener('touchstart', onTouch);
+    window.addEventListener('touchmove', onTouch);
+
+    const loop = () => {
+      if (!ctx) return;
+      ctx.clearRect(0, 0, w, h);
+
+      for (const f of flakes) {
+        // Interaction logic: Repulsion from mouse
+        const dx = f.x - mouse.x;
+        const dy = f.y - mouse.y;
+        const dist = Math.hypot(dx, dy);
+
+        if (dist < 150) {
+          const force = (150 - dist) / 150;
+          f.x += dx * force * 0.05;
+          f.y += dy * force * 0.05;
         }
 
-        .snow-layer i {
-          position: absolute;
-          top: -20px;
-          width: 10px;
-          height: 10px;
-          background: radial-gradient(circle at 30% 30%, #ffffff, #e5e7eb);
-          border-radius: 50%;
-          opacity: 0.8;
-          animation: snow-fall linear infinite;
-          filter: blur(1px);
-        }
+        f.y += f.vy;
+        f.x += f.vx;
 
-        /* Natural variation for flakes */
-        .snow-layer i:nth-child(1) { left: 5%;  animation-duration: 9s;  animation-delay: 0s; transform: scale(0.8); }
-        .snow-layer i:nth-child(2) { left: 15%; animation-duration: 12s; animation-delay: -2s; transform: scale(1); }
-        .snow-layer i:nth-child(3) { left: 25%; animation-duration: 8s;  animation-delay: -5s; transform: scale(0.6); }
-        .snow-layer i:nth-child(4) { left: 35%; animation-duration: 11s; animation-delay: -1s; transform: scale(1.1); }
-        .snow-layer i:nth-child(5) { left: 45%; animation-duration: 10s; animation-delay: -3s; transform: scale(0.7); }
-        .snow-layer i:nth-child(6) { left: 55%; animation-duration: 13s; animation-delay: -7s; transform: scale(0.9); }
-        .snow-layer i:nth-child(7) { left: 65%; animation-duration: 15s; animation-delay: -4s; transform: scale(1.2); }
-        .snow-layer i:nth-child(8) { left: 75%; animation-duration: 9s;  animation-delay: -2s; transform: scale(0.5); }
-        .snow-layer i:nth-child(9) { left: 85%; animation-duration: 11s; animation-delay: -6s; transform: scale(1); }
-        .snow-layer i:nth-child(10) { left: 95%; animation-duration: 14s; animation-delay: -1s; transform: scale(0.8); }
-        .snow-layer i:nth-child(11) { left: 10%;  animation-duration: 10s; animation-delay: -8s; transform: scale(0.7); }
-        .snow-layer i:nth-child(12) { left: 30%;  animation-duration: 11s; animation-delay: -3s; transform: scale(0.9); }
-
-        @keyframes snow-fall {
-          from {
-            transform: translateY(0) translateX(0) rotate(0deg);
-          }
-          to {
-            transform: translateY(110vh) translateX(30px) rotate(360deg);
-          }
+        if (f.y > h) {
+          f.y = -10;
+          f.x = Math.random() * w;
         }
-      `}</style>
-            <div className="snow-layer" aria-hidden="true">
-                {Array.from({ length: 12 }).map((_, i) => (
-                    <i key={i}></i>
-                ))}
-            </div>
-        </>
-    );
+        if (f.x > w) f.x = 0;
+        if (f.x < 0) f.x = w;
+
+        ctx.beginPath();
+        ctx.arc(f.x, f.y, f.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255, 255, 255, ${f.opacity})`;
+        ctx.fill();
+      }
+
+      rafRef.current = requestAnimationFrame(loop);
+    };
+
+    loop();
+
+    return () => {
+      cancelAnimationFrame(rafRef.current);
+      window.removeEventListener('resize', onResize);
+      window.removeEventListener('mousemove', onMove);
+      window.removeEventListener('touchstart', onTouch);
+      window.removeEventListener('touchmove', onTouch);
+    };
+  }, [enabled]);
+
+  if (!enabled) return null;
+
+  return (
+    <canvas
+      ref={canvasRef}
+      aria-hidden
+      style={{
+        position: 'fixed',
+        inset: 0,
+        zIndex: 40,
+        pointerEvents: 'none',
+        background: 'transparent'
+      }}
+    />
+  );
 }

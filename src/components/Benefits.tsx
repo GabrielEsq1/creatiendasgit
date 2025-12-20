@@ -11,7 +11,7 @@ export default function Benefits() {
     ];
 
     return (
-        <section className="py-16 px-4 md:px-8 lg:px-16 bg-slate-950 border-y border-slate-900">
+        <section className="py-16 px-4 md:px-8 lg:px-16 bg-black border-y border-white/5">
             <div className="max-w-5xl mx-auto">
                 <h3 className="text-3xl font-black text-center text-white mb-12">
                     Beneficios Navideños 🎁

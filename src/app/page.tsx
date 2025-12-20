@@ -15,7 +15,7 @@ import FestiveManager from '@/components/FestiveManager';
 
 export default function LandingPage() {
     return (
-        <div className="min-h-screen bg-slate-950 text-white flex flex-col selection:bg-green-500/30">
+        <div className="min-h-screen bg-black text-white flex flex-col selection:bg-green-500/30">
             <FestiveManager />
             <main className="flex-1">
                 <Hero />
