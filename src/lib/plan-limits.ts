@@ -2,7 +2,7 @@
 export const PLAN_LIMITS = {
     FREE: {
         maxCreativesPerCampaign: 1,
-        rotationHours: null, // No rotation
+        rotationHours: 0, // No rotation
         maxCampaigns: 1,
         maxFileSize: 2 * 1024 * 1024, // 2MB
     },
@@ -38,6 +38,6 @@ export function canAddCreative(currentCount: number, plan: PlanType): boolean {
     return currentCount < limits.maxCreativesPerCampaign;
 }
 
-export function getRotationHours(plan: PlanType): number | null {
-    return getPlanLimits(plan).rotationHours;
+export function getRotationHours(plan: PlanType): number {
+    return getPlanLimits(plan).rotationHours || 0;
 }

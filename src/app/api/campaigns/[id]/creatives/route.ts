@@ -75,6 +75,7 @@ export async function POST(
                 videoUrl: data.videoUrl || undefined,
                 type: data.type || "IMAGE",
                 ctaLabel: data.ctaLabel,
+                destinationUrl: data.destinationUrl || "",
                 displayOrder: currentCreativeCount,
                 rotationHours,
                 isActive: true,
