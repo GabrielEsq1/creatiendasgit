@@ -5,6 +5,7 @@ import Navbar from "@/components/Navbar";
 import { Providers } from "@/app/providers";
 import WhatsAppButton from "@/components/WhatsAppButton";
 import { AnalyticsTracker } from "@/components/Analytics";
+import TranslationPrompt from "@/components/TranslationPrompt";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -34,6 +35,7 @@ export default function RootLayout({
                         {children}
                     </main>
                     <WhatsAppButton />
+                    <TranslationPrompt />
                     {/* B2Chat Widget - Adjust path if necessary based on B2Chat-main contents */}
                     <script src="/b2chat/B2Chat-main/widget.js" async></script>
                 </Providers>

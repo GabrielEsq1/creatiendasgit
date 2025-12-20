@@ -100,13 +100,30 @@ export default function Navbar() {
 
                     {/* Right Side Actions */}
                     <div className="flex items-center gap-4">
-                        {/* Language Switcher */}
-                        <Link
-                            href={pathname?.startsWith('/en') ? '/' : '/en'}
-                            className="hidden sm:flex items-center gap-2 bg-slate-900 border border-slate-800 px-3 py-2 rounded-xl text-sm font-bold text-slate-300 transition-all hover:bg-slate-800 hover:text-white"
+                        {/* 3D Language Switcher */}
+                        <button
+                            onClick={() => {
+                                const isEn = pathname?.startsWith('/en');
+                                const targetPath = isEn
+                                    ? (pathname?.replace(/^\/en/, '') || '/')
+                                    : `/en${pathname === '/' ? '' : pathname}`;
+                                window.location.href = targetPath;
+                            }}
+                            className="group relative w-24 h-10 bg-slate-900 rounded-full p-1 cursor-pointer border border-white/10 shadow-inner overflow-hidden transition-all hover:border-green-500/30"
+                            title="Cambiar idioma / Switch language"
                         >
-                            <span>{pathname?.startsWith('/en') ? '🇺🇸 EN' : '🇪🇸 ES'}</span>
-                        </Link>
+                            {/* Sliding Background */}
+                            <div className={`absolute top-1 bottom-1 w-[45%] bg-gradient-to-br from-green-400 to-green-600 rounded-full shadow-lg transition-all duration-300 ease-out ${pathname?.startsWith('/en') ? 'left-[52%]' : 'left-[3%]'
+                                }`}>
+                                <div className="absolute inset-0 bg-white/20 rounded-full" />
+                            </div>
+
+                            {/* Text Labels */}
+                            <div className="relative z-10 flex w-full h-full text-[10px] font-black uppercase tracking-widest items-center justify-between px-3">
+                                <span className={`transition-colors duration-300 ${!pathname?.startsWith('/en') ? 'text-white drop-shadow-md' : 'text-slate-500'}`}>ES</span>
+                                <span className={`transition-colors duration-300 ${pathname?.startsWith('/en') ? 'text-white drop-shadow-md' : 'text-slate-500'}`}>EN</span>
+                            </div>
+                        </button>
 
                         {status === 'loading' ? (
                             <div className="h-4 w-20 bg-slate-800 animate-pulse rounded" />
@@ -129,13 +146,13 @@ export default function Navbar() {
                         ) : (
                             <div className="flex items-center gap-3">
                                 <Link
-                                    href="/auth/login"
+                                    href={pathname?.startsWith('/en') ? '/en/auth/login' : '/auth/login'}
                                     className="hidden sm:block text-slate-400 hover:text-white px-4 py-2 text-sm font-black transition-colors"
                                 >
                                     {pathname?.startsWith('/en') ? 'Log In' : 'Iniciar Sesión'}
                                 </Link>
                                 <Link
-                                    href="/auth/register"
+                                    href={pathname?.startsWith('/en') ? '/en/auth/register' : '/auth/register'}
                                     className="bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-xl text-sm font-black shadow-lg shadow-green-900/40 transition-all hover:-translate-y-0.5 active:scale-95"
                                 >
                                     {pathname?.startsWith('/en') ? 'Start FREE' : 'Empezar GRATIS'}
@@ -145,12 +162,21 @@ export default function Navbar() {
 
                         {/* Mobile Toggle */}
                         <div className="flex items-center gap-2 lg:hidden">
-                            <Link
-                                href={pathname?.startsWith('/en') ? '/' : '/en'}
-                                className="p-2 rounded-xl bg-slate-900 text-white"
+                            <button
+                                onClick={() => {
+                                    const isEn = pathname?.startsWith('/en');
+                                    const targetPath = isEn
+                                        ? (pathname?.replace(/^\/en/, '') || '/')
+                                        : `/en${pathname === '/' ? '' : pathname}`;
+                                    window.location.href = targetPath;
+                                }}
+                                className={`p-2 rounded-xl border font-bold transition-all ${pathname?.startsWith('/en')
+                                        ? 'bg-green-500/10 border-green-500 text-green-400'
+                                        : 'bg-slate-900 border-slate-800 text-slate-400'
+                                    }`}
                             >
-                                {pathname?.startsWith('/en') ? '🇺🇸' : '🇪🇸'}
-                            </Link>
+                                {pathname?.startsWith('/en') ? 'EN' : 'ES'}
+                            </button>
 
                             <button
                                 onClick={() => setIsOpen(!isOpen)}
