@@ -100,6 +100,14 @@ export default function Navbar() {
 
                     {/* Right Side Actions */}
                     <div className="flex items-center gap-4">
+                        {/* Language Switcher */}
+                        <Link
+                            href={pathname?.startsWith('/en') ? '/' : '/en'}
+                            className="hidden sm:flex items-center gap-2 bg-slate-900 border border-slate-800 px-3 py-2 rounded-xl text-sm font-bold text-slate-300 transition-all hover:bg-slate-800 hover:text-white"
+                        >
+                            <span>{pathname?.startsWith('/en') ? '🇺🇸 EN' : '🇪🇸 ES'}</span>
+                        </Link>
+
                         {status === 'loading' ? (
                             <div className="h-4 w-20 bg-slate-800 animate-pulse rounded" />
                         ) : session ? (
@@ -124,30 +132,39 @@ export default function Navbar() {
                                     href="/auth/login"
                                     className="hidden sm:block text-slate-400 hover:text-white px-4 py-2 text-sm font-black transition-colors"
                                 >
-                                    Iniciar Sesión
+                                    {pathname?.startsWith('/en') ? 'Log In' : 'Iniciar Sesión'}
                                 </Link>
                                 <Link
                                     href="/auth/register"
                                     className="bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-xl text-sm font-black shadow-lg shadow-green-900/40 transition-all hover:-translate-y-0.5 active:scale-95"
                                 >
-                                    Empezar GRATIS
+                                    {pathname?.startsWith('/en') ? 'Start FREE' : 'Empezar GRATIS'}
                                 </Link>
                             </div>
                         )}
 
                         {/* Mobile Toggle */}
-                        <button
-                            onClick={() => setIsOpen(!isOpen)}
-                            className="lg:hidden p-2 rounded-xl hover:bg-gray-100 text-gray-600 transition-colors"
-                        >
-                            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                {isOpen ? (
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
-                                ) : (
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M4 6h16M4 12h16m-7 6h7" />
-                                )}
-                            </svg>
-                        </button>
+                        <div className="flex items-center gap-2 lg:hidden">
+                            <Link
+                                href={pathname?.startsWith('/en') ? '/' : '/en'}
+                                className="p-2 rounded-xl bg-slate-900 text-white"
+                            >
+                                {pathname?.startsWith('/en') ? '🇺🇸' : '🇪🇸'}
+                            </Link>
+
+                            <button
+                                onClick={() => setIsOpen(!isOpen)}
+                                className="p-2 rounded-xl hover:bg-gray-100 text-gray-600 transition-colors"
+                            >
+                                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    {isOpen ? (
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
+                                    ) : (
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M4 6h16M4 12h16m-7 6h7" />
+                                    )}
+                                </svg>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>

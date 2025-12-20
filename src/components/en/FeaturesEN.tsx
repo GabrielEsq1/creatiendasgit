@@ -1,0 +1,42 @@
+import React from 'react';
+
+export default function FeaturesEN() {
+    const features = [
+        'Professional catalog',
+        'Cart connected to WhatsApp',
+        'Direct button for orders',
+        'Modern design',
+        'Visual customization',
+        'Custom domain or link',
+        'Inventory',
+        'Statistics',
+    ];
+
+    return (
+        <section className="py-24 px-4 md:px-8 lg:px-16 bg-black" id="features">
+            <div className="max-w-5xl mx-auto">
+                <h3 className="text-4xl font-black text-center text-white mb-16">
+                    Features ✨
+                </h3>
+                <ul className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {features.map((feat, idx) => (
+                        <li key={idx} className="flex items-center space-x-4 text-slate-300 bg-slate-900/40 p-5 rounded-2xl border border-white/5 hover:border-green-500/20 transition-colors">
+                            <div className="bg-green-500/20 p-2 rounded-lg">
+                                <svg
+                                    className="w-6 h-6 text-green-400 flex-shrink-0"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                >
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                                </svg>
+                            </div>
+                            <span className="font-bold text-lg">{feat} ❄️</span>
+                        </li>
+                    ))}
+                </ul>
+            </div>
+        </section>
+    );
+}
