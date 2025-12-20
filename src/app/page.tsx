@@ -11,9 +11,12 @@ import BlogSection from '@/components/BlogSection';
 import Testimonials from '@/components/Testimonials';
 import FinalCTA from '@/components/FinalCTA';
 
+import FestiveManager from '@/components/FestiveManager';
+
 export default function LandingPage() {
     return (
         <div className="min-h-screen bg-white flex flex-col">
+            <FestiveManager />
             <main className="flex-1">
                 <Hero />
                 <WhatIs />
