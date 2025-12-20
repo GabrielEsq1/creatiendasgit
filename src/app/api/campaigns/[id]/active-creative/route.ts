@@ -44,7 +44,7 @@ export async function GET(
         await prisma.adCreative.update({
             where: { id: activeCreative.id },
             data: {
-                impressionsCount: { increment: 1 },
+                impressions: { increment: 1 },
                 lastShownAt: new Date(),
             },
         });

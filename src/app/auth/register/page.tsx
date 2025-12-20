@@ -90,9 +90,9 @@ export default function RegisterPage() {
                     <div className="space-y-8 order-2 lg:order-1">
                         {/* Logo */}
                         <div className="flex items-center gap-3">
-                            <div className="w-12 h-12 bg-green-500 rounded-xl flex items-center justify-center shadow-lg shadow-green-900/40 transform rotate-3">
-                                <span className="text-2xl">🏪</span>
-                            </div>
+                            <Link href="/">
+                                <img src="/logo.png" alt="CreaTiendas" className="h-12 w-auto object-contain transform rotate-3" />
+                            </Link>
                             <span className="text-2xl font-black text-white">Creatiendas 🎄</span>
                         </div>
 

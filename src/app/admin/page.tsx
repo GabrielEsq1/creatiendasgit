@@ -13,6 +13,7 @@ import {
     Clock,
     DollarSign
 } from 'lucide-react';
+import Link from 'next/link';
 
 interface Stats {
     totalUsers: number;
@@ -96,11 +97,17 @@ export default function AdminDashboard() {
             <div className="max-w-7xl mx-auto">
                 {/* Header */}
                 <div className="mb-8">
-                    <h1 className="text-4xl font-bold text-white flex items-center gap-3">
-                        <Activity className="w-10 h-10 text-emerald-400" />
-                        Panel de Administración
-                    </h1>
-                    <p className="text-slate-400 mt-2">Monitoreo en tiempo real de Creatiendas</p>
+                    <div className="flex items-center gap-4 mb-2">
+                        <Link href="/dashboard">
+                            <img src="/logo.png" alt="CreaTiendas" className="h-10 w-auto" />
+                        </Link>
+                        <div className="h-8 w-px bg-slate-700 mx-2" />
+                        <h1 className="text-4xl font-bold text-white flex items-center gap-3">
+                            <Activity className="w-10 h-10 text-emerald-400" />
+                            Panel Admin
+                        </h1>
+                    </div>
+                    <p className="text-slate-400">Monitoreo en tiempo real de Creatiendas</p>
                 </div>
 
                 {/* Stats Grid */}

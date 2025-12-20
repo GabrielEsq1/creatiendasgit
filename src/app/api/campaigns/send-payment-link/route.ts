@@ -59,7 +59,7 @@ Una vez confirmado el pago, tu campaña se activará automáticamente.
 
         // Encode message for WhatsApp
         const encodedMessage = encodeURIComponent(message);
-        const whatsappUrl = `https://api.whatsapp.com/send?phone=${campaign.user.phone.replace('+', '')}&text=${encodedMessage}`;
+        const whatsappUrl = `https://api.whatsapp.com/send?phone=${(campaign.user.phone || "").replace("+", "")}&text=${encodedMessage}`;
 
         console.log(`📱 WhatsApp link generated for campaign ${campaign.id}`);
         console.log(`User: ${campaign.user.name} (${campaign.user.phone})`);

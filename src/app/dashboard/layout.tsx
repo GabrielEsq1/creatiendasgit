@@ -17,7 +17,9 @@ export default async function DashboardLayout({
         <div className="flex min-h-screen flex-col md:flex-row">
             <aside className="w-full md:w-64 bg-gray-900 text-white p-6">
                 <div className="mb-8">
-                    <h1 className="text-2xl font-bold">CreaTiendas</h1>
+                    <Link href="/dashboard">
+                        <img src="/logo.png" alt="CreaTiendas" className="h-8 w-auto mb-2" />
+                    </Link>
                     <p className="text-sm text-gray-400">Dashboard</p>
                 </div>
                 <nav className="space-y-4">

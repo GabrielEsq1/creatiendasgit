@@ -27,11 +27,7 @@ export async function POST(
             where: { id: campaignId },
             include: {
                 creatives: true,
-                user: {
-                    include: {
-                        subscription: true,
-                    },
-                },
+                user: true,
             },
         });
 
@@ -50,7 +46,7 @@ export async function POST(
         }
 
         // Check plan limits
-        const userPlan = campaign.user.subscription?.plan || "FREE";
+        const userPlan = campaign.user.plan || "FREE";
         const currentCreativeCount = campaign.creatives.length;
 
         if (!canAddCreative(currentCreativeCount, userPlan as any)) {
@@ -76,7 +72,7 @@ export async function POST(
                 title: data.title,
                 description: data.description,
                 imageUrl: data.imageUrl,
-                videoUrl: data.videoUrl,
+                videoUrl: data.videoUrl || undefined,
                 type: data.type || "IMAGE",
                 ctaLabel: data.ctaLabel,
                 displayOrder: currentCreativeCount,

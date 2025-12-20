@@ -100,7 +100,7 @@ export async function POST(req: NextRequest) {
         }
 
         // Find user by phone
-        const otherUser = await prisma.user.findUnique({
+        const otherUser = await prisma.user.findFirst({
             where: { phone },
         });
 

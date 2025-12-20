@@ -104,8 +104,8 @@ function LoginFormEN() {
 
                         {/* Mobile Logo / Header */}
                         <div className="text-center mb-10 relative z-10">
-                            <Link href="/en" className="inline-flex items-center justify-center w-14 h-14 bg-green-500 rounded-2xl mb-6 shadow-xl shadow-green-900/40 transform rotate-3 group-hover:rotate-0 transition-transform duration-500">
-                                <span className="text-2xl">🏪</span>
+                            <Link href="/en" className="mb-6 group">
+                                <img src="/logo.png" alt="CreaTiendas" className="h-12 w-auto object-contain transform rotate-3 group-hover:rotate-0 transition-transform duration-500" />
                             </Link>
                             <h1 className="text-2xl font-black text-white mb-1">Welcome 🎅</h1>
                             <p className="text-slate-400 text-sm font-medium">Manage your WhatsApp store</p>

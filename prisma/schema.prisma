@@ -12,6 +12,9 @@ datasource db {
 enum Role {
   USER
   ADMIN
+  ADMIN_EMPRESA
+  SUPERADMIN
+  USUARIO
 }
 
 // Unified User model for B2BChat + Creatiendas + Monedera
@@ -19,7 +22,7 @@ model User {
   id                String   @id @default(cuid())
   email             String   @unique
   name              String?
-  phone             String?
+  phone             String?  @unique
   passwordHash      String   @default("")
   emailVerified     DateTime?
   verificationToken String?  @unique
@@ -29,6 +32,22 @@ model User {
   role              Role     @default(USER)
   plan              String   @default("FREE") // "FREE" or "PRO"
 
+  // Profile data
+  position          String?
+  bio               String?
+  website           String?
+  industry          String?
+  profilePicture    String?
+  avatar            String?
+
+  // Reset password
+  resetCode         String?
+  resetCodeExpiresAt DateTime?
+
+  // Company relation
+  companyId         String?
+  company           Company? @relation(fields: [companyId], references: [id])
+
   // Creatiendas relations
   stores            Store[]
   stripeCustomer    StripeCustomer?
@@ -37,11 +56,54 @@ model User {
   // Monedera relations
   walletAccount     WalletAccount?
   
-  // B2BChat relations  
+  // B2BChat relations (Advanced)
+  conversationsAsA  Conversation[]   @relation("UserA")
+  conversationsAsB  Conversation[]   @relation("UserB")
+  
+  // Legacy B2B relations (referenced in some files)
   conversations     Conversation[]
-  sentMessages      Message[]       @relation("SentMessages")
-  contacts          Contact[]       @relation("UserContacts")
-  contactOf         Contact[]       @relation("ContactUser")
+  sentMessages      Message[]        @relation("SentMessages")
+  contacts          Contact[]        @relation("UserContacts")
+  contactOf         Contact[]        @relation("ContactUser")
+  
+  // Advertising relations
+  campaigns         AdCampaign[]
+  
+  // Social relations
+  groupMembers      GroupMember[]
+  createdGroups     Group[]          @relation("GroupCreator")
+}
+
+model Company {
+  id                String   @id @default(cuid())
+  name              String
+  taxId             String?  @unique
+  description       String?
+  website           String?
+  industry          String?
+  logo              String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  users             User[]
+  campaigns         AdCampaign[]
+  
+  connectionsA      CompanyConnection[] @relation("CompanyA")
+  connectionsB      CompanyConnection[] @relation("CompanyB")
+}
+
+model CompanyConnection {
+  id                String   @id @default(cuid())
+  companyAId        String
+  companyBId        String
+  status            String   @default("PENDING") // PENDING, ACCEPTED, REJECTED
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  companyA          Company  @relation("CompanyA", fields: [companyAId], references: [id])
+  companyB          Company  @relation("CompanyB", fields: [companyBId], references: [id])
+
+  @@unique([companyAId, companyBId])
 }
 
 // ============================================
@@ -61,6 +123,93 @@ model Store {
   updatedAt DateTime @updatedAt
 }
 
+// ============================================
+// ADVERTISING MODELS
+// ============================================
+
+model AdCampaign {
+  id            String       @id @default(cuid())
+  name          String
+  objective     String       // e.g., "SALES", "AWARENESS"
+  status        String       @default("DRAFT") // DRAFT, PENDING, ACTIVE, PAUSED, COMPLETED
+  industry      String?
+  sector        String?
+  targetRoles   String?      // JSON string of roles
+  dailyBudget   Float        @default(0)
+  durationDays  Int          @default(0)
+  totalBudget   Float        @default(0)
+  spent         Float        @default(0)
+  impressions   Int          @default(0)
+  clicks        Int          @default(0)
+  conversions   Int          @default(0)
+  creativeType  String       // IMAGE, VIDEO
+  creativeUrl   String?
+  creativeText  String?
+  videoUrl      String?      // Added
+  videoDuration Int?         // Added
+  startDate     DateTime?
+  endDate       DateTime?
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+
+  userId        String
+  user          User         @relation(fields: [userId], references: [id])
+  companyId     String
+  company       Company      @relation(fields: [companyId], references: [id])
+  
+  creatives     AdCreative[]
+}
+
+model AdCreative {
+  id             String      @id @default(cuid())
+  campaignId     String
+  campaign       AdCampaign  @relation(fields: [campaignId], references: [id])
+  title          String
+  description    String?
+  imageUrl       String?
+  videoUrl       String?
+  videoDuration  Int?
+  ctaLabel       String      @default("Ver Más")
+  destinationUrl String
+  ageRange       String?
+  gender         String      @default("ALL")
+  location       String?
+  type           String      // IMAGE, VIDEO
+  isActive       Boolean     @default(true)
+  approvalStatus String      @default("PENDING") // PENDING, APPROVED, REJECTED
+  displayOrder   Int         @default(0)
+  rotationHours  Int         @default(1)
+  lastShownAt    DateTime?
+  
+  // Basic metrics
+  impressions    Int         @default(0)
+  clicks         Int         @default(0)
+  
+  // Detailed stats relation
+  stats          AdCreativeStats?
+  
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+}
+
+model AdCreativeStats {
+  id            String     @id @default(cuid())
+  creativeId    String     @unique
+  creative      AdCreative @relation(fields: [creativeId], references: [id])
+  
+  impressions   Int        @default(0)
+  clicks        Int        @default(0)
+  ctr           Float      @default(0)
+  conversions   Int        @default(0)
+  revenue       Float      @default(0)
+  
+  lastUpdated   DateTime   @default(now())
+}
+
+// ============================================
+// MONEDERA (WALLET) MODELS
+// ============================================
+
 model StripeCustomer {
   id               String   @id @default(cuid())
   stripeCustomerId String   @unique
@@ -78,10 +227,6 @@ model PasswordResetToken {
   user      User     @relation(fields: [userId], references: [id])
   createdAt DateTime @default(now())
 }
-
-// ============================================
-// MONEDERA (WALLET) MODELS
-// ============================================
 
 model WalletAccount {
   id        String   @id @default(cuid())
@@ -111,24 +256,62 @@ model Transaction {
 }
 
 // ============================================
-// B2BCHAT MODELS
+// B2BCHAT & SOCIAL MODELS
 // ============================================
 
+model Group {
+  id          String        @id @default(cuid())
+  name        String
+  description String?
+  createdById String
+  createdBy   User          @relation("GroupCreator", fields: [createdById], references: [id])
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  members     GroupMember[]
+  conversations Conversation[]
+}
+
+model GroupMember {
+  id        String   @id @default(cuid())
+  groupId   String
+  userId    String
+  isAdmin   Boolean  @default(false)
+  joinedAt  DateTime @default(now())
+
+  group     Group    @relation(fields: [groupId], references: [id])
+  user      User     @relation(fields: [userId], references: [id])
+
+  @@unique([groupId, userId])
+}
+
 model Conversation {
-  id          String    @id @default(cuid())
-  title       String?
-  userId      String
-  user        User      @relation(fields: [userId], references: [id])
-  isGroup     Boolean   @default(false)
-  lastMessage String?
+  id            String    @id @default(cuid())
+  type          String    @default("USER_USER") // USER_USER, GROUP
+  title         String?
+  
+  // Dual-user relation
+  userAId       String?
+  userA         User?     @relation("UserA", fields: [userAId], references: [id])
+  userBId       String?
+  userB         User?     @relation("UserB", fields: [userBId], references: [id])
+  
+  // Group relation
+  groupId       String?
+  group         Group?    @relation(fields: [groupId], references: [id])
+  
+  // Legacy single-user relation
+  userId        String?
+  user          User?     @relation(fields: [userId], references: [id])
+
+  lastMessage   String?
   lastMessageAt DateTime?
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
   
-  messages    Message[]
-  participants ConversationParticipant[]
+  messages      Message[]
+  participants  ConversationParticipant[]
   
-  @@index([userId])
   @@index([lastMessageAt])
 }
 
@@ -148,16 +331,23 @@ model Message {
   id             String       @id @default(cuid())
   conversationId String
   conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
-  senderId       String
-  sender         User         @relation("SentMessages", fields: [senderId], references: [id])
-  content        String       @db.Text
+  
+  // Sender fields
+  senderId       String?
+  sender         User?        @relation("SentMessages", fields: [senderId], references: [id])
+  senderUserId   String?      // Used in many routes/scripts
+
+  content        String?      @db.Text
+  text           String?      @db.Text
+  attachmentUrl  String?      // Missing field
+  
   type           String       @default("text") // "text", "image", "file", "payment"
   metadata       Json?        // For attachments, payment info, etc.
   read           Boolean      @default(false)
+  readAt         DateTime?
   createdAt      DateTime     @default(now())
   
   @@index([conversationId])
-  @@index([senderId])
   @@index([createdAt])
 }
 
@@ -181,7 +371,6 @@ model Contact {
   @@index([contactId])
 }
 
-
 // ============================================
 // ANALYTICS MODELS
 // ============================================
@@ -200,3 +389,4 @@ model AnalyticsEvent {
   @@index([eventType])
   @@index([createdAt])
 }
+

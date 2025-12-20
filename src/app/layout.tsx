@@ -13,6 +13,9 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
     title: "Creatiendas - Constructor de Tienda WhatsApp",
     description: "Crea tu tienda online en minutos",
+    icons: {
+        icon: '/favicon.png',
+    },
 };
 
 export default function RootLayout({
