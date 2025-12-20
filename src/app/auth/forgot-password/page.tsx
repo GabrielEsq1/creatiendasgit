@@ -1,4 +1,5 @@
 "use client";
+export const dynamic = "force-dynamic";
 
 import { useState } from "react";
 import Link from "next/link";
@@ -88,8 +89,8 @@ export default function ForgotPasswordPage() {
 
                     {message && (
                         <div className={`p-3 rounded-lg text-xs font-medium flex items-center gap-2 animate-in fade-in slide-in-from-top-2 ${status === "success"
-                                ? "bg-emerald-50 border border-emerald-100 text-emerald-600"
-                                : "bg-rose-50 border border-rose-100 text-rose-600"
+                            ? "bg-emerald-50 border border-emerald-100 text-emerald-600"
+                            : "bg-rose-50 border border-rose-100 text-rose-600"
                             }`}>
                             <div className={`w-1.5 h-1.5 rounded-full ${status === "success" ? "bg-emerald-500" : "bg-rose-500"}`} />
                             {message}
