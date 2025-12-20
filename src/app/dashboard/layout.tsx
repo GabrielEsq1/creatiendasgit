@@ -30,6 +30,11 @@ export default async function DashboardLayout({
                     <Link href="/dashboard/billing" className="block py-2 px-4 rounded hover:bg-gray-800">
                         💳 Facturación
                     </Link>
+                    {(session.user as any).role === 'ADMIN' && (
+                        <Link href="/admin" className="block py-2 px-4 rounded hover:bg-gray-800 text-yellow-400 font-semibold">
+                            ⚡ Panel Admin
+                        </Link>
+                    )}
                     <form
                         action={async () => {
                             "use server";
