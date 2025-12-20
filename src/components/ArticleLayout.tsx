@@ -48,21 +48,21 @@ const ArticleLayout: React.FC<ArticleLayoutProps> = ({ title, heroImage, childre
                 </article>
 
                 {/* Fixed/Sticky Bottom CTA for Mobile and regular end page CTA */}
-                <div className="mt-20 p-12 bg-green-50 rounded-[3rem] border border-green-100 text-center">
-                    <h2 className="text-3xl font-black text-gray-900 mb-6">¿Listo para empezar?</h2>
-                    <p className="text-xl text-gray-600 mb-10 max-w-2xl mx-auto">
+                <div className="mt-12 md:mt-20 p-6 md:p-12 bg-green-50 rounded-[2rem] md:rounded-[3rem] border border-green-100 text-center">
+                    <h2 className="text-2xl md:text-3xl font-black text-gray-900 mb-4 md:mb-6">¿Listo para empezar?</h2>
+                    <p className="text-lg md:text-xl text-gray-600 mb-8 md:mb-10 max-w-2xl mx-auto">
                         Únete a más de 2,500 emprendedores que ya están vendiendo por WhatsApp con Creatiendas.
                     </p>
-                    <div className="flex flex-col sm:flex-row justify-center gap-6">
+                    <div className="flex flex-col sm:flex-row justify-center gap-4 md:gap-6">
                         <Link
                             href="/auth/register"
-                            className="inline-flex h-16 items-center justify-center px-10 bg-green-500 text-white font-black text-xl rounded-2xl shadow-2xl shadow-green-500/30 transition-all hover:bg-green-600 hover:scale-105 active:scale-95"
+                            className="inline-flex h-14 md:h-16 items-center justify-center px-6 md:px-10 bg-green-500 text-white font-black text-lg md:text-xl rounded-2xl shadow-2xl shadow-green-500/30 transition-all hover:bg-green-600 hover:scale-105 active:scale-95 w-full sm:w-auto"
                         >
                             Crear mi tienda gratis ahora
                         </Link>
                         <Link
                             href="/#demo"
-                            className="inline-flex h-16 items-center justify-center px-10 bg-white text-gray-700 border-2 border-gray-200 font-bold text-xl rounded-2xl transition-all hover:border-green-500 hover:text-green-600"
+                            className="inline-flex h-14 md:h-16 items-center justify-center px-6 md:px-10 bg-white text-gray-700 border-2 border-gray-200 font-bold text-lg md:text-xl rounded-2xl transition-all hover:border-green-500 hover:text-green-600 w-full sm:w-auto"
                         >
                             Ver demo
                         </Link>

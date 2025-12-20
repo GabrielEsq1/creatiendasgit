@@ -141,14 +141,14 @@ export default function LiveDemo() {
                                     />
 
                                     {/* Info Overlay (Over image as requested) */}
-                                    <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent p-8">
-                                        <div className="flex items-start gap-4">
-                                            <div className="bg-green-500 text-white p-3 rounded-2xl shadow-xl">
-                                                <span className="text-xl font-bold">{demoSteps[activeStep].highlight.split(' ')[0]}</span>
+                                    <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/90 via-black/60 to-transparent p-4 md:p-8">
+                                        <div className="flex items-start gap-3 md:gap-4">
+                                            <div className="bg-green-500 text-white p-2 md:p-3 rounded-xl md:rounded-2xl shadow-xl shrink-0">
+                                                <span className="text-lg md:text-xl font-bold">{demoSteps[activeStep].highlight.split(' ')[0]}</span>
                                             </div>
                                             <div>
-                                                <h3 className="text-white text-xl font-black mb-1">{demoSteps[activeStep].title}</h3>
-                                                <p className="text-gray-200 font-medium text-sm leading-relaxed max-w-lg">
+                                                <h3 className="text-white text-lg md:text-xl font-black mb-1">{demoSteps[activeStep].title}</h3>
+                                                <p className="text-gray-200 font-medium text-xs md:text-sm leading-relaxed max-w-lg">
                                                     {demoSteps[activeStep].description}
                                                 </p>
                                             </div>

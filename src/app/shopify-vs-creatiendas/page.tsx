@@ -57,44 +57,51 @@ export default function PaginaShopifyVsCreatiendas() {
 
             <section>
                 <h2 className="text-3xl font-black text-gray-900 mb-8 text-center">Comparación directa</h2>
-                <div className="overflow-hidden rounded-[2rem] border border-gray-100 shadow-xl">
-                    <table className="w-full text-left bg-white">
-                        <thead className="bg-gray-50/50">
-                            <tr>
-                                <th className="p-6 font-bold text-gray-900">Característica</th>
-                                <th className="p-6 font-bold text-gray-900">Shopify</th>
-                                <th className="p-6 font-bold text-green-600">Creatiendas</th>
-                            </tr>
-                        </thead>
-                        <tbody className="divide-y divide-gray-50">
-                            <tr>
-                                <td className="p-6 text-gray-700 font-medium">Precio</td>
-                                <td className="p-6 text-red-500 font-bold">$29 USD / mes</td>
-                                <td className="p-6 text-green-600 font-black">Gratis</td>
-                            </tr>
-                            <tr>
-                                <td className="p-6 text-gray-700 font-medium">Comisiones</td>
-                                <td className="p-6 text-red-500 font-bold">Sí</td>
-                                <td className="p-6 text-green-600 font-black">No</td>
-                            </tr>
-                            <tr>
-                                <td className="p-6 text-gray-700 font-medium">Tiempo de setup</td>
-                                <td className="p-6 text-gray-500">Horas</td>
-                                <td className="p-6 text-green-600 font-black">2 minutos</td>
-                            </tr>
-                            <tr>
-                                <td className="p-6 text-gray-700 font-medium">WhatsApp</td>
-                                <td className="p-6 text-gray-500">Plugins</td>
-                                <td className="p-6 text-green-600 font-black">Integrado</td>
-                            </tr>
-                            <tr>
-                                <td className="p-6 text-gray-700 font-medium">Ideal para</td>
-                                <td className="p-6 text-gray-500">Empresas grandes</td>
-                                <td className="p-6 text-green-600 font-black">PYMES</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                {/* Mobile-friendly scrollable table container */}
+                <div className="overflow-x-auto -mx-4 px-4 md:mx-0 md:px-0">
+                    <div className="inline-block min-w-full align-middle">
+                        <div className="overflow-hidden rounded-[1rem] md:rounded-[2rem] border border-gray-100 shadow-xl">
+                            <table className="min-w-full text-left bg-white">
+                                <thead className="bg-gray-50/50">
+                                    <tr>
+                                        <th className="p-3 md:p-6 font-bold text-gray-900 text-sm md:text-base whitespace-nowrap">Característica</th>
+                                        <th className="p-3 md:p-6 font-bold text-gray-900 text-sm md:text-base whitespace-nowrap">Shopify</th>
+                                        <th className="p-3 md:p-6 font-bold text-green-600 text-sm md:text-base whitespace-nowrap">Creatiendas</th>
+                                    </tr>
+                                </thead>
+                                <tbody className="divide-y divide-gray-50">
+                                    <tr>
+                                        <td className="p-3 md:p-6 text-gray-700 font-medium text-sm md:text-base whitespace-nowrap">Precio mensual</td>
+                                        <td className="p-3 md:p-6 text-red-500 font-bold text-sm md:text-base whitespace-nowrap">$29 USD / mes</td>
+                                        <td className="p-3 md:p-6 text-green-600 font-black text-sm md:text-base whitespace-nowrap">Gratis</td>
+                                    </tr>
+                                    <tr>
+                                        <td className="p-3 md:p-6 text-gray-700 font-medium text-sm md:text-base whitespace-nowrap">Comisiones</td>
+                                        <td className="p-3 md:p-6 text-red-500 font-bold text-sm md:text-base whitespace-nowrap">Sí</td>
+                                        <td className="p-3 md:p-6 text-green-600 font-black text-sm md:text-base whitespace-nowrap">No</td>
+                                    </tr>
+                                    <tr>
+                                        <td className="p-3 md:p-6 text-gray-700 font-medium text-sm md:text-base whitespace-nowrap">Tiempo de setup</td>
+                                        <td className="p-3 md:p-6 text-gray-500 text-sm md:text-base whitespace-nowrap">Horas o días</td>
+                                        <td className="p-3 md:p-6 text-green-600 font-black text-sm md:text-base whitespace-nowrap">2 minutos</td>
+                                    </tr>
+                                    <tr>
+                                        <td className="p-3 md:p-6 text-gray-700 font-medium text-sm md:text-base whitespace-nowrap">WhatsApp</td>
+                                        <td className="p-3 md:p-6 text-gray-500 text-sm md:text-base whitespace-nowrap">Plugins</td>
+                                        <td className="p-3 md:p-6 text-green-600 font-black text-sm md:text-base whitespace-nowrap">Integrado</td>
+                                    </tr>
+                                    <tr>
+                                        <td className="p-3 md:p-6 text-gray-700 font-medium text-sm md:text-base whitespace-nowrap">Ideal para</td>
+                                        <td className="p-3 md:p-6 text-gray-500 text-sm md:text-base whitespace-nowrap">Empresas grandes</td>
+                                        <td className="p-3 md:p-6 text-green-600 font-black text-sm md:text-base whitespace-nowrap">PYMES</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
+                {/* Scroll hint for mobile */}
+                <p className="text-center text-xs text-gray-400 mt-3 md:hidden">← Desliza para ver toda la tabla →</p>
             </section>
 
             <hr className="my-12 border-gray-100" />
