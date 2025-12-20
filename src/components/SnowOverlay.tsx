@@ -80,7 +80,7 @@ export default function SnowOverlay({ enabled }: Props) {
 
         ctx.beginPath();
         ctx.arc(f.x, f.y, f.r, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(255, 255, 255, ${f.opacity})`;
+        ctx.fillStyle = `rgba(255, 255, 255, ${f.opacity * 0.4})`;
         ctx.fill();
       }
 

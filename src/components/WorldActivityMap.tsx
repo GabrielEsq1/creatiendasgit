@@ -19,86 +19,34 @@ export default function WorldActivityMap({ points = [] }: { points?: ActivityPoi
     const height = 450; // Cropped vertically for better fit
 
     return (
-        <div className="w-full h-full bg-slate-950 relative overflow-hidden flex items-center justify-center">
-            {/* Background Map */}
-            <svg
-                viewBox="0 0 1009 665"
-                className="w-full h-full opacity-30 scale-110"
-                style={{ filter: 'drop-shadow(0 0 4px rgba(59,130,246,0.3))' }}
-            >
-                {/* Simplified World Map Path */}
-                <path
-                    d="M 50 200 Q 150 50 250 200 T 450 200 T 650 200 T 850 200"
-                    fill="none"
-                    stroke="none"
-                // Note: The path above is a placeholder. For the real map, we render the continents.
-                // Since the path string is huge, we will use a simplified set of svg shapes for continents.
-                />
-
-                {/* 
-                   For this "Real Map" requirement without 3rd party libs, 
-                   we use a stylized representation of main continents.
-                */}
-                <g fill="#1e293b" stroke="#334155" strokeWidth="1">
-                    {/* North America approximation */}
-                    <path d="M150,150 L250,120 L300,180 L200,220 Z" />
-                    {/* South America */}
-                    <path d="M220,240 L280,240 L260,350 L230,320 Z" />
-                    {/* Europe / Asia / Africa (Combined abstract) */}
-                    <path d="M400,100 L800,100 L850,250 L650,350 L500,280 L450,180 Z" />
-                    {/* Australia */}
-                    <path d="M800,300 L900,300 L900,350 L820,350 Z" />
-                </g>
-
-                {/* Resetting to use a standard Equirectangular projection image is safer if we want "Real" 
-                    without massive SVG paths code here. 
-                    Let's use a background image approach for the map and overlay div/svg points.
-                */}
-            </svg>
-
-            {/* 
-               Better Approach for "Real Map":
-               Use a background image of a world map (dark theme). 
-               Since we can't load external images easily without knowing they exist,
-               we will construct the "Real Map" using a set of dots/grid that form the shape,
-               OR use a known accessible map pattern.
-               
-               Let's convert to the User's preferred "Canvas" but with proper land rendering?
-               No, User asked for "Mapa mundi real". 
-               The best way in code-only is using a background image url of a transparent map.
-               
-               I will enable a map background from a stable CDNs for this visual.
-            */}
+        <div className="w-full h-full bg-black relative overflow-hidden flex items-center justify-center">
+            {/* Background Map Grid Pattern (Subtle & Dark) */}
             <div
-                className="absolute inset-0 opacity-20 bg-[url('https://upload.wikimedia.org/wikipedia/commons/8/80/World_map_-_low_resolution.svg')] bg-center bg-no-repeat bg-contain"
-                style={{ filter: 'invert(1) hue-rotate(180deg) brightness(0.5)' }}
+                className="absolute inset-0 opacity-[0.15] bg-[url('https://upload.wikimedia.org/wikipedia/commons/8/80/World_map_-_low_resolution.svg')] bg-center bg-no-repeat bg-contain"
+                style={{ filter: 'invert(1) brightness(0.8)' }}
             />
+
+            {/* Radial glow to give depth */}
+            <div className="absolute inset-0 bg-gradient-radial from-blue-500/5 to-transparent pointer-events-none" />
 
             {/* Activity Points Overlay */}
             {points.map((point, i) => {
-                // Equirectangular projection mapping
-                // X = (lng + 180) * (width / 360)
-                // Y = (90 - lat) * (height / 180)
                 const x = (point.lng + 180) * (100 / 360);
                 const y = (90 - point.lat) * (100 / 180);
 
                 return (
                     <div
                         key={i}
-                        className="absolute w-3 h-3 -ml-1.5 -mt-1.5"
+                        className="absolute w-4 h-4 -ml-2 -mt-2"
                         style={{ left: `${x}%`, top: `${y}%` }}
                     >
-                        <span className="absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75 animate-ping" style={{ animationDelay: `${i * 0.2}s` }} />
-                        <span className="relative inline-flex rounded-full h-3 w-3 bg-blue-500 shadow-[0_0_10px_rgba(59,130,246,0.8)]" />
-
-                        {point.intensity && point.intensity > 1 && (
-                            <div className="absolute top-4 left-1/2 -translate-x-1/2 bg-slate-800 text-[9px] text-white px-1.5 py-0.5 rounded border border-slate-700 whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity">
-                                Active Users
-                            </div>
-                        )}
+                        {/* Dynamic Glowing Pulse */}
+                        <span className="absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-40 animate-ping" style={{ animationDelay: `${i * 0.4}s`, animationDuration: '3s' }} />
+                        <span className="relative inline-flex rounded-full h-2 w-2 bg-white shadow-[0_0_15px_rgba(255,255,255,0.9),0_0_5px_rgba(74,222,128,0.8)]" />
                     </div>
                 );
             })}
         </div>
+    );
     );
 }
