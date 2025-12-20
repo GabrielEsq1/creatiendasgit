@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import { Suspense } from "react";
 import "./globals.css";
 import Navbar from "../components/Navbar";
 import { Providers } from "./providers";
@@ -33,7 +34,9 @@ export default function RootLayout({
             </head>
             <body className={inter.className}>
                 <Providers>
-                    <GA4Professional />
+                    <Suspense fallback={null}>
+                        <GA4Professional />
+                    </Suspense>
                     <AnalyticsTracker />
                     <Navbar />
                     <main className="pt-16">
