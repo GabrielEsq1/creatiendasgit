@@ -65,6 +65,15 @@ export default function Navbar() {
                                         </Link>
                                     </div>
                                 )}
+                                {/* Admin-Only Main Link */}
+                                {(session.user as any)?.role === 'ADMIN' && (
+                                    <Link
+                                        href="/admin"
+                                        className="bg-yellow-100 text-yellow-700 hover:bg-yellow-200 border border-yellow-200 px-4 py-2 rounded-full text-xs font-black uppercase tracking-wide flex items-center gap-2 transition-all shadow-sm"
+                                    >
+                                        <span>⚡ Panel Admin</span>
+                                    </Link>
+                                )}
                             </div>
                         )}
                         {!session && (
