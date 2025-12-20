@@ -8,17 +8,20 @@ import Script from 'next/script';
 export type AnalyticsEventType = 'page_view' | 'click' | 'signup' | 'login' | 'create_store' | 'view_content' | 'initiate_checkout' | 'purchase';
 
 const PIXEL_ID = '1419499733092502'; // Píxel de Gabriel Esquivia
+const GA_MEASUREMENT_ID = 'G-H0S47Z9N8J';
 
 export const useAnalytics = () => {
     const trackEvent = async (eventType: AnalyticsEventType, data?: any) => {
         try {
+            const currentPath = typeof window !== 'undefined' ? window.location.pathname : '';
+
             // 1. Send to internal API (fire and forget)
             fetch('/api/analytics', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     eventType,
-                    path: typeof window !== 'undefined' ? window.location.pathname : '',
+                    path: currentPath,
                     metadata: data,
                 }),
             }).catch(() => { }); // Silent fail
@@ -32,6 +35,28 @@ export const useAnalytics = () => {
             if (typeof window !== 'undefined' && (window as any).fbq) {
                 const fbEvent = mapToPixelEvent(eventType);
                 (window as any).fbq('track', fbEvent, data);
+            }
+
+            // 4. Send to GA4
+            if (typeof window !== 'undefined' && (window as any).gtag) {
+                if (eventType === 'page_view') {
+                    (window as any).gtag('event', 'page_view', {
+                        page_path: currentPath,
+                        ...data
+                    });
+                } else if (eventType === 'signup') {
+                    (window as any).gtag('event', 'sign_up', {
+                        method: data?.method || 'email',
+                        page_path: currentPath,
+                        ...data
+                    });
+                } else {
+                    // Default GA4 mapping for other events
+                    (window as any).gtag('event', eventType, {
+                        page_path: currentPath,
+                        ...data
+                    });
+                }
             }
         } catch (error) {
             // Silent fail - don't break user experience
@@ -71,6 +96,9 @@ function AnalyticsTrackerInner() {
         if (typeof window !== 'undefined' && (window as any).fbq) {
             (window as any).fbq('track', 'PageView');
         }
+
+        // GA4 automatically tracks page_view on config,
+        // but for SPA transitions in Next.js, we send it manually via trackEvent above.
     }, [pathname, searchParams]);
 
     return null;
@@ -80,6 +108,22 @@ function AnalyticsTrackerInner() {
 export const AnalyticsTracker = () => {
     return (
         <>
+            {/* GA4 Code */}
+            <Script
+                src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`}
+                strategy="afterInteractive"
+            />
+            <Script id="ga4-init" strategy="afterInteractive">
+                {`
+                    window.dataLayer = window.dataLayer || [];
+                    function gtag(){dataLayer.push(arguments);}
+                    gtag('js', new Date());
+                    gtag('config', '${GA_MEASUREMENT_ID}', {
+                        page_path: window.location.pathname,
+                    });
+                `}
+            </Script>
+
             {/* Meta Pixel Code */}
             <Script
                 id="meta-pixel"

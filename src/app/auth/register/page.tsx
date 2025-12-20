@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Mail, Lock, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { useAnalytics } from "@/components/Analytics";
+import { SocialProofSection } from "@/components/SocialProofSection";
 
 export default function RegisterPage() {
     const [name, setName] = useState("");
@@ -127,6 +128,11 @@ export default function RegisterPage() {
                                 </div>
                             </li>
                         </ul>
+
+                        {/* Social Proof (Real-time activity) */}
+                        <div className="pt-4 border-t border-gray-100">
+                            <SocialProofSection />
+                        </div>
 
                         {/* Video Demo */}
                         <div>
