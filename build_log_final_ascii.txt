@@ -1,0 +1,100 @@
+errors on following 
+paths:
+	/_not-found/page: 
+/_not-found
+	/admin/ads/page: 
+/admin/ads
+	/admin/campaigns/pag
+e: /admin/campaigns
+	/admin/dashboard/pag
+e: /admin/dashboard
+	/admin/page: /admin
+	/admin/settings/page
+: /admin/settings
+	/admin/users/page: 
+/admin/users
+	/ads-manager/create/
+page: 
+/ads-manager/create
+	/ads-manager/page: 
+/ads-manager
+	/auth/forgot-passwor
+d/page: 
+/auth/forgot-password
+	/auth/login/page: 
+/auth/login
+	
+/auth/register/page: 
+/auth/register
+	/auth/reset-password
+/page: 
+/auth/reset-password
+	/builder/page: 
+/builder
+	/chat/page: /chat
+	/contacts/page: 
+/contacts
+	/crear-tienda-online
+-gratis/page: /crear-
+tienda-online-gratis
+	/dashboard/billing/p
+age: 
+/dashboard/billing
+	/dashboard/campaigns
+/page: 
+/dashboard/campaigns
+	/dashboard/page: 
+/dashboard
+	/dashboard/profile/p
+age: 
+/dashboard/profile
+	/dashboard/stores/pa
+ge: /dashboard/stores
+	/dual-preview/page: 
+/dual-preview
+	/en/auth/forgot-pass
+word/page: /en/auth/f
+orgot-password
+	
+/en/auth/login/page: 
+/en/auth/login
+	/en/auth/register/pa
+ge: /en/auth/register
+	/en/builder/page: 
+/en/builder
+	/en/create-online-st
+ore-free/page: /en/cr
+eate-online-store-fre
+e
+	/en/dashboard/billin
+g/page: 
+/en/dashboard/billing
+	/en/dashboard/campai
+gns/page: /en/dashboa
+rd/campaigns
+	/en/dashboard/page: 
+/en/dashboard
+	/en/dashboard/profil
+e/page: 
+/en/dashboard/profile
+	/en/dashboard/stores
+/page: 
+/en/dashboard/stores
+	/en/sell-on-whatsapp
+/page: 
+/en/sell-on-whatsapp
+	/en/shopify-vs-creat
+iendas/page: /en/shop
+ify-vs-creatiendas
+	/forgot-password/pag
+e: /forgot-password
+	/shopify-vs-creatien
+das/page: /shopify-vs
+-creatiendas
+	/vender-por-whatsapp
+/page: 
+/vender-por-whatsapp
+	/wallet/page: 
+/wallet
+	/widgets-demo/page: 
+/widgets-demo
