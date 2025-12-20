@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import Navbar from "@/components/Navbar";
-import { Providers } from "@/app/providers";
-import WhatsAppButton from "@/components/WhatsAppButton";
-import { AnalyticsTracker } from "@/components/Analytics";
-import TranslationPrompt from "@/components/TranslationPrompt";
+import Navbar from "../components/Navbar";
+import { Providers } from "./providers";
+import WhatsAppButton from "../components/WhatsAppButton";
+import { AnalyticsTracker } from "../components/Analytics";
+import GA4Professional from "../components/GA4Professional";
+import TranslationPrompt from "../components/TranslationPrompt";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -29,6 +30,7 @@ export default function RootLayout({
             </head>
             <body className={inter.className}>
                 <Providers>
+                    <GA4Professional />
                     <AnalyticsTracker />
                     <Navbar />
                     <main className="pt-16">

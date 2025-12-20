@@ -34,9 +34,9 @@ export default function Navbar() {
                     {/* Logo Area */}
                     <div className="flex items-center">
                         <Link href={session ? "/dashboard" : "/"} className="flex items-center group relative">
-                            <img src="/logo.png" className="h-10 w-auto" alt="CreaTiendas" />
+                            <img src="/logo.png" className="h-8 sm:h-10 w-auto object-contain" alt="CreaTiendas" />
                             {/* Seasonal Santa Hat 🎅 (Solid Version) */}
-                            <div className="absolute -top-3.5 -left-1.5 w-7 h-7 rotate-[-20deg] pointer-events-none drop-shadow-md z-10 group-hover:rotate-0 transition-transform duration-500">
+                            <div className="absolute -top-3 sm:-top-3.5 -left-1 sm:-left-1.5 w-6 sm:w-7 h-6 sm:h-7 rotate-[-20deg] pointer-events-none drop-shadow-md z-10 group-hover:rotate-0 transition-transform duration-500">
                                 <svg viewBox="0 0 100 100" className="w-full h-full">
                                     {/* Outline */}
                                     <path d="M80 60 C80 30, 60 10, 30 20 L20 40 C10 50, 20 70, 40 70 L80 60" fill="none" stroke="black" strokeWidth="4" strokeLinecap="round" />
@@ -171,8 +171,8 @@ export default function Navbar() {
                                     window.location.href = targetPath;
                                 }}
                                 className={`p-2 rounded-xl border font-bold transition-all ${pathname?.startsWith('/en')
-                                        ? 'bg-green-500/10 border-green-500 text-green-400'
-                                        : 'bg-slate-900 border-slate-800 text-slate-400'
+                                    ? 'bg-green-500/10 border-green-500 text-green-400'
+                                    : 'bg-slate-900 border-slate-800 text-slate-400'
                                     }`}
                             >
                                 {pathname?.startsWith('/en') ? 'EN' : 'ES'}
