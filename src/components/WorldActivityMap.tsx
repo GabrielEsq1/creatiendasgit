@@ -48,5 +48,4 @@ export default function WorldActivityMap({ points = [] }: { points?: ActivityPoi
             })}
         </div>
     );
-    );
 }
