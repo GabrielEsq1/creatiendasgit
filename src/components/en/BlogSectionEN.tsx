@@ -14,19 +14,19 @@ const posts: BlogPost[] = [
         title: "How to create a FREE online store in 2 minutes (no commissions)",
         excerpt: "Learn step by step how to create your online store for free and start selling on WhatsApp in minutes.",
         image: "/images/blog/crear-tienda-gratis.png",
-        slug: "crear-tienda-online-gratis"
+        slug: "en/create-online-store-free"
     },
     {
         title: "How to sell on WhatsApp with an online store (practical guide)",
         excerpt: "Turn WhatsApp into your main sales channel with a connected online store.",
         image: "/images/blog/vender-por-whatsapp.jpg",
-        slug: "vender-por-whatsapp"
+        slug: "en/sell-on-whatsapp"
     },
     {
         title: "Shopify vs Creatiendas: which is better for small businesses?",
         excerpt: "Compare Shopify and Creatiendas and choose the best option if you are an entrepreneur or SMB.",
         image: "/images/blog/shopify-vs-creatiendas.jpg",
-        slug: "shopify-vs-creatiendas"
+        slug: "en/shopify-vs-creatiendas"
     }
 ];
 

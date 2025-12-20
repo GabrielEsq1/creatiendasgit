@@ -56,23 +56,23 @@ export default function LiveDemoEN() {
     }, [isAutoPlaying]);
 
     return (
-        <section id="demo" className="py-24 px-4 md:px-8 lg:px-16 bg-gray-50/50">
+        <section id="demo" className="py-24 px-4 md:px-8 lg:px-16 bg-black">
             <div className="max-w-6xl mx-auto">
                 {/* Section Header */}
                 <div className="text-center mb-16">
                     <span className="inline-block bg-green-100 text-green-700 text-[10px] font-black px-4 py-1 rounded-full mb-4 uppercase tracking-[0.2em] border border-green-200">
                         🎬 QUICK DEMO
                     </span>
-                    <h2 className="text-4xl md:text-5xl font-black text-gray-900 mb-6">
+                    <h2 className="text-4xl md:text-5xl font-black text-white mb-6">
                         See how the <span className="text-green-500">magic</span> works
                     </h2>
-                    <p className="text-gray-500 max-w-2xl mx-auto text-lg font-medium">
+                    <p className="text-gray-400 max-w-2xl mx-auto text-lg font-medium">
                         From registration to your live store. No complex configurations, no code.
                     </p>
                 </div>
 
                 {/* Demo Container */}
-                <div className="bg-white rounded-[2.5rem] p-4 md:p-10 border border-gray-100 shadow-2xl shadow-gray-200">
+                <div className="bg-zinc-900 rounded-[2.5rem] p-4 md:p-10 border border-zinc-800 shadow-2xl shadow-green-900/10">
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
                         {/* Steps Navigation */}
                         <div className="lg:col-span-1 space-y-4">
@@ -84,18 +84,18 @@ export default function LiveDemoEN() {
                                         setIsAutoPlaying(false);
                                     }}
                                     className={`w-full text-left p-5 rounded-2xl transition-all duration-300 ${activeStep === idx
-                                        ? 'bg-green-500 text-white shadow-xl shadow-green-200 translate-x-2'
-                                        : 'bg-gray-50 text-gray-600 hover:bg-gray-100'
+                                        ? 'bg-green-500 text-white shadow-xl shadow-green-900/20 translate-x-2'
+                                        : 'bg-zinc-800 text-gray-400 hover:bg-zinc-700'
                                         }`}
                                 >
                                     <div className="flex items-center gap-4">
-                                        <span className={`w-10 h-10 rounded-xl flex items-center justify-center text-sm font-black ${activeStep === idx ? 'bg-white/20' : 'bg-gray-200'
+                                        <span className={`w-10 h-10 rounded-xl flex items-center justify-center text-sm font-black ${activeStep === idx ? 'bg-white/20' : 'bg-zinc-700'
                                             }`}>
                                             {step.id}
                                         </span>
                                         <div>
                                             <div className="font-black text-sm uppercase tracking-tight">{step.title.split('. ')[1]}</div>
-                                            <div className={`text-xs font-bold ${activeStep === idx ? 'text-green-100' : 'text-gray-400'}`}>
+                                            <div className={`text-xs font-bold ${activeStep === idx ? 'text-green-100' : 'text-gray-500'}`}>
                                                 {step.highlight}
                                             </div>
                                         </div>
@@ -107,7 +107,7 @@ export default function LiveDemoEN() {
                             <div className="pt-6 flex items-center justify-center lg:justify-start gap-3 border-t border-gray-100 mt-4">
                                 <button
                                     onClick={() => setIsAutoPlaying(!isAutoPlaying)}
-                                    className={`w-12 h-7 rounded-full transition-all ${isAutoPlaying ? 'bg-green-500' : 'bg-gray-300'
+                                    className={`w-12 h-7 rounded-full transition-all ${isAutoPlaying ? 'bg-green-500' : 'bg-zinc-700'
                                         } relative shadow-inner`}
                                 >
                                     <span className={`absolute top-1 w-5 h-5 bg-white rounded-full transition-all shadow-md ${isAutoPlaying ? 'left-6' : 'left-1'
@@ -165,7 +165,7 @@ export default function LiveDemoEN() {
                                         onClick={() => { setActiveStep(idx); setIsAutoPlaying(false); }}
                                         className={`h-2 rounded-full transition-all duration-300 ${idx === activeStep
                                             ? 'w-10 bg-green-500'
-                                            : 'w-2 bg-gray-200 hover:bg-gray-300'
+                                            : 'w-2 bg-zinc-700 hover:bg-zinc-600'
                                             }`}
                                     />
                                 ))}
@@ -178,10 +178,10 @@ export default function LiveDemoEN() {
                 <div className="text-center mt-16 animate-bounce">
                     <Link
                         href="/auth/register"
-                        className="inline-flex items-center gap-3 bg-gray-900 text-white font-black px-10 py-5 rounded-2xl hover:bg-black transition-all shadow-2xl hover:-translate-y-1 uppercase tracking-widest text-sm"
+                        className="inline-flex items-center gap-3 bg-green-500 text-black font-black px-10 py-5 rounded-2xl hover:bg-green-400 transition-all shadow-2xl hover:-translate-y-1 uppercase tracking-widest text-sm"
                     >
                         Start now for free
-                        <svg className="w-5 h-5 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <svg className="w-5 h-5 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M14 5l7 7m0 0l-7 7m7-7H3" />
                         </svg>
                     </Link>
