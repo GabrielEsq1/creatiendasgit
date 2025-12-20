@@ -33,8 +33,17 @@ export default function Navbar() {
                 <div className="flex justify-between items-center h-16">
                     {/* Logo Area */}
                     <div className="flex items-center">
-                        <Link href={session ? "/dashboard" : "/"} className="flex items-center group">
+                        <Link href={session ? "/dashboard" : "/"} className="flex items-center group relative">
                             <img src="/logo.png" className="h-10 w-auto" alt="CreaTiendas" />
+                            {/* Seasonal Santa Hat 🎅 */}
+                            <svg viewBox="0 0 512 512" className="absolute -top-4 -left-2 w-8 h-8 rotate-[-15deg] z-10 pointer-events-none drop-shadow-md filter hover:rotate-12 transition-transform">
+                                {/* Red Hat Body */}
+                                <path d="M416 192c0-88.4-93.1-160-208-160S0 103.6 0 192c0 34.3 14.1 66.2 38.3 92.8l-12.7 42.7c-4 13.3 3.6 27.5 16.9 31.5s27.5-3.6 31.5-16.9l8.6-28.7C118.4 338.4 161 352 208 352s89.7-13.6 125.4-38.6l8.6 28.7c4 13.3 18.2 20.9 31.5 16.9s20.9-18.2 16.9-31.5l-12.7-42.7c24.2-26.6 38.3-58.5 38.3-92.8z" fill="#D32F2F" />
+                                {/* White Pom Pom */}
+                                <circle cx="416" cy="112" r="48" fill="white" />
+                                {/* White Brim */}
+                                <path d="M0 192c0 35.3 28.7 64 64 64h288c35.3 0 64-28.7 64-64s-28.7-64-64-64H64c-35.3 0-64 28.7-64 64z" fill="white" transform="translate(0, 160) scale(1, 0.45)" />
+                            </svg>
                         </Link>
 
                         {/* Desktop Menu */}
