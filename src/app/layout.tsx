@@ -30,7 +30,7 @@ export default function RootLayout({
                 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
                 <link rel="manifest" href="/manifest.json" />
                 <meta name="theme-color" content="#2563eb" />
-                <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0" />
+                <meta name="viewport" content="width=device-width, initial-scale=1" />
             </head>
             <body className={inter.className}>
                 <Providers>
