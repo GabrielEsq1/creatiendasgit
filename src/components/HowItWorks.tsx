@@ -8,18 +8,18 @@ export default function HowItWorks() {
   ];
 
   return (
-    <section className="py-16 px-4 md:px-8 lg:px-16 bg-gray-50">
+    <section className="py-24 px-4 md:px-8 lg:px-16 bg-black border-y border-white/5">
       <div className="max-w-5xl mx-auto text-center">
-        <h3 className="text-3xl font-semibold text-gray-800 mb-10">Cómo funciona</h3>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <h3 className="text-4xl font-black text-white mb-16">Cómo funciona ❄️</h3>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {steps.map((step, idx) => (
             <div
               key={idx}
-              className="bg-white rounded-xl shadow p-6 flex flex-col items-center text-center"
+              className="bg-slate-900/50 border border-white/5 rounded-[2.5rem] p-10 flex flex-col items-center text-center hover:border-green-500/30 transition-all hover:-translate-y-1 shadow-2xl shadow-black"
             >
-              <div className="text-4xl mb-4">{step.icon}</div>
-              <h4 className="text-lg font-medium text-gray-800 mb-2">{step.title}</h4>
-              <p className="text-gray-600 text-sm">{step.description}</p>
+              <div className="text-5xl mb-6 bg-slate-800/50 w-24 h-24 flex items-center justify-center rounded-3xl shadow-inner">{step.icon}</div>
+              <h4 className="text-xl font-black text-white mb-3">{step.title}</h4>
+              <p className="text-slate-400 font-medium text-sm leading-relaxed">{step.description}</p>
             </div>
           ))}
         </div>

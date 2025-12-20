@@ -21,13 +21,13 @@ export default function Navbar() {
 
     const isActive = (path: string) =>
         pathname === path
-            ? 'text-green-600 font-bold border-b-2 border-green-600 h-full flex items-center'
-            : 'text-gray-700 hover:text-green-600 transition-colors h-full flex items-center font-medium';
+            ? 'text-green-400 font-bold border-b-2 border-green-500 h-full flex items-center'
+            : 'text-white/70 hover:text-green-400 transition-colors h-full flex items-center font-medium';
 
     const isHome = pathname === '/';
 
     return (
-        <nav className={`fixed top-0 left-0 right-0 z-[100] transition-all bg-white/90 backdrop-blur-md border-b border-gray-100 ${scrolled ? 'py-1 shadow-sm' : 'py-2'
+        <nav className={`fixed top-0 left-0 right-0 z-[100] transition-all bg-black/80 backdrop-blur-xl border-b border-white/5 ${scrolled ? 'py-1 shadow-2xl shadow-black/50' : 'py-2'
             }`}>
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex justify-between items-center h-16">
@@ -71,7 +71,7 @@ export default function Navbar() {
                                             href="/admin"
                                             className={`${isActive('/admin')} flex items-center gap-2`}
                                         >
-                                            <span className="px-2 py-0.5 bg-red-50 text-red-600 border border-red-100 text-[10px] rounded font-black uppercase tracking-tighter shadow-sm">Admin</span>
+                                            <span className="px-2 py-0.5 bg-red-950/30 text-red-500 border border-red-500/20 text-[10px] rounded font-black uppercase tracking-tighter shadow-sm">Admin</span>
                                             Panel
                                         </Link>
                                         <Link href="/admin/users" className={isActive('/admin/users')}>
@@ -101,16 +101,16 @@ export default function Navbar() {
                     {/* Right Side Actions */}
                     <div className="flex items-center gap-4">
                         {status === 'loading' ? (
-                            <div className="h-4 w-20 bg-gray-100 animate-pulse rounded" />
+                            <div className="h-4 w-20 bg-slate-800 animate-pulse rounded" />
                         ) : session ? (
                             <div className="flex items-center gap-4">
                                 <div className="hidden sm:flex flex-col items-end">
-                                    <span className="text-[10px] uppercase font-bold text-gray-400 leading-none mb-1">Sesión de</span>
-                                    <span className="text-sm font-black text-gray-800 leading-none">{session.user?.name}</span>
+                                    <span className="text-[10px] uppercase font-bold text-slate-500 leading-none mb-1">Sesión de</span>
+                                    <span className="text-sm font-black text-white leading-none">{session.user?.name}</span>
                                 </div>
                                 <button
                                     onClick={() => signOut({ callbackUrl: '/' })}
-                                    className="flex items-center gap-2 bg-gray-50 border border-gray-200 px-4 py-2 rounded-xl text-sm font-bold text-gray-600 transition-all hover:bg-red-50 hover:border-red-200 hover:text-red-600 hover:shadow-sm"
+                                    className="flex items-center gap-2 bg-slate-900 border border-slate-800 px-4 py-2 rounded-xl text-sm font-bold text-slate-300 transition-all hover:bg-rose-950/30 hover:border-rose-500/30 hover:text-rose-400 hover:shadow-sm"
                                 >
                                     <span>Salir</span>
                                     <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -122,13 +122,13 @@ export default function Navbar() {
                             <div className="flex items-center gap-3">
                                 <Link
                                     href="/auth/login"
-                                    className="hidden sm:block text-gray-600 hover:text-gray-900 px-4 py-2 text-sm font-black transition-colors"
+                                    className="hidden sm:block text-slate-400 hover:text-white px-4 py-2 text-sm font-black transition-colors"
                                 >
                                     Iniciar Sesión
                                 </Link>
                                 <Link
                                     href="/auth/register"
-                                    className="bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-xl text-sm font-black shadow-lg shadow-green-100 transition-all hover:-translate-y-0.5 active:scale-95"
+                                    className="bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-xl text-sm font-black shadow-lg shadow-green-900/40 transition-all hover:-translate-y-0.5 active:scale-95"
                                 >
                                     Empezar GRATIS
                                 </Link>
@@ -154,23 +154,23 @@ export default function Navbar() {
 
             {/* Mobile Menu */}
             {isOpen && (
-                <div className="lg:hidden bg-white border-t border-gray-100 py-6 px-4 space-y-4 shadow-2xl animate-in fade-in slide-in-from-top-4">
+                <div className="lg:hidden bg-slate-950 border-t border-white/5 py-6 px-4 space-y-4 shadow-2xl animate-in fade-in slide-in-from-top-4">
                     {session ? (
                         <>
-                            <Link href="/dashboard" className="block p-4 rounded-2xl bg-gray-50 font-black text-gray-800" onClick={() => setIsOpen(false)}>Dashboard</Link>
-                            <Link href="/dashboard/stores" className="block p-4 rounded-2xl hover:bg-gray-50 font-bold text-gray-600" onClick={() => setIsOpen(false)}>Mis Tiendas</Link>
-                            <Link href="/dashboard/billing" className="block p-4 rounded-2xl hover:bg-gray-50 font-bold text-gray-600" onClick={() => setIsOpen(false)}>Mi Plan</Link>
+                            <Link href="/dashboard" className="block p-4 rounded-2xl bg-slate-900 font-black text-white" onClick={() => setIsOpen(false)}>Dashboard</Link>
+                            <Link href="/dashboard/stores" className="block p-4 rounded-2xl hover:bg-slate-900 font-bold text-slate-400" onClick={() => setIsOpen(false)}>Mis Tiendas</Link>
+                            <Link href="/dashboard/billing" className="block p-4 rounded-2xl hover:bg-slate-900 font-bold text-slate-400" onClick={() => setIsOpen(false)}>Mi Plan</Link>
                             <button
                                 onClick={() => { setIsOpen(false); signOut({ callbackUrl: '/' }); }}
-                                className="w-full text-left p-4 rounded-2xl text-red-600 font-black hover:bg-red-50 transition-colors"
+                                className="w-full text-left p-4 rounded-2xl text-rose-500 font-black hover:bg-rose-950/30 transition-colors"
                             >
                                 Cerrar Sesión
                             </button>
                         </>
                     ) : (
                         <>
-                            <Link href="/auth/login" className="block p-4 rounded-2xl hover:bg-gray-50 font-black text-gray-800" onClick={() => setIsOpen(false)}>Iniciar Sesión</Link>
-                            <Link href="/auth/register" className="block p-4 rounded-2xl bg-green-500 text-white font-black text-center shadow-xl shadow-green-100" onClick={() => setIsOpen(false)}>EMPEZAR GRATIS</Link>
+                            <Link href="/auth/login" className="block p-4 rounded-2xl hover:bg-slate-900 font-black text-white" onClick={() => setIsOpen(false)}>Iniciar Sesión</Link>
+                            <Link href="/auth/register" className="block p-4 rounded-2xl bg-green-500 text-white font-black text-center shadow-xl shadow-green-900/40" onClick={() => setIsOpen(false)}>EMPEZAR GRATIS</Link>
                         </>
                     )}
                 </div>
