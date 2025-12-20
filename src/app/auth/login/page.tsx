@@ -1,7 +1,7 @@
 "use client";
 export const dynamic = 'force-dynamic';
 
-import { signIn } from "next-auth/react";
+import { signIn, getSession } from "next-auth/react";
 import { useState, Suspense, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Mail, Lock, ArrowRight, Github, Chrome, ArrowLeft } from "lucide-react";
@@ -39,7 +39,13 @@ function LoginForm() {
             if (result?.error) {
                 setError("Credenciales inválidas");
             } else {
-                router.push(callbackUrl);
+                // Check role for redirection
+                const session = await getSession();
+                if (session?.user?.role === 'ADMIN') {
+                    router.push('/admin');
+                } else {
+                    router.push(callbackUrl);
+                }
                 router.refresh();
             }
         } catch (err) {
