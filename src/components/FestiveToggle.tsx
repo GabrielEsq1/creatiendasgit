@@ -16,7 +16,7 @@ export default function FestiveToggle({
             setOn(enabled);
             onChange(enabled);
         }
-    }, []);
+    }, [onChange]);
 
     const toggle = () => {
         const v = !on;
@@ -28,20 +28,11 @@ export default function FestiveToggle({
     return (
         <button
             onClick={toggle}
-            style={{
-                position: 'fixed',
-                bottom: 16,
-                right: 16,
-                zIndex: 50,
-                background: '#020617',
-                color: '#fff',
-                borderRadius: 999,
-                padding: '8px 14px',
-                fontSize: 13,
-            }}
-            className="shadow-lg hover:scale-105 transition-transform font-medium border border-slate-700"
+            className="fixed bottom-4 right-4 z-[100] bg-white/90 backdrop-blur px-4 py-2 rounded-full shadow-xl border border-slate-100 text-sm font-bold flex items-center gap-2 hover:scale-110 active:scale-95 transition-all group"
         >
-            🎄 Felices Fiestas {on ? '❄️' : '⛔'}
+            <span className="group-hover:rotate-12 transition-transform">🎄</span>
+            <span className="text-slate-700">Felices Fiestas</span>
+            <span>{on ? '❄️' : '⛔'}</span>
         </button>
     );
 }
