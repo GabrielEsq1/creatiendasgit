@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 
 const demoSteps = [
     {
@@ -134,10 +135,12 @@ export default function LiveDemo() {
 
                                 {/* Screenshot with stretch to fill */}
                                 <div className="bg-white h-[450px] md:h-[550px] relative overflow-hidden">
-                                    <img
+                                    <Image
                                         src={demoSteps[activeStep].image}
-                                        alt={demoSteps[activeStep].title}
-                                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                                        alt={`Demostración de Creatiendas: ${demoSteps[activeStep].title}`}
+                                        fill
+                                        className="object-cover transition-transform duration-700 group-hover:scale-105"
+                                        sizes="(max-w-7xl) 100vw, 800px"
                                     />
 
                                     {/* Info Overlay (Over image as requested) */}

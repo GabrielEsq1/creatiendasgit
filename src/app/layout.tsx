@@ -12,10 +12,49 @@ import TranslationPrompt from "../components/TranslationPrompt";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-    title: "Creatiendas - Constructor de Tienda WhatsApp",
-    description: "Crea tu tienda online en minutos",
+    metadataBase: new URL('https://creatiendasgit1.vercel.app'),
+    title: {
+        default: "Creatiendas - Tu Tienda Online por WhatsApp Gratis",
+        template: "%s | Creatiendas"
+    },
+    description: "Crea tu tienda online por WhatsApp en minutos. Sin comisiones, 100% gratis. Diseñado para emprendedores en LATAM.",
+    keywords: ["tienda online", "WhatsApp", "gratis", "minutos", "SaaS", "e-commerce WhatsApp"],
+    authors: [{ name: "Creatiendas Team" }],
+    creator: "Creatiendas",
+    publisher: "Creatiendas",
+    formatDetection: {
+        email: false,
+        address: false,
+        telephone: false,
+    },
+    openGraph: {
+        type: 'website',
+        locale: 'es_LA',
+        url: 'https://creatiendasgit1.vercel.app',
+        siteName: 'Creatiendas',
+        title: 'Creatiendas - Tu Tienda Online por WhatsApp Gratis',
+        description: 'Vende tus productos directamente por WhatsApp sin pagar comisiones. Setup en solo 2 minutos.',
+        images: [
+            {
+                url: '/og-image.png', // We'll assume this exists or user will add it
+                width: 1200,
+                height: 630,
+                alt: 'Creatiendas - Vende por WhatsApp',
+            },
+        ],
+    },
+    twitter: {
+        card: 'summary_large_image',
+        title: 'Creatiendas - Tu Tienda Online por WhatsApp Gratis',
+        description: 'Vende tus productos directamente por WhatsApp sin pagar comisiones.',
+        images: ['/og-image.png'],
+    },
+    alternates: {
+        canonical: 'https://creatiendasgit1.vercel.app',
+    },
     icons: {
         icon: '/favicon.png',
+        apple: '/apple-icon.png',
     },
 };
 
@@ -45,7 +84,11 @@ export default function RootLayout({
                     <WhatsAppButton />
                     <TranslationPrompt />
                     {/* B2Chat Widget - Adjust path if necessary based on B2Chat-main contents */}
-                    <script src="/b2chat/B2Chat-main/widget.js" async></script>
+                    {/* B2Chat Widget - Lazy loaded to prioritize LCP */}
+                    <script
+                        src="/b2chat/B2Chat-main/widget.js"
+                        strategy="lazyOnload"
+                    />
                 </Providers>
             </body>
         </html>

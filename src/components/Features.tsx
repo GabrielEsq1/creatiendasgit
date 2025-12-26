@@ -15,9 +15,9 @@ export default function Features() {
     return (
         <section className="py-24 px-4 md:px-8 lg:px-16 bg-black" id="features">
             <div className="max-w-5xl mx-auto">
-                <h3 className="text-4xl font-black text-center text-white mb-16">
+                <h2 className="text-4xl font-black text-center text-white mb-16">
                     Características ✨
-                </h3>
+                </h2>
                 <ul className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {features.map((feat, idx) => (
                         <li key={idx} className="flex items-center space-x-4 text-slate-300 bg-slate-900/40 p-5 rounded-2xl border border-white/5 hover:border-green-500/20 transition-colors">

@@ -1,4 +1,11 @@
 import React from 'react';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+    title: "Crea tu Tienda Online por WhatsApp Gratis en Minutos",
+    description: "La plataforma líder en LATAM para vender por WhatsApp. Crea tu catálogo digital sin comisiones y empieza a recibir pedidos hoy mismo.",
+};
+
 export const dynamic = 'force-dynamic';
 
 import Hero from '@/components/Hero';
@@ -12,10 +19,12 @@ import Testimonials from '@/components/Testimonials';
 import FinalCTA from '@/components/FinalCTA';
 
 import FestiveManager from '@/components/FestiveManager';
+import SoftwareSchema from '@/components/SoftwareSchema';
 
 export default function LandingPage() {
     return (
         <div className="min-h-screen bg-black text-white flex flex-col selection:bg-green-500/30">
+            <SoftwareSchema />
             <FestiveManager />
             <main className="flex-1">
                 <Hero />

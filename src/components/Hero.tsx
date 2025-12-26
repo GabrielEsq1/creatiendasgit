@@ -49,9 +49,9 @@ export default function Hero() {
                 {/* 2. Main Headline */}
                 <div className="text-center max-w-5xl mx-auto mb-16">
                     <h1 className="text-5xl md:text-7xl lg:text-8xl font-black tracking-tight mb-8 leading-[1.1] text-white">
-                        El <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-emerald-500">Shopify</span>
+                        Tu <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-emerald-500">Tienda Online</span>
                         <br />
-                        <span className="text-white">de <span className="text-green-500 underline decoration-green-500/30 decoration-8 underline-offset-8">WhatsApp</span> 🎄</span>
+                        <span className="text-white">por <span className="text-green-500 underline decoration-green-500/30 decoration-8 underline-offset-8">WhatsApp</span> Gratis 🎄</span>
                     </h1>
                     <p className="text-xl md:text-2xl text-slate-400 max-w-3xl mx-auto leading-relaxed font-medium">
                         Crea tu propia tienda online en <span className="text-white font-bold">2 minutos ❄️</span>.
