@@ -1,66 +1,99 @@
-import NextAuth, { AuthOptions } from "next-auth";
+import { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { prisma } from "@/lib/prisma";
+import { PrismaAdapter } from "@auth/prisma-adapter";
 import bcrypt from "bcryptjs";
+import { prisma } from "@/lib/prisma";
 
-export const authOptions: AuthOptions = {
+export const authOptions: NextAuthOptions = {
+    adapter: PrismaAdapter(prisma),
     providers: [
         CredentialsProvider({
-            name: "Credentials",
+            name: "Credenciales",
             credentials: {
-                email: { label: "Email", type: "email" },
-                password: { label: "Password", type: "password" },
+                email: { label: "Correo", type: "email", placeholder: "tucorreo@ejemplo.com" },
+                password: { label: "Contraseña", type: "password" },
             },
             async authorize(credentials) {
+                // Validate input
                 if (!credentials?.email || !credentials?.password) {
-                    throw new Error("Missing credentials");
+                    return null;
                 }
-                const user = await prisma.user.findUnique({
-                    where: { email: credentials.email },
-                });
-                if (!user) {
-                    throw new Error("User not found");
+
+                try {
+                    // Find user in database
+                    const user = await prisma.user.findUnique({
+                        where: { email: credentials.email.toLowerCase().trim() }
+                    });
+
+                    if (!user) {
+                        return null;
+                    }
+
+                    // Check if password exists
+                    if (!user.passwordHash) {
+                        return null;
+                    }
+
+                    // Email verification check removed as per user request for simple login
+                    // if (!user.emailVerified) {
+                    //    throw new Error("Email not verified");
+                    // }
+
+                    // Verify password
+                    const isValid = await bcrypt.compare(credentials.password, user.passwordHash);
+
+                    if (!isValid) {
+                        return null;
+                    }
+
+                    // Return user data
+                    return {
+                        id: user.id,
+                        email: user.email,
+                        name: user.name ?? ""
+                    };
+                } catch (e) {
+                    console.error("Authentication error:", e);
+                    return null;
                 }
-                const isValid = await bcrypt.compare(credentials.password, user.passwordHash);
-                if (!isValid) {
-                    throw new Error("Invalid password");
-                }
-                return {
-                    id: user.id,
-                    name: user.name,
-                    email: user.email,
-                    role: user.role,
-                };
             },
         }),
     ],
+    secret: process.env.NEXTAUTH_SECRET,
+    session: { strategy: "jwt" },
+    jwt: { secret: process.env.NEXTAUTH_SECRET },
     callbacks: {
-        async jwt({ token, user }) {
-            if (user) {
-                token.id = user.id;
-                token.role = (user as any).role;
-            }
-            return token;
-        },
         async session({ session, token }) {
-            if (session.user) {
-                session.user.id = token.id as string;
-                session.user.role = token.role as string;
+            if (token?.sub && session.user) {
+                (session.user as any).id = token.sub;
+
+                // Fetch user role, plan, and wallet balance from database
+                try {
+                    const user = await prisma.user.findUnique({
+                        where: { id: token.sub },
+                        select: {
+                            role: true,
+                            plan: true,
+                            walletAccount: {
+                                select: { balance: true }
+                            }
+                        }
+                    });
+
+                    if (user) {
+                        (session.user as any).role = user.role;
+                        (session.user as any).plan = user.plan;
+                        (session.user as any).walletBalance = user.walletAccount?.balance || 0;
+                    }
+                } catch (e) {
+                    console.error("DB Session Error:", e);
+                }
             }
             return session;
         },
     },
     pages: {
-        signIn: "/login",
+        signIn: "/auth/login",
+        error: "/auth/login",
     },
-    session: {
-        strategy: "jwt",
-    },
-    // Fallback secret for development
-    secret: process.env.NEXTAUTH_SECRET || 'dev-secret',
-    // JWT secret (same as above)
-    jwt: { secret: process.env.NEXTAUTH_SECRET || 'dev-secret' },
 };
-
-const handler = NextAuth(authOptions);
-export { handler as GET, handler as POST };

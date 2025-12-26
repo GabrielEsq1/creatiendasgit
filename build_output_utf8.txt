@@ -1,0 +1,1081 @@
+﻿  Ôû▓ Next.js 14.2.33
+  - Environments: .env.local
+
+   Creating an optimized production build ...
+ Ô£ô Compiled successfully
+   Skipping validation of types
+   Skipping linting
+   Collecting page data ...
+   Generating static pages (0/92) ...
+node.exe : Error 
+fetching admin 
+stats: n [Error]: 
+Dynamic server 
+usage: Route 
+/api/admin/stats 
+couldn't be rendered 
+statically because 
+it used `headers`. 
+See more info here: h
+ttps://nextjs.org/doc
+s/messages/dynamic-se
+rver-error
+En línea: 1 
+Carácter: 1
++ & "C:\Program Files
+\nodejs/node.exe" 
+"C:\Program 
+Files\nodejs/node_mo 
+...
++ ~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~
+    + CategoryInfo   
+           : NotSpe  
+  cified: (Error f   
+ etching ...ic-se    
+rver-error:Strin    
+g) [], RemoteExc    
+eption
+    + FullyQualified 
+   ErrorId : Native  
+  CommandError
+ 
+    at l (C:\Users\AS
+US\Desktop\creatienda
+s\creatiendasgit\.nex
+t\server\chunks\8948.
+js:1:37220)
+    at d (C:\Users\AS
+US\Desktop\creatienda
+s\creatiendasgit\.nex
+t\server\app\api\stri
+pe\webhook\route.js:1
+:3777)
+    at s (C:\Users\AS
+US\Desktop\creatienda
+s\creatiendasgit\.nex
+t\server\chunks\3643.
+js:25:20859)
+    at c (C:\Users\AS
+US\Desktop\creatienda
+s\creatiendasgit\.nex
+t\server\app\api\admi
+n\stats\route.js:1:13
+05)
+    at C:\Users\ASUS\
+Desktop\creatiendas\c
+reatiendasgit\node_mo
+dules\next\dist\compi
+led\next-server\app-r
+oute.runtime.prod.js:
+6:38417
+    at C:\Users\ASUS\
+Desktop\creatiendas\c
+reatiendasgit\node_mo
+dules\next\dist\serve
+r\lib\trace\tracer.js
+:140:36
+    at NoopContextMan
+ager.with (C:\Users\A
+SUS\Desktop\creatiend
+as\creatiendasgit\nod
+e_modules\next\dist\c
+ompiled\@opentelemetr
+y\api\index.js:1:7062
+)
+    at 
+ContextAPI.with (C:\U
+sers\ASUS\Desktop\cre
+atiendas\creatiendasg
+it\node_modules\next\
+dist\compiled\@opente
+lemetry\api\index.js:
+1:518)
+    at NoopTracer.sta
+rtActiveSpan (C:\User
+s\ASUS\Desktop\creati
+endas\creatiendasgit\
+node_modules\next\dis
+t\compiled\@opentelem
+etry\api\index.js:1:1
+8093)
+    at ProxyTracer.st
+artActiveSpan (C:\Use
+rs\ASUS\Desktop\creat
+iendas\creatiendasgit
+\node_modules\next\di
+st\compiled\@opentele
+metry\api\index.js:1:
+18854) {
+  description: 
+"Route 
+/api/admin/stats 
+couldn't be rendered 
+statically because 
+it used `headers`. 
+See more info here: h
+ttps://nextjs.org/doc
+s/messages/dynamic-se
+rver-error",
+  digest: 'DYNAMIC_SE
+RVER_USAGE'
+}
+Dashboard stats 
+error: n [Error]: 
+Dynamic server 
+usage: Route 
+/api/admin/alerts 
+couldn't be rendered 
+statically because 
+it used `headers`. 
+See more info here: h
+ttps://nextjs.org/doc
+s/messages/dynamic-se
+rver-error
+    at l (C:\Users\AS
+US\Desktop\creatienda
+s\creatiendasgit\.nex
+t\server\chunks\8948.
+js:1:37220)
+    at u (C:\Users\AS
+US\Desktop\creatienda
+s\creatiendasgit\.nex
+t\server\chunks\3643.
+js:25:127157)
+    at s (C:\Users\AS
+US\Desktop\creatienda
+s\creatiendasgit\.nex
+t\server\chunks\3643.
+js:25:20859)
+    at p (C:\Users\AS
+US\Desktop\creatienda
+s\creatiendasgit\.nex
+t\server\app\api\admi
+n\alerts\route.js:1:1
+304)
+    at C:\Users\ASUS\
+Desktop\creatiendas\c
+reatiendasgit\node_mo
+dules\next\dist\compi
+led\next-server\app-r
+oute.runtime.prod.js:
+6:38417
+    at C:\Users\ASUS\
+Desktop\creatiendas\c
+reatiendasgit\node_mo
+dules\next\dist\serve
+r\lib\trace\tracer.js
+:140:36
+    at NoopContextMan
+ager.with (C:\Users\A
+SUS\Desktop\creatiend
+as\creatiendasgit\nod
+e_modules\next\dist\c
+ompiled\@opentelemetr
+y\api\index.js:1:7062
+)
+    at 
+ContextAPI.with (C:\U
+sers\ASUS\Desktop\cre
+atiendas\creatiendasg
+it\node_modules\next\
+dist\compiled\@opente
+lemetry\api\index.js:
+1:518)
+    at NoopTracer.sta
+rtActiveSpan (C:\User
+s\ASUS\Desktop\creati
+endas\creatiendasgit\
+node_modules\next\dis
+t\compiled\@opentelem
+etry\api\index.js:1:1
+8093)
+    at ProxyTracer.st
+artActiveSpan (C:\Use
+rs\ASUS\Desktop\creat
+iendas\creatiendasgit
+\node_modules\next\di
+st\compiled\@opentele
+metry\api\index.js:1:
+18854) {
+  description: 
+"Route 
+/api/admin/alerts 
+couldn't be rendered 
+statically because 
+it used `headers`. 
+See more info here: h
+ttps://nextjs.org/doc
+s/messages/dynamic-se
+rver-error",
+  digest: 'DYNAMIC_SE
+RVER_USAGE'
+}
+Error fetching ads: 
+n [Error]: Dynamic 
+server usage: Route 
+/api/admin/ads 
+couldn't be rendered 
+statically because 
+it used `headers`. 
+See more info here: h
+ttps://nextjs.org/doc
+s/messages/dynamic-se
+rver-error
+    at l (C:\Users\AS
+US\Desktop\creatienda
+s\creatiendasgit\.nex
+t\server\chunks\8948.
+js:1:37220)
+    at u (C:\Users\AS
+US\Desktop\creatienda
+s\creatiendasgit\.nex
+t\server\chunks\3643.
+js:25:127157)
+    at s (C:\Users\AS
+US\Desktop\creatienda
+s\creatiendasgit\.nex
+t\server\chunks\3643.
+js:25:20859)
+    at c (C:\Users\AS
+US\Desktop\creatienda
+s\creatiendasgit\.nex
+t\server\app\api\admi
+n\ads\route.js:1:1306
+)
+    at C:\Users\ASUS\
+Desktop\creatiendas\c
+reatiendasgit\node_mo
+dules\next\dist\compi
+led\next-server\app-r
+oute.runtime.prod.js:
+6:38417
+    at C:\Users\ASUS\
+Desktop\creatiendas\c
+reatiendasgit\node_mo
+dules\next\dist\serve
+r\lib\trace\tracer.js
+:140:36
+    at NoopContextMan
+ager.with (C:\Users\A
+SUS\Desktop\creatiend
+as\creatiendasgit\nod
+e_modules\next\dist\c
+ompiled\@opentelemetr
+y\api\index.js:1:7062
+)
+    at 
+ContextAPI.with (C:\U
+sers\ASUS\Desktop\cre
+atiendas\creatiendasg
+it\node_modules\next\
+dist\compiled\@opente
+lemetry\api\index.js:
+1:518)
+    at NoopTracer.sta
+rtActiveSpan (C:\User
+s\ASUS\Desktop\creati
+endas\creatiendasgit\
+node_modules\next\dis
+t\compiled\@opentelem
+etry\api\index.js:1:1
+8093)
+    at ProxyTracer.st
+artActiveSpan (C:\Use
+rs\ASUS\Desktop\creat
+iendas\creatiendasgit
+\node_modules\next\di
+st\compiled\@opentele
+metry\api\index.js:1:
+18854) {
+  description: 
+"Route 
+/api/admin/ads 
+couldn't be rendered 
+statically because 
+it used `headers`. 
+See more info here: h
+ttps://nextjs.org/doc
+s/messages/dynamic-se
+rver-error",
+  digest: 'DYNAMIC_SE
+RVER_USAGE'
+}
+Error fetching admin 
+campaigns: n 
+[Error]: Dynamic 
+server usage: Route 
+/api/admin/campaigns 
+couldn't be rendered 
+statically because 
+it used `headers`. 
+See more info here: h
+ttps://nextjs.org/doc
+s/messages/dynamic-se
+rver-error
+    at l (C:\Users\AS
+US\Desktop\creatienda
+s\creatiendasgit\.nex
+t\server\chunks\8948.
+js:1:37220)
+    at u (C:\Users\AS
+US\Desktop\creatienda
+s\creatiendasgit\.nex
+t\server\chunks\3643.
+js:25:127157)
+    at s (C:\Users\AS
+US\Desktop\creatienda
+s\creatiendasgit\.nex
+t\server\chunks\3643.
+js:25:20859)
+    at p (C:\Users\AS
+US\Desktop\creatienda
+s\creatiendasgit\.nex
+t\server\app\api\admi
+n\campaigns\route.js:
+1:1305)
+    at C:\Users\ASUS\
+Desktop\creatiendas\c
+reatiendasgit\node_mo
+dules\next\dist\compi
+led\next-server\app-r
+oute.runtime.prod.js:
+6:38417
+    at C:\Users\ASUS\
+Desktop\creatiendas\c
+reatiendasgit\node_mo
+dules\next\dist\serve
+r\lib\trace\tracer.js
+:140:36
+    at NoopContextMan
+ager.with (C:\Users\A
+SUS\Desktop\creatiend
+as\creatiendasgit\nod
+e_modules\next\dist\c
+ompiled\@opentelemetr
+y\api\index.js:1:7062
+)
+    at 
+ContextAPI.with (C:\U
+sers\ASUS\Desktop\cre
+atiendas\creatiendasg
+it\node_modules\next\
+dist\compiled\@opente
+lemetry\api\index.js:
+1:518)
+    at NoopTracer.sta
+rtActiveSpan (C:\User
+s\ASUS\Desktop\creati
+endas\creatiendasgit\
+node_modules\next\dis
+t\compiled\@opentelem
+etry\api\index.js:1:1
+8093)
+    at ProxyTracer.st
+artActiveSpan (C:\Use
+rs\ASUS\Desktop\creat
+iendas\creatiendasgit
+\node_modules\next\di
+st\compiled\@opentele
+metry\api\index.js:1:
+18854) {
+  description: 
+"Route 
+/api/admin/campaigns 
+couldn't be rendered 
+statically because 
+it used `headers`. 
+See more info here: h
+ttps://nextjs.org/doc
+s/messages/dynamic-se
+rver-error",
+  digest: 'DYNAMIC_SE
+RVER_USAGE'
+}
+Error searching 
+contact: n [Error]: 
+Dynamic server 
+usage: Route 
+/api/contacts/search 
+couldn't be rendered 
+statically because 
+it used `headers`. 
+See more info here: h
+ttps://nextjs.org/doc
+s/messages/dynamic-se
+rver-error
+    at l (C:\Users\AS
+US\Desktop\creatienda
+s\creatiendasgit\.nex
+t\server\chunks\8948.
+js:1:37220)
+    at u (C:\Users\AS
+US\Desktop\creatienda
+s\creatiendasgit\.nex
+t\server\chunks\3643.
+js:25:127157)
+    at s (C:\Users\AS
+US\Desktop\creatienda
+s\creatiendasgit\.nex
+t\server\chunks\3643.
+js:25:20859)
+    at p (C:\Users\AS
+US\Desktop\creatienda
+s\creatiendasgit\.nex
+t\server\app\api\cont
+acts\search\route.js:
+1:1306)
+    at C:\Users\ASUS\
+Desktop\creatiendas\c
+reatiendasgit\node_mo
+dules\next\dist\compi
+led\next-server\app-r
+oute.runtime.prod.js:
+6:38417
+    at C:\Users\ASUS\
+Desktop\creatiendas\c
+reatiendasgit\node_mo
+dules\next\dist\serve
+r\lib\trace\tracer.js
+:140:36
+    at NoopContextMan
+ager.with (C:\Users\A
+SUS\Desktop\creatiend
+as\creatiendasgit\nod
+e_modules\next\dist\c
+ompiled\@opentelemetr
+y\api\index.js:1:7062
+)
+    at 
+ContextAPI.with (C:\U
+sers\ASUS\Desktop\cre
+atiendas\creatiendasg
+it\node_modules\next\
+dist\compiled\@opente
+lemetry\api\index.js:
+1:518)
+    at NoopTracer.sta
+rtActiveSpan (C:\User
+s\ASUS\Desktop\creati
+endas\creatiendasgit\
+node_modules\next\dis
+t\compiled\@opentelem
+etry\api\index.js:1:1
+8093)
+    at ProxyTracer.st
+artActiveSpan (C:\Use
+rs\ASUS\Desktop\creat
+iendas\creatiendasgit
+\node_modules\next\di
+st\compiled\@opentele
+metry\api\index.js:1:
+18854) {
+  description: 
+"Route 
+/api/contacts/search 
+couldn't be rendered 
+statically because 
+it used `headers`. 
+See more info here: h
+ttps://nextjs.org/doc
+s/messages/dynamic-se
+rver-error",
+  digest: 'DYNAMIC_SE
+RVER_USAGE'
+}
+Error searching 
+companies: n 
+[Error]: Dynamic 
+server usage: Route /
+api/companies/search 
+couldn't be rendered 
+statically because 
+it used `headers`. 
+See more info here: h
+ttps://nextjs.org/doc
+s/messages/dynamic-se
+rver-error
+    at l (C:\Users\AS
+US\Desktop\creatienda
+s\creatiendasgit\.nex
+t\server\chunks\8948.
+js:1:37220)
+    at u (C:\Users\AS
+US\Desktop\creatienda
+s\creatiendasgit\.nex
+t\server\chunks\3643.
+js:25:127157)
+    at s (C:\Users\AS
+US\Desktop\creatienda
+s\creatiendasgit\.nex
+t\server\chunks\3643.
+js:25:20859)
+    at p (C:\Users\AS
+US\Desktop\creatienda
+s\creatiendasgit\.nex
+t\server\app\api\comp
+anies\search\route.js
+:1:1304)
+    at C:\Users\ASUS\
+Desktop\creatiendas\c
+reatiendasgit\node_mo
+dules\next\dist\compi
+led\next-server\app-r
+oute.runtime.prod.js:
+6:38417
+    at C:\Users\ASUS\
+Desktop\creatiendas\c
+reatiendasgit\node_mo
+dules\next\dist\serve
+r\lib\trace\tracer.js
+:140:36
+    at NoopContextMan
+ager.with (C:\Users\A
+SUS\Desktop\creatiend
+as\creatiendasgit\nod
+e_modules\next\dist\c
+ompiled\@opentelemetr
+y\api\index.js:1:7062
+)
+    at 
+ContextAPI.with (C:\U
+sers\ASUS\Desktop\cre
+atiendas\creatiendasg
+it\node_modules\next\
+dist\compiled\@opente
+lemetry\api\index.js:
+1:518)
+    at NoopTracer.sta
+rtActiveSpan (C:\User
+s\ASUS\Desktop\creati
+endas\creatiendasgit\
+node_modules\next\dis
+t\compiled\@opentelem
+etry\api\index.js:1:1
+8093)
+    at ProxyTracer.st
+artActiveSpan (C:\Use
+rs\ASUS\Desktop\creat
+iendas\creatiendasgit
+\node_modules\next\di
+st\compiled\@opentele
+metry\api\index.js:1:
+18854) {
+  description: 
+"Route /api/companies
+/search couldn't be 
+rendered statically 
+because it used 
+`headers`. See more 
+info here: https://ne
+xtjs.org/docs/message
+s/dynamic-server-erro
+r",
+  digest: 'DYNAMIC_SE
+RVER_USAGE'
+}
+Error loading 
+contacts: n [Error]: 
+Dynamic server 
+usage: Route 
+/api/contacts 
+couldn't be rendered 
+statically because 
+it used `headers`. 
+See more info here: h
+ttps://nextjs.org/doc
+s/messages/dynamic-se
+rver-error
+    at l (C:\Users\AS
+US\Desktop\creatienda
+s\creatiendasgit\.nex
+t\server\chunks\8948.
+js:1:37220)
+    at d (C:\Users\AS
+US\Desktop\creatienda
+s\creatiendasgit\.nex
+t\server\app\api\stri
+pe\webhook\route.js:1
+:3777)
+    at s (C:\Users\AS
+US\Desktop\creatienda
+s\creatiendasgit\.nex
+t\server\chunks\3643.
+js:25:20859)
+    at p (C:\Users\AS
+US\Desktop\creatienda
+s\creatiendasgit\.nex
+t\server\app\api\cont
+acts\route.js:1:1306)
+    at C:\Users\ASUS\
+Desktop\creatiendas\c
+reatiendasgit\node_mo
+dules\next\dist\compi
+led\next-server\app-r
+oute.runtime.prod.js:
+6:38417
+    at C:\Users\ASUS\
+Desktop\creatiendas\c
+reatiendasgit\node_mo
+dules\next\dist\serve
+r\lib\trace\tracer.js
+:140:36
+    at NoopContextMan
+ager.with (C:\Users\A
+SUS\Desktop\creatiend
+as\creatiendasgit\nod
+e_modules\next\dist\c
+ompiled\@opentelemetr
+y\api\index.js:1:7062
+)
+    at 
+ContextAPI.with (C:\U
+sers\ASUS\Desktop\cre
+atiendas\creatiendasg
+it\node_modules\next\
+dist\compiled\@opente
+lemetry\api\index.js:
+1:518)
+    at NoopTracer.sta
+rtActiveSpan (C:\User
+s\ASUS\Desktop\creati
+endas\creatiendasgit\
+node_modules\next\dis
+t\compiled\@opentelem
+etry\api\index.js:1:1
+8093)
+    at ProxyTracer.st
+artActiveSpan (C:\Use
+rs\ASUS\Desktop\creat
+iendas\creatiendasgit
+\node_modules\next\di
+st\compiled\@opentele
+metry\api\index.js:1:
+18854) {
+  description: 
+"Route /api/contacts 
+couldn't be rendered 
+statically because 
+it used `headers`. 
+See more info here: h
+ttps://nextjs.org/doc
+s/messages/dynamic-se
+rver-error",
+  digest: 'DYNAMIC_SE
+RVER_USAGE'
+}
+   Generating static pages (23/92) 
+Error fetching 
+stores: n [Error]: 
+Dynamic server 
+usage: Route /api/sto
+res/my-stores 
+couldn't be rendered 
+statically because 
+it used `headers`. 
+See more info here: h
+ttps://nextjs.org/doc
+s/messages/dynamic-se
+rver-error
+    at l (C:\Users\AS
+US\Desktop\creatienda
+s\creatiendasgit\.nex
+t\server\chunks\8948.
+js:1:37220)
+    at u (C:\Users\AS
+US\Desktop\creatienda
+s\creatiendasgit\.nex
+t\server\chunks\3643.
+js:25:127157)
+    at s (C:\Users\AS
+US\Desktop\creatienda
+s\creatiendasgit\.nex
+t\server\chunks\3643.
+js:25:20859)
+    at c (C:\Users\AS
+US\Desktop\creatienda
+s\creatiendasgit\.nex
+t\server\app\api\stor
+es\my-stores\route.js
+:1:1305)
+    at C:\Users\ASUS\
+Desktop\creatiendas\c
+reatiendasgit\node_mo
+dules\next\dist\compi
+led\next-server\app-r
+oute.runtime.prod.js:
+6:38417
+    at C:\Users\ASUS\
+Desktop\creatiendas\c
+reatiendasgit\node_mo
+dules\next\dist\serve
+r\lib\trace\tracer.js
+:140:36
+    at NoopContextMan
+ager.with (C:\Users\A
+SUS\Desktop\creatiend
+as\creatiendasgit\nod
+e_modules\next\dist\c
+ompiled\@opentelemetr
+y\api\index.js:1:7062
+)
+    at 
+ContextAPI.with (C:\U
+sers\ASUS\Desktop\cre
+atiendas\creatiendasg
+it\node_modules\next\
+dist\compiled\@opente
+lemetry\api\index.js:
+1:518)
+    at NoopTracer.sta
+rtActiveSpan (C:\User
+s\ASUS\Desktop\creati
+endas\creatiendasgit\
+node_modules\next\dis
+t\compiled\@opentelem
+etry\api\index.js:1:1
+8093)
+    at ProxyTracer.st
+artActiveSpan (C:\Use
+rs\ASUS\Desktop\creat
+iendas\creatiendasgit
+\node_modules\next\di
+st\compiled\@opentele
+metry\api\index.js:1:
+18854) {
+  description: 
+"Route /api/stores/my
+-stores couldn't be 
+rendered statically 
+because it used 
+`headers`. See more 
+info here: https://ne
+xtjs.org/docs/message
+s/dynamic-server-erro
+r",
+  digest: 'DYNAMIC_SE
+RVER_USAGE'
+}
+Wallet API Error: B 
+[Error]: Dynamic 
+server usage: Route 
+/api/wallet couldn't 
+be rendered 
+statically because 
+it used 
+`request.headers`. 
+See more info here: h
+ttps://nextjs.org/doc
+s/messages/dynamic-se
+rver-error
+    at V (C:\Users\AS
+US\Desktop\creatienda
+s\creatiendasgit\node
+_modules\next\dist\co
+mpiled\next-server\ap
+p-route.runtime.prod.
+js:6:21778)
+    at Object.get (C:
+\Users\ASUS\Desktop\c
+reatiendas\creatienda
+sgit\node_modules\nex
+t\dist\compiled\next-
+server\app-route.runt
+ime.prod.js:6:29465)
+    at c (C:\Users\AS
+US\Desktop\creatienda
+s\creatiendasgit\.nex
+t\server\app\api\wall
+et\route.js:1:607)
+    at C:\Users\ASUS\
+Desktop\creatiendas\c
+reatiendasgit\node_mo
+dules\next\dist\compi
+led\next-server\app-r
+oute.runtime.prod.js:
+6:38417
+    at C:\Users\ASUS\
+Desktop\creatiendas\c
+reatiendasgit\node_mo
+dules\next\dist\serve
+r\lib\trace\tracer.js
+:140:36
+    at NoopContextMan
+ager.with (C:\Users\A
+SUS\Desktop\creatiend
+as\creatiendasgit\nod
+e_modules\next\dist\c
+ompiled\@opentelemetr
+y\api\index.js:1:7062
+)
+    at 
+ContextAPI.with (C:\U
+sers\ASUS\Desktop\cre
+atiendas\creatiendasg
+it\node_modules\next\
+dist\compiled\@opente
+lemetry\api\index.js:
+1:518)
+    at NoopTracer.sta
+rtActiveSpan (C:\User
+s\ASUS\Desktop\creati
+endas\creatiendasgit\
+node_modules\next\dis
+t\compiled\@opentelem
+etry\api\index.js:1:1
+8093)
+    at ProxyTracer.st
+artActiveSpan (C:\Use
+rs\ASUS\Desktop\creat
+iendas\creatiendasgit
+\node_modules\next\di
+st\compiled\@opentele
+metry\api\index.js:1:
+18854)
+    at C:\Users\ASUS\
+Desktop\creatiendas\c
+reatiendasgit\node_mo
+dules\next\dist\serve
+r\lib\trace\tracer.js
+:122:103 {
+  description: 
+"Route /api/wallet 
+couldn't be rendered 
+statically because 
+it used 
+`request.headers`. 
+See more info here: h
+ttps://nextjs.org/doc
+s/messages/dynamic-se
+rver-error",
+  digest: 'DYNAMIC_SE
+RVER_USAGE'
+}
+   Generating static pages (46/92) 
+   Generating static pages (69/92) 
+prisma:query SELECT "public"."AdCampaign"."id", "public"."AdCampaign"."name", "public"."AdCampaign"."objective", "public"."AdCampaign"."status", "public"."AdCampaign"."industry", "public"."AdCampaign"."sector", "public"."AdCampaign"."targetRoles", "public"."AdCampaign"."dailyBudget", "public"."AdCampaign"."durationDays", "public"."AdCampaign"."totalBudget", "public"."AdCampaign"."spent", "public"."AdCampaign"."impressions", "public"."AdCampaign"."clicks", "public"."AdCampaign"."conversions", "public"."AdCampaign"."creativeType", "public"."AdCampaign"."creativeUrl", "public"."AdCampaign"."creativeText", "public"."AdCampaign"."videoUrl", "public"."AdCampaign"."videoDuration", "public"."AdCampaign"."startDate", "public"."AdCampaign"."endDate", "public"."AdCampaign"."createdAt", "public"."AdCampaign"."updatedAt", "public"."AdCampaign"."userId", "public"."AdCampaign"."companyId" FROM "public"."AdCampaign" WHERE ("public"."AdCampaign"."status" = $1 AND ("public"."AdCampaign"."id") IN (SELECT "t1"."campaignId" FROM "public"."AdCreative" AS "t1" WHERE ("t1"."isActive" = $2 AND "t1"."approvalStatus" = $3 AND "t1"."campaignId" IS NOT NULL))) ORDER BY "public"."AdCampaign"."createdAt" DESC LIMIT $4 OFFSET $5
+prisma:error 
+Invalid `prisma.adCampaign.findMany()` invocation:
+
+
+The table `public.AdCampaign` does not exist in the current database.
+Error fetching 
+marketplace ads: Pris
+maClientKnownRequestE
+rror: 
+Invalid `prisma.adCam
+paign.findMany()` 
+invocation:
+
+
+The table 
+`public.AdCampaign` 
+does not exist in 
+the current database.
+    at $n.handleReque
+stError (C:\Users\ASU
+S\Desktop\creatiendas
+\creatiendasgit\node_
+modules\@prisma\clien
+t\runtime\library.js:
+121:7315)
+    at $n.handleAndLo
+gRequestError (C:\Use
+rs\ASUS\Desktop\creat
+iendas\creatiendasgit
+\node_modules\@prisma
+\client\runtime\libra
+ry.js:121:6623)
+    at $n.request (C:
+\Users\ASUS\Desktop\c
+reatiendas\creatienda
+sgit\node_modules\@pr
+isma\client\runtime\l
+ibrary.js:121:6307)
+    at async l (C:\Us
+ers\ASUS\Desktop\crea
+tiendas\creatiendasgi
+t\node_modules\@prism
+a\client\runtime\libr
+ary.js:130:9633)
+    at async l (C:\Us
+ers\ASUS\Desktop\crea
+tiendas\creatiendasgi
+t\.next\server\app\ap
+i\ads\marketplace\rou
+te.js:1:580)
+    at async C:\Users
+\ASUS\Desktop\creatie
+ndas\creatiendasgit\n
+ode_modules\next\dist
+\compiled\next-server
+\app-route.runtime.pr
+od.js:6:38411
+    at async 
+e_.execute (C:\Users\
+ASUS\Desktop\creatien
+das\creatiendasgit\no
+de_modules\next\dist\
+compiled\next-server\
+app-route.runtime.pro
+d.js:6:27880)
+    at async 
+e_.handle (C:\Users\A
+SUS\Desktop\creatiend
+as\creatiendasgit\nod
+e_modules\next\dist\c
+ompiled\next-server\a
+pp-route.runtime.prod
+.js:6:39943)
+    at async 
+exportAppRoute (C:\Us
+ers\ASUS\Desktop\crea
+tiendas\creatiendasgi
+t\node_modules\next\d
+ist\export\routes\app
+-route.js:77:26)
+    at async 
+exportPageImpl (C:\Us
+ers\ASUS\Desktop\crea
+tiendas\creatiendasgi
+t\node_modules\next\d
+ist\export\worker.js:
+175:20) {
+  code: 'P2021',
+  clientVersion: 
+'5.22.0',
+  meta: { modelName: 
+'AdCampaign', table: 
+'public.AdCampaign' }
+}
+ Ô£ô Generating static pages (92/92)
+   Finalizing page optimization ...
+   Collecting build traces ...
+
+Route (app)                               Size     First Load JS
+Ôöî ãÆ /                                     11.8 kB         113 kB
+Ôö£ ãÆ /_not-found                           152 B          87.5 kB
+Ôö£ Ôùï /admin                                3.06 kB         109 kB
+Ôö£ Ôùï /admin/ads                            1.85 kB        98.8 kB
+Ôö£ Ôùï /admin/campaigns                      5.55 kB         103 kB
+Ôö£ Ôùï /admin/dashboard                      3.01 kB         100 kB
+Ôö£ Ôùï /admin/settings                       262 B          87.6 kB
+Ôö£ Ôùï /admin/users                          3.76 kB        99.8 kB
+Ôö£ Ôùï /ads-manager                          2.76 kB         108 kB
+Ôö£ Ôùï /ads-manager/create                   4.89 kB        92.2 kB
+Ôö£ ãÆ /api/admin/ads                        0 B                0 B
+Ôö£ ãÆ /api/admin/ads/[id]/approve           0 B                0 B
+Ôö£ ãÆ /api/admin/ads/[id]/reject            0 B                0 B
+Ôö£ ãÆ /api/admin/alerts                     0 B                0 B
+Ôö£ ãÆ /api/admin/campaigns                  0 B                0 B
+Ôö£ ãÆ /api/admin/campaigns/[id]/approve     0 B                0 B
+Ôö£ ãÆ /api/admin/campaigns/[id]/reject      0 B                0 B
+Ôö£ ãÆ /api/admin/stats                      0 B                0 B
+Ôö£ ãÆ /api/admin/stores/[id]                0 B                0 B
+Ôö£ ãÆ /api/admin/users                      0 B                0 B
+Ôö£ ãÆ /api/admin/users/[id]                 0 B                0 B
+Ôö£ ãÆ /api/admin/users/[id]/reset-password  0 B                0 B
+Ôö£ ãÆ /api/ads/marketplace                  0 B                0 B
+Ôö£ ãÆ /api/analytics                        0 B                0 B
+Ôö£ ãÆ /api/auth/[...nextauth]               0 B                0 B
+Ôö£ ãÆ /api/auth/forgot-password             0 B                0 B
+Ôö£ ãÆ /api/auth/register                    0 B                0 B
+Ôö£ ãÆ /api/auth/reset-password              0 B                0 B
+Ôö£ ãÆ /api/auth/reset-request               0 B                0 B
+Ôö£ ãÆ /api/auth/verify                      0 B                0 B
+Ôö£ ãÆ /api/campaigns                        0 B                0 B
+Ôö£ ãÆ /api/campaigns/[id]                   0 B                0 B
+Ôö£ ãÆ /api/campaigns/[id]/activate          0 B                0 B
+Ôö£ ãÆ /api/campaigns/[id]/active-creative   0 B                0 B
+Ôö£ ãÆ /api/campaigns/[id]/creatives         0 B                0 B
+Ôö£ ãÆ /api/campaigns/create                 0 B                0 B
+Ôö£ ãÆ /api/campaigns/send-payment-link      0 B                0 B
+Ôö£ ãÆ /api/campaigns/upload                 0 B                0 B
+Ôö£ ãÆ /api/checkout                         0 B                0 B
+Ôö£ ãÆ /api/companies/search                 0 B                0 B
+Ôö£ ãÆ /api/contacts                         0 B                0 B
+Ôö£ ãÆ /api/contacts/[id]                    0 B                0 B
+Ôö£ ãÆ /api/contacts/[id]/block              0 B                0 B
+Ôö£ ãÆ /api/contacts/search                  0 B                0 B
+Ôö£ ãÆ /api/conversations                    0 B                0 B
+Ôö£ ãÆ /api/conversations/[id]               0 B                0 B
+Ôö£ ãÆ /api/conversations/[id]/messages      0 B                0 B
+Ôö£ ãÆ /api/groups                           0 B                0 B
+Ôö£ ãÆ /api/messages/send                    0 B                0 B
+Ôö£ ãÆ /api/nequi/auth                       0 B                0 B
+Ôö£ ãÆ /api/paypal/capture-order             0 B                0 B
+Ôö£ ãÆ /api/paypal/create-order              0 B                0 B
+Ôö£ ãÆ /api/social-proof                     0 B                0 B
+Ôö£ ãÆ /api/stores                           0 B                0 B
+Ôö£ ãÆ /api/stores/[storeId]                 0 B                0 B
+Ôö£ ãÆ /api/stores/my-stores                 0 B                0 B
+Ôö£ ãÆ /api/stripe/checkout                  0 B                0 B
+Ôö£ ãÆ /api/stripe/portal                    0 B                0 B
+Ôö£ ãÆ /api/stripe/webhook                   0 B                0 B
+Ôö£ ãÆ /api/upgrade-admin                    0 B                0 B
+Ôö£ ãÆ /api/upload                           0 B                0 B
+Ôö£ ãÆ /api/user/profile                     0 B                0 B
+Ôö£ ãÆ /api/user/profile/photo               0 B                0 B
+Ôö£ ãÆ /api/wallet                           0 B                0 B
+Ôö£ ãÆ /api/wallet/deposit                   0 B                0 B
+Ôö£ ãÆ /api/wallet/test-topup                0 B                0 B
+Ôö£ ãÆ /api/wallet/topup                     0 B                0 B
+Ôö£ ãÆ /api/wallet/transfer                  0 B                0 B
+Ôö£ ãÆ /api/webhook                          0 B                0 B
+Ôö£ Ôùï /auth/forgot-password                 2.38 kB        98.4 kB
+Ôö£ Ôùï /auth/login                           3.47 kB         122 kB
+Ôö£ Ôùï /auth/register                        5.21 kB         116 kB
+Ôö£ Ôùï /auth/reset-password                  2.82 kB        98.8 kB
+Ôö£ ÔùÅ /blog/[slug]                          210 B           101 kB
+Ôö£   Ôö£ /blog/crear-tienda-online-gratis
+Ôö£   Ôö£ /blog/pasarelas-pago-vs-whatsapp
+Ôö£   Ôö£ /blog/whatsapp-commerce-2025
+Ôö£   Ôöö [+3 more paths]
+Ôö£ Ôùï /builder                              6.31 kB         115 kB
+Ôö£ Ôùï /chat                                 12.6 kB         110 kB
+Ôö£ Ôùï /contacts                             2.66 kB          90 kB
+Ôö£ ãÆ /contacts/[id]                        2.55 kB        89.9 kB
+Ôö£ Ôùï /crear-tienda-online-gratis           210 B           101 kB
+Ôö£ ãÆ /dashboard                            5.3 kB          102 kB
+Ôö£ ãÆ /dashboard/billing                    3.11 kB        99.1 kB
+Ôö£ ãÆ /dashboard/campaigns                  2.03 kB         103 kB
+Ôö£ ãÆ /dashboard/profile                    3.94 kB         101 kB
+Ôö£ ãÆ /dashboard/stores                     2.1 kB         98.1 kB
+Ôö£ Ôùï /dual-preview                         1.55 kB        88.9 kB
+Ôö£ ãÆ /en                                   6.37 kB         108 kB
+Ôö£ Ôùï /en/auth/forgot-password              2.31 kB        98.3 kB
+Ôö£ Ôùï /en/auth/login                        3.4 kB          122 kB
+Ôö£ Ôùï /en/auth/register                     5.14 kB         116 kB
+Ôö£ Ôùï /en/builder                           6.11 kB         114 kB
+Ôö£ Ôùï /en/create-online-store-free          210 B           101 kB
+Ôö£ ãÆ /en/dashboard                         5.23 kB         102 kB
+Ôö£ ãÆ /en/dashboard/billing                 3.11 kB        99.1 kB
+Ôö£ ãÆ /en/dashboard/campaigns               1.98 kB         103 kB
+Ôö£ ãÆ /en/dashboard/profile                 3.86 kB         101 kB
+Ôö£ ãÆ /en/dashboard/stores                  2.1 kB         98.1 kB
+Ôö£ Ôùï /en/sell-on-whatsapp                  210 B           101 kB
+Ôö£ Ôùï /en/shopify-vs-creatiendas            210 B           101 kB
+Ôö£ ãÆ /en/stores/[slug]                     419 B          93.9 kB
+Ôö£ Ôùï /forgot-password                      1.52 kB        97.5 kB
+Ôö£ Ôùï /icon.png                             0 B                0 B
+Ôö£ Ôùï /robots.txt                           0 B                0 B
+Ôö£ Ôùï /shopify-vs-creatiendas               210 B           101 kB
+Ôö£ Ôùï /sitemap.xml                          0 B                0 B
+Ôö£ ãÆ /stores/[slug]                        420 B            94 kB
+Ôö£ Ôùï /vender-por-whatsapp                  210 B           101 kB
+Ôö£ ãÆ /wallet                               5.06 kB         102 kB
+Ôöö Ôùï /widgets-demo                         2.92 kB        90.2 kB
++ First Load JS shared by all             87.3 kB
+  Ôö£ chunks/2117-bbe2dd8c452f616d.js       31.7 kB
+  Ôö£ chunks/fd9d1056-53f79e23a0525d79.js   53.6 kB
+  Ôöö other shared chunks (total)           1.97 kB
+
+
+ãÆ Middleware                              49.4 kB
+
+Ôùï  (Static)   prerendered as static content
+ÔùÅ  (SSG)      prerendered as static HTML (uses getStaticProps)
+ãÆ  (Dynamic)  server-rendered on demand
+

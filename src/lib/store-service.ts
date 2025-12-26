@@ -1,4 +1,14 @@
-import { prisma } from './prisma';
+import { prisma } from '@/lib/prisma';
+
+// Types
+export interface Product {
+    id: number;
+    name: string;
+    description: string;
+    category: string;
+    price: string;
+    image: string | null;
+}
 
 export interface StoreData {
     id?: string;
@@ -7,8 +17,8 @@ export interface StoreData {
     desc: string;
     whatsapp: string;
     color: string;
-    font: string;
-    borderRadius: string;
+    font?: string;
+    borderRadius?: string;
     logo: string | null;
     heroBg: string | null;
     slug: string;
@@ -39,75 +49,51 @@ export interface StoreData {
     };
 }
 
-export interface Product {
-    id: number;
-    name: string;
-    description: string;
-    category: string;
-    price: string;
-    image: string | null;
+export function slugify(text: string): string {
+    return text
+        .toString()
+        .toLowerCase()
+        .normalize('NFD') // Split accented characters
+        .replace(/[\u0300-\u036f]/g, '') // Remove accents
+        .replace(/[^a-z0-9]+/g, '-') // Replace non-alphanumeric with -
+        .replace(/^-+|-+$/g, '') // Trim - from start and end
+        .replace(/-+/g, '-'); // Replace multiple - with single -
 }
 
-export class StoreService {
-    /**
-     * Get a store by its unique slug
-     */
-    static async getStore(slug: string) {
-        try {
-            const store = await prisma.store.findUnique({
-                where: { slug }
-            });
-
-            if (!store) return null;
-
-            return {
-                ...store,
-                data: store.data as unknown as StoreData,
-                products: store.products as unknown as Product[]
-            };
-        } catch (error) {
-            console.error('Error in StoreService.getStore:', error);
-            return null;
-        }
-    }
-
-    /**
-     * Get a store by its unique ID
-     */
-    static async getStoreById(id: string) {
-        try {
-            const store = await prisma.store.findUnique({
-                where: { id }
-            });
-
-            if (!store) return null;
-
-            return {
-                ...store,
-                data: store.data as unknown as StoreData,
-                products: store.products as unknown as Product[]
-            };
-        } catch (error) {
-            console.error('Error in StoreService.getStoreById:', error);
-            return null;
-        }
-    }
-
-    /**
-     * Increment view count for a store
-     */
-    static async incrementViews(slug: string) {
-        try {
-            await prisma.store.update({
-                where: { slug },
-                data: {
-                    views: {
-                        increment: 1
-                    }
-                }
-            });
-        } catch (error) {
-            console.error('Error incrementing views:', error);
-        }
-    }
+export interface Store {
+    id: string;
+    slug: string;
+    data: StoreData;
+    products: Product[];
+    createdAt: string;
 }
+
+export const StoreService = {
+    createStore: async (name: string, data: StoreData, products: Product[]) => {
+        // This method might be redundant if we use the API route, but keeping it for compatibility
+        // logic should be moved to API or this service used by API.
+        // For now, let's assume API handles creation and this is mostly for reading.
+        return null;
+    },
+
+    getStore: async (slug: string) => {
+        const store = await prisma.store.findUnique({
+            where: { slug }
+        });
+
+        if (!store) return null;
+
+        return {
+            id: store.id,
+            slug: store.slug,
+            data: store.data as unknown as StoreData,
+            products: store.products as unknown as Product[],
+            createdAt: store.createdAt.toISOString(),
+        };
+    },
+
+    updateStore: async (slug: string, data: StoreData, products: Product[]) => {
+        // Logic moved to API
+        return null;
+    }
+};
