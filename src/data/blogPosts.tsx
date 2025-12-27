@@ -14,7 +14,7 @@ export const blogPosts: BlogPostContent[] = [
     {
         title: "Cómo crear una tienda online GRATIS en 2 minutos (sin comisiones)",
         excerpt: "Aprende paso a paso cómo crear tu tienda online gratis y empezar a vender por WhatsApp en minutos.",
-        image: "/images/blog/crear-tienda-online-gratis-2-minutos.png",
+        image: "/images/blog/crear-tienda-gratis.png",
         slug: "crear-tienda-online-gratis",
         publishDate: "2024-12-20",
         content: (
@@ -38,7 +38,7 @@ export const blogPosts: BlogPostContent[] = [
     {
         title: "Pasarelas de pago vs. WhatsApp: Cómo cerrar ventas sin perder clientes",
         excerpt: "Descubre por qué WhatsApp-first es la mejor estrategia para LATAM frente a las pasarelas tradicionales.",
-        image: "/images/blog/pasarelas-pago.jpg",
+        image: "/images/blog/comparativa-pasarelas-whatsapp.png",
         slug: "pasarelas-pago-vs-whatsapp",
         publishDate: "2024-12-26",
         content: (
@@ -60,7 +60,7 @@ export const blogPosts: BlogPostContent[] = [
     {
         title: "WhatsApp Commerce 2025: Por qué el email marketing está muriendo",
         excerpt: "Las tendencias que dominarán el ecommerce este año y cómo preparar tu pequeña empresa.",
-        image: "/images/blog/trends-2025.jpg",
+        image: "/images/blog/whatsapp-trends-2025.png",
         slug: "whatsapp-commerce-2025",
         publishDate: "2024-12-26",
         content: (
@@ -82,7 +82,7 @@ export const blogPosts: BlogPostContent[] = [
     {
         title: "7 Errores fatales al vender por WhatsApp (y cómo evitarlos)",
         excerpt: "No pierdas más ventas por errores simples. Guía para profesionalizar tu atención al cliente.",
-        image: "/images/blog/errores-whatsapp.jpg",
+        image: "/images/blog/errores-comunes-whatsapp-ventas.png",
         slug: "errores-vender-por-whatsapp",
         publishDate: "2024-12-26",
         content: (
@@ -125,7 +125,7 @@ export const blogPosts: BlogPostContent[] = [
     {
         title: "Cómo vender por WhatsApp con una tienda online (guía práctica)",
         excerpt: "Convierte WhatsApp en tu principal canal de ventas con una tienda online conectada.",
-        image: "/images/blog/como-vender-mas-por-whatsapp.png",
+        image: "/images/blog/vender-por-whatsapp.jpg",
         slug: "vender-por-whatsapp",
         publishDate: "2024-12-19",
         content: (
@@ -155,7 +155,7 @@ export const blogPosts: BlogPostContent[] = [
     {
         title: "Shopify vs Creatiendas: ¿cuál conviene para pequeños negocios?",
         excerpt: "Compara Shopify y Creatiendas y elige la mejor opción si eres emprendedor o PYME.",
-        image: "/images/blog/shopify-vs-tienda-whatsapp.png",
+        image: "/images/blog/shopify-vs-creatiendas.jpg",
         slug: "shopify-vs-creatiendas",
         publishDate: "2024-12-18",
         content: (
