@@ -96,24 +96,57 @@ export async function DELETE(
 ) {
     try {
         const session = await getServerSession(authOptions);
+        const allowedRoles = ['ADMIN', 'SUPERADMIN'];
 
-        if (!session?.user || (session.user as any).role !== 'ADMIN') {
+        if (!session?.user || !allowedRoles.includes((session.user as any).role)) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
-        // Delete all user's stores first
-        await prisma.store.deleteMany({
-            where: { ownerId: params.id },
-        });
+        const userId = params.id;
 
-        // Then delete the user
-        await prisma.user.delete({
-            where: { id: params.id },
+        // Start a transaction for deep cleanup
+        await prisma.$transaction(async (tx) => {
+            // 1. Delete Advertising data
+            const campaigns = await tx.adCampaign.findMany({ where: { userId } });
+            const campaignIds = campaigns.map(c => c.id);
+            if (campaignIds.length > 0) {
+                await tx.adCreativeStats.deleteMany({ where: { creative: { campaignId: { in: campaignIds } } } });
+                await tx.adCreative.deleteMany({ where: { campaignId: { in: campaignIds } } });
+                await tx.adCampaign.deleteMany({ where: { userId } });
+            }
+
+            // 2. Delete Creatiendas data
+            await tx.store.deleteMany({ where: { ownerId: userId } });
+
+            // 3. Delete Monedera (Wallet) data
+            const wallet = await tx.walletAccount.findUnique({ where: { userId } });
+            if (wallet) {
+                await tx.transaction.deleteMany({ where: { accountId: wallet.id } });
+                await tx.walletAccount.delete({ where: { id: wallet.id } });
+            }
+            await tx.stripeCustomer.deleteMany({ where: { userId } });
+
+            // 4. Delete Auth & Session data
+            await tx.passwordResetToken.deleteMany({ where: { userId } });
+
+            // 5. Delete B2BChat & Social data
+            await tx.groupMember.deleteMany({ where: { userId } });
+            await tx.message.deleteMany({ where: { senderId: userId } });
+            await tx.contact.deleteMany({ where: { OR: [{ userId }, { contactId: userId }] } });
+
+            // Note: We don't delete groups created by the user to avoid orphaned members, 
+            // but we could transfer ownership if needed. For extreme Q&A, we just clean up.
+            await tx.group.deleteMany({ where: { createdById: userId } });
+
+            // 6. Finally delete the user
+            await tx.user.delete({
+                where: { id: userId },
+            });
         });
 
         return NextResponse.json({
             success: true,
-            message: 'User and all their stores deleted successfully',
+            message: 'User and all related data deleted successfully',
         });
     } catch (error: any) {
         console.error('Error deleting user:', error);

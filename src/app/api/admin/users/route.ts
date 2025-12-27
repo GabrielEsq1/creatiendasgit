@@ -15,14 +15,15 @@ export async function GET() {
             return NextResponse.json({ error: 'No autenticado' }, { status: 401 });
         }
 
-        // 2. Authorization Check (Role = ADMIN)
+        // 2. Authorization Check (Role = ADMIN or SUPERADMIN)
         const currentUser = await prisma.user.findUnique({
             where: { email: session.user.email },
             select: { role: true }
         });
         console.log('Admin API Role:', currentUser?.role);
 
-        if (currentUser?.role !== 'ADMIN') {
+        const allowedRoles = ['ADMIN', 'SUPERADMIN'];
+        if (!currentUser || !allowedRoles.includes(currentUser.role)) {
             console.log('Admin API: Not authorized');
             return NextResponse.json({ error: 'No autorizado' }, { status: 403 });
         }
@@ -64,13 +65,14 @@ export async function PATCH(req: Request) {
             return NextResponse.json({ error: 'No autenticado' }, { status: 401 });
         }
 
-        // 2. Authorization Check (Role = ADMIN)
+        // 2. Authorization Check (Role = ADMIN or SUPERADMIN)
         const currentUser = await prisma.user.findUnique({
             where: { email: session.user.email },
             select: { role: true }
         });
 
-        if (currentUser?.role !== 'ADMIN') {
+        const allowedRoles = ['ADMIN', 'SUPERADMIN'];
+        if (!currentUser || !allowedRoles.includes(currentUser.role)) {
             return NextResponse.json({ error: 'No autorizado' }, { status: 403 });
         }
 
