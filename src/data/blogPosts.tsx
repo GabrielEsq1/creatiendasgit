@@ -14,7 +14,7 @@ export const blogPosts: BlogPostContent[] = [
     {
         title: "Cómo crear una tienda online GRATIS en 2 minutos (sin comisiones)",
         excerpt: "Aprende paso a paso cómo crear tu tienda online gratis y empezar a vender por WhatsApp en minutos.",
-        image: "/images/blog/crear-tienda-gratis.png",
+        image: "/images/blog/crear-tienda-online-gratis-2-minutos.png",
         slug: "crear-tienda-online-gratis",
         publishDate: "2024-12-20",
         content: (
@@ -125,7 +125,7 @@ export const blogPosts: BlogPostContent[] = [
     {
         title: "Cómo vender por WhatsApp con una tienda online (guía práctica)",
         excerpt: "Convierte WhatsApp en tu principal canal de ventas con una tienda online conectada.",
-        image: "/images/blog/vender-por-whatsapp.jpg",
+        image: "/images/blog/como-vender-mas-por-whatsapp.png",
         slug: "vender-por-whatsapp",
         publishDate: "2024-12-19",
         content: (
@@ -155,7 +155,7 @@ export const blogPosts: BlogPostContent[] = [
     {
         title: "Shopify vs Creatiendas: ¿cuál conviene para pequeños negocios?",
         excerpt: "Compara Shopify y Creatiendas y elige la mejor opción si eres emprendedor o PYME.",
-        image: "/images/blog/shopify-vs-creatiendas.jpg",
+        image: "/images/blog/shopify-vs-tienda-whatsapp.png",
         slug: "shopify-vs-creatiendas",
         publishDate: "2024-12-18",
         content: (
