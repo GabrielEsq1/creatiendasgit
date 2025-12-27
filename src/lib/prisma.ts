@@ -14,3 +14,7 @@ export const prisma =
 if (process.env.NODE_ENV !== 'production') {
     global.prisma = prisma;
 }
+
+if (!process.env.DATABASE_URL) {
+    console.error('❌ FATAL: DATABASE_URL is not set in environment variables!');
+}

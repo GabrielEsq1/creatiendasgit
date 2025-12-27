@@ -87,7 +87,7 @@ export default function RootLayout({
                     {/* B2Chat Widget - Lazy loaded to prioritize LCP */}
                     <script
                         src="/b2chat/B2Chat-main/widget.js"
-                        strategy="lazyOnload"
+                        defer
                     />
                 </Providers>
             </body>
