@@ -98,11 +98,8 @@ function LoginForm() {
                         {/* Decoration blob */}
                         <div className="absolute top-0 right-0 w-32 h-32 bg-green-500/5 rounded-full blur-3xl -mr-10 -mt-10 pointer-events-none group-hover:bg-green-500/10 transition-all"></div>
 
-                        {/* Mobile Logo / Header */}
+                        {/* Mobile Header (Optimized) */}
                         <div className="text-center mb-10 relative z-10">
-                            <Link href="/" className="mb-6 group inline-block">
-                                <img src="/logo.png" alt="CreaTiendas" className="h-12 w-auto object-contain transform rotate-3 group-hover:rotate-0 transition-transform duration-500" />
-                            </Link>
                             <h1 className="text-2xl font-black text-slate-900 mb-1">Bienvenido</h1>
                             <p className="text-slate-500 text-sm font-medium">Gestiona tu tienda de WhatsApp</p>
                         </div>

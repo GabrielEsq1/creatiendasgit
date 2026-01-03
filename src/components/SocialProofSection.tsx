@@ -133,6 +133,17 @@ export const SocialProofSection = () => {
                 />
             </div>
 
+            {/* 3. USER TYPES BADGES (New Requirement) */}
+            <div className="flex flex-wrap items-center justify-center gap-2 pt-2">
+                {(metrics.userTypes || []).map((type: any, idx: number) => (
+                    <div key={idx} className="flex items-center gap-1.5 bg-slate-50 border border-slate-100 px-3 py-1.5 rounded-full shadow-sm hover:border-green-500/20 transition-all group">
+                        <span className={`w-1.5 h-1.5 rounded-full ${type.color.replace('text-', 'bg-')} animate-pulse`} />
+                        <span className="text-[10px] font-black text-slate-400 uppercase tracking-tighter">{type.label}:</span>
+                        <span className="text-[11px] font-black text-slate-800 tracking-tight">{type.count.toLocaleString()}</span>
+                    </div>
+                ))}
+            </div>
+
             {/* Micro-copy for trust */}
             <p className="text-xs text-slate-400 font-medium text-center">
                 * Datos 100% reales de nuestra comunidad Open Source

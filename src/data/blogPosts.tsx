@@ -12,9 +12,9 @@ export interface BlogPostContent {
 
 export const blogPosts: BlogPostContent[] = [
     {
-        title: "Cómo crear una tienda online en 2026: Guía completa para vender rápido",
-        excerpt: "Descubre cómo lanzar tu tienda online este 2026 con una estrategia de cero fricción y máximo crecimiento.",
-        image: "/images/blog/guia-ecommerce-2026.png",
+        title: "Cómo crear una tienda online en 2026: Guía completa para emprendedores",
+        excerpt: "Descubre el paso a paso definitivo para lanzar tu negocio digital en 2026. Sin complicaciones técnicas, sin comisiones y optimizado para vender por WhatsApp.",
+        image: "/images/blog/guia-2026.png",
         slug: "como-crear-tienda-online-2026",
         publishDate: "2026-01-02",
         content: (
@@ -88,8 +88,8 @@ export const blogPosts: BlogPostContent[] = [
         )
     },
     {
-        title: "Tendencias Ecommerce 2026: Lo que impulsará tu crecimiento",
-        excerpt: "El futuro de las ventas online ya está aquí. Conoce las tendencias que están redefiniendo el éxito en LATAM.",
+        title: "Tendencias Ecommerce 2026: lo que necesitas saber",
+        excerpt: "De la inteligencia artificial al comercio conversacional. Analizamos las tendencias que dominarán el mercado digital en 2026.",
         image: "/images/blog/tendencias-2026.png",
         slug: "tendencias-ecommerce-2026",
         publishDate: "2026-01-02",
@@ -141,9 +141,9 @@ export const blogPosts: BlogPostContent[] = [
         )
     },
     {
-        title: "SEO para Tiendas Online en 2026: Vende sin depender de anuncios",
-        excerpt: "Guía maestra para atraer tráfico orgánico, posicionar en Google y construir un activo digital duradero.",
-        image: "/images/blog/seo-ecommerce-2026.png",
+        title: "SEO para Tiendas Online en 2026: Atrae clientes sin pagar anuncios",
+        excerpt: "Aprende las estrategias de SEO más efectivas para posicionar tu tienda online en los primeros resultados de Google este 2026.",
+        image: "/images/blog/seo-2026.png",
         slug: "seo-tiendas-online-2026",
         publishDate: "2026-01-02",
         content: (

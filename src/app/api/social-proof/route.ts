@@ -63,6 +63,13 @@ export async function GET() {
             { code: 'CL', name: 'Chile', count: 2 },
         ];
 
+        // 5. User Types Distribution (Simulated for Social Proof)
+        const userTypes = [
+            { label: 'Emprendedores', count: 1420, color: 'text-blue-500', icon: 'User' },
+            { label: 'Tiendas Pro', count: 856, color: 'text-emerald-500', icon: 'Store' },
+            { label: 'Agencias', count: 124, color: 'text-purple-500', icon: 'Briefcase' }
+        ];
+
         return NextResponse.json({
             metrics: {
                 activeNow,
@@ -70,7 +77,8 @@ export async function GET() {
                 clicks24h: clicks24h + 45,
                 recentSignups: signupsCount,
                 totalStoresToday: storesCount,
-                activeCountriesCount: activeCountries.length
+                activeCountriesCount: activeCountries.length,
+                userTypes // Include user types in metrics
             },
             activityTrend,
             hotspots: [
@@ -81,7 +89,8 @@ export async function GET() {
                 { lat: 10.480, lng: -66.903, label: 'Venezuela' },
                 { lat: 40.416, lng: -3.703, label: 'España' }
             ],
-            activeCountries
+            activeCountries,
+            userTypes // Also available at top level for convenience
         });
     } catch (error) {
         console.error('Social Proof API Error:', error);
