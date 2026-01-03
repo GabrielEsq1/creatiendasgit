@@ -82,11 +82,8 @@ function LoginFormEN() {
                         {/* Decoration blob */}
                         <div className="absolute top-0 right-0 w-32 h-32 bg-green-500/5 rounded-full blur-3xl -mr-10 -mt-10 pointer-events-none group-hover:bg-green-500/10 transition-all"></div>
 
-                        {/* Mobile Logo / Header */}
+                        {/* Mobile Header */}
                         <div className="text-center mb-10 relative z-10">
-                            <Link href="/en" className="mb-8 block group">
-                                <img src="/logo.png" alt="CreaTiendas" className="h-14 w-auto mx-auto object-contain transform rotate-3 group-hover:rotate-0 transition-transform duration-500" />
-                            </Link>
                             <h1 className="text-3xl font-black text-slate-900 mb-2">Welcome Back</h1>
                             <p className="text-slate-500 text-sm font-bold uppercase tracking-widest">Manage your WhatsApp store</p>
                         </div>
@@ -111,7 +108,7 @@ function LoginFormEN() {
                             <div className="space-y-2">
                                 <div className="flex justify-between items-center px-1">
                                     <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Password</label>
-                                    <Link href="/en/auth/forgot-password" alt="Forgot Password" title="Forgot Password" className="text-xs font-bold text-green-600 hover:text-green-700 transition-colors">
+                                    <Link href="/en/auth/forgot-password" title="Forgot Password" className="text-xs font-bold text-green-600 hover:text-green-700 transition-colors">
                                         Forgot?
                                     </Link>
                                 </div>

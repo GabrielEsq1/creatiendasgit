@@ -98,14 +98,6 @@ export default function RegisterPageEN() {
 
                     {/* Left Column: Info & Value Prop */}
                     <div className="space-y-10 lg:pr-12 order-2 lg:order-1">
-                        {/* Logo */}
-                        <div className="flex items-center gap-4 mb-4">
-                            <Link href="/en">
-                                <img src="/logo.png" alt="CreaTiendas" className="h-12 w-auto object-contain transform rotate-3" />
-                            </Link>
-                            <span className="text-2xl font-black text-slate-900">Creatiendas</span>
-                        </div>
-
                         {/* Main Message */}
                         <div className="space-y-4">
                             <h1 className="text-4xl md:text-6xl font-black text-slate-900 leading-tight">

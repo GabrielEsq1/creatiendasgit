@@ -1,80 +1,116 @@
-import React from 'react';
+'use client';
+
+import React, { useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-
-interface BlogPost {
-    title: string;
-    excerpt: string;
-    image: string;
-    slug: string;
-}
-
-const posts: BlogPost[] = [
-    {
-        title: "How to create a FREE online store in 2 minutes (no commissions)",
-        excerpt: "Learn step by step how to create your online store for free and start selling on WhatsApp in minutes.",
-        image: "/images/blog/crear-tienda-gratis.png",
-        slug: "en/create-online-store-free"
-    },
-    {
-        title: "How to sell on WhatsApp with an online store (practical guide)",
-        excerpt: "Turn WhatsApp into your main sales channel with a connected online store.",
-        image: "/images/blog/vender-por-whatsapp.jpg",
-        slug: "en/sell-on-whatsapp"
-    },
-    {
-        title: "Shopify vs Creatiendas: which is better for small businesses?",
-        excerpt: "Compare Shopify and Creatiendas and choose the best option if you are an entrepreneur or SMB.",
-        image: "/images/blog/shopify-vs-creatiendas.jpg",
-        slug: "en/shopify-vs-creatiendas"
-    }
-];
+import { blogPostsEN } from '@/data/blogPostsEN';
 
 const BlogSectionEN = () => {
+    const scrollRef = useRef<HTMLDivElement>(null);
+
+    const scroll = (direction: 'left' | 'right') => {
+        if (scrollRef.current) {
+            const { scrollLeft, clientWidth } = scrollRef.current;
+            const scrollTo = direction === 'left'
+                ? scrollLeft - clientWidth / 2
+                : scrollLeft + clientWidth / 2;
+
+            scrollRef.current.scrollTo({
+                left: scrollTo,
+                behavior: 'smooth'
+            });
+        }
+    };
+
     return (
-        <section className="py-24 bg-black">
+        <section className="py-24 bg-black overflow-hidden" id="blog">
             <div className="max-w-7xl mx-auto px-4 md:px-8">
-                <div className="text-center mb-16">
-                    <h2 className="text-4xl md:text-5xl font-black text-white mb-4 tracking-tight">
-                        Learn to sell online with WhatsApp 🎄
-                    </h2>
-                    <p className="text-xl text-slate-400 font-medium">
-                        Practical guides to create your store and sell more without commissions ✨
-                    </p>
+                <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
+                    <div className="text-left">
+                        <h2 className="text-4xl md:text-5xl font-black text-white mb-4 tracking-tight">
+                            Learn to sell online <br className="hidden md:block" />
+                            <span className="text-green-500">with WhatsApp</span>
+                        </h2>
+                        <p className="text-xl text-slate-400 font-medium max-w-2xl">
+                            Practical guides to create your store, automate your sales and scale your business without commissions.
+                        </p>
+                    </div>
+
+                    {/* Navigation Buttons */}
+                    <div className="flex gap-4">
+                        <button
+                            onClick={() => scroll('left')}
+                            className="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center text-white hover:bg-white/5 transition-colors"
+                            aria-label="Previous"
+                        >
+                            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                            </svg>
+                        </button>
+                        <button
+                            onClick={() => scroll('right')}
+                            className="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center text-white hover:bg-white/5 transition-colors"
+                            aria-label="Next"
+                        >
+                            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                            </svg>
+                        </button>
+                    </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    {posts.map((post, index) => (
-                        <div
-                            key={index}
-                            className="group bg-slate-900 rounded-[2rem] overflow-hidden border border-white/5 transition-all hover:-translate-y-2 hover:border-green-500/30 hover:shadow-2xl hover:shadow-green-500/10"
-                        >
-                            <div className="relative h-60 w-full overflow-hidden">
-                                <Image
-                                    src={post.image}
-                                    alt={post.title}
-                                    fill
-                                    style={{ objectFit: 'cover' }}
-                                    className="transition-transform duration-500 group-hover:scale-110 opacity-80 group-hover:opacity-100"
-                                    loading="lazy"
-                                />
+                {/* Slider Container */}
+                <div className="relative group">
+                    <div
+                        ref={scrollRef}
+                        className="flex overflow-x-auto snap-x snap-mandatory gap-6 pb-8 scrollbar-hide no-scrollbar -mx-4 px-4 md:mx-0 md:px-0"
+                    >
+                        {blogPostsEN.map((post, index) => (
+                            <div
+                                key={index}
+                                className="flex-none w-[85vw] md:w-[calc(50%-12px)] lg:w-[calc(33.33%-16px)] snap-start"
+                            >
+                                <div className="group/card h-full bg-slate-900 rounded-[2.5rem] overflow-hidden border border-white/5 transition-all hover:border-green-500/30 hover:shadow-2xl hover:shadow-green-500/10 flex flex-col">
+                                    <div className="relative h-60 w-full overflow-hidden">
+                                        <Image
+                                            src={post.image}
+                                            alt={post.title}
+                                            fill
+                                            style={{ objectFit: 'cover' }}
+                                            className="transition-transform duration-500 group-hover/card:scale-110 opacity-80 group-hover/card:opacity-100"
+                                            loading="lazy"
+                                        />
+                                        <div className="absolute top-6 left-6">
+                                            <span className="px-4 py-2 bg-black/50 backdrop-blur-md text-white text-xs font-bold rounded-full border border-white/10 uppercase tracking-widest">
+                                                Guide
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div className="p-8 flex flex-col flex-grow">
+                                        <h3 className="text-xl font-bold text-white mb-4 leading-snug group-hover/card:text-green-400 transition-colors line-clamp-2">
+                                            {post.title}
+                                        </h3>
+                                        <p className="text-slate-400 mb-8 line-clamp-3 text-sm leading-relaxed flex-grow">
+                                            {post.excerpt}
+                                        </p>
+                                        <Link
+                                            href={post.slug.startsWith('en/') ? `/${post.slug}` : `/en/blog/${post.slug}`}
+                                            className="inline-flex items-center justify-center w-full py-4 px-6 bg-green-500 text-black font-black rounded-2xl shadow-lg shadow-green-900/40 transition-all hover:bg-green-400 active:scale-95 mt-auto"
+                                        >
+                                            Read full guide
+                                        </Link>
+                                    </div>
+                                </div>
                             </div>
-                            <div className="p-8">
-                                <h3 className="text-xl font-bold text-white mb-3 leading-snug group-hover:text-green-400 transition-colors">
-                                    {post.title}
-                                </h3>
-                                <p className="text-slate-400 mb-8 line-clamp-2 text-sm leading-relaxed">
-                                    {post.excerpt}
-                                </p>
-                                <Link
-                                    href={`/${post.slug}`}
-                                    className="inline-flex items-center justify-center w-full py-4 px-6 bg-green-500 text-white font-black rounded-2xl shadow-lg shadow-green-900/40 transition-all hover:bg-green-600 active:scale-95 group-hover:animate-subtle-bounce"
-                                >
-                                    Read full guide ❄️
-                                </Link>
-                            </div>
-                        </div>
-                    ))}
+                        ))}
+                    </div>
+
+                    {/* Visual Hint for Mobile */}
+                    <div className="md:hidden flex justify-center gap-2 mt-4">
+                        {blogPostsEN.slice(0, 4).map((_, i) => (
+                            <div key={i} className="w-1.5 h-1.5 rounded-full bg-slate-800" />
+                        ))}
+                    </div>
                 </div>
             </div>
         </section>
