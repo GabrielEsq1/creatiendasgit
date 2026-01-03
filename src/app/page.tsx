@@ -18,14 +18,12 @@ import BlogSection from '@/components/BlogSection';
 import Testimonials from '@/components/Testimonials';
 import FinalCTA from '@/components/FinalCTA';
 
-import FestiveManager from '@/components/FestiveManager';
 import SoftwareSchema from '@/components/SoftwareSchema';
 
 export default function LandingPage() {
     return (
-        <div className="min-h-screen bg-black text-white flex flex-col selection:bg-green-500/30">
+        <div className="min-h-screen bg-white text-slate-900 flex flex-col selection:bg-green-500/30">
             <SoftwareSchema />
-            <FestiveManager />
             <main className="flex-1">
                 <Hero />
                 <WhatIs />
@@ -40,11 +38,8 @@ export default function LandingPage() {
                 <FinalCTA />
             </main>
             <footer className="bg-slate-900 p-12 text-center border-t border-slate-800">
-                <div className="flex justify-center gap-4 mb-4 text-2xl">
-                    <span>🎄</span><span>❄️</span><span>🎁</span><span>✨</span>
-                </div>
                 <p className="text-slate-500 font-medium">
-                    © {new Date().getFullYear()} Creatiendas. Hecho con ❤️ en LATAM 🎅
+                    © {new Date().getFullYear()} Creatiendas. Hecho con ❤️ en LATAM
                 </p>
             </footer>
         </div>

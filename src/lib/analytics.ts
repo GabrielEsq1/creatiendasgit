@@ -15,6 +15,44 @@ export interface AnalyticsEvent {
 }
 
 /**
+ * Detects if the current user agent is likely a bot or crawler.
+ */
+const isBot = () => {
+    if (typeof window === 'undefined') return true;
+
+    const botPatterns = [
+        /bot/i, /spider/i, /crawl/i, /lighthouse/i, /chrome-lighthouse/i,
+        /googlebot/i, /bingbot/i, /yandexbot/i, /baiduspider/i,
+        /facebookexternalhit/i, /twitterbot/i, /rogerbot/i, /linkedinbot/i,
+        /embedly/i, /quora\ link\ preview/i, /showyoubot/i, /outbrain/i,
+        /pinterest\/0\./i, /slackbot/i, /vkShare/i, /W3C_Validator/i,
+        /redditbot/i, /Applebot/i, /WhatsApp/i, /TelegramBot/i, /Discordbot/i
+    ];
+
+    const userAgent = window.navigator.userAgent;
+    const isWebDriver = window.navigator.webdriver;
+
+    return isWebDriver || botPatterns.some(pattern => pattern.test(userAgent));
+};
+
+/**
+ * Labels the user based on behavior stored in session/local storage.
+ */
+const getUserLabel = () => {
+    if (typeof window === 'undefined') return 'technical';
+
+    const isTechnical = isBot();
+    if (isTechnical) return 'technical';
+
+    const intentScore = parseInt(sessionStorage.getItem('ga4_intent_score') || '0', 10);
+    const scrollDepth = parseInt(sessionStorage.getItem('ga4_max_scroll') || '0', 10);
+
+    if (intentScore >= 5) return 'high_intent';
+    if (intentScore >= 2 || scrollDepth >= 50) return 'explorer';
+    return 'curious';
+};
+
+/**
  * Core tracking function that avoids triggering during background/animation phases.
  */
 export const trackGAEvent = (event: AnalyticsEvent) => {
@@ -23,10 +61,15 @@ export const trackGAEvent = (event: AnalyticsEvent) => {
     // Don't track if page is hidden
     if (document.hidden) return;
 
+    const trafficType = isBot() ? 'technical' : 'human';
+    const userLabel = getUserLabel();
+
     const { action, ...params } = event;
 
     (window as any).gtag('event', action, {
         ...params,
+        traffic_type: trafficType,
+        user_label: userLabel,
         environment: process.env.NODE_ENV,
         timestamp: new Date().toISOString(),
         session_id: getSessionId(),
@@ -34,7 +77,7 @@ export const trackGAEvent = (event: AnalyticsEvent) => {
     });
 
     if (process.env.NODE_ENV === 'development') {
-        console.log(`[GA4-PRO] ${action}:`, params);
+        console.log(`[GA4-PRO] [${trafficType.toUpperCase()}] [${userLabel.toUpperCase()}] ${action}:`, params);
     }
 };
 
@@ -78,4 +121,13 @@ export const trackFeatureOnce = (featureName: string, active: boolean) => {
     });
 
     sessionStorage.setItem(key, 'true');
+};
+
+/**
+ * Increases intent score based on specific actions.
+ */
+export const incrementIntentScore = (points: number = 1) => {
+    if (typeof window === 'undefined') return;
+    const current = parseInt(sessionStorage.getItem('ga4_intent_score') || '0', 10);
+    sessionStorage.setItem('ga4_intent_score', (current + points).toString());
 };

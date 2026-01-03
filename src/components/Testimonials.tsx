@@ -13,19 +13,19 @@ export default function Testimonials() {
     ];
 
     return (
-        <section className="py-24 px-4 md:px-8 lg:px-16 bg-black border-t border-white/5">
+        <section className="py-24 px-4 md:px-8 lg:px-16 bg-slate-50 border-t border-slate-100">
             <div className="max-w-5xl mx-auto">
-                <h3 className="text-4xl font-black text-center text-white mb-16">
-                    Testimonios 🎁
+                <h3 className="text-4xl font-black text-center text-slate-900 mb-16">
+                    Testimonios
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                     {testimonials.map((t, idx) => (
                         <div
                             key={idx}
-                            className="bg-slate-900/80 border border-white/5 rounded-[2rem] p-10 flex flex-col justify-between shadow-2xl shadow-black hover:border-green-500/30 transition-all"
+                            className="bg-white border border-slate-100 rounded-[2rem] p-10 flex flex-col justify-between shadow-xl shadow-slate-200 hover:border-green-500/30 transition-all"
                         >
-                            <p className="text-slate-300 italic mb-6 text-lg leading-relaxed">" {t.quote} " ❄️</p>
-                            <p className="text-green-400 font-black text-right text-base uppercase tracking-widest">- {t.name} 🎅</p>
+                            <p className="text-slate-600 italic mb-6 text-lg leading-relaxed">" {t.quote} "</p>
+                            <p className="text-green-600 font-black text-right text-base uppercase tracking-widest">- {t.name}</p>
                         </div>
                     ))}
                 </div>

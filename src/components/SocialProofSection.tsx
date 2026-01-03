@@ -48,7 +48,7 @@ export const SocialProofSection = () => {
         <div className="space-y-6 animate-in fade-in slide-in-from-left-4 duration-700">
 
             {/* 1. VISUAL HERO: Realistic Map */}
-            <div className="relative rounded-3xl overflow-hidden bg-black border border-white/5 shadow-2xl group">
+            <div className="relative rounded-3xl overflow-hidden bg-white border border-slate-100 shadow-xl group">
                 {/* Header Overlay */}
                 <div className="absolute top-4 left-4 z-10 flex items-center gap-2">
                     <span className="relative flex h-2.5 w-2.5">
@@ -60,15 +60,15 @@ export const SocialProofSection = () => {
                     </span>
                 </div>
 
-                <div className="aspect-[16/9] w-full bg-black relative">
+                <div className="aspect-[16/9] w-full bg-slate-50 relative">
                     <WorldActivityMap points={mapPoints} />
                 </div>
 
                 {/* Footer: Flags (Banderitas) */}
-                <div className="bg-black/80 backdrop-blur-xl border-t border-white/5 p-3 flex items-center justify-between gap-4 overflow-hidden">
+                <div className="bg-white/80 backdrop-blur-xl border-t border-slate-100 p-3 flex items-center justify-between gap-4 overflow-hidden">
                     <div className="flex items-center gap-2 overflow-x-auto no-scrollbar mask-gradient-r">
                         {activeCountries.map((c: any, i: number) => (
-                            <div key={i} className="flex items-center gap-1.5 bg-slate-900 px-2 py-1 rounded-full border border-white/5 whitespace-nowrap">
+                            <div key={i} className="flex items-center gap-1.5 bg-slate-50 px-2 py-1 rounded-full border border-slate-100 whitespace-nowrap">
                                 <span className="text-xs">
                                     {/* Simple emoji flag or fallback */}
                                     {c.code === 'CO' ? '🇨🇴' : c.code === 'MX' ? '🇲🇽' : c.code === 'US' ? '🇺🇸' : c.code === 'AR' ? '🇦🇷' : c.code === 'ES' ? '🇪🇸' : '🌎'}
@@ -96,16 +96,16 @@ export const SocialProofSection = () => {
                 />
                 <MetricCard
                     label="Registros 24h"
-                    value={metrics.recentSignups > 0 ? metrics.recentSignups : "¡Sé el primero! 🎁"}
+                    value={metrics.recentSignups > 0 ? metrics.recentSignups : "¡Sé el primero!"}
                     icon={Users}
-                    color="text-emerald-400"
+                    color="text-emerald-600"
                     bg="bg-emerald-500/10"
                 />
                 <MetricCard
                     label="Tiendas Hoy"
-                    value={metrics.totalStoresToday > 0 ? metrics.totalStoresToday : "Lanzamientos en curso 🚀"}
+                    value={metrics.totalStoresToday > 0 ? metrics.totalStoresToday : "Lanzamientos en curso"}
                     icon={StoreIcon}
-                    color="text-indigo-400"
+                    color="text-indigo-600"
                     bg="bg-indigo-500/10"
                 />
 
@@ -143,7 +143,7 @@ export const SocialProofSection = () => {
 
 // Sub-component for individual metric cards
 const MetricCard = ({ label, value, icon: Icon, color, bg, trend }: any) => (
-    <div className="bg-slate-900 p-3 rounded-xl border border-white/5 shadow-sm hover:shadow-md transition-all flex flex-col justify-between h-24 relative overflow-hidden group">
+    <div className="bg-white p-3 rounded-xl border border-slate-100 shadow-sm hover:shadow-md transition-all flex flex-col justify-between h-24 relative overflow-hidden group">
         <div className={`absolute top-0 right-0 p-2 opacity-5 group-hover:opacity-10 transition-opacity`}>
             {/* Background Icon */}
             <Icon className={`w-8 h-8 ${color}`} />
@@ -159,9 +159,9 @@ const MetricCard = ({ label, value, icon: Icon, color, bg, trend }: any) => (
         <div className="flex items-baseline gap-2">
             <span className={cn(
                 "font-black tracking-tight",
-                typeof value === 'string' ? "text-sm text-slate-100" : "text-2xl text-white"
+                "text-slate-900 text-2xl"
             )}>{value}</span>
-            {trend && <span className="text-[10px] font-bold text-emerald-500 animate-pulse">{trend}</span>}
+            {trend && <span className="text-[10px] font-bold text-emerald-600 animate-pulse">{trend}</span>}
         </div>
     </div>
 );

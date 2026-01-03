@@ -20,9 +20,9 @@ export const blogPosts: BlogPostContent[] = [
         content: (
             <>
                 <section>
-                    <h2 className="text-3xl font-black text-gray-900 mb-6">🚀 El mito de que vender online es caro</h2>
+                    <h2 className="text-3xl font-black text-gray-900 mb-6">El mito de que vender online es caro</h2>
                     <p>Durante años, el ecommerce estuvo reservado para quienes podían pagar plataformas costosas como Shopify o Magento. En LATAM, esto significaba pagar mensualidades en dólares y comisiones por cada venta. Para un emprendedor que está empezando, estos costos pueden ser la diferencia entre el éxito y el cierre.</p>
-                    <p>Hoy, la tecnología ha democratizado el acceso. Ya no necesitas ser programador ni tener un gran capital. En 2025, el foco está en la <strong>simplicidad y la agilidad</strong>.</p>
+                    <p>Hoy, la tecnología ha democratizado el acceso. Ya no necesitas ser programador ni tener un gran capital. En 2026, el foco está en la <strong>simplicidad y la agilidad</strong>.</p>
                 </section>
 
                 <section className="my-12 p-8 bg-green-50 rounded-3xl border border-green-100">
@@ -136,7 +136,7 @@ export const blogPosts: BlogPostContent[] = [
         )
     },
     {
-        title: "WhatsApp Commerce 2025: Por qué el email marketing está muriendo",
+        title: "WhatsApp Commerce 2026: Por qué el email marketing está muriendo",
         excerpt: "Las tendencias que dominarán el ecommerce este año y cómo preparar tu pequeña empresa.",
         image: "/images/blog/whatsapp-trends-2025.png",
         slug: "whatsapp-commerce-2025",
@@ -144,9 +144,9 @@ export const blogPosts: BlogPostContent[] = [
         content: (
             <>
                 <section>
-                    <h2 className="text-3xl font-black text-gray-900 mb-6">👋 Adiós al Newsletter, hola al Mensaje Directo</h2>
+                    <h2 className="text-3xl font-black text-gray-900 mb-6">Adiós al Newsletter, hola al Mensaje Directo</h2>
                     <p>Durante años se nos dijo que "el dinero está en la lista de correos". Y si bien tener una base de datos es vital, el medio de comunicación ha cambiado. El email marketing hoy se siente como el correo postal: llega tarde, está lleno de basura y nadie lo espera con ansias.</p>
-                    <p>En 2025, el <strong>Conversational Commerce</strong> ha tomado el relevo por una razón simple: la tasa de apertura. Mientras un email exitoso tiene un 20% de apertura, un mensaje de WhatsApp toca el 98%. No hay comparación.</p>
+                    <p>En 2026, el <strong>Conversational Commerce</strong> ha tomado el relevo por una razón simple: la tasa de apertura. Mientras un email exitoso tiene un 20% de apertura, un mensaje de WhatsApp toca el 98%. No hay comparación.</p>
                 </section>
 
                 <section className="my-12">
@@ -158,13 +158,13 @@ export const blogPosts: BlogPostContent[] = [
                 </section>
 
                 <section>
-                    <h2 className="text-3xl font-black text-gray-900 mb-6">⚡ El auge de los Micro-momentos</h2>
+                    <h2 className="text-3xl font-black text-gray-900 mb-6">El auge de los Micro-momentos</h2>
                     <p>El consumidor actual compra por impulsos rápidos. Ve un reel en Instagram, hace clic en el link de la biografía, entra a la tienda online y envía el pedido por WhatsApp en menos de 60 segundos. Si en ese flujo le pides que cree una cuenta o que revise su correo para un código de descuento, lo perdiste.</p>
                     <p>Tu infraestructura debe ser ligera y orientada a la <strong>fricción cero</strong>. Por eso una tienda que carga en menos de 1 segundo es fundamental.</p>
                 </section>
 
-                <section className="mt-12 bg-black text-white p-10 rounded-[2.5rem]">
-                    <h3 className="text-2xl font-bold mb-6">📋 Checklist de supervivencia 2025</h3>
+                <section className="mt-12 bg-slate-900 text-white p-10 rounded-[2.5rem]">
+                    <h3 className="text-2xl font-bold mb-6">Checklist de supervivencia 2026</h3>
                     <ul className="space-y-4 text-slate-300">
                         <li className="flex items-start gap-3">
                             <span className="text-green-500 font-bold">✓</span>
@@ -208,7 +208,7 @@ export const blogPosts: BlogPostContent[] = [
                     <div className="flex flex-col md:flex-row gap-8 items-start">
                         <div className="text-4xl font-black text-green-500 bg-green-50 w-16 h-16 rounded-2xl flex items-center justify-center flex-shrink-0">1</div>
                         <div>
-                            <h3 className="text-2xl font-bold text-gray-900 mb-4">El error del "Mensaje Muralla" 🧱</h3>
+                            <h3 className="text-2xl font-bold text-gray-900 mb-4">El error del "Mensaje Muralla"</h3>
                             <p className="text-gray-700">Enviar un solo mensaje de 15 párrafos explicando todo lo que haces. Nadie lee eso en una pantalla pequeña. <strong>Solución:</strong> La conversación debe ser fluida. Usa frases cortas, preguntas abiertas y permite que el cliente respire entre ideas.</p>
                         </div>
                     </div>
@@ -232,14 +232,14 @@ export const blogPosts: BlogPostContent[] = [
                     <div className="flex flex-col md:flex-row gap-8 items-start">
                         <div className="text-4xl font-black text-green-500 bg-green-50 w-16 h-16 rounded-2xl flex items-center justify-center flex-shrink-0">4</div>
                         <div>
-                            <h3 className="text-2xl font-bold text-gray-900 mb-4">Tiempos de respuesta lentos ⏳</h3>
+                            <h3 className="text-2xl font-bold text-gray-900 mb-4">Tiempos de respuesta lentos</h3>
                             <p className="text-gray-700">En el chat, 2 horas es una eternidad. El cliente ya buscó a otro vendedor. <strong>Solución:</strong> Si no puedes estar 24/7, usa respuestas rápidas y mensajes de ausencia claros que digan exactamente cuándo volverás.</p>
                         </div>
                     </div>
                 </section>
 
-                <section className="mt-16 p-8 bg-slate-900 rounded-[2rem] text-white">
-                    <h3 className="text-2xl font-bold mb-6 text-center text-green-400 font-serif">🎁 Bono: La regla de los 3 clics</h3>
+                <section className="mt-16 p-8 bg-slate-100 rounded-[2rem] text-slate-900">
+                    <h3 className="text-2xl font-bold mb-6 text-center text-green-700 font-serif">La regla de los 3 clics</h3>
                     <p className="text-slate-300 text-center">Si un cliente tiene que hacer más de 3 clics para encontrar lo que busca y enviarte el pedido, la probabilidad de venta cae un 80%. Simplifica tu estructura hoy mismo.</p>
                 </section>
 

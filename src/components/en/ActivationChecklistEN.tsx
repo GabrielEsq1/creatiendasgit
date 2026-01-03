@@ -63,7 +63,7 @@ export default function ActivationChecklistEN({ stores }: ActivationChecklistPro
             <div className="flex items-center justify-between mb-4">
                 <div>
                     <h2 className="text-xl font-bold text-slate-800 flex items-center gap-2">
-                        🚀 Start your journey
+                        Start your journey
                         <span className="text-sm font-normal text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">
                             {completedCount}/{steps.length} completed
                         </span>

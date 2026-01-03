@@ -11,12 +11,9 @@ import BlogSectionEN from '@/components/en/BlogSectionEN';
 import TestimonialsEN from '@/components/en/TestimonialsEN';
 import FinalCTAEN from '@/components/en/FinalCTAEN';
 
-import FestiveManager from '@/components/FestiveManager';
-
 export default function EnglishLandingPage() {
     return (
-        <div className="min-h-screen bg-black text-white flex flex-col selection:bg-green-500/30">
-            <FestiveManager />
+        <div className="min-h-screen bg-white text-slate-900 flex flex-col selection:bg-green-500/30">
             <main className="flex-1">
                 <HeroEN />
                 <WhatIsEN />
@@ -30,12 +27,9 @@ export default function EnglishLandingPage() {
                 <TestimonialsEN />
                 <FinalCTAEN />
             </main>
-            <footer className="bg-slate-900 p-12 text-center border-t border-slate-800">
-                <div className="flex justify-center gap-4 mb-4 text-2xl">
-                    <span>🎄</span><span>❄</span><span>🎁</span><span>✨</span>
-                </div>
-                <p className="text-slate-500 font-medium">
-                    © {new Date().getFullYear()} Creatiendas. Made with ❤️ in LATAM 🎅
+            <footer className="bg-slate-50 p-12 text-center border-t border-slate-100">
+                <p className="text-slate-500 font-medium font-bold uppercase tracking-widest text-xs">
+                    © {new Date().getFullYear()} Creatiendas. Made with ❤️ in LATAM
                 </p>
             </footer>
         </div>

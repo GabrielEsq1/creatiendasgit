@@ -21,13 +21,13 @@ export default function Navbar() {
 
     const isActive = (path: string) =>
         pathname === path
-            ? 'text-green-400 font-bold border-b-2 border-green-500 h-full flex items-center'
-            : 'text-white/70 hover:text-green-400 transition-colors h-full flex items-center font-medium';
+            ? 'text-green-600 font-bold border-b-2 border-green-500 h-full flex items-center'
+            : 'text-slate-600 hover:text-green-600 transition-colors h-full flex items-center font-medium';
 
     const isHome = pathname === '/';
 
     return (
-        <nav className={`fixed top-0 left-0 right-0 z-[100] transition-all bg-black/80 backdrop-blur-xl border-b border-white/5 ${scrolled ? 'py-1 shadow-2xl shadow-black/50' : 'py-2'
+        <nav className={`fixed top-0 left-0 right-0 z-[100] transition-all bg-white/80 backdrop-blur-xl border-b border-slate-100 ${scrolled ? 'py-1 shadow-lg shadow-slate-200/50' : 'py-2'
             }`}>
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex justify-between items-center h-16">
@@ -35,20 +35,6 @@ export default function Navbar() {
                     <div className="flex items-center">
                         <Link href={session ? "/dashboard" : "/"} className="flex items-center group relative">
                             <img src="/logo.png" className="h-8 sm:h-10 w-auto object-contain" alt="CreaTiendas" />
-                            {/* Seasonal Santa Hat 🎅 (Solid Version) */}
-                            <div className="absolute -top-3 sm:-top-3.5 -left-1 sm:-left-1.5 w-6 sm:w-7 h-6 sm:h-7 rotate-[-20deg] pointer-events-none drop-shadow-md z-10 group-hover:rotate-0 transition-transform duration-500">
-                                <svg viewBox="0 0 100 100" className="w-full h-full">
-                                    {/* Outline */}
-                                    <path d="M80 60 C80 30, 60 10, 30 20 L20 40 C10 50, 20 70, 40 70 L80 60" fill="none" stroke="black" strokeWidth="4" strokeLinecap="round" />
-                                    {/* Red Hat Body */}
-                                    <path d="M80 60 C80 30, 60 10, 30 20 L25 35 C60 25, 80 40, 80 60" fill="#ee2424" />
-                                    <path d="M25 35 L20 40 C10 50, 15 65, 30 65 C40 65, 60 55, 80 60 C80 50, 70 30, 25 35" fill="#ee2424" />
-                                    {/* White Brim */}
-                                    <path d="M15 55 Q10 70 30 75 Q60 75 85 65 Q90 50 70 45 Q40 45 15 55 Z" fill="white" stroke="black" strokeWidth="2.5" />
-                                    {/* White Pom Pom */}
-                                    <circle cx="85" cy="65" r="10" fill="white" stroke="black" strokeWidth="2.5" />
-                                </svg>
-                            </div>
                         </Link>
 
                         {/* Desktop Menu */}
@@ -85,7 +71,7 @@ export default function Navbar() {
                                         href="/admin"
                                         className="bg-yellow-100 text-yellow-700 hover:bg-yellow-200 border border-yellow-200 px-4 py-2 rounded-full text-xs font-black uppercase tracking-wide flex items-center gap-2 transition-all shadow-sm"
                                     >
-                                        <span>⚡ Panel Admin</span>
+                                        <span>Panel Admin</span>
                                     </Link>
                                 )}
                             </div>
@@ -109,7 +95,7 @@ export default function Navbar() {
                                     : `/en${pathname === '/' ? '' : pathname}`;
                                 window.location.href = targetPath;
                             }}
-                            className="group relative w-24 h-10 bg-slate-900 rounded-full p-1 cursor-pointer border border-white/10 shadow-inner overflow-hidden transition-all hover:border-green-500/30"
+                            className="group relative w-24 h-10 bg-slate-50 rounded-full p-1 cursor-pointer border border-slate-200 shadow-inner overflow-hidden transition-all hover:border-green-500/30"
                             title="Cambiar idioma / Switch language"
                         >
                             {/* Sliding Background */}
@@ -131,7 +117,7 @@ export default function Navbar() {
                             <div className="flex items-center gap-4">
                                 <div className="hidden sm:flex flex-col items-end">
                                     <span className="text-[10px] uppercase font-bold text-slate-500 leading-none mb-1">Sesión de</span>
-                                    <span className="text-sm font-black text-white leading-none">{session.user?.name}</span>
+                                    <span className="text-sm font-black text-slate-900 leading-none">{session.user?.name}</span>
                                 </div>
                                 <button
                                     onClick={() => signOut({ callbackUrl: '/' })}
@@ -147,13 +133,13 @@ export default function Navbar() {
                             <div className="flex items-center gap-3">
                                 <Link
                                     href={pathname?.startsWith('/en') ? '/en/auth/login' : '/auth/login'}
-                                    className="hidden sm:block text-slate-400 hover:text-white px-4 py-2 text-sm font-black transition-colors"
+                                    className="hidden sm:block text-slate-500 hover:text-slate-900 px-4 py-2 text-sm font-black transition-colors"
                                 >
                                     {pathname?.startsWith('/en') ? 'Log In' : 'Iniciar Sesión'}
                                 </Link>
                                 <Link
                                     href={pathname?.startsWith('/en') ? '/en/auth/register' : '/auth/register'}
-                                    className="bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-xl text-sm font-black shadow-lg shadow-green-900/40 transition-all hover:-translate-y-0.5 active:scale-95"
+                                    className="bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-xl text-sm font-black shadow-lg shadow-green-200 transition-all hover:-translate-y-0.5 active:scale-95"
                                 >
                                     {pathname?.startsWith('/en') ? 'Start FREE' : 'Empezar GRATIS'}
                                 </Link>
