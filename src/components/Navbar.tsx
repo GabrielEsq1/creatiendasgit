@@ -182,28 +182,30 @@ export default function Navbar() {
             </div>
 
             {/* Mobile Menu */}
-            {isOpen && (
-                <div className="lg:hidden bg-slate-950 border-t border-white/5 py-6 px-4 space-y-4 shadow-2xl animate-in fade-in slide-in-from-top-4">
-                    {session ? (
-                        <>
-                            <Link href="/dashboard" className="block p-4 rounded-2xl bg-slate-900 font-black text-white" onClick={() => setIsOpen(false)}>Dashboard</Link>
-                            <Link href="/dashboard/stores" className="block p-4 rounded-2xl hover:bg-slate-900 font-bold text-slate-400" onClick={() => setIsOpen(false)}>Mis Tiendas</Link>
-                            <Link href="/dashboard/billing" className="block p-4 rounded-2xl hover:bg-slate-900 font-bold text-slate-400" onClick={() => setIsOpen(false)}>Mi Plan</Link>
-                            <button
-                                onClick={() => { setIsOpen(false); signOut({ callbackUrl: '/' }); }}
-                                className="w-full text-left p-4 rounded-2xl text-rose-500 font-black hover:bg-rose-950/30 transition-colors"
-                            >
-                                Cerrar Sesión
-                            </button>
-                        </>
-                    ) : (
-                        <>
-                            <Link href="/auth/login" className="block p-4 rounded-2xl hover:bg-slate-900 font-black text-white" onClick={() => setIsOpen(false)}>Iniciar Sesión</Link>
-                            <Link href="/auth/register" className="block p-4 rounded-2xl bg-green-500 text-white font-black text-center shadow-xl shadow-green-900/40" onClick={() => setIsOpen(false)}>EMPEZAR GRATIS</Link>
-                        </>
-                    )}
-                </div>
-            )}
+            {
+                isOpen && (
+                    <div className="lg:hidden bg-slate-950 border-t border-white/5 py-6 px-4 space-y-4 shadow-2xl animate-in fade-in slide-in-from-top-4">
+                        {session ? (
+                            <>
+                                <Link href="/dashboard" className="block p-4 rounded-2xl bg-slate-900 font-black text-white" onClick={() => setIsOpen(false)}>Dashboard</Link>
+                                <Link href="/dashboard/stores" className="block p-4 rounded-2xl hover:bg-slate-900 font-bold text-slate-400" onClick={() => setIsOpen(false)}>Mis Tiendas</Link>
+                                <Link href="/dashboard/billing" className="block p-4 rounded-2xl hover:bg-slate-900 font-bold text-slate-400" onClick={() => setIsOpen(false)}>Mi Plan</Link>
+                                <button
+                                    onClick={() => { setIsOpen(false); signOut({ callbackUrl: '/' }); }}
+                                    className="w-full text-left p-4 rounded-2xl text-rose-500 font-black hover:bg-rose-950/30 transition-colors"
+                                >
+                                    Cerrar Sesión
+                                </button>
+                            </>
+                        ) : (
+                            <>
+                                <Link href="/auth/login" className="block p-4 rounded-2xl hover:bg-slate-900 font-black text-white" onClick={() => setIsOpen(false)}>Iniciar Sesión</Link>
+                                <Link href="/auth/register" className="block p-4 rounded-2xl bg-green-500 text-white font-black text-center shadow-xl shadow-green-900/40" onClick={() => setIsOpen(false)}>EMPEZAR GRATIS</Link>
+                            </>
+                        )}
+                    </div>
+                )
+            }
         </nav>
     );
 }
