@@ -3,12 +3,27 @@
 import { useEffect, Suspense } from 'react';
 import { usePathname, useSearchParams } from 'next/navigation';
 import Script from 'next/script';
+import { trackGAEvent, storeUTMs, GA_MEASUREMENT_ID, getStoredUTMs } from '@/lib/analytics';
 
 // Define event types
-export type AnalyticsEventType = 'page_view' | 'click' | 'signup' | 'login' | 'create_store' | 'view_content' | 'initiate_checkout' | 'purchase';
+export type AnalyticsEventType =
+    | 'page_view'
+    | 'click'
+    | 'signup'
+    | 'login'
+    | 'create_store'
+    | 'view_content'
+    | 'initiate_checkout'
+    | 'purchase'
+    | 'landing_view'
+    | 'scroll_50'
+    | 'feature_enabled'
+    | 'primary_cta_click'
+    | 'store_created'
+    | 'whatsapp_connected'
+    | 'activation_completed';
 
 const PIXEL_ID = '1419499733092502'; // Píxel de Gabriel Esquivia
-const GA_MEASUREMENT_ID = 'G-H0S47Z9N8J';
 
 export const useAnalytics = () => {
     const trackEvent = async (eventType: AnalyticsEventType, data?: any) => {
@@ -38,26 +53,8 @@ export const useAnalytics = () => {
             }
 
             // 4. Send to GA4
-            if (typeof window !== 'undefined' && (window as any).gtag) {
-                if (eventType === 'page_view') {
-                    (window as any).gtag('event', 'page_view', {
-                        page_path: currentPath,
-                        ...data
-                    });
-                } else if (eventType === 'signup') {
-                    (window as any).gtag('event', 'sign_up', {
-                        method: data?.method || 'email',
-                        page_path: currentPath,
-                        ...data
-                    });
-                } else {
-                    // Default GA4 mapping for other events
-                    (window as any).gtag('event', eventType, {
-                        page_path: currentPath,
-                        ...data
-                    });
-                }
-            }
+            trackGAEvent({ action: eventType, ...data });
+
         } catch (error) {
             // Silent fail - don't break user experience
         }
@@ -86,20 +83,52 @@ function AnalyticsTrackerInner() {
     const { trackEvent } = useAnalytics();
 
     useEffect(() => {
-        // Track page view on route change
+        // 1. Detect and Store UTMs automatically
+        if (searchParams && searchParams.toString().includes('utm_')) {
+            storeUTMs(searchParams);
+        }
+
+        // 2. Auto-trigger landing_view if coming from a campaign
+        const stored = getStoredUTMs();
+        const isLandingVisit = !sessionStorage.getItem('ct_landing_tracked');
+
+        if (isLandingVisit && (stored.utm_source || (searchParams && searchParams.get('utm_source')))) {
+            trackEvent('landing_view', {
+                path: pathname,
+                source: stored.utm_source || searchParams?.get('utm_source'),
+            });
+            sessionStorage.setItem('ct_landing_tracked', 'true');
+        }
+
+        // 3. Track page view on route change
         trackEvent('page_view', {
             path: pathname,
             search: searchParams?.toString(),
         });
 
-        // Manually trigger Pixel PageView on route change
+        // 4. Manually trigger Pixel PageView on route change
         if (typeof window !== 'undefined' && (window as any).fbq) {
             (window as any).fbq('track', 'PageView');
         }
 
-        // GA4 automatically tracks page_view on config,
-        // but for SPA transitions in Next.js, we send it manually via trackEvent above.
-    }, [pathname, searchParams]);
+    }, [pathname, searchParams, trackEvent]);
+
+    useEffect(() => {
+        // 5. Scroll Tracking (50%)
+        const handleScroll = () => {
+            const scrollPercent = (window.scrollY + window.innerHeight) / document.documentElement.scrollHeight * 100;
+            if (scrollPercent >= 50 && !sessionStorage.getItem('ct_scroll_50_tracked')) {
+                trackEvent('scroll_50', {
+                    path: pathname,
+                    scroll_depth: 50
+                });
+                sessionStorage.setItem('ct_scroll_50_tracked', 'true');
+            }
+        };
+
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, [pathname, trackEvent]);
 
     return null;
 }
@@ -120,6 +149,7 @@ export const AnalyticsTracker = () => {
                     gtag('js', new Date());
                     gtag('config', '${GA_MEASUREMENT_ID}', {
                         page_path: window.location.pathname,
+                        send_page_view: false // We handle it manually via trackEvent
                     });
                 `}
             </Script>
@@ -159,3 +189,4 @@ export const AnalyticsTracker = () => {
         </>
     );
 };
+

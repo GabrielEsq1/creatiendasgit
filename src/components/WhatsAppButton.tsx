@@ -1,9 +1,19 @@
 'use client';
 
+import { useAnalytics } from './Analytics';
+
 export default function WhatsAppButton() {
+    const { trackEvent } = useAnalytics();
+
     const handleClick = () => {
         const message = 'Hola, tengo una duda sobre los planes.';
         const whatsappUrl = `https://wa.me/573026687991?text=${encodeURIComponent(message)}`;
+
+        trackEvent('whatsapp_connected', {
+            location: 'floating_button',
+            message_preset: message
+        });
+
         window.open(whatsappUrl, '_blank');
     };
 

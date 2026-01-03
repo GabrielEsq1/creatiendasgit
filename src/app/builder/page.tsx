@@ -7,6 +7,7 @@ import StorePreview from '@/components/StorePreview';
 import StoreQRCode from '@/components/StoreQRCode';
 import { StoreData, Product } from '@/lib/store-service';
 import { compressImage } from '@/lib/image-utils';
+import { useAnalytics } from '@/components/Analytics';
 import '../styles/builder.css';
 
 export const dynamic = "force-dynamic";
@@ -75,6 +76,7 @@ const INITIAL_PRODUCTS: Product[] = [
 function BuilderContent() {
     const searchParams = useSearchParams();
     const editSlug = searchParams?.get('edit');
+    const { trackEvent } = useAnalytics();
 
     const [storeData, setStoreData] = useState<StoreData>(INITIAL_DATA);
     const [products, setProducts] = useState<Product[]>(INITIAL_PRODUCTS);
@@ -319,6 +321,16 @@ function BuilderContent() {
                 const finalUrl = normalizeUrl(rawUrl);
                 setPublicUrl(finalUrl);
                 setHasUnsavedChanges(false); // Mark as saved
+
+                // Track Event: store_created (Automatic)
+                if (!editSlug) {
+                    trackEvent('store_created', {
+                        store_name: storeData.name,
+                        product_count: products.length,
+                        url: finalUrl
+                    });
+                }
+
                 // Store the returned id for future updates
                 if (json.id) {
                     setStoreData(prev => ({ ...prev, id: json.id }));

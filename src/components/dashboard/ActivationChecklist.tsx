@@ -1,8 +1,9 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { CheckCircle2, Circle, Store, Package, Image, MessageSquare } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { useAnalytics } from '../Analytics';
 
 interface Step {
     id: string;
@@ -20,6 +21,7 @@ interface ActivationChecklistProps {
 
 export default function ActivationChecklist({ stores }: ActivationChecklistProps) {
     const router = useRouter();
+    const { trackEvent } = useAnalytics();
     const safeStores = stores || [];
     const hasStore = safeStores.length > 0;
     const firstStore = safeStores[0];
@@ -65,6 +67,19 @@ export default function ActivationChecklist({ stores }: ActivationChecklistProps
 
     const completedCount = steps.filter(s => s.isCompleted).length;
     const progress = (completedCount / steps.length) * 100;
+
+    useEffect(() => {
+        if (completedCount === steps.length) {
+            const hasBeenTracked = sessionStorage.getItem('ct_activation_tracked');
+            if (!hasBeenTracked) {
+                trackEvent('activation_completed', {
+                    store_id: firstStore?.id,
+                    product_count: firstStore?.productCount
+                });
+                sessionStorage.setItem('ct_activation_tracked', 'true');
+            }
+        }
+    }, [completedCount, steps.length, trackEvent, firstStore]);
 
     return (
         <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm mb-8 animate-in fade-in slide-in-from-top-4">
