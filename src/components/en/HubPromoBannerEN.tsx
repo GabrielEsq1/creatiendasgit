@@ -111,7 +111,7 @@ export default function HubPromoBannerEN() {
                         rel="noopener noreferrer"
                         className="inline-flex items-center gap-2 bg-[#22c55e] text-white font-bold px-8 py-4 rounded-xl hover:bg-green-600 transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5"
                     >
-                        Visit Total Hub
+                        Visit B2BChat Hub
                         <ArrowRight className="w-5 h-5" />
                     </a>
                     <p className="text-slate-500 text-sm mt-4">
