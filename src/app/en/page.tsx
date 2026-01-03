@@ -9,6 +9,7 @@ import LiveDemoEN from '@/components/en/LiveDemoEN';
 import FeaturesEN from '@/components/en/FeaturesEN';
 import BlogSectionEN from '@/components/en/BlogSectionEN';
 import TestimonialsEN from '@/components/en/TestimonialsEN';
+import HubPromoBannerEN from '@/components/en/HubPromoBannerEN';
 import FinalCTAEN from '@/components/en/FinalCTAEN';
 
 export default function EnglishLandingPage() {
@@ -25,6 +26,7 @@ export default function EnglishLandingPage() {
                 <FeaturesEN />
                 <BlogSectionEN />
                 <TestimonialsEN />
+                <HubPromoBannerEN />
                 <FinalCTAEN />
             </main>
             <footer className="bg-slate-50 p-12 text-center border-t border-slate-100">

@@ -16,6 +16,7 @@ import LiveDemo from '@/components/LiveDemo';
 import Features from '@/components/Features';
 import BlogSection from '@/components/BlogSection';
 import Testimonials from '@/components/Testimonials';
+import HubPromoBanner from '@/components/HubPromoBanner';
 import FinalCTA from '@/components/FinalCTA';
 
 import SoftwareSchema from '@/components/SoftwareSchema';
@@ -35,6 +36,7 @@ export default function LandingPage() {
                 <Features />
                 <BlogSection />
                 <Testimonials />
+                <HubPromoBanner />
                 <FinalCTA />
             </main>
             <footer className="bg-slate-900 p-12 text-center border-t border-slate-800">
