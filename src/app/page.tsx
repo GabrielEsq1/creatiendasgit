@@ -21,7 +21,7 @@ import FinalCTA from '@/components/FinalCTA';
 
 import SoftwareSchema from '@/components/SoftwareSchema';
 
-import SocialProofSection from '@/components/SocialProofSection';
+import { SocialProofSection } from '@/components/SocialProofSection';
 
 export default function LandingPage() {
     return (
