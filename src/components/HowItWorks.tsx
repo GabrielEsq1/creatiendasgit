@@ -10,7 +10,7 @@ export default function HowItWorks() {
   return (
     <section className="py-24 px-4 md:px-8 lg:px-16 bg-slate-50 border-y border-slate-100">
       <div className="max-w-5xl mx-auto text-center">
-        <h2 className="text-4xl font-black text-slate-900 mb-16">Cómo funciona</h2>
+        <h2 className="text-4xl font-black text-slate-900 mb-16">Tan simple como chatear</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {steps.map((step, idx) => (
             <div

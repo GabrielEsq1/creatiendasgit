@@ -14,7 +14,7 @@ export default function Benefits() {
         <section className="py-16 px-4 md:px-8 lg:px-16 bg-white border-y border-slate-100">
             <div className="max-w-5xl mx-auto">
                 <h2 className="text-3xl font-black text-center text-slate-900 mb-12">
-                    Beneficios Clave
+                    Por qué es seguro probar hoy
                 </h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {items.map((item, idx) => (

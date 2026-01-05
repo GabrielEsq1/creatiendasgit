@@ -51,14 +51,13 @@ export default function Hero() {
                 {/* 2. Main Headline */}
                 <div className="text-center max-w-5xl mx-auto mb-16">
                     <h1 className="text-5xl md:text-7xl lg:text-8xl font-black tracking-tight mb-8 leading-[1.1] text-slate-900">
-                        Tu <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-600 to-emerald-600">Tienda Online</span>
+                        Crea tu <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-600 to-emerald-600">Catálogo Digital</span>
                         <br />
-                        <span className="text-slate-900">por <span className="text-green-600 underline decoration-green-600/30 decoration-8 underline-offset-8">WhatsApp</span></span>
+                        <span className="text-slate-900">sin <span className="text-green-600 underline decoration-green-600/30 decoration-8 underline-offset-8">Comisiones</span></span>
                     </h1>
                     <p className="text-xl md:text-2xl text-slate-600 max-w-3xl mx-auto leading-relaxed font-medium">
-                        Escala tu negocio este año con Creatiendas.
-                        Tus clientes te piden por WhatsApp sin fricción. <br className="hidden md:block" />
-                        <span className="text-green-600 font-extrabold bg-green-500/10 border border-green-500/20 px-3 py-1 rounded-lg">0% COMISIONES. EL MOMENTO ES AHORA.</span>
+                        La herramienta simple que usan +900 emprendedores. <br className="hidden md:block" />
+                        Sin tarjetas, sin llamadas, tu control total.
                     </p>
                 </div>
 
@@ -70,7 +69,7 @@ export default function Hero() {
                         onClick={() => trackEvent('primary_cta_click', { location: 'hero_main' })}
                         className="group relative inline-flex min-h-[48px] sm:min-h-[56px] md:h-16 w-full sm:w-auto items-center justify-center rounded-xl sm:rounded-2xl bg-green-500 px-6 sm:px-8 md:px-10 font-black text-white shadow-2xl shadow-green-500/30 transition-all hover:bg-green-600 hover:scale-105 active:scale-95 text-base sm:text-lg md:text-xl tracking-tight"
                     >
-                        <span>Crear mi tienda YA</span>
+                        <span>Explorar Gratis</span>
                         <div className="absolute inset-0 -z-10 bg-gradient-to-r from-transparent via-white/20 to-transparent skew-x-12 -translate-x-full group-hover:animate-shine" />
                     </Link>
 

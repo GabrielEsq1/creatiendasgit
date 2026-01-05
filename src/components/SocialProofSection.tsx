@@ -48,6 +48,15 @@ export const SocialProofSection = () => {
         <div className="space-y-6 animate-in fade-in slide-in-from-left-4 duration-700">
 
             {/* 1. VISUAL HERO: Realistic Map */}
+            <div className="text-center mb-8">
+                <h2 className="text-2xl md:text-3xl font-black text-slate-900 mb-2">
+                    Esto está pasando ahora mismo
+                </h2>
+                <p className="text-slate-500 font-medium">
+                    Datos en tiempo real de nuestra comunidad activa.
+                </p>
+            </div>
+
             <div className="relative rounded-3xl overflow-hidden bg-white border border-slate-100 shadow-xl group">
                 {/* Header Overlay */}
                 <div className="absolute top-4 left-4 z-10 flex items-center gap-2">
@@ -55,8 +64,8 @@ export const SocialProofSection = () => {
                         <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
                         <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-blue-500"></span>
                     </span>
-                    <span className="text-[10px] font-bold text-blue-200/80 uppercase tracking-widest">
-                        Actividad Global
+                    <span className="text-[10px] font-bold text-blue-800/80 uppercase tracking-widest bg-white/90 px-2 py-0.5 rounded-full shadow-sm backdrop-blur-md">
+                        En vivo: Creatiendas Global
                     </span>
                 </div>
 
