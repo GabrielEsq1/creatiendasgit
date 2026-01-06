@@ -910,52 +910,73 @@ body {
 
 @media (max-width: 900px) {
     body {
-        overflow-y: auto;
+        overflow-y: hidden;
+        /* Prevent body scroll, handle inside panels */
     }
 
     .app-container {
-        flex-direction: column;
-        height: auto;
-        overflow: visible;
+        /* Force side-by-side on larger mobiles/tablets or if user requests, 
+           BUT for standard mobile portrait, we really should defaults to proper tabs or split.
+           User asked for "Left Form, Right Preview" style. 
+           We will use a flex row but allow wrapping on very small screens if needed, 
+           or keep them side-by-side with horizontal scroll? 
+           NO, user likely wants a SPLIT SCREEN (Top/Bottom) or Side-by-Side on Landscape.
+        */
+        flex-direction: row;
+        height: calc(100vh - 64px);
+        /* Keep fixed height */
     }
 
     .builder-panel {
-        width: 100%;
-        border-right: none;
-        border-bottom: 1px solid #ddd;
+        width: 50%;
+        border-right: 1px solid #ddd;
+        border-bottom: none;
         padding: 1.25rem;
     }
 
     .preview-panel {
-        min-height: 100vh;
+        width: 50%;
+        min-height: auto;
         padding: 1rem;
+        border-left: 1px solid #ddd;
+    }
+}
+
+/* Specific adjustments for very small screens (phones in portrait) where side-by-side is impossible */
+@media (max-width: 650px) {
+    .app-container {
+        flex-direction: column;
+        /* Stack vertically for portrait phones */
+    }
+
+    .builder-panel {
+        width: 100%;
+        height: 50%;
+        /* Split height */
+        border-right: none;
+        border-bottom: 2px solid #ddd;
+    }
+
+    .preview-panel {
+        width: 100%;
+        height: 50%;
+        /* Split height */
+        min-height: auto;
+        border-left: none;
+        background: #eef2f6;
+        /* Distinct bg */
     }
 
     .store-preview-container {
-        border-radius: 0;
-    }
-
-    .store-products {
-        padding: 1.5rem 1rem 2rem;
-    }
-
-    .store-categories {
-        padding: 1.25rem 1rem 0.5rem;
-    }
-
-    .store-footer {
-        padding: 1.5rem 1.5rem 1.25rem;
-    }
-
-    .store-topbar-inner {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-
-    .device-toggle {
-        justify-content: center;
+        transform: scale(0.65);
+        /* Scale down preview to fit */
+        transform-origin: top center;
+        width: 154%;
+        /* Compensate for scale (1 / 0.65) */
+        margin-bottom: -35%;
     }
 }
+
 
 @media (max-width: 480px) {
     .store-name {

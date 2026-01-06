@@ -4,12 +4,14 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useSession, signOut } from 'next-auth/react';
 import { useState, useEffect } from 'react';
+import { useAnalytics } from '@/components/Analytics';
 
 export default function Navbar() {
     const pathname = usePathname();
     const { data: session, status } = useSession();
     const [scrolled, setScrolled] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
+    const { trackEvent } = useAnalytics();
 
     useEffect(() => {
         const handleScroll = () => {
@@ -133,12 +135,14 @@ export default function Navbar() {
                             <div className="flex items-center gap-3">
                                 <Link
                                     href={pathname?.startsWith('/en') ? '/en/auth/login' : '/auth/login'}
+                                    onClick={() => trackEvent('login_click', { location: 'navbar_desktop' })}
                                     className="hidden sm:block text-slate-500 hover:text-slate-900 px-4 py-2 text-sm font-black transition-colors"
                                 >
                                     {pathname?.startsWith('/en') ? 'Log In' : 'Iniciar Sesión'}
                                 </Link>
                                 <Link
                                     href={pathname?.startsWith('/en') ? '/en/auth/register' : '/auth/register'}
+                                    onClick={() => trackEvent('primary_cta_click', { location: 'navbar_desktop_cta' })}
                                     className="bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-xl text-sm font-black shadow-lg shadow-green-200 transition-all hover:-translate-y-0.5 active:scale-95"
                                 >
                                     {pathname?.startsWith('/en') ? 'Start FREE' : 'Empezar GRATIS'}
@@ -199,8 +203,26 @@ export default function Navbar() {
                             </>
                         ) : (
                             <>
-                                <Link href="/auth/login" className="block p-4 rounded-2xl hover:bg-slate-900 font-black text-white" onClick={() => setIsOpen(false)}>Iniciar Sesión</Link>
-                                <Link href="/auth/register" className="block p-4 rounded-2xl bg-green-500 text-white font-black text-center shadow-xl shadow-green-900/40" onClick={() => setIsOpen(false)}>EMPEZAR GRATIS</Link>
+                                <Link
+                                    href="/auth/login"
+                                    className="block p-4 rounded-2xl hover:bg-slate-900 font-black text-white"
+                                    onClick={() => {
+                                        setIsOpen(false);
+                                        trackEvent('login_click', { location: 'navbar_mobile' });
+                                    }}
+                                >
+                                    Iniciar Sesión
+                                </Link>
+                                <Link
+                                    href="/auth/register"
+                                    className="block p-4 rounded-2xl bg-green-500 text-white font-black text-center shadow-xl shadow-green-900/40"
+                                    onClick={() => {
+                                        setIsOpen(false);
+                                        trackEvent('primary_cta_click', { location: 'navbar_mobile_cta' });
+                                    }}
+                                >
+                                    EMPEZAR GRATIS
+                                </Link>
                             </>
                         )}
                     </div>

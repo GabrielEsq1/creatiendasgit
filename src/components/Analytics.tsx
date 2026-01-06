@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, Suspense } from 'react';
+import { useEffect, Suspense, useRef } from 'react';
 import { usePathname, useSearchParams } from 'next/navigation';
 import Script from 'next/script';
 import { trackGAEvent, storeUTMs, GA_MEASUREMENT_ID, getStoredUTMs } from '@/lib/analytics';
@@ -10,18 +10,32 @@ export type AnalyticsEventType =
     | 'page_view'
     | 'click'
     | 'signup'
+    | 'signup_start'
     | 'login'
+    | 'login_click'
     | 'create_store'
     | 'view_content'
     | 'initiate_checkout'
     | 'purchase'
     | 'landing_view'
+    | 'scroll_25'
     | 'scroll_50'
+    | 'scroll_75'
+    | 'scroll_90'
+    | 'qualified_view'
     | 'feature_enabled'
     | 'primary_cta_click'
+    | 'explore_click'
     | 'store_created'
     | 'whatsapp_connected'
-    | 'activation_completed';
+    | 'whatsapp_open'
+    | 'activation_completed'
+    | 'demo_step_view'
+    | 'demo_interaction'
+    | 'demo_cta_click'
+    | 'video_start'
+    | 'video_complete'
+    | 'social_proof_view';
 
 const PIXEL_ID = '1419499733092502'; // Píxel de Gabriel Esquivia
 
@@ -82,6 +96,10 @@ function AnalyticsTrackerInner() {
     const searchParams = useSearchParams();
     const { trackEvent } = useAnalytics();
 
+    // Refs for qualified view logic
+    const startTime = useRef(Date.now());
+    const hasScrolled50 = useRef(false);
+
     useEffect(() => {
         // 1. Detect and Store UTMs automatically
         if (searchParams && searchParams.toString().includes('utm_')) {
@@ -111,23 +129,68 @@ function AnalyticsTrackerInner() {
             (window as any).fbq('track', 'PageView');
         }
 
+        // Reset/Update start time on path change
+        startTime.current = Date.now();
+        hasScrolled50.current = false;
+
     }, [pathname, searchParams, trackEvent]);
 
+    // 5. Advanced Scroll & Engagement Tracking
     useEffect(() => {
-        // 5. Scroll Tracking (50%)
-        const handleScroll = () => {
-            const scrollPercent = (window.scrollY + window.innerHeight) / document.documentElement.scrollHeight * 100;
-            if (scrollPercent >= 50 && !sessionStorage.getItem('ct_scroll_50_tracked')) {
-                trackEvent('scroll_50', {
-                    path: pathname,
-                    scroll_depth: 50
-                });
-                sessionStorage.setItem('ct_scroll_50_tracked', 'true');
+        let scrollTimeout: NodeJS.Timeout;
+        let qualifiedTimer: NodeJS.Timeout;
+        const trackedMilestones = new Set<number>();
+
+        const checkQualifiedView = () => {
+            const timeSpent = Date.now() - startTime.current;
+            const qualifiedStorageKey = `ct_qualified_${pathname}`;
+
+            // Check for Time + Scroll qualification (if 30s passed)
+            const scroll50StorageKey = `ct_scroll_50_${pathname}`;
+            if (sessionStorage.getItem(scroll50StorageKey) && !sessionStorage.getItem(qualifiedStorageKey)) {
+                trackEvent('qualified_view', { path: pathname, trigger: 'time_and_scroll_met' });
+                sessionStorage.setItem(qualifiedStorageKey, 'true');
             }
         };
 
+        const handleScroll = () => {
+            if (scrollTimeout) clearTimeout(scrollTimeout);
+
+            scrollTimeout = setTimeout(() => {
+                const scrollPercent = (window.scrollY + window.innerHeight) / document.documentElement.scrollHeight * 100;
+                const milestones = [25, 50, 75, 90];
+
+                milestones.forEach(milestone => {
+                    if (scrollPercent >= milestone && !trackedMilestones.has(milestone)) {
+                        const storageKey = `ct_scroll_${milestone}_${pathname}`;
+                        if (!sessionStorage.getItem(storageKey)) {
+                            trackEvent(`scroll_${milestone}` as AnalyticsEventType, {
+                                path: pathname,
+                                scroll_depth: milestone
+                            });
+                            sessionStorage.setItem(storageKey, 'true');
+                            trackedMilestones.add(milestone);
+
+                            // Mark 50% for qualified view
+                            if (milestone === 50) {
+                                hasScrolled50.current = true;
+                                checkQualifiedView(); // Check immediately
+                            }
+                        }
+                    }
+                });
+            }, 100);
+        };
+
+        // Timer to check qualification after 30s
+        qualifiedTimer = setTimeout(checkQualifiedView, 30000);
+
         window.addEventListener('scroll', handleScroll);
-        return () => window.removeEventListener('scroll', handleScroll);
+        return () => {
+            window.removeEventListener('scroll', handleScroll);
+            if (scrollTimeout) clearTimeout(scrollTimeout);
+            clearTimeout(qualifiedTimer);
+        };
     }, [pathname, trackEvent]);
 
     return null;

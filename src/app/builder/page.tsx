@@ -132,16 +132,26 @@ function BuilderContent() {
         return () => window.removeEventListener('beforeunload', handleBeforeUnload);
     }, [hasUnsavedChanges]);
 
+    // Auto-save logic
+    useEffect(() => {
+        if (!isLoading && !isSaving && hasUnsavedChanges) {
+            const timer = setTimeout(() => {
+                handleSave(true); // silent save
+            }, 3000); // 3 seconds debounce
+            return () => clearTimeout(timer);
+        }
+    }, [storeData, products, hasUnsavedChanges, isLoading, isSaving]);
+
     // Mark as having unsaved changes when data changes
     useEffect(() => {
         if (!isLoading && !isSaving) {
             // Add small delay to avoid marking as unsaved immediately after load
             const timer = setTimeout(() => {
-                setHasUnsavedChanges(true);
+                setHasUnsavedChanges(true); // trigger auto-save countdown
             }, 200);
             return () => clearTimeout(timer);
         }
-    }, [storeData, products, isLoading, isSaving]);
+    }, [storeData, products]);
 
     // Product form state
     const [prodForm, setProdForm] = useState({ name: '', desc: '', category: '', price: '', image: null as string | null });
@@ -258,9 +268,9 @@ function BuilderContent() {
         setEditingProductId(null);
     };
 
-    const handleSave = async () => {
+    const handleSave = async (silent: boolean = false) => {
         setIsSaving(true);
-        setPublicUrl(null);
+        if (!silent) setPublicUrl(null);
         try {
             // Generate slug from store name
             const slug = storeData.name.toLowerCase()
@@ -335,9 +345,12 @@ function BuilderContent() {
                 if (json.id) {
                     setStoreData(prev => ({ ...prev, id: json.id }));
                 }
-                alert(`¡Tienda guardada con éxito!\n\nTu tienda está lista en:\n${finalUrl}`);
-                if (!editSlug) {
-                    window.open(finalUrl, '_blank');
+
+                if (!silent) {
+                    alert(`¡Tienda guardada con éxito!\n\nTu tienda está lista en:\n${finalUrl}`);
+                    if (!editSlug) {
+                        window.open(finalUrl, '_blank');
+                    }
                 }
             } else {
                 throw new Error(json.message || 'Error inesperado');
@@ -416,11 +429,11 @@ function BuilderContent() {
                     </div>
                     <div className="form-group">
                         <label>Logo</label>
-                        <input type="file" accept="image/*" onChange={e => handleImageUpload('logo', e)} />
+                        <input type="file" accept="image/*" capture="environment" onChange={e => handleImageUpload('logo', e)} />
                     </div>
                     <div className="form-group">
                         <label>Imagen de fondo del encabezado (opcional)</label>
-                        <input type="file" accept="image/*" onChange={e => handleImageUpload('heroBg', e)} />
+                        <input type="file" accept="image/*" capture="environment" onChange={e => handleImageUpload('heroBg', e)} />
                     </div>
                 </section>
 
@@ -446,7 +459,7 @@ function BuilderContent() {
                     <div className="form-group"><label>Qué nos diferencia (uno por línea)</label><textarea value={storeData.about.diff.join('\\n')} onChange={e => handleArrayChange('about', 'diff', e.target.value)} rows={3} /></div>
                     <div className="form-group"><label>Equipo o cultura</label><textarea value={storeData.about.team} onChange={e => handleInputChange('about', 'team', e.target.value)} /></div>
                     <div className="form-group"><label>Call to Action (texto del botón)</label><input value={storeData.about.ctaText} onChange={e => handleInputChange('about', 'ctaText', e.target.value)} /></div>
-                    <div className="form-group"><label>Galería de imágenes de la empresa</label><input type="file" accept="image/*" multiple onChange={handleGalleryUpload} />
+                    <div className="form-group"><label>Galería de imágenes de la empresa</label><input type="file" accept="image/*" multiple capture="environment" onChange={handleGalleryUpload} />
                         <div className="about-gallery-mini">{storeData.about.gallery.map((img, i) => (<img key={i} src={img} alt="Gallery" />))}</div>
                     </div>
                 </section>
@@ -467,7 +480,7 @@ function BuilderContent() {
                     <div className="form-group"><label>Descripción *</label><textarea value={prodForm.desc} onChange={e => setProdForm({ ...prodForm, desc: e.target.value })} /></div>
                     <div className="form-group"><label>Categoría *</label><input value={prodForm.category} onChange={e => setProdForm({ ...prodForm, category: e.target.value })} /></div>
                     <div className="form-group"><label>Precio *</label><input type="number" value={prodForm.price} onChange={e => setProdForm({ ...prodForm, price: e.target.value })} /></div>
-                    <div className="form-group"><label>Imagen del Producto</label><input type="file" accept="image/*" onChange={async e => {
+                    <div className="form-group"><label>Imagen del Producto</label><input type="file" accept="image/*" capture="environment" onChange={async e => {
                         const file = e.target.files?.[0];
                         if (file) {
                             try {
@@ -508,8 +521,8 @@ function BuilderContent() {
                 </section>
 
                 <section className="form-section" style={{ position: 'sticky', bottom: 0, zIndex: 10 }}>
-                    <button className="btn btn-primary" onClick={handleSave} disabled={isSaving || isLoading} style={{ marginBottom: '1rem' }}>
-                        {isSaving ? 'Guardando...' : (editSlug ? '🔄 Actualizar Tienda' : '🔄 Validar / Crear Tienda')}
+                    <button className="btn btn-primary" onClick={() => handleSave(false)} disabled={isSaving || isLoading} style={{ marginBottom: '1rem' }}>
+                        {isSaving ? '💾 Guardando...' : (hasUnsavedChanges ? '💾 Guardar Cambios' : '✅ Cambios Guardados')}
                     </button>
                     {editSlug && publicUrl && (
                         <a href={publicUrl} target="_blank" rel="noopener noreferrer" className="btn btn-secondary" style={{ display: 'block', textAlign: 'center', marginBottom: '1rem', textDecoration: 'none' }}>

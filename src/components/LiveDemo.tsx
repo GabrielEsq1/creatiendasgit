@@ -3,8 +3,10 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { useAnalytics } from '@/components/Analytics';
 
 const demoSteps = [
+    // ... items (keep existing)
     {
         id: 1,
         title: "1. Regístrate en segundos",
@@ -45,6 +47,16 @@ const demoSteps = [
 export default function LiveDemo() {
     const [activeStep, setActiveStep] = useState(0);
     const [isAutoPlaying, setIsAutoPlaying] = useState(true);
+    const { trackEvent } = useAnalytics();
+
+    useEffect(() => {
+        // Track step view on change
+        trackEvent('demo_step_view', {
+            step_id: demoSteps[activeStep].id,
+            step_title: demoSteps[activeStep].title,
+            mode: isAutoPlaying ? 'autoplay' : 'manual'
+        });
+    }, [activeStep]); // Track when step changes
 
     useEffect(() => {
         if (!isAutoPlaying) return;
@@ -55,6 +67,12 @@ export default function LiveDemo() {
 
         return () => clearInterval(interval);
     }, [isAutoPlaying]);
+
+    const handleManualStepValues = (idx: number) => {
+        setActiveStep(idx);
+        setIsAutoPlaying(false);
+        trackEvent('demo_interaction', { type: 'manual_nav_click', step_target: idx + 1 });
+    };
 
     return (
         <section id="demo" className="py-24 px-4 md:px-8 lg:px-16 bg-black">
@@ -80,10 +98,7 @@ export default function LiveDemo() {
                             {demoSteps.map((step, idx) => (
                                 <button
                                     key={step.id}
-                                    onClick={() => {
-                                        setActiveStep(idx);
-                                        setIsAutoPlaying(false);
-                                    }}
+                                    onClick={() => handleManualStepValues(idx)}
                                     className={`w-full text-left p-5 rounded-2xl transition-all duration-300 ${activeStep === idx
                                         ? 'bg-green-500 text-white shadow-xl shadow-green-900/20 translate-x-2'
                                         : 'bg-zinc-800 text-gray-400 hover:bg-zinc-700'
@@ -107,7 +122,10 @@ export default function LiveDemo() {
                             {/* Auto-play toggle */}
                             <div className="pt-6 flex items-center justify-center lg:justify-start gap-3 border-t border-gray-100 mt-4">
                                 <button
-                                    onClick={() => setIsAutoPlaying(!isAutoPlaying)}
+                                    onClick={() => {
+                                        setIsAutoPlaying(!isAutoPlaying);
+                                        trackEvent('demo_interaction', { type: 'autoplay_toggle', state: !isAutoPlaying ? 'on' : 'off' });
+                                    }}
                                     className={`w-12 h-7 rounded-full transition-all ${isAutoPlaying ? 'bg-green-500' : 'bg-zinc-700'
                                         } relative shadow-inner`}
                                 >
@@ -181,6 +199,7 @@ export default function LiveDemo() {
                 <div className="text-center mt-16 animate-bounce">
                     <Link
                         href="/auth/register"
+                        onClick={() => trackEvent('demo_cta_click', { location: 'live_demo_footer' })}
                         className="inline-flex items-center gap-3 bg-green-500 text-black font-black px-10 py-5 rounded-2xl hover:bg-green-400 transition-all shadow-2xl hover:-translate-y-1 uppercase tracking-widest text-sm"
                     >
                         Comienza ahora gratis

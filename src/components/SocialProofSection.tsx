@@ -1,33 +1,66 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { Users, Store as StoreIcon, Activity, Eye, MousePointerClick, Globe2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import WorldActivityMap from './WorldActivityMap';
+import { useAnalytics } from '@/components/Analytics';
 
 export const SocialProofSection = () => {
-    const [data, setData] = useState<any>(null);
+    const [apiData, setApiData] = useState<any>(null); // Renamed from 'data' to avoid conflict with derived 'metrics'
     const [loading, setLoading] = useState(true);
+    const { trackEvent } = useAnalytics();
+    const sectionRef = useRef<HTMLDivElement>(null);
+    const hasTrackedView = useRef(false);
 
     useEffect(() => {
-        const fetchData = async () => {
+        // Fetch Social Proof Data
+        const fetchMetrics = async () => {
             try {
                 const res = await fetch('/api/social-proof');
-                const json = await res.json();
-                setData(json);
+                const data = await res.json();
+                setApiData(data); // Set the API response to apiData
             } catch (err) {
                 console.error(err);
+                // Fallback handled by UI defaults or previous state
             } finally {
                 setLoading(false);
             }
         };
-        fetchData();
-        const interval = setInterval(fetchData, 60000);
+
+        fetchMetrics();
+        const interval = setInterval(fetchMetrics, 60000); // Keep the interval for fetching
         return () => clearInterval(interval);
     }, []);
 
+    // Track View Visibility
+    useEffect(() => {
+        const observer = new IntersectionObserver(
+            (entries) => {
+                const [entry] = entries;
+                if (entry.isIntersecting && !hasTrackedView.current) {
+                    trackEvent('social_proof_view', { location: 'home_validation_section' });
+                    hasTrackedView.current = true;
+                    // Optional: disconnect if we only want to track once per mount
+                    // observer.disconnect();
+                }
+            },
+            { threshold: 0.5 } // Trigger when 50% visible
+        );
+
+        if (sectionRef.current) {
+            observer.observe(sectionRef.current);
+        }
+
+        return () => {
+            if (sectionRef.current) {
+                observer.unobserve(sectionRef.current);
+            }
+        };
+    }, [trackEvent]);
+
     // Fallback data
-    const metrics = data?.metrics || {
+    const metrics = apiData?.metrics || { // Use apiData here
         activeNow: 4,
         recentSignups: 12,
         totalStoresToday: 8,
@@ -35,8 +68,8 @@ export const SocialProofSection = () => {
         clicks24h: 356,
         activeCountriesCount: 6
     };
-    const mapPoints = data?.hotspots || [];
-    const activeCountries = data?.activeCountries || [];
+    const mapPoints = apiData?.hotspots || [];
+    const activeCountries = apiData?.activeCountries || [];
 
     if (loading) return (
         <div className="w-full h-96 flex items-center justify-center bg-slate-50/50 rounded-3xl">
@@ -45,7 +78,7 @@ export const SocialProofSection = () => {
     );
 
     return (
-        <div className="space-y-6 animate-in fade-in slide-in-from-left-4 duration-700">
+        <div ref={sectionRef} className="space-y-6 animate-in fade-in slide-in-from-left-4 duration-700">
 
             {/* 1. VISUAL HERO: Realistic Map */}
             <div className="text-center mb-8">

@@ -40,6 +40,7 @@ export default function RegisterPage() {
             playerRef.current = new (window as any).YT.Player('demoVideo', {
                 events: {
                     'onReady': onPlayerReady,
+                    'onStateChange': onPlayerStateChange,
                 }
             });
         };
@@ -51,6 +52,19 @@ export default function RegisterPage() {
 
     const onPlayerReady = (event: any) => {
         event.target.setPlaybackRate(2); // Set to 2x speed
+        // Autoplay is handled by iframe param, but we can track start here if it autoplays?
+        // Actually, onStateChange is better for PLAYING status.
+    };
+
+    const onPlayerStateChange = (event: any) => {
+        // YT.PlayerState.PLAYING = 1
+        // YT.PlayerState.ENDED = 0
+        if (event.data === 1) {
+            trackEvent('video_start', { video_id: 'XQQfQYZ0Phk', location: 'register_page' });
+        }
+        if (event.data === 0) {
+            trackEvent('video_complete', { video_id: 'XQQfQYZ0Phk', location: 'register_page' });
+        }
     };
 
     // Original handler - NO CHANGES
