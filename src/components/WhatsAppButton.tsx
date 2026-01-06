@@ -1,9 +1,19 @@
 'use client';
 
+import { usePathname } from 'next/navigation';
 import { useAnalytics } from './Analytics';
 
 export default function WhatsAppButton() {
     const { trackEvent } = useAnalytics();
+    const pathname = usePathname();
+
+    // Hide on app/builder/admin paths
+    const isHiddenPath = pathname?.includes('/builder') ||
+        pathname?.includes('/dashboard') ||
+        pathname?.includes('/admin') ||
+        pathname?.includes('/builder/success');
+
+    if (isHiddenPath) return null;
 
     const handleClick = () => {
         const message = 'Hola, tengo una duda sobre los planes.';

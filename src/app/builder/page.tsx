@@ -364,11 +364,11 @@ function BuilderContent() {
                         return;
                     }
                     if (res.status === 403 && json.upgradeUrl) {
-                        alert(`${json.message}\n\nSerás redirigido a WhatsApp para recibir asesoría personalizada.`);
+                        alert(`${json.message || json.error}\n\nSerás redirigido a WhatsApp para recibir asesoría personalizada.`);
                         window.location.href = json.upgradeUrl;
                         return;
                     }
-                    throw new Error(json.message || 'Error desconocido en el servidor');
+                    throw new Error(json.message || json.error || 'Error desconocido en el servidor');
                 } else {
                     throw new Error(`Error del servidor: ${res.status} ${res.statusText}. Es posible que el contenido sea demasiado grande.`);
                 }

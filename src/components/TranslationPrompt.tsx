@@ -29,8 +29,8 @@ export default function TranslationPrompt() {
     // Let's safe-guard: Only show if we are safely on landing pages or auth
     // actually user said "all pages", but practicality...
     // I'll leave it open for now, the user can test.
-    const isDashboard = pathname.includes("/dashboard") || pathname.includes("/admin");
-    if (isDashboard) return null; // Safe guard
+    const isHiddenPath = pathname.includes("/dashboard") || pathname.includes("/admin") || pathname.includes("/builder");
+    if (isHiddenPath) return null; // Safe guard
 
     const targetPath = isEnglish
         ? pathname.replace(/^\/en/, "") || "/"
