@@ -126,8 +126,8 @@ export default function Navbar() {
                                     href="/dashboard"
                                     className="bg-green-500 hover:bg-green-600 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-xl text-xs sm:text-sm font-black shadow-lg shadow-green-200 transition-all hover:-translate-y-0.5 active:scale-95 flex items-center gap-2"
                                 >
-                                    <span className="hidden xs:inline">Ir a mi</span><span>Panel</span>
-                                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <span className="hidden md:inline">Ir a mi</span><span>Panel</span>
+                                    <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M13 7l5 5m0 0l-5 5m5-5H6" />
                                     </svg>
                                 </Link>
@@ -147,14 +147,14 @@ export default function Navbar() {
                                 <Link
                                     href={pathname?.startsWith('/en') ? '/en/auth/login' : '/auth/login'}
                                     onClick={() => trackEvent('login_click', { location: 'navbar_desktop' })}
-                                    className="hidden sm:block text-slate-500 hover:text-slate-900 px-4 py-2 text-sm font-black transition-colors"
+                                    className="hidden md:block text-slate-500 hover:text-slate-900 px-4 py-2 text-sm font-black transition-colors"
                                 >
                                     {pathname?.startsWith('/en') ? 'Log In' : 'Iniciar Sesión'}
                                 </Link>
                                 <Link
                                     href={pathname?.startsWith('/en') ? '/en/auth/register' : '/auth/register'}
                                     onClick={() => trackEvent('primary_cta_click', { location: 'navbar_desktop_cta' })}
-                                    className="hidden sm:block bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-xl text-sm font-black shadow-lg shadow-green-200 transition-all hover:-translate-y-0.5 active:scale-95"
+                                    className="hidden md:block bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-xl text-sm font-black shadow-lg shadow-green-200 transition-all hover:-translate-y-0.5 active:scale-95"
                                 >
                                     {pathname?.startsWith('/en') ? 'Start FREE' : 'Empezar GRATIS'}
                                 </Link>
