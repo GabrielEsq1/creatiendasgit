@@ -17,35 +17,45 @@ function SuccessContent() {
     const [publicUrl, setPublicUrl] = useState('');
 
     useEffect(() => {
-        if (slug) {
-            const origin = typeof window !== 'undefined' ? window.location.origin : 'https://creatiendas.co';
-            const safeSlug = typeof slug === 'string' ? slug : String(slug);
-            setPublicUrl(`${origin}/stores/${encodeURIComponent(safeSlug)}`);
-            // Fire confetti
-            const duration = 3000;
-            const end = Date.now() + duration;
+        try {
+            console.log('[Success] Loading for slug:', slug);
+            if (slug) {
+                const origin = typeof window !== 'undefined' ? window.location.origin : 'https://creatiendas.co';
+                const safeSlug = typeof slug === 'string' ? slug : String(slug);
+                const finalUrl = `${origin}/stores/${encodeURIComponent(safeSlug)}`;
+                setPublicUrl(finalUrl);
+                console.log('[Success] Public URL:', finalUrl);
 
-            const frame = () => {
-                confetti({
-                    particleCount: 2,
-                    angle: 60,
-                    spread: 55,
-                    origin: { x: 0 },
-                    colors: ['#2196F3', '#FFEB3B', '#4CAF50']
-                });
-                confetti({
-                    particleCount: 2,
-                    angle: 120,
-                    spread: 55,
-                    origin: { x: 1 },
-                    colors: ['#2196F3', '#FFEB3B', '#4CAF50']
-                });
+                // Fire confetti with safety
+                if (typeof confetti === 'function') {
+                    const duration = 3000;
+                    const end = Date.now() + duration;
 
-                if (Date.now() < end) {
-                    requestAnimationFrame(frame);
+                    const frame = () => {
+                        confetti({
+                            particleCount: 2,
+                            angle: 60,
+                            spread: 55,
+                            origin: { x: 0, y: 0.6 },
+                            colors: ['#2196F3', '#FFEB3B', '#4CAF50']
+                        });
+                        confetti({
+                            particleCount: 2,
+                            angle: 120,
+                            spread: 55,
+                            origin: { x: 1, y: 0.6 },
+                            colors: ['#2196F3', '#FFEB3B', '#4CAF50']
+                        });
+
+                        if (Date.now() < end) {
+                            requestAnimationFrame(frame);
+                        }
+                    };
+                    frame();
                 }
-            };
-            frame();
+            }
+        } catch (err) {
+            console.error('[Success] Error in effect:', err);
         }
     }, [slug]);
 
@@ -84,7 +94,11 @@ function SuccessContent() {
                         <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-6">Escanea para ver en tu móvil</p>
                         <div className="flex justify-center mb-6">
                             <div className="p-6 bg-white rounded-[2rem] shadow-xl border border-slate-100">
-                                <StoreQRCode url={publicUrl} size={220} storeName={slug} />
+                                {publicUrl ? (
+                                    <StoreQRCode url={publicUrl} size={220} storeName={slug} />
+                                ) : (
+                                    <div className="w-[220px] h-[220px] bg-slate-50 animate-pulse rounded-xl" />
+                                )}
                             </div>
                         </div>
                         <p className="text-slate-500 text-sm font-medium">Tus clientes pueden acceder instantáneamente escaneando este código.</p>
