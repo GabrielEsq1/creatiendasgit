@@ -86,6 +86,7 @@ function BuilderContent() {
     const [publicUrl, setPublicUrl] = useState<string | null>(null);
     const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
     const [editingProductId, setEditingProductId] = useState<number | null>(null);
+    const [showQr, setShowQr] = useState(false);
 
     // Load existing store data when editing
     useEffect(() => {
@@ -525,13 +526,21 @@ function BuilderContent() {
                         {isSaving ? '💾 Guardando...' : (hasUnsavedChanges ? '💾 Guardar Cambios' : '✅ Cambios Guardados')}
                     </button>
                     {editSlug && publicUrl && (
-                        <a href={publicUrl} target="_blank" rel="noopener noreferrer" className="btn btn-secondary" style={{ display: 'block', textAlign: 'center', marginBottom: '1rem', textDecoration: 'none' }}>
-                            👁️ Ver Tienda
-                        </a>
+                        <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1rem' }}>
+                            <a href={publicUrl} target="_blank" rel="noopener noreferrer" className="btn btn-secondary" style={{ flex: 1, textAlign: 'center', textDecoration: 'none' }}>
+                                👁️ Ver Tienda
+                            </a>
+                            <button className="btn btn-secondary" onClick={() => setShowQr(!showQr)} style={{ flex: 1 }}>
+                                {showQr ? '🔽 Ocultar' : '🔗 Compartir'}
+                            </button>
+                        </div>
                     )}
-                    {publicUrl && (
+                    {publicUrl && showQr && (
                         <div className="public-url-box" style={{ marginTop: '1rem', padding: '1.5rem', background: 'linear-gradient(135deg, #e8f5e9 0%, #f1f8e9 100%)', borderRadius: '16px', border: '2px solid #c8e6c9' }}>
-                            <p style={{ margin: '0 0 1rem 0', fontWeight: 'bold', color: '#2e7d32', fontSize: '1.1rem', textAlign: 'center' }}>✅ ¡Tu tienda está lista!</p>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+                                <p style={{ margin: 0, fontWeight: 'bold', color: '#2e7d32', fontSize: '1.1rem' }}>✅ ¡Tu tienda está lista!</p>
+                                <button onClick={() => setShowQr(false)} style={{ background: 'none', border: 'none', fontSize: '1.2rem', cursor: 'pointer' }}>❌</button>
+                            </div>
 
                             {/* URL Section */}
                             <div style={{ marginBottom: '1.5rem' }}>
