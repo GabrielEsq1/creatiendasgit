@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import { Store, Plus, Settings, Eye, Trash2, Edit, Package, MessageCircle } from 'lucide-react';
+import { Store, Plus, Settings, Eye, Trash2, Edit, Package, MessageCircle, QrCode } from 'lucide-react';
 import ActivationChecklist from '../dashboard/ActivationChecklist';
 
 
@@ -244,6 +244,14 @@ export default function CreatiendasDashboard() {
                                         {new Date(store.createdAt).toLocaleDateString()}
                                     </span>
                                 </div>
+
+                                <button
+                                    onClick={() => router.push(`/builder/success?slug=${store.slug}`)}
+                                    className="w-full mt-6 py-3 bg-purple-50 hover:bg-purple-100 text-purple-700 font-bold rounded-xl border border-purple-100 transition-all flex items-center justify-center gap-2 group-hover:scale-[1.02]"
+                                >
+                                    <QrCode className="w-4 h-4" />
+                                    Gestionar QR y Compartir
+                                </button>
                             </div>
                         ))}
                     </div>

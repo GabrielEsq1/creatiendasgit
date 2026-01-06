@@ -597,10 +597,16 @@ function BuilderContent() {
                     </button>
 
                     {publicUrl && (
-                        <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1rem' }}>
-                            <a href={publicUrl} target="_blank" rel="noopener noreferrer" className="btn btn-secondary" style={{ flex: 1, textAlign: 'center', textDecoration: 'none', background: '#e8f5e9', border: '1px solid #c8e6c9', color: '#2e7d32' }}>
+                        <div className="flex flex-col gap-2 mb-4">
+                            <a href={publicUrl} target="_blank" rel="noopener noreferrer" className="btn btn-secondary w-full text-center py-4 bg-green-50 border-green-200 text-green-700 font-black rounded-xl hover:bg-green-100 transition-all flex items-center justify-center gap-2">
                                 👁️ Ver Tienda Online
                             </a>
+                            <button
+                                onClick={() => router.push(`/builder/success?slug=${slugRef.current || storeData.slug}`)}
+                                className="btn btn-secondary w-full text-center py-4 bg-purple-50 border-purple-200 text-purple-700 font-black rounded-xl hover:bg-purple-100 transition-all flex items-center justify-center gap-2"
+                            >
+                                🔗 Gestionar QR y Compartir
+                            </button>
                         </div>
                     )}
                 </section>
