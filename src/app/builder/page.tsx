@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, ChangeEvent, useEffect, Suspense } from 'react';
+import React, { useState, ChangeEvent, useEffect, Suspense, useRef } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -99,6 +99,11 @@ function BuilderContent() {
     const [editingProductId, setEditingProductId] = useState<number | null>(null);
     const [showQr, setShowQr] = useState(false);
 
+    // Refs for session persistence and race condition prevention
+    const isSavingRef = useRef(false);
+    const slugRef = useRef<string | null>(null);
+    const idRef = useRef<string | null>(null);
+
     // Load existing store data when editing
     useEffect(() => {
         if (editSlug) {
@@ -114,6 +119,8 @@ function BuilderContent() {
                 .then(data => {
                     if (data && data.store) {
                         setStoreData({ ...data.store.data, id: data.store.id });
+                        idRef.current = data.store.id;
+                        slugRef.current = data.store.slug;
                         if (data.store.products) setProducts(data.store.products);
                     } else if (data && data.data) {
                         // Fallback for potential legacy API structure
@@ -157,13 +164,15 @@ function BuilderContent() {
     // Mark as having unsaved changes when data changes
     useEffect(() => {
         if (!isLoading && !isSaving) {
-            // Add small delay to avoid marking as unsaved immediately after load
-            const timer = setTimeout(() => {
-                setHasUnsavedChanges(true); // trigger auto-save countdown
-            }, 200);
-            return () => clearTimeout(timer);
+            // Check if data actually changed from INITIAL_DATA to avoid false positives on mount
+            const isDefault = JSON.stringify(storeData) === JSON.stringify(INITIAL_DATA) &&
+                JSON.stringify(products) === JSON.stringify(INITIAL_PRODUCTS);
+
+            if (!isDefault) {
+                setHasUnsavedChanges(true);
+            }
         }
-    }, [storeData, products]);
+    }, [storeData, products, isLoading, isSaving]);
 
     // Product form state
     const [prodForm, setProdForm] = useState({ name: '', desc: '', category: '', price: '', image: null as string | null });
@@ -302,34 +311,37 @@ function BuilderContent() {
     };
 
     const handleSave = async (silent: boolean = false) => {
+        // PREVENTION: Don't save if already in progress (Race Condition Lock)
+        if (isSavingRef.current) return;
+
         setIsSaving(true);
+        isSavingRef.current = true;
+
         if (!silent) setPublicUrl(null);
         try {
-            // Generate slug ONLY if not already in storeData (to avoid duplicates on retries)
-            let slug = storeData.slug;
-            if (!slug) {
-                slug = storeData.name.toLowerCase()
+            // SLUG STABILIZATION: Generate once and reuse to avoid duplicates
+            if (!slugRef.current && !editSlug) {
+                slugRef.current = storeData.name.toLowerCase()
                     .normalize('NFD')
                     .replace(/[\u0300-\u036f]/g, '')
                     .replace(/[^a-z0-9]+/g, '-')
                     .replace(/^-+|-+$/g, '')
                     .replace(/-+/g, '-') + '-' + Math.random().toString(36).substring(2, 7);
-                setStoreData(prev => ({ ...prev, slug }));
             }
 
-            // Determine method and URL
-            const method = storeData.id ? 'PUT' : 'POST';
-            const url = storeData.id ? `/api/stores/${storeData.id}` : '/api/stores';
+            const currentSlug = slugRef.current || storeData.slug || editSlug;
+            const currentId = idRef.current || storeData.id;
+
+            // Determine method and URL based on persistent ID
+            const method = currentId ? 'PUT' : 'POST';
+            const url = currentId ? `/api/stores/${currentId}` : '/api/stores';
 
             const payload = {
                 name: storeData.name,
-                slug,
+                slug: currentSlug,
                 data: storeData,
                 products
             };
-
-            // If creating (POST), we might need ID if we want to force it? No, DB creates ID.
-            // If updating, we don't strictly need to send ID in body if URL has it, but it's fine.
 
             const res = await fetch(url, {
                 method,
@@ -338,6 +350,7 @@ function BuilderContent() {
             });
 
             if (!res.ok) {
+                // ... (existing error handling remains same)
                 if (res.status === 413) {
                     throw new Error('La tienda contiene demasiados datos o imágenes muy pesadas. Por favor, intenta reducir el tamaño de las imágenes o eliminar algunas.');
                 }
@@ -351,7 +364,6 @@ function BuilderContent() {
                         return;
                     }
                     if (res.status === 403 && json.upgradeUrl) {
-                        // This case should not be hit for edits anymore, but keeping for safety
                         alert(`${json.message}\n\nSerás redirigido a WhatsApp para recibir asesoría personalizada.`);
                         window.location.href = json.upgradeUrl;
                         return;
@@ -364,29 +376,22 @@ function BuilderContent() {
 
             const json = await res.json();
             if (json.success) {
-                const rawUrl = json.url || json.publicUrl;
-                const finalUrl = normalizeUrl(rawUrl);
+                // ID PERSISTENCE: Immediately store the ID to convert subsequent POSTs to PUTs
+                if (json.id || json.store?.id) {
+                    const newId = json.id || json.store?.id;
+                    idRef.current = newId;
+                    setStoreData(prev => ({ ...prev, id: newId }));
+                }
+
+                const origin = window.location.origin;
+                const finalUrl = `${origin}/stores/${encodeURIComponent(currentSlug)}`;
                 setPublicUrl(finalUrl);
-                setHasUnsavedChanges(false); // Mark as saved
-
-                // Track Event: store_created (Automatic)
-                if (!editSlug) {
-                    trackEvent('store_created', {
-                        store_name: storeData.name,
-                        product_count: products.length,
-                        url: finalUrl
-                    });
-                }
-
-                // Store the returned id for future updates
-                if (json.id) {
-                    setStoreData(prev => ({ ...prev, id: json.id }));
-                }
+                setHasUnsavedChanges(false);
 
                 if (!silent) {
                     if (!editSlug) {
-                        // New Store -> Redirect to Success Page
-                        router.push(`/builder/success?slug=${json.store?.slug || slug}`);
+                        // Redirect to Success Page with the verified slug
+                        router.push(`/builder/success?slug=${currentSlug}`);
                     } else {
                         alert(`¡Tienda actualizada con éxito!`);
                     }
@@ -396,9 +401,10 @@ function BuilderContent() {
             }
         } catch (e: any) {
             console.error('Save error:', e);
-            alert(`No se pudo guardar la tienda.\n${e.message || 'Error de conexión. Intenta reducir el tamaño de las imágenes.'}`);
+            if (!silent) alert(`No se pudo guardar la tienda.\n${e.message || 'Error de conexión.'}`);
         } finally {
             setIsSaving(false);
+            isSavingRef.current = false;
         }
     };
 

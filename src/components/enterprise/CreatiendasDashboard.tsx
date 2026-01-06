@@ -195,7 +195,7 @@ export default function CreatiendasDashboard() {
                                         <button
                                             onClick={() => {
                                                 const origin = window.location.origin;
-                                                const url = `${origin}/stores/${store.slug}`;
+                                                const url = `${origin}/stores/${encodeURIComponent(store.slug)}`;
                                                 const text = `¡Hola! Mira mi nueva tienda online: ${url}`;
                                                 window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
                                             }}
@@ -212,7 +212,10 @@ export default function CreatiendasDashboard() {
                                             <Edit className="w-4 h-4 text-blue-600" />
                                         </button>
                                         <button
-                                            onClick={() => window.open(`/stores/${store.slug}`, '_blank')}
+                                            onClick={() => {
+                                                const origin = window.location.origin;
+                                                window.open(`${origin}/stores/${encodeURIComponent(store.slug)}`, '_blank')
+                                            }}
                                             className="p-2 hover:bg-slate-100 rounded-lg transition-colors"
                                             title="Ver tienda"
                                         >

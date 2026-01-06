@@ -18,8 +18,8 @@ function SuccessContent() {
 
     useEffect(() => {
         if (slug) {
-            const origin = window.location.origin;
-            setPublicUrl(`${origin}/stores/${slug}`);
+            const origin = typeof window !== 'undefined' ? window.location.origin : 'https://creatiendas.com';
+            setPublicUrl(`${origin}/stores/${encodeURIComponent(slug)}`);
             // Fire confetti
             const duration = 3000;
             const end = Date.now() + duration;
