@@ -177,7 +177,7 @@ function BuilderContent() {
     // Product form state
     const [prodForm, setProdForm] = useState({ name: '', desc: '', category: '', price: '', image: null as string | null });
 
-    const normalizeUrl = (url: string) => url.replace('https://https://', 'https://');
+
 
     const handleInputChange = (section: keyof StoreData | null, field: string, value: string) => {
         if (section) {
@@ -316,6 +316,7 @@ function BuilderContent() {
 
         setIsSaving(true);
         isSavingRef.current = true;
+        console.log('Starting save process...', { silent });
 
         if (!silent) setPublicUrl(null);
         try {
@@ -385,6 +386,7 @@ function BuilderContent() {
 
                 const origin = window.location.origin;
                 const finalUrl = `${origin}/stores/${encodeURIComponent(currentSlug)}`;
+                console.log('Save successful, public URL:', finalUrl);
                 setPublicUrl(finalUrl);
                 setHasUnsavedChanges(false);
 
