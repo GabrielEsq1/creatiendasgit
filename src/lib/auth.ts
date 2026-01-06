@@ -60,8 +60,14 @@ export const authOptions: NextAuthOptions = {
         }),
     ],
     secret: process.env.NEXTAUTH_SECRET,
-    session: { strategy: "jwt" },
-    jwt: { secret: process.env.NEXTAUTH_SECRET },
+    session: {
+        strategy: "jwt",
+        maxAge: 365 * 24 * 60 * 60, // 365 days (Facebook-like persistence)
+    },
+    jwt: {
+        secret: process.env.NEXTAUTH_SECRET,
+        maxAge: 365 * 24 * 60 * 60,
+    },
     callbacks: {
         async session({ session, token }) {
             if (token?.sub && session.user) {
