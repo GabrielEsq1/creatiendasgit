@@ -1,0 +1,21 @@
+Testing DB connection...
+DB Connection Failed: 
+Invalid `prisma.user.count()` invocation in
+C:\Users\ASUS\Desktop\creatiendas\creatiendasgit\scripts\test-db.js:9:41
+
+  6 async function main() {
+  7     let log = 'Testing DB connection...\n';
+  8     try {
+→ 9         const count = await prisma.user.count(
+error: Environment variable not found: DATABASE_URL.
+  -->  schema.prisma:8
+   | 
+ 7 |   provider = "postgresql"
+ 8 |   url      = env("DATABASE_URL")
+   | 
+
+Validation Error Count: 1
+Full error: {
+  "name": "PrismaClientInitializationError",
+  "clientVersion": "5.22.0"
+}

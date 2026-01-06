@@ -8,7 +8,7 @@ import WhatsAppButton from "../components/WhatsAppButton";
 import { AnalyticsTracker } from "../components/Analytics";
 import GA4Professional from "../components/GA4Professional";
 import TranslationPrompt from "../components/TranslationPrompt";
-import LayoutWrapper from "../components/LayoutWrapper";
+import LayoutWrapper from "@/components/LayoutWrapper";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -78,7 +78,6 @@ export default function RootLayout({
                         <GA4Professional />
                     </Suspense>
                     <AnalyticsTracker />
-                    <Navbar />
                     <LayoutWrapper>
                         {children}
                     </LayoutWrapper>

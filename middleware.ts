@@ -45,7 +45,7 @@ export async function middleware(request: NextRequest) {
     // Authentication check for protected routes
     const token = await getToken({ req: request, secret: process.env.NEXTAUTH_SECRET });
 
-    const protectedRoutes = ['/dashboard', '/app/api/stores', '/app/api/stripe', '/enterprise', '/admin'];
+    const protectedRoutes = ['/dashboard', '/api/stores', '/api/stripe', '/enterprise', '/admin'];
     const isProtected = protectedRoutes.some((p) => request.nextUrl.pathname.startsWith(p));
 
     if (isProtected && !token) {

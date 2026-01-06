@@ -1,19 +1,20 @@
 
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
+const fs = require('fs');
 
 async function main() {
+    let log = 'Testing DB connection...\n';
     try {
-        console.log('Testing DB connection...');
         const count = await prisma.user.count();
-        console.log(`Connection successful. User count: ${count}`);
-
-        const stores = await prisma.store.findMany({ take: 1 });
-        console.log(`Store count check successful: ${stores.length}`);
+        log += `Connection successful. User count: ${count}\n`;
     } catch (error) {
-        console.error('DB Connection Failed:', error);
+        log += `DB Connection Failed: ${error.message}\n`;
+        log += `Full error: ${JSON.stringify(error, null, 2)}\n`;
     } finally {
+        fs.writeFileSync('db-test-log.txt', log);
         await prisma.$disconnect();
+        process.exit(0);
     }
 }
 

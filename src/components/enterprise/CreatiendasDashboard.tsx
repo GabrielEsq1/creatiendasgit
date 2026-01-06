@@ -81,11 +81,15 @@ export default function CreatiendasDashboard() {
             const response = await fetch('/api/stores/my-stores');
             if (response.ok) {
                 const data = await response.json();
-                const storesWithCount = data.stores.map((store: any) => ({
-                    ...store,
-                    productCount: Array.isArray(store.products) ? store.products.length : 0
-                }));
-                setStores(storesWithCount || []);
+                if (data && Array.isArray(data.stores)) {
+                    const storesWithCount = data.stores.map((store: any) => ({
+                        ...store,
+                        productCount: Array.isArray(store.products) ? store.products.length : 0
+                    }));
+                    setStores(storesWithCount);
+                } else {
+                    setStores([]);
+                }
             }
         } catch (error) {
             console.error('Error fetching stores:', error);
