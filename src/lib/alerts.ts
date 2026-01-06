@@ -199,6 +199,8 @@ export async function alertNewUser(user: { email: string; name?: string; plan?: 
     });
 }
 
+import { getStoreUrl } from './utils';
+
 export async function alertNewStore(store: { name: string; slug: string; ownerEmail: string }): Promise<void> {
     await sendAlert({
         type: 'new_store',
@@ -206,7 +208,7 @@ export async function alertNewStore(store: { name: string; slug: string; ownerEm
         message: `Se ha creado una nueva tienda en la plataforma.`,
         data: {
             Tienda: store.name,
-            URL: `https://creatiendas.co/stores/${store.slug}`,
+            URL: getStoreUrl(store.slug),
             Propietario: store.ownerEmail,
             Fecha: new Date().toLocaleString('es-CO'),
         },

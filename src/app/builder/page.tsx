@@ -10,6 +10,7 @@ import StoreQRCode from '@/components/StoreQRCode';
 import { StoreData, Product } from '@/lib/store-service';
 import { compressImage } from '@/lib/image-utils';
 import { useAnalytics } from '@/components/Analytics';
+import { getStoreUrl } from '@/lib/utils';
 import ImageUploader from '@/components/ImageUploader';
 import '../styles/builder.css';
 
@@ -384,8 +385,7 @@ function BuilderContent() {
                     setStoreData(prev => ({ ...prev, id: newId }));
                 }
 
-                const origin = window.location.origin;
-                const finalUrl = `${origin}/stores/${encodeURIComponent(currentSlug)}`;
+                const finalUrl = getStoreUrl(currentSlug);
                 console.log('Save successful, public URL:', finalUrl);
                 setPublicUrl(finalUrl);
                 setHasUnsavedChanges(false);

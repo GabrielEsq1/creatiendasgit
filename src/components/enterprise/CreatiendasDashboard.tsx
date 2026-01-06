@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { Store, Plus, Settings, Eye, Trash2, Edit, Package, MessageCircle, QrCode } from 'lucide-react';
+import { getStoreUrl } from '@/lib/utils';
 import ActivationChecklist from '../dashboard/ActivationChecklist';
 
 
@@ -198,8 +199,7 @@ export default function CreatiendasDashboard() {
                                     <div className="flex gap-2">
                                         <button
                                             onClick={() => {
-                                                const origin = window.location.origin;
-                                                const url = `${origin}/stores/${encodeURIComponent(store.slug)}`;
+                                                const url = getStoreUrl(store.slug);
                                                 const text = `¡Hola! Mira mi nueva tienda online: ${url}`;
                                                 window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
                                             }}
@@ -217,8 +217,8 @@ export default function CreatiendasDashboard() {
                                         </button>
                                         <button
                                             onClick={() => {
-                                                const origin = window.location.origin;
-                                                window.open(`${origin}/stores/${encodeURIComponent(store.slug)}`, '_blank')
+                                                const url = getStoreUrl(store.slug);
+                                                window.open(url, '_blank')
                                             }}
                                             className="p-2 hover:bg-slate-100 rounded-lg transition-colors"
                                             title="Ver tienda"

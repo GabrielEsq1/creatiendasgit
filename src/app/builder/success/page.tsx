@@ -5,6 +5,7 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import StoreQRCode from '@/components/StoreQRCode';
 import { Link as LinkIcon, Share2, ArrowLeft, ExternalLink } from 'lucide-react';
+import { getStoreUrl } from '@/lib/utils';
 import confetti from 'canvas-confetti';
 
 // Force dynamic to avoid static prerendering issues with searchParams
@@ -20,9 +21,8 @@ function SuccessContent() {
         try {
             console.log('[Success] Loading for slug:', slug);
             if (slug) {
-                const origin = typeof window !== 'undefined' ? window.location.origin : 'https://creatiendas.co';
                 const safeSlug = typeof slug === 'string' ? slug : String(slug);
-                const finalUrl = `${origin}/stores/${encodeURIComponent(safeSlug)}`;
+                const finalUrl = getStoreUrl(safeSlug);
                 setPublicUrl(finalUrl);
                 console.log('[Success] Public URL:', finalUrl);
 
