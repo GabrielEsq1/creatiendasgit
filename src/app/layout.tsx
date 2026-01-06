@@ -8,6 +8,7 @@ import WhatsAppButton from "../components/WhatsAppButton";
 import { AnalyticsTracker } from "../components/Analytics";
 import GA4Professional from "../components/GA4Professional";
 import TranslationPrompt from "../components/TranslationPrompt";
+import LayoutWrapper from "../components/LayoutWrapper";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -78,9 +79,9 @@ export default function RootLayout({
                     </Suspense>
                     <AnalyticsTracker />
                     <Navbar />
-                    <main className="pt-16">
+                    <LayoutWrapper>
                         {children}
-                    </main>
+                    </LayoutWrapper>
                     <WhatsAppButton />
                     <TranslationPrompt />
                     {/* B2Chat Widget - Adjust path if necessary based on B2Chat-main contents */}
