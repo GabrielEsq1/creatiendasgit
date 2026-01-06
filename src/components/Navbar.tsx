@@ -13,6 +13,11 @@ export default function Navbar() {
     const [isOpen, setIsOpen] = useState(false);
     const { trackEvent } = useAnalytics();
 
+    // HIDE NAVBAR on store pages or specialized preview views to avoid clutter
+    const isStorePage = pathname?.includes('/stores/');
+    const isSuccessPage = pathname?.includes('/builder/success');
+    if (isStorePage || isSuccessPage) return null;
+
     useEffect(() => {
         const handleScroll = () => {
             setScrolled(window.scrollY > 10);
@@ -97,7 +102,7 @@ export default function Navbar() {
                                     : `/en${pathname === '/' ? '' : pathname}`;
                                 window.location.href = targetPath;
                             }}
-                            className="group relative w-24 h-10 bg-slate-50 rounded-full p-1 cursor-pointer border border-slate-200 shadow-inner overflow-hidden transition-all hover:border-green-500/30"
+                            className="hidden lg:block group relative w-24 h-10 bg-slate-50 rounded-full p-1 cursor-pointer border border-slate-200 shadow-inner overflow-hidden transition-all hover:border-green-500/30"
                             title="Cambiar idioma / Switch language"
                         >
                             {/* Sliding Background */}
@@ -149,7 +154,7 @@ export default function Navbar() {
                                 <Link
                                     href={pathname?.startsWith('/en') ? '/en/auth/register' : '/auth/register'}
                                     onClick={() => trackEvent('primary_cta_click', { location: 'navbar_desktop_cta' })}
-                                    className="bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-xl text-sm font-black shadow-lg shadow-green-200 transition-all hover:-translate-y-0.5 active:scale-95"
+                                    className="hidden sm:block bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-xl text-sm font-black shadow-lg shadow-green-200 transition-all hover:-translate-y-0.5 active:scale-95"
                                 >
                                     {pathname?.startsWith('/en') ? 'Start FREE' : 'Empezar GRATIS'}
                                 </Link>
