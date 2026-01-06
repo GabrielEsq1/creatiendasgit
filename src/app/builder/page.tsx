@@ -16,6 +16,13 @@ import '../styles/builder.css';
 export const dynamic = "force-dynamic";
 
 // Initial store data structure
+// Helper to ensure URL is valid
+const normalizeUrl = (url: string) => {
+    if (!url) return '';
+    if (url.startsWith('http://') || url.startsWith('https://')) return url;
+    return `https://${url}`;
+};
+
 const INITIAL_DATA: StoreData = {
     title: 'Mi Nueva Tienda',
     name: 'Mi Nueva Tienda',
@@ -298,13 +305,17 @@ function BuilderContent() {
         setIsSaving(true);
         if (!silent) setPublicUrl(null);
         try {
-            // Generate slug from store name
-            const slug = storeData.name.toLowerCase()
-                .normalize('NFD')
-                .replace(/[\u0300-\u036f]/g, '')
-                .replace(/[^a-z0-9]+/g, '-')
-                .replace(/^-+|-+$/g, '')
-                .replace(/-+/g, '-') + '-' + Date.now().toString(36);
+            // Generate slug ONLY if not already in storeData (to avoid duplicates on retries)
+            let slug = storeData.slug;
+            if (!slug) {
+                slug = storeData.name.toLowerCase()
+                    .normalize('NFD')
+                    .replace(/[\u0300-\u036f]/g, '')
+                    .replace(/[^a-z0-9]+/g, '-')
+                    .replace(/^-+|-+$/g, '')
+                    .replace(/-+/g, '-') + '-' + Math.random().toString(36).substring(2, 7);
+                setStoreData(prev => ({ ...prev, slug }));
+            }
 
             // Determine method and URL
             const method = storeData.id ? 'PUT' : 'POST';
@@ -375,7 +386,7 @@ function BuilderContent() {
                 if (!silent) {
                     if (!editSlug) {
                         // New Store -> Redirect to Success Page
-                        router.push(`/builder/success?slug=${slug}`);
+                        router.push(`/builder/success?slug=${json.store?.slug || slug}`);
                     } else {
                         alert(`¡Tienda actualizada con éxito!`);
                     }

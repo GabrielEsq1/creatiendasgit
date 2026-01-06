@@ -194,7 +194,8 @@ export default function CreatiendasDashboard() {
                                     <div className="flex gap-2">
                                         <button
                                             onClick={() => {
-                                                const url = `https://creatiendas.com/stores/${store.slug}`;
+                                                const origin = window.location.origin;
+                                                const url = `${origin}/stores/${store.slug}`;
                                                 const text = `¡Hola! Mira mi nueva tienda online: ${url}`;
                                                 window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
                                             }}
