@@ -1,13 +1,16 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import StoreQRCode from '@/components/StoreQRCode';
 import { Link as LinkIcon, Share2, ArrowLeft, ExternalLink } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
-export default function BuilderSuccessPage() {
+// Force dynamic to avoid static prerendering issues with searchParams
+export const dynamic = "force-dynamic";
+
+function SuccessContent() {
     const searchParams = useSearchParams();
     const router = useRouter();
     const slug = searchParams?.get('slug');
@@ -123,5 +126,17 @@ export default function BuilderSuccessPage() {
                 </div>
             </div>
         </div>
+    );
+}
+
+export default function BuilderSuccessPage() {
+    return (
+        <Suspense fallback={
+            <div className="min-h-screen flex items-center justify-center bg-gray-50">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600"></div>
+            </div>
+        }>
+            <SuccessContent />
+        </Suspense>
     );
 }
