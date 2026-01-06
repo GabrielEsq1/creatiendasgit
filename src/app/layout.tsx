@@ -13,7 +13,7 @@ import LayoutWrapper from "../components/LayoutWrapper";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-    metadataBase: new URL('https://creatiendasgit1.vercel.app'),
+    metadataBase: new URL('https://creatiendas.co'),
     title: {
         default: "Creatiendas - Tu Tienda Online por WhatsApp Gratis",
         template: "%s | Creatiendas"
@@ -31,7 +31,7 @@ export const metadata: Metadata = {
     openGraph: {
         type: 'website',
         locale: 'es_LA',
-        url: 'https://creatiendasgit1.vercel.app',
+        url: 'https://creatiendas.co',
         siteName: 'Creatiendas',
         title: 'Creatiendas - Tu Tienda Online por WhatsApp Gratis',
         description: 'Vende tus productos directamente por WhatsApp sin pagar comisiones. Setup en solo 2 minutos.',
@@ -51,7 +51,7 @@ export const metadata: Metadata = {
         images: ['/og-image.png'],
     },
     alternates: {
-        canonical: 'https://creatiendasgit1.vercel.app',
+        canonical: 'https://creatiendas.co',
     },
     icons: {
         icon: '/favicon.png',

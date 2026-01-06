@@ -1,7 +1,7 @@
 import { MetadataRoute } from 'next'
 
 export default function sitemap(): MetadataRoute.Sitemap {
-    const baseUrl = 'https://creatiendasgit1.vercel.app'
+    const baseUrl = 'https://creatiendas.co'
 
     const posts = [
         'crear-tienda-online-gratis',

@@ -6,7 +6,7 @@ export default function WidgetsDemoPage() {
     useEffect(() => {
         // SNIPPET 1: CREATIENDAS STORE BUILDER
         const loadCreatiendasWidget = () => {
-            const CREATIENDAS_URL = 'https://creatiendasgit1.vercel.app';
+            const CREATIENDAS_URL = 'https://creatiendas.co';
 
             // Check if already exists to prevent duplicates on re-renders
             if (document.getElementById('creatiendas-widget-btn')) return;
@@ -127,7 +127,7 @@ export default function WidgetsDemoPage() {
 
         // SNIPPET 2: B2BCHAT + MONEDERO
         const loadB2BChatWidget = () => {
-            const B2BCHAT_URL = 'https://creatiendasgit1.vercel.app';
+            const B2BCHAT_URL = 'https://creatiendas.co';
 
             if (document.getElementById('b2bchat-widget-btn')) return;
 

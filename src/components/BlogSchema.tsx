@@ -11,7 +11,7 @@ interface BlogSchemaProps {
 }
 
 export default function BlogSchema({ post }: BlogSchemaProps) {
-    const baseUrl = 'https://creatiendasgit1.vercel.app';
+    const baseUrl = 'https://creatiendas.co';
     const schema = {
         "@context": "https://schema.org",
         "@type": "BlogPosting",
