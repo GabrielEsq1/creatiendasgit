@@ -8,6 +8,7 @@ import StoreQRCode from '@/components/StoreQRCode';
 import { StoreData, Product } from '@/lib/store-service';
 import { compressImage } from '@/lib/image-utils';
 import { useAnalytics } from '@/components/Analytics';
+import ImageUploader from '@/components/ImageUploader';
 import '../styles/builder.css';
 
 export const dynamic = "force-dynamic";
@@ -428,13 +429,21 @@ function BuilderContent() {
                             <option value="30px">Curvo (30px)</option>
                         </select>
                     </div>
-                    <div className="form-group">
+                    <div className="form-group md:col-span-2">
                         <label>Logo</label>
-                        <input type="file" accept="image/*" capture="environment" onChange={e => handleImageUpload('logo', e)} />
+                        <ImageUploader
+                            onImageSelected={e => handleImageUpload('logo', e)}
+                            currentImage={storeData.logo}
+                            showPreview
+                        />
                     </div>
-                    <div className="form-group">
+                    <div className="form-group md:col-span-2">
                         <label>Imagen de fondo del encabezado (opcional)</label>
-                        <input type="file" accept="image/*" capture="environment" onChange={e => handleImageUpload('heroBg', e)} />
+                        <ImageUploader
+                            onImageSelected={e => handleImageUpload('heroBg', e)}
+                            currentImage={storeData.heroBg}
+                            showPreview
+                        />
                     </div>
                 </section>
 
@@ -460,7 +469,12 @@ function BuilderContent() {
                     <div className="form-group"><label>Qué nos diferencia (uno por línea)</label><textarea value={storeData.about.diff.join('\\n')} onChange={e => handleArrayChange('about', 'diff', e.target.value)} rows={3} /></div>
                     <div className="form-group"><label>Equipo o cultura</label><textarea value={storeData.about.team} onChange={e => handleInputChange('about', 'team', e.target.value)} /></div>
                     <div className="form-group"><label>Call to Action (texto del botón)</label><input value={storeData.about.ctaText} onChange={e => handleInputChange('about', 'ctaText', e.target.value)} /></div>
-                    <div className="form-group"><label>Galería de imágenes de la empresa</label><input type="file" accept="image/*" multiple capture="environment" onChange={handleGalleryUpload} />
+                    <div className="form-group">
+                        <label>Galería de imágenes de la empresa</label>
+                        <ImageUploader
+                            onImageSelected={handleGalleryUpload}
+                            multiple
+                        />
                         <div className="about-gallery-mini">{storeData.about.gallery.map((img, i) => (<img key={i} src={img} alt="Gallery" />))}</div>
                     </div>
                 </section>
@@ -481,18 +495,25 @@ function BuilderContent() {
                     <div className="form-group"><label>Descripción *</label><textarea value={prodForm.desc} onChange={e => setProdForm({ ...prodForm, desc: e.target.value })} /></div>
                     <div className="form-group"><label>Categoría *</label><input value={prodForm.category} onChange={e => setProdForm({ ...prodForm, category: e.target.value })} /></div>
                     <div className="form-group"><label>Precio *</label><input type="number" value={prodForm.price} onChange={e => setProdForm({ ...prodForm, price: e.target.value })} /></div>
-                    <div className="form-group"><label>Imagen del Producto</label><input type="file" accept="image/*" capture="environment" onChange={async e => {
-                        const file = e.target.files?.[0];
-                        if (file) {
-                            try {
-                                const base64 = await compressImage(file, 600, 0.6);
-                                setProdForm({ ...prodForm, image: base64 });
-                            } catch (err) {
-                                console.error('Error compressing product image:', err);
-                                alert('Error al procesar la imagen');
-                            }
-                        }
-                    }} /></div>
+                    <div className="form-group">
+                        <label>Imagen del Producto</label>
+                        <ImageUploader
+                            onImageSelected={async e => {
+                                const file = e.target.files?.[0];
+                                if (file) {
+                                    try {
+                                        const base64 = await compressImage(file, 600, 0.6);
+                                        setProdForm({ ...prodForm, image: base64 });
+                                    } catch (err) {
+                                        console.error('Error compressing product image:', err);
+                                        alert('Error al procesar la imagen');
+                                    }
+                                }
+                            }}
+                            currentImage={prodForm.image}
+                            showPreview
+                        />
+                    </div>
                     <div style={{ display: 'flex', gap: '0.5rem' }}>
                         <button className="btn btn-secondary" onClick={handleSaveProduct}>
                             {editingProductId ? '💾 Actualizar Producto' : '➕ Agregar Producto'}
@@ -523,9 +544,11 @@ function BuilderContent() {
 
                 <section className="form-section" style={{ position: 'sticky', bottom: 0, zIndex: 10 }}>
                     <button className="btn btn-primary" onClick={() => handleSave(false)} disabled={isSaving || isLoading} style={{ marginBottom: '1rem' }}>
-                        {isSaving ? '💾 Guardando...' : (hasUnsavedChanges ? '💾 Guardar Cambios' : '✅ Cambios Guardados')}
+                        {isSaving ? '💾 Guardando...' : (hasUnsavedChanges ? '💾 Guardar Cambios' : (editSlug ? '✅ Cambios Guardados' : '🚀 Crear Tienda'))}
                     </button>
-                    {editSlug && publicUrl && (
+
+                    {/* Persistent Share/Links Area */}
+                    {publicUrl && (
                         <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1rem' }}>
                             <a href={publicUrl} target="_blank" rel="noopener noreferrer" className="btn btn-secondary" style={{ flex: 1, textAlign: 'center', textDecoration: 'none' }}>
                                 👁️ Ver Tienda
@@ -535,6 +558,7 @@ function BuilderContent() {
                             </button>
                         </div>
                     )}
+
                     {publicUrl && showQr && (
                         <div className="public-url-box" style={{ marginTop: '1rem', padding: '1.5rem', background: 'linear-gradient(135deg, #e8f5e9 0%, #f1f8e9 100%)', borderRadius: '16px', border: '2px solid #c8e6c9' }}>
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>

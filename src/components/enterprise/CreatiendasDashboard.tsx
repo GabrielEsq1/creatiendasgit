@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import { Store, Plus, Settings, Eye, Trash2, Edit, Package } from 'lucide-react';
+import { Store, Plus, Settings, Eye, Trash2, Edit, Package, MessageCircle } from 'lucide-react';
 import ActivationChecklist from '../dashboard/ActivationChecklist';
 
 
@@ -192,6 +192,17 @@ export default function CreatiendasDashboard() {
                                         <Store className="w-6 h-6 text-purple-600" />
                                     </div>
                                     <div className="flex gap-2">
+                                        <button
+                                            onClick={() => {
+                                                const url = `https://creatiendas.com/stores/${store.slug}`;
+                                                const text = `¡Hola! Mira mi nueva tienda online: ${url}`;
+                                                window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
+                                            }}
+                                            className="p-2 hover:bg-green-50 rounded-lg transition-colors"
+                                            title="Compartir en WhatsApp"
+                                        >
+                                            <MessageCircle className="w-4 h-4 text-green-600" />
+                                        </button>
                                         <button
                                             onClick={() => router.push(`/builder?edit=${store.slug}`)}
                                             className="p-2 hover:bg-blue-50 rounded-lg transition-colors"
