@@ -250,7 +250,18 @@ export default function CreatiendasDashboard() {
                                 </div>
 
                                 <button
-                                    onClick={() => router.push(`/builder/success?slug=${store.slug}`)}
+                                    onClick={() => {
+                                        try {
+                                            if (!store.slug) {
+                                                console.error('Missing slug for store:', store.id);
+                                                alert('Error: La tienda no tiene una dirección válida.');
+                                                return;
+                                            }
+                                            router.push(`/builder/success?slug=${encodeURIComponent(store.slug)}`);
+                                        } catch (err) {
+                                            console.error('Navigation error:', err);
+                                        }
+                                    }}
                                     className="w-full mt-6 py-3 bg-purple-50 hover:bg-purple-100 text-purple-700 font-bold rounded-xl border border-purple-100 transition-all flex items-center justify-center gap-2 group-hover:scale-[1.02]"
                                 >
                                     <QrCode className="w-4 h-4" />
