@@ -357,9 +357,15 @@ body {
 
 .store-header {
     color: white;
-    padding: 3.25rem 2.25rem 3rem;
+    padding: 2rem 1rem;
     text-align: center;
     position: relative;
+}
+
+@media (min-width: 768px) {
+    .store-header {
+        padding: 3.25rem 2.25rem 3rem;
+    }
 }
 
 .store-header::after {
