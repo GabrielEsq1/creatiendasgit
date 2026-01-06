@@ -391,10 +391,10 @@ function BuilderContent() {
                 // TRACK CONVERSION
                 trackEvent('store_publish_success', { store_name: storeData.name });
 
-                if (!editSlug) {
-                    // Growth Architect: Redirect to landing with success state for sharing
-                    router.push(`/?store_ready=true&slug=${currentSlug}`);
-                } else {
+                if (!editSlug && !silent) {
+                    // Manual publish: Redirect to success landing
+                    router.push(`/builder/success?slug=${currentSlug}`);
+                } else if (editSlug && !silent) {
                     alert(`¡Tienda actualizada con éxito!`);
                 }
             } else {
@@ -596,44 +596,11 @@ function BuilderContent() {
                         {isSaving ? '💾 Guardando...' : (hasUnsavedChanges ? '💾 Guardar Cambios' : (editSlug ? '✅ Cambios Guardados' : '🚀 Crear Tienda'))}
                     </button>
 
-                    {/* Persistent Share/Links Area */}
                     {publicUrl && (
                         <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1rem' }}>
-                            <a href={publicUrl} target="_blank" rel="noopener noreferrer" className="btn btn-secondary" style={{ flex: 1, textAlign: 'center', textDecoration: 'none' }}>
-                                👁️ Ver Tienda
+                            <a href={publicUrl} target="_blank" rel="noopener noreferrer" className="btn btn-secondary" style={{ flex: 1, textAlign: 'center', textDecoration: 'none', background: '#e8f5e9', border: '1px solid #c8e6c9', color: '#2e7d32' }}>
+                                👁️ Ver Tienda Online
                             </a>
-                            <button className="btn btn-secondary" onClick={() => setShowQr(!showQr)} style={{ flex: 1 }}>
-                                {showQr ? '🔽 Ocultar' : '🔗 Compartir'}
-                            </button>
-                        </div>
-                    )}
-
-                    {publicUrl && showQr && (
-                        <div className="public-url-box" style={{ marginTop: '1rem', padding: '1.5rem', background: 'linear-gradient(135deg, #e8f5e9 0%, #f1f8e9 100%)', borderRadius: '16px', border: '2px solid #c8e6c9' }}>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-                                <p style={{ margin: 0, fontWeight: 'bold', color: '#2e7d32', fontSize: '1.1rem' }}>✅ ¡Tu tienda está lista!</p>
-                                <button onClick={() => setShowQr(false)} style={{ background: 'none', border: 'none', fontSize: '1.2rem', cursor: 'pointer' }}>❌</button>
-                            </div>
-
-                            {/* URL Section */}
-                            <div style={{ marginBottom: '1.5rem' }}>
-                                <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem', fontWeight: '600', color: '#1b5e20' }}>Enlace de tu tienda:</label>
-                                <div style={{ display: 'flex', gap: '0.5rem' }}>
-                                    <input readOnly value={publicUrl} style={{ flex: 1, padding: '0.75rem', borderRadius: '8px', border: '1px solid #a5d6a7', background: 'white', fontSize: '0.9rem' }} />
-                                    <button className="btn btn-secondary" onClick={() => { navigator.clipboard.writeText(publicUrl); alert('✅ URL copiada al portapapeles!'); }} style={{ padding: '0.75rem 1.5rem', whiteSpace: 'nowrap' }}>
-                                        📋 Copiar
-                                    </button>
-                                </div>
-                                <a href={publicUrl} target="_blank" rel="noopener noreferrer" style={{ display: 'inline-block', marginTop: '0.5rem', color: '#2e7d32', textDecoration: 'underline', fontSize: '0.9rem' }}>👁️ Visitar tienda →</a>
-                            </div>
-
-                            {/* QR Code Section */}
-                            <div style={{ borderTop: '1px solid #c8e6c9', paddingTop: '1.5rem' }}>
-                                <p style={{ margin: '0 0 1rem 0', fontSize: '0.9rem', fontWeight: '600', color: '#1b5e20', textAlign: 'center' }}>Código QR para compartir:</p>
-                                <div style={{ display: 'flex', justifyContent: 'center' }}>
-                                    <StoreQRCode url={publicUrl} size={180} storeName={storeData.name} />
-                                </div>
-                            </div>
                         </div>
                     )}
                 </section>

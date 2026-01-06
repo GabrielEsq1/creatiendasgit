@@ -57,75 +57,96 @@ function SuccessContent() {
     }
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50 flex flex-col items-center justify-center p-6">
-            <div className="max-w-md w-full bg-white rounded-3xl shadow-xl overflow-hidden animate-in zoom-in-95 duration-500">
-                {/* Header */}
-                <div className="bg-green-600 p-8 text-center relative overflow-hidden">
-                    <div className="absolute inset-0 bg-white/10 opacity-20" style={{ backgroundImage: 'radial-gradient(circle, #fff 2px, transparent 2.5px)', backgroundSize: '20px 20px' }}></div>
+        <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-blue-50 flex flex-col items-center justify-center p-6 relative overflow-hidden">
+            {/* Subtle floating elements for a premium feel */}
+            <div className="absolute top-0 left-0 w-64 h-64 bg-green-200/20 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2" />
+            <div className="absolute bottom-0 right-0 w-96 h-96 bg-blue-200/20 rounded-full blur-3xl translate-x-1/2 translate-y-1/2" />
+
+            <div className="max-w-2xl w-full bg-white rounded-[3rem] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-700 border border-slate-100 relative z-10">
+                {/* Header Section */}
+                <div className="bg-slate-900 p-12 text-center relative overflow-hidden">
+                    <div className="absolute inset-0 bg-green-500/10 opacity-30" style={{ backgroundImage: 'radial-gradient(circle, #22c55e 1px, transparent 1px)', backgroundSize: '24px 24px' }}></div>
                     <div className="relative z-10">
-                        <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg animate-bounce">
-                            <span className="text-4xl">🚀</span>
+                        <div className="w-24 h-24 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-6 shadow-2xl shadow-green-500/40 animate-bounce">
+                            <span className="text-5xl">🚀</span>
                         </div>
-                        <h1 className="text-2xl font-black text-white mb-2">¡Tu Tienda está Lista!</h1>
-                        <p className="text-green-100 font-medium">Ya puedes recibir pedidos en WhatsApp.</p>
+                        <h1 className="text-4xl font-black text-white mb-3 tracking-tight">¡Tu Tienda está Lista!</h1>
+                        <p className="text-slate-400 text-xl font-medium">Empieza a vender por WhatsApp ahora mismo.</p>
                     </div>
                 </div>
 
-                {/* Content */}
-                <div className="p-8">
-                    {/* QR Code */}
-                    <div className="flex justify-center mb-8">
-                        <div className="p-4 bg-white border-2 border-dashed border-gray-200 rounded-xl relative">
-                            <StoreQRCode url={publicUrl} size={200} storeName={slug} />
-                            <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 bg-gray-100 px-3 py-1 rounded-full text-xs font-bold text-gray-500">
-                                Escanéame
+                {/* Main Content Area */}
+                <div className="p-10 space-y-10">
+
+                    {/* QR Code Section */}
+                    <div className="bg-slate-50 rounded-[2.5rem] p-10 text-center border border-slate-100 transition-all hover:bg-slate-100/50">
+                        <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-6">Escanea para ver en tu móvil</p>
+                        <div className="flex justify-center mb-6">
+                            <div className="p-6 bg-white rounded-[2rem] shadow-xl border border-slate-100">
+                                <StoreQRCode url={publicUrl} size={220} storeName={slug} />
                             </div>
                         </div>
+                        <p className="text-slate-500 text-sm font-medium">Tus clientes pueden acceder instantáneamente escaneando este código.</p>
                     </div>
 
-                    {/* Actions */}
-                    <div className="space-y-4">
-                        <div className="flex gap-2">
-                            <input
-                                readOnly
-                                value={publicUrl}
-                                className="flex-1 bg-gray-50 border border-gray-200 rounded-lg px-4 text-sm text-gray-600 font-medium"
-                            />
-                            <button
-                                onClick={() => { navigator.clipboard.writeText(publicUrl); alert('Copiado!'); }}
-                                className="p-3 bg-gray-100 hover:bg-gray-200 rounded-lg text-gray-700 transition-colors"
-                            >
-                                <LinkIcon className="w-5 h-5" />
-                            </button>
+                    {/* Social/Sharing Actions */}
+                    <div className="space-y-6">
+                        <div className="flex flex-col gap-3">
+                            <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 px-2">Enlace directo:</label>
+                            <div className="flex gap-2 p-2 bg-slate-50 rounded-2xl border border-slate-100">
+                                <input
+                                    readOnly
+                                    value={publicUrl}
+                                    className="flex-1 bg-transparent border-none outline-none px-4 text-slate-600 font-bold"
+                                />
+                                <button
+                                    onClick={() => {
+                                        navigator.clipboard.writeText(publicUrl);
+                                        const btn = document.getElementById('copy-btn');
+                                        if (btn) btn.innerText = '✅ Copiado';
+                                        setTimeout(() => { if (btn) btn.innerText = '📋 Copiar'; }, 2000);
+                                    }}
+                                    id="copy-btn"
+                                    className="px-6 py-2 bg-slate-900 text-white rounded-xl font-black text-xs hover:bg-slate-800 transition-all active:scale-95"
+                                >
+                                    📋 Copiar
+                                </button>
+                            </div>
                         </div>
 
-                        <button
-                            onClick={() => window.open(`https://wa.me/?text=¡Hola! Mira mi nueva tienda online: ${publicUrl}`, '_blank')}
-                            className="w-full bg-[#25D366] hover:bg-[#128C7E] text-white py-4 rounded-xl font-bold text-lg shadow-lg shadow-green-200 transition-all hover:-translate-y-1 flex items-center justify-center gap-3"
-                        >
-                            <Share2 className="w-6 h-6" />
-                            Compartir en WhatsApp
-                        </button>
+                        {/* High Impact Buttons */}
+                        <div className="flex flex-col gap-4">
+                            <button
+                                onClick={() => window.open(`https://wa.me/?text=¡Hola! Mira mi nueva tienda online: ${publicUrl}`, '_blank')}
+                                className="w-full bg-[#25D366] hover:bg-[#1ebd5e] text-white py-6 rounded-[2rem] font-black text-xl shadow-xl shadow-green-200 transition-all hover:-translate-y-1 active:scale-95 flex items-center justify-center gap-4 group"
+                            >
+                                <Share2 className="w-7 h-7 transition-group-hover:scale-110" />
+                                <span>Compartir en WhatsApp</span>
+                            </button>
 
-                        <a
-                            href={publicUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="w-full bg-blue-600 hover:bg-blue-700 text-white py-4 rounded-xl font-bold text-lg shadow-lg shadow-blue-200 transition-all hover:-translate-y-1 flex items-center justify-center gap-3 no-underline"
-                        >
-                            <ExternalLink className="w-6 h-6" />
-                            Visitar Tienda
-                        </a>
+                            <a
+                                href={publicUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="w-full bg-slate-900 hover:bg-slate-800 text-white py-6 rounded-[2rem] font-black text-xl shadow-xl shadow-slate-200 transition-all hover:-translate-y-1 active:scale-95 flex items-center justify-center gap-4 no-underline group"
+                            >
+                                <ExternalLink className="w-7 h-7" />
+                                <span>Visitar mi Tienda</span>
+                            </a>
+                        </div>
 
-                        <div className="pt-4 mt-6 border-t border-gray-100 text-center">
-                            <Link href="/dashboard" className="text-gray-500 hover:text-gray-900 font-medium flex items-center justify-center gap-2 transition-colors">
-                                <ArrowLeft className="w-4 h-4" />
-                                Volver al Panel
+                        {/* Secondary Action */}
+                        <div className="pt-8 border-t border-slate-100 text-center">
+                            <Link href="/dashboard" className="inline-flex items-center gap-2 text-slate-400 hover:text-slate-900 font-black text-sm uppercase tracking-widest transition-all hover:gap-4">
+                                <ArrowLeft className="w-5 h-5" />
+                                Volver a mi Panel
                             </Link>
                         </div>
                     </div>
                 </div>
             </div>
+
+            <p className="mt-12 text-slate-400 font-black text-[10px] uppercase tracking-[0.3em] relative z-10">© 2026 Creatiendas · Hecho para vender</p>
         </div>
     );
 }

@@ -116,19 +116,25 @@ export default function Navbar() {
                         {status === 'loading' ? (
                             <div className="h-4 w-20 bg-slate-800 animate-pulse rounded" />
                         ) : session ? (
-                            <div className="flex items-center gap-4">
+                            <div className="flex items-center gap-2 sm:gap-4">
+                                <Link
+                                    href="/dashboard"
+                                    className="bg-green-500 hover:bg-green-600 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-xl text-xs sm:text-sm font-black shadow-lg shadow-green-200 transition-all hover:-translate-y-0.5 active:scale-95 flex items-center gap-2"
+                                >
+                                    <span className="hidden xs:inline">Ir a mi</span><span>Panel</span>
+                                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                                    </svg>
+                                </Link>
                                 <div className="hidden sm:flex flex-col items-end">
                                     <span className="text-[10px] uppercase font-bold text-slate-500 leading-none mb-1">Sesión de</span>
                                     <span className="text-sm font-black text-slate-900 leading-none">{session.user?.name}</span>
                                 </div>
                                 <button
                                     onClick={() => signOut({ callbackUrl: '/' })}
-                                    className="flex items-center gap-2 bg-slate-900 border border-slate-800 px-4 py-2 rounded-xl text-sm font-bold text-slate-300 transition-all hover:bg-rose-950/30 hover:border-rose-500/30 hover:text-rose-400 hover:shadow-sm"
+                                    className="hidden sm:flex items-center gap-2 bg-slate-900 border border-slate-800 px-4 py-2 rounded-xl text-sm font-bold text-slate-300 transition-all hover:bg-rose-950/30 hover:border-rose-500/30 hover:text-rose-400 hover:shadow-sm"
                                 >
                                     <span>Salir</span>
-                                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                                    </svg>
                                 </button>
                             </div>
                         ) : (

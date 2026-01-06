@@ -4,8 +4,10 @@ import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import VideoModal from './VideoModal';
 import { useAnalytics } from './Analytics';
+import { useSession } from 'next-auth/react';
 
 export default function Hero() {
+    const { data: session } = useSession();
     const { trackEvent } = useAnalytics();
     const [showVideo, setShowVideo] = useState(false);
     const [mounted, setMounted] = useState(false);
@@ -61,15 +63,14 @@ export default function Hero() {
                     </p>
                 </div>
 
-                {/* 3. CTA Buttons */}
                 <div className="flex flex-col sm:flex-row justify-center items-center gap-4 sm:gap-6 mb-24 px-4">
                     <Link
-                        href="/auth/register"
+                        href={mounted && session ? "/dashboard" : "/auth/register"}
                         data-cta="primary"
                         onClick={() => trackEvent('primary_cta_click', { location: 'hero_main' })}
                         className="group relative inline-flex min-h-[48px] sm:min-h-[56px] md:h-16 w-full sm:w-auto items-center justify-center rounded-xl sm:rounded-2xl bg-green-500 px-6 sm:px-8 md:px-10 font-black text-white shadow-2xl shadow-green-500/30 transition-all hover:bg-green-600 hover:scale-105 active:scale-95 text-base sm:text-lg md:text-xl tracking-tight"
                     >
-                        <span>Crea tu Tienda Ahora</span>
+                        <span>{mounted && session ? "Vuelve a tu Tienda" : "Crea tu Tienda Ahora"}</span>
                         <div className="absolute inset-0 -z-10 bg-gradient-to-r from-transparent via-white/20 to-transparent skew-x-12 -translate-x-full group-hover:animate-shine" />
                     </Link>
 
@@ -159,6 +160,6 @@ export default function Hero() {
                 onClose={() => setShowVideo(false)}
                 videoSrc="https://youtu.be/XQQfQYZ0Phk"
             />
-        </section>
+        </section >
     );
 }

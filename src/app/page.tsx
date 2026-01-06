@@ -29,9 +29,6 @@ export default function LandingPage() {
         <div className="min-h-screen bg-white text-slate-900 flex flex-col selection:bg-green-500/30">
             <SoftwareSchema />
             <main className="flex-1">
-                <Suspense fallback={null}>
-                    <SuccessBanner />
-                </Suspense>
                 <Hero />
                 <WhatIs />
 

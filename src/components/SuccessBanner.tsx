@@ -54,22 +54,24 @@ export default function SuccessBanner() {
                             </div>
                         </div>
 
-                        <div className="flex flex-wrap justify-center gap-4 mt-4">
+                        <div className="flex flex-col sm:flex-row justify-center gap-4 mt-4">
                             <a
                                 href={storeUrl}
                                 target="_blank"
-                                className="text-green-600 font-bold hover:underline"
+                                className="flex-1 bg-green-500 hover:bg-green-600 text-white px-8 py-4 rounded-2xl font-black text-center shadow-lg shadow-green-200 transition-all hover:-translate-y-1 active:scale-95 flex items-center justify-center gap-2"
                             >
-                                👁️ Visitar tienda →
+                                <span className="text-xl">👁️</span>
+                                <span>Ver mi Tienda</span>
                             </a>
                             <button
                                 onClick={() => {
                                     const text = `¡Hola! Mira mi nueva tienda online: ${storeUrl}`;
                                     window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
                                 }}
-                                className="text-slate-900 font-bold hover:underline"
+                                className="flex-1 bg-slate-900 hover:bg-slate-800 text-white px-8 py-4 rounded-2xl font-black text-center shadow-lg shadow-slate-200 transition-all hover:-translate-y-1 active:scale-95 flex items-center justify-center gap-2"
                             >
-                                📱 Compartir por WhatsApp
+                                <span className="text-xl">📱</span>
+                                <span>Compartir por WhatsApp</span>
                             </button>
                         </div>
                     </div>
