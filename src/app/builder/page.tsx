@@ -388,13 +388,14 @@ function BuilderContent() {
                 setPublicUrl(finalUrl);
                 setHasUnsavedChanges(false);
 
-                if (!silent) {
-                    if (!editSlug) {
-                        // Redirect to Success Page with the verified slug
-                        router.push(`/builder/success?slug=${currentSlug}`);
-                    } else {
-                        alert(`¡Tienda actualizada con éxito!`);
-                    }
+                // TRACK CONVERSION
+                trackEvent('store_publish_success', { store_name: storeData.name });
+
+                if (!editSlug) {
+                    // Growth Architect: Redirect to landing with success state for sharing
+                    router.push(`/?store_ready=true&slug=${currentSlug}`);
+                } else {
+                    alert(`¡Tienda actualizada con éxito!`);
                 }
             } else {
                 throw new Error(json.message || 'Error inesperado');

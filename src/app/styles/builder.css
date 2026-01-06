@@ -220,15 +220,32 @@ body {
 
 .store-preview-container {
     width: 100%;
-    max-width: 1100px;
     background: #ffffff;
     min-height: 100%;
-    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08);
-    border-radius: 24px;
     /* overflow: hidden; Removed to allow scrolling */
     display: flex;
     flex-direction: column;
     transition: max-width 0.2s ease;
+    margin: 0 auto;
+}
+
+/* Base styles for public pages */
+.public-store-wrapper {
+    min-height: 100vh;
+    background: #f4f4f9;
+}
+
+.public-store-wrapper .store-preview-container {
+    max-width: 1200px;
+    border-radius: 0;
+    box-shadow: none;
+}
+
+/* Builder specific preview styling */
+.preview-panel .store-preview-container {
+    max-width: 1100px;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08);
+    border-radius: 24px;
 }
 
 .store-preview-container.device-mobile {
@@ -294,6 +311,30 @@ body {
     display: flex;
     flex-wrap: wrap;
     gap: 0.35rem;
+}
+
+@media (max-width: 600px) {
+    .store-topbar-inner {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .topbar-right {
+        width: 100%;
+        overflow-x: auto;
+        flex-wrap: nowrap;
+        padding: 0.5rem 0;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+    }
+
+    .topbar-right::-webkit-scrollbar {
+        display: none;
+    }
+
+    .store-nav-item {
+        white-space: nowrap;
+    }
 }
 
 .store-nav-item {
@@ -909,9 +950,10 @@ body {
 }
 
 @media (max-width: 900px) {
-    body {
+
+    /* Only apply overflow hidden to body in the builder/admin pages, never on stores */
+    body:has(.app-container) {
         overflow-y: hidden;
-        /* Prevent body scroll, handle inside panels */
     }
 
     .app-container {

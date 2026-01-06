@@ -35,7 +35,8 @@ export type AnalyticsEventType =
     | 'demo_cta_click'
     | 'video_start'
     | 'video_complete'
-    | 'social_proof_view';
+    | 'social_proof_view'
+    | 'store_publish_success';
 
 const PIXEL_ID = '1419499733092502'; // Píxel de Gabriel Esquivia
 

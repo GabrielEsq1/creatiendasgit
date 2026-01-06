@@ -27,17 +27,10 @@ export default async function StorePage({ params }: Props) {
     }
 
     return (
-        <div style={{
-            minHeight: '100vh',
-            background: '#f4f4f9',
-            display: 'flex',
-            justifyContent: 'center',
-            padding: '20px'
-        }}>
+        <div className="public-store-wrapper">
             <StorePreview
                 data={store.data}
                 products={store.products}
-                viewMode="desktop"
                 readOnly={true}
             />
             <ViewTracker slug={params.slug} />
