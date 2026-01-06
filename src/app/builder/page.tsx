@@ -3,6 +3,8 @@
 import React, { useState, ChangeEvent, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { Plus } from 'lucide-react';
 import StorePreview from '@/components/StorePreview';
 import StoreQRCode from '@/components/StoreQRCode';
 import { StoreData, Product } from '@/lib/store-service';
@@ -76,6 +78,7 @@ const INITIAL_PRODUCTS: Product[] = [
  */
 function BuilderContent() {
     const searchParams = useSearchParams();
+    const router = useRouter();
     const editSlug = searchParams?.get('edit');
     const { trackEvent } = useAnalytics();
 
@@ -230,6 +233,15 @@ function BuilderContent() {
     const handleSaveProduct = () => {
         if (!prodForm.name || !prodForm.price) return alert('Nombre y precio requeridos');
 
+        if (prodForm.price && isNaN(Number(prodForm.price))) {
+            alert('El precio debe ser un número');
+            return;
+        }
+        // Haptic feedback
+        if (typeof navigator !== 'undefined' && navigator.vibrate) {
+            navigator.vibrate(50);
+        }
+
         if (editingProductId) {
             // Modo edición
             setProducts(products.map(p =>
@@ -268,6 +280,18 @@ function BuilderContent() {
     const handleCancelEdit = () => {
         setProdForm({ name: '', desc: '', category: '', price: '', image: null });
         setEditingProductId(null);
+    };
+
+    const deleteProduct = (id: number, e: React.MouseEvent) => {
+        e.stopPropagation();
+        if (confirm('¿Estás seguro de eliminar este producto?')) {
+            // Haptic feedback
+            if (typeof navigator !== 'undefined' && navigator.vibrate) {
+                navigator.vibrate(50);
+            }
+            setProducts(products.filter(p => p.id !== id));
+            setHasUnsavedChanges(true);
+        }
     };
 
     const handleSave = async (silent: boolean = false) => {
@@ -349,9 +373,11 @@ function BuilderContent() {
                 }
 
                 if (!silent) {
-                    alert(`¡Tienda guardada con éxito!\n\nTu tienda está lista en:\n${finalUrl}`);
                     if (!editSlug) {
-                        window.open(finalUrl, '_blank');
+                        // New Store -> Redirect to Success Page
+                        router.push(`/builder/success?slug=${slug}`);
+                    } else {
+                        alert(`¡Tienda actualizada con éxito!`);
                     }
                 }
             } else {
@@ -489,7 +515,7 @@ function BuilderContent() {
                 </section>
 
                 {/* 5. Productos */}
-                <section className="form-section">
+                <section className="form-section products-section">
                     <h3>5. Agregar / Editar Productos</h3>
                     <div className="form-group"><label>Nombre del Producto *</label><input value={prodForm.name} onChange={e => setProdForm({ ...prodForm, name: e.target.value })} /></div>
                     <div className="form-group"><label>Descripción *</label><textarea value={prodForm.desc} onChange={e => setProdForm({ ...prodForm, desc: e.target.value })} /></div>
@@ -519,7 +545,12 @@ function BuilderContent() {
                             {editingProductId ? '💾 Actualizar Producto' : '➕ Agregar Producto'}
                         </button>
                         {editingProductId && (
-                            <button className="btn btn-danger" onClick={handleCancelEdit}>❌ Cancelar</button>
+                            <button className="btn btn-secondary" style={{ backgroundColor: '#ff5252', color: 'white' }} onClick={() => {
+                                setEditingProductId(null);
+                                setProdForm({ name: '', price: '', desc: '', image: null, category: '' });
+                            }}>
+                                Cancelar
+                            </button>
                         )}
                     </div>
                     <div className="product-list-mini">

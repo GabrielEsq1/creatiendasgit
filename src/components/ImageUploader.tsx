@@ -1,4 +1,5 @@
-import React, { useRef, ChangeEvent } from 'react';
+import React, { useRef, ChangeEvent, useState } from 'react';
+import CameraCaptureModal from './CameraCaptureModal';
 
 interface ImageUploaderProps {
     onImageSelected: (e: ChangeEvent<HTMLInputElement>) => void;
@@ -15,30 +16,44 @@ export default function ImageUploader({
     currentImage,
     multiple = false
 }: ImageUploaderProps) {
-    const cameraInputRef = useRef<HTMLInputElement>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
+    const [isCameraOpen, setIsCameraOpen] = useState(false);
 
     const handleCameraClick = () => {
-        cameraInputRef.current?.click();
+        setIsCameraOpen(true);
     };
 
     const handleFileClick = () => {
         fileInputRef.current?.click();
     };
 
+    const handleCameraCapture = (file: File) => {
+        // Create a new DataTransfer to simulate a file input change
+        const dataTransfer = new DataTransfer();
+        dataTransfer.items.add(file);
+
+        if (fileInputRef.current) {
+            fileInputRef.current.files = dataTransfer.files;
+
+            // Dispatch change event manually
+            const event = new Event('change', { bubbles: true });
+            fileInputRef.current.dispatchEvent(event);
+
+            // Also call the prop handler directly with a synthesized event to be safe
+            // (Most React handlers read e.target.files)
+            const syntheticEvent = {
+                target: { files: dataTransfer.files }
+            } as unknown as ChangeEvent<HTMLInputElement>;
+
+            onImageSelected(syntheticEvent);
+        }
+    };
+
     return (
         <div className="image-uploader-wrapper">
             {label && <label className="block mb-2 font-semibold text-sm">{label}</label>}
 
-            {/* Hidden Inputs */}
-            <input
-                type="file"
-                accept="image/*"
-                capture="environment"
-                ref={cameraInputRef}
-                onChange={onImageSelected}
-                style={{ display: 'none' }}
-            />
+            {/* Hidden Input */}
             <input
                 type="file"
                 accept="image/*"
@@ -72,6 +87,12 @@ export default function ImageUploader({
                     <img src={currentImage} alt="Preview" className="h-full w-full object-cover" />
                 </div>
             )}
+
+            <CameraCaptureModal
+                isOpen={isCameraOpen}
+                onClose={() => setIsCameraOpen(false)}
+                onCapture={handleCameraCapture}
+            />
         </div>
     );
 }
