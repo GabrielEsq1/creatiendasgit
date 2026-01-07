@@ -128,27 +128,39 @@ function BuilderContent() {
                             throw new Error('Formato de datos de tienda inválido');
                         }
 
-                        // Deep merge with INITIAL_DATA to ensure structure
+                        // Deep merge with sanitization
                         const mergedData: StoreData = {
                             ...INITIAL_DATA,
                             ...rawData,
-                            // Safety checks for critical fields
                             name: rawData.name || INITIAL_DATA.name,
-                            desc: rawData.desc || INITIAL_DATA.desc,
-                            whatsapp: rawData.whatsapp || INITIAL_DATA.whatsapp,
+                            desc: rawData.desc || '',
+                            whatsapp: rawData.whatsapp || '',
                             color: rawData.color || INITIAL_DATA.color,
                             id: storeId,
                             socials: {
-                                ...INITIAL_DATA.socials,
-                                ...(rawData.socials || {})
+                                instagram: rawData.socials?.instagram || '',
+                                facebook: rawData.socials?.facebook || '',
+                                tiktok: rawData.socials?.tiktok || '',
+                                email: rawData.socials?.email || '',
+                                phone: rawData.socials?.phone || ''
                             },
                             about: {
-                                ...INITIAL_DATA.about,
-                                ...(rawData.about || {})
+                                heroTitle: rawData.about?.heroTitle || '',
+                                heroSubtitle: rawData.about?.heroSubtitle || '',
+                                mission: rawData.about?.mission || '',
+                                vision: rawData.about?.vision || '',
+                                values: Array.isArray(rawData.about?.values) ? rawData.about.values : [],
+                                timeline: Array.isArray(rawData.about?.timeline) ? rawData.about.timeline : [],
+                                diff: Array.isArray(rawData.about?.diff) ? rawData.about.diff : [],
+                                team: rawData.about?.team || '',
+                                ctaText: rawData.about?.ctaText || '',
+                                gallery: Array.isArray(rawData.about?.gallery) ? rawData.about.gallery : []
                             },
                             careers: {
-                                ...INITIAL_DATA.careers,
-                                ...(rawData.careers || {})
+                                title: rawData.careers?.title || '',
+                                desc: rawData.careers?.desc || '',
+                                benefits: Array.isArray(rawData.careers?.benefits) ? rawData.careers.benefits : [],
+                                ctaText: rawData.careers?.ctaText || ''
                             }
                         };
 
