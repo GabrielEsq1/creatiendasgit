@@ -123,6 +123,11 @@ function BuilderContent() {
                         const storeId = data.store ? data.store.id : data.id;
                         const storeSlug = data.store ? data.store.slug : data.slug;
 
+                        if (!rawData) {
+                            console.error('Invalid store data format:', data);
+                            throw new Error('Formato de datos de tienda inválido');
+                        }
+
                         // Deep merge with INITIAL_DATA to ensure structure
                         const mergedData: StoreData = {
                             ...INITIAL_DATA,
@@ -136,9 +141,9 @@ function BuilderContent() {
                         setStoreData(mergedData);
                         idRef.current = storeId;
                         slugRef.current = storeSlug;
-                        if (data.store?.products || data.products) {
-                            setProducts(data.store?.products || data.products);
-                        }
+
+                        const actualProducts = data.store?.products || data.products || [];
+                        setProducts(actualProducts || INITIAL_PRODUCTS);
                     } else {
                         alert('No se pudo cargar la tienda para editar');
                     }
