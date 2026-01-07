@@ -1,21 +1,18 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 
-export default function SuccessPage() {
+function SuccessPageContent() {
     const router = useRouter();
     const searchParams = useSearchParams();
-    const [mounted, setMounted] = useState(false);
     const [storeUrl, setStoreUrl] = useState('');
     const [qrCode, setQrCode] = useState('');
 
     const slug = searchParams?.get('slug') || '';
 
     useEffect(() => {
-        setMounted(true);
-
         if (!slug) {
             router.push('/dashboard');
             return;
@@ -31,7 +28,7 @@ export default function SuccessPage() {
 
     }, [slug, router]);
 
-    if (!mounted || !slug) {
+    if (!slug) {
         return (
             <div className="min-h-screen flex items-center justify-center bg-gray-50">
                 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600"></div>
@@ -103,11 +100,13 @@ export default function SuccessPage() {
                             Código QR:
                         </label>
                         <div className="inline-block p-6 bg-white border-4 border-gray-100 rounded-2xl shadow-lg">
-                            <img
-                                src={qrCode}
-                                alt="QR Code"
-                                className="w-64 h-64"
-                            />
+                            {qrCode && (
+                                <img
+                                    src={qrCode}
+                                    alt="QR Code"
+                                    className="w-64 h-64"
+                                />
+                            )}
                         </div>
                         <button
                             onClick={downloadQR}
@@ -160,5 +159,17 @@ export default function SuccessPage() {
                 </div>
             </div>
         </div>
+    );
+}
+
+export default function SuccessPage() {
+    return (
+        <Suspense fallback={
+            <div className="min-h-screen flex items-center justify-center bg-gray-50">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600"></div>
+            </div>
+        }>
+            <SuccessPageContent />
+        </Suspense>
     );
 }
