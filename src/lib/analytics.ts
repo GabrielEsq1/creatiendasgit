@@ -25,20 +25,24 @@ export const getStoredUTMs = () => {
     if (typeof window === 'undefined') return {};
     const utms: Record<string, string> = {};
 
-    // 1. Try LocalStorage
-    UTM_KEYS.forEach(key => {
-        const val = localStorage.getItem(`ct_${key}`);
-        if (val) utms[key] = val;
-    });
-
-    // 2. Try Cookies (simple parser)
-    if (Object.keys(utms).length === 0) {
-        document.cookie.split(';').forEach(c => {
-            const [key, val] = c.trim().split('=');
-            if (key.startsWith('ct_utm_')) {
-                utms[key.replace('ct_', '')] = decodeURIComponent(val);
-            }
+    try {
+        // 1. Try LocalStorage
+        UTM_KEYS.forEach(key => {
+            const val = localStorage.getItem(`ct_${key}`);
+            if (val) utms[key] = val;
         });
+
+        // 2. Try Cookies (simple parser)
+        if (Object.keys(utms).length === 0) {
+            document.cookie.split(';').forEach(c => {
+                const [key, val] = c.trim().split('=');
+                if (key.startsWith('ct_utm_')) {
+                    utms[key.replace('ct_', '')] = decodeURIComponent(val);
+                }
+            });
+        }
+    } catch (e) {
+        console.warn('[Analytics] Storage access denied');
     }
 
     return utms;
@@ -47,22 +51,26 @@ export const getStoredUTMs = () => {
 export const storeUTMs = (params: URLSearchParams) => {
     if (typeof window === 'undefined') return;
 
-    let hasUTMs = false;
-    const expires = new Date();
-    expires.setDate(expires.getDate() + 30);
-    const cookieString = `; expires=${expires.toUTCString()}; path=/; SameSite=Lax`;
+    try {
+        let hasUTMs = false;
+        const expires = new Date();
+        expires.setDate(expires.getDate() + 30);
+        const cookieString = `; expires=${expires.toUTCString()}; path=/; SameSite=Lax`;
 
-    UTM_KEYS.forEach(key => {
-        const val = params.get(key);
-        if (val) {
-            localStorage.setItem(`ct_${key}`, val);
-            document.cookie = `ct_${key}=${encodeURIComponent(val)}${cookieString}`;
-            hasUTMs = true;
+        UTM_KEYS.forEach(key => {
+            const val = params.get(key);
+            if (val) {
+                localStorage.setItem(`ct_${key}`, val);
+                document.cookie = `ct_${key}=${encodeURIComponent(val)}${cookieString}`;
+                hasUTMs = true;
+            }
+        });
+
+        if (hasUTMs) {
+            localStorage.setItem('ct_utm_timestamp', Date.now().toString());
         }
-    });
-
-    if (hasUTMs) {
-        localStorage.setItem('ct_utm_timestamp', Date.now().toString());
+    } catch (e) {
+        // Silent fail
     }
 };
 
@@ -110,27 +118,34 @@ export const inferTrafficSource = () => {
 const getUserContext = () => {
     if (typeof window === 'undefined') return {};
 
-    // Language
-    const language = navigator.language || (navigator as any).userLanguage;
+    try {
+        // Language
+        const language = navigator.language || (navigator as any).userLanguage;
 
-    // Timezone as proxy for city/country if API not available
-    const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+        // Timezone as proxy for city/country if API not available
+        let timezone = 'UTC';
+        try {
+            timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+        } catch (e) { }
 
-    // First Visit Logic
-    let firstVisit = localStorage.getItem('ct_first_visit');
-    if (!firstVisit) {
-        firstVisit = Date.now().toString();
-        localStorage.setItem('ct_first_visit', firstVisit);
+        // First Visit Logic
+        let firstVisit = localStorage.getItem('ct_first_visit');
+        if (!firstVisit) {
+            firstVisit = Date.now().toString();
+            localStorage.setItem('ct_first_visit', firstVisit);
+        }
+
+        const daysSinceFirstVisit = Math.floor((Date.now() - parseInt(firstVisit)) / (1000 * 60 * 60 * 24));
+
+        return {
+            language,
+            timezone,
+            days_since_first_visit: daysSinceFirstVisit,
+            first_visit_date: new Date(parseInt(firstVisit)).toISOString()
+        };
+    } catch (e) {
+        return { language: 'es', timezone: 'UTC' };
     }
-
-    const daysSinceFirstVisit = Math.floor((Date.now() - parseInt(firstVisit)) / (1000 * 60 * 60 * 24));
-
-    return {
-        language,
-        timezone,
-        days_since_first_visit: daysSinceFirstVisit,
-        first_visit_date: new Date(parseInt(firstVisit)).toISOString()
-    };
 };
 
 /**
@@ -160,14 +175,17 @@ const isBot = () => {
 const getUserLabel = () => {
     if (typeof window === 'undefined') return 'technical';
 
-    const isTechnical = isBot();
-    if (isTechnical) return 'technical';
+    try {
+        const isTechnical = isBot();
+        if (isTechnical) return 'technical';
 
-    const intentScore = parseInt(sessionStorage.getItem('ga4_intent_score') || '0', 10);
-    const scrollDepth = parseInt(sessionStorage.getItem('ga4_max_scroll') || '0', 10);
+        const intentScore = parseInt(sessionStorage.getItem('ga4_intent_score') || '0', 10);
+        const scrollDepth = parseInt(sessionStorage.getItem('ga4_max_scroll') || '0', 10);
 
-    if (intentScore >= 5) return 'high_intent';
-    if (intentScore >= 2 || scrollDepth >= 50) return 'explorer';
+        if (intentScore >= 5) return 'high_intent';
+        if (intentScore >= 2 || scrollDepth >= 50) return 'explorer';
+    } catch (e) { }
+
     return 'curious';
 };
 
@@ -198,12 +216,14 @@ export const trackGAEvent = (event: AnalyticsEvent) => {
 
         // Internal monitoring (simulated)
         if (typeof window !== 'undefined') {
-            const directCount = parseInt(sessionStorage.getItem('ct_direct_count') || '0') + 1;
-            sessionStorage.setItem('ct_direct_count', directCount.toString());
+            try {
+                const directCount = parseInt(sessionStorage.getItem('ct_direct_count') || '0') + 1;
+                sessionStorage.setItem('ct_direct_count', directCount.toString());
 
-            if (directCount > 10) { // arbitrary threshold for session
-                console.warn('[GA4-VAL] High direct traffic detected in session (>10 events).');
-            }
+                if (directCount > 10) { // arbitrary threshold for session
+                    console.warn('[GA4-VAL] High direct traffic detected in session (>10 events).');
+                }
+            } catch (e) { }
         }
     }
 
@@ -228,28 +248,36 @@ export const trackGAEvent = (event: AnalyticsEvent) => {
  */
 const getSessionId = () => {
     if (typeof window === 'undefined') return '';
-    let sessionId = sessionStorage.getItem('ga4_session_id');
-    if (!sessionId) {
-        sessionId = Math.random().toString(36).substring(2, 15);
-        sessionStorage.setItem('ga4_session_id', sessionId);
+    try {
+        let sessionId = sessionStorage.getItem('ga4_session_id');
+        if (!sessionId) {
+            sessionId = Math.random().toString(36).substring(2, 15);
+            sessionStorage.setItem('ga4_session_id', sessionId);
+        }
+        return sessionId;
+    } catch (e) {
+        return 'no-session';
     }
-    return sessionId;
 };
 
 /**
  * Tracks feature flags strictly once per session.
  */
 export const trackFeatureOnce = (featureName: string, active: boolean) => {
-    const key = `feature_tracked_${featureName}`;
-    if (sessionStorage.getItem(key)) return;
+    try {
+        const key = `feature_tracked_${featureName}`;
+        if (typeof window !== 'undefined' && sessionStorage.getItem(key)) return;
 
-    trackGAEvent({
-        action: active ? 'feature_enabled' : 'feature_disabled',
-        feature_name: featureName,
-        non_interaction: true,
-    });
+        trackGAEvent({
+            action: active ? 'feature_enabled' : 'feature_disabled',
+            feature_name: featureName,
+            non_interaction: true,
+        });
 
-    sessionStorage.setItem(key, 'true');
+        if (typeof window !== 'undefined') {
+            sessionStorage.setItem(key, 'true');
+        }
+    } catch (e) { }
 };
 
 /**
@@ -257,7 +285,9 @@ export const trackFeatureOnce = (featureName: string, active: boolean) => {
  */
 export const incrementIntentScore = (points: number = 1) => {
     if (typeof window === 'undefined') return;
-    const current = parseInt(sessionStorage.getItem('ga4_intent_score') || '0', 10);
-    sessionStorage.setItem('ga4_intent_score', (current + points).toString());
+    try {
+        const current = parseInt(sessionStorage.getItem('ga4_intent_score') || '0', 10);
+        sessionStorage.setItem('ga4_intent_score', (current + points).toString());
+    } catch (e) { }
 };
 

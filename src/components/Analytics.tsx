@@ -109,14 +109,19 @@ function AnalyticsTrackerInner() {
 
         // 2. Auto-trigger landing_view if coming from a campaign
         const stored = getStoredUTMs();
-        const isLandingVisit = !sessionStorage.getItem('ct_landing_tracked');
+        let isLandingVisit = false;
+        try {
+            isLandingVisit = !sessionStorage.getItem('ct_landing_tracked');
+        } catch (e) { }
 
         if (isLandingVisit && (stored.utm_source || (searchParams && searchParams.get('utm_source')))) {
             trackEvent('landing_view', {
                 path: pathname,
                 source: stored.utm_source || searchParams?.get('utm_source'),
             });
-            sessionStorage.setItem('ct_landing_tracked', 'true');
+            try {
+                sessionStorage.setItem('ct_landing_tracked', 'true');
+            } catch (e) { }
         }
 
         // 3. Track page view on route change
@@ -148,10 +153,12 @@ function AnalyticsTrackerInner() {
 
             // Check for Time + Scroll qualification (if 30s passed)
             const scroll50StorageKey = `ct_scroll_50_${pathname}`;
-            if (sessionStorage.getItem(scroll50StorageKey) && !sessionStorage.getItem(qualifiedStorageKey)) {
-                trackEvent('qualified_view', { path: pathname, trigger: 'time_and_scroll_met' });
-                sessionStorage.setItem(qualifiedStorageKey, 'true');
-            }
+            try {
+                if (sessionStorage.getItem(scroll50StorageKey) && !sessionStorage.getItem(qualifiedStorageKey)) {
+                    trackEvent('qualified_view', { path: pathname, trigger: 'time_and_scroll_met' });
+                    sessionStorage.setItem(qualifiedStorageKey, 'true');
+                }
+            } catch (e) { }
         };
 
         const handleScroll = () => {
@@ -164,12 +171,19 @@ function AnalyticsTrackerInner() {
                 milestones.forEach(milestone => {
                     if (scrollPercent >= milestone && !trackedMilestones.has(milestone)) {
                         const storageKey = `ct_scroll_${milestone}_${pathname}`;
-                        if (!sessionStorage.getItem(storageKey)) {
+                        let alreadyTracked = false;
+                        try {
+                            alreadyTracked = !!sessionStorage.getItem(storageKey);
+                        } catch (e) { }
+
+                        if (!alreadyTracked) {
                             trackEvent(`scroll_${milestone}` as AnalyticsEventType, {
                                 path: pathname,
                                 scroll_depth: milestone
                             });
-                            sessionStorage.setItem(storageKey, 'true');
+                            try {
+                                sessionStorage.setItem(storageKey, 'true');
+                            } catch (e) { }
                             trackedMilestones.add(milestone);
 
                             // Mark 50% for qualified view
