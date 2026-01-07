@@ -1,175 +1,164 @@
 'use client';
 
-import React, { useEffect, useState, Suspense } from 'react';
-import { useSearchParams, useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import StoreQRCode from '@/components/StoreQRCode';
-import { Share2, ArrowLeft, ExternalLink, Link as LinkIcon } from 'lucide-react';
-import { getStoreUrl } from '@/lib/utils';
-import confetti from 'canvas-confetti';
 
-function SuccessContent() {
+export default function SuccessPage() {
+    const router = useRouter();
     const searchParams = useSearchParams();
-    const slug = searchParams?.get('slug');
-    const [publicUrl, setPublicUrl] = useState('');
+    const [mounted, setMounted] = useState(false);
+    const [storeUrl, setStoreUrl] = useState('');
+    const [qrCode, setQrCode] = useState('');
+
+    const slug = searchParams?.get('slug') || '';
 
     useEffect(() => {
-        if (!slug) return;
+        setMounted(true);
 
-        try {
-            const finalUrl = getStoreUrl(slug);
-            setPublicUrl(finalUrl || '');
-
-            // Fire confetti with safety
-            const confettiFn = (confetti as any) || (typeof window !== 'undefined' ? (window as any).confetti : null);
-            if (typeof confettiFn === 'function') {
-                const duration = 3000;
-                const end = Date.now() + duration;
-
-                const frame = () => {
-                    confettiFn({
-                        particleCount: 2,
-                        angle: 60,
-                        spread: 55,
-                        origin: { x: 0, y: 0.6 },
-                        colors: ['#2196F3', '#FFEB3B', '#4CAF50']
-                    });
-                    confettiFn({
-                        particleCount: 2,
-                        angle: 120,
-                        spread: 55,
-                        origin: { x: 1, y: 0.6 },
-                        colors: ['#2196F3', '#FFEB3B', '#4CAF50']
-                    });
-
-                    if (Date.now() < end) {
-                        requestAnimationFrame(frame);
-                    }
-                };
-                frame();
-            }
-        } catch (err) {
-            console.error('[Success] Error in effect:', err);
+        if (!slug) {
+            router.push('/dashboard');
+            return;
         }
-    }, [slug]);
 
-    if (!slug) {
+        // Construir URL de la tienda
+        const url = `https://${slug}.creatiendas.co`;
+        setStoreUrl(url);
+
+        // Generar QR usando API pública
+        const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(url)}`;
+        setQrCode(qrUrl);
+
+    }, [slug, router]);
+
+    if (!mounted || !slug) {
         return (
-            <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 p-6">
-                <div className="bg-white p-8 rounded-[2rem] shadow-xl text-center max-w-sm">
-                    <p className="text-slate-500 mb-6">No se encontró información de la tienda.</p>
-                    <Link href="/dashboard" className="px-6 py-3 bg-slate-900 text-white rounded-xl font-bold inline-block w-full text-center no-underline">
-                        Volver al Panel
-                    </Link>
-                </div>
+            <div className="min-h-screen flex items-center justify-center bg-gray-50">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600"></div>
             </div>
         );
     }
 
-    return (
-        <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-blue-50 flex flex-col items-center justify-center p-6 relative overflow-hidden">
-            <div className="absolute top-0 left-0 w-64 h-64 bg-green-200/20 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2" />
-            <div className="absolute bottom-0 right-0 w-96 h-96 bg-blue-200/20 rounded-full blur-3xl translate-x-1/2 translate-y-1/2" />
+    const copyToClipboard = () => {
+        navigator.clipboard.writeText(storeUrl);
+        alert('¡Enlace copiado!');
+    };
 
-            <div className="max-w-2xl w-full bg-white rounded-[3rem] shadow-2xl overflow-hidden border border-slate-100 relative z-10">
-                <div className="bg-slate-900 p-12 text-center relative overflow-hidden">
-                    <div className="absolute inset-0 bg-green-500/10 opacity-30" style={{ backgroundImage: 'radial-gradient(circle, #22c55e 1px, transparent 1px)', backgroundSize: '24px 24px' }}></div>
-                    <div className="relative z-10">
-                        <div className="w-24 h-24 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-6 shadow-2xl shadow-green-500/40">
-                            <span className="text-5xl">🚀</span>
-                        </div>
-                        <h1 className="text-4xl font-black text-white mb-3 tracking-tight">¡Tu Tienda está Lista!</h1>
-                        <p className="text-slate-400 text-xl font-medium">Empieza a vender por WhatsApp ahora mismo.</p>
+    const shareWhatsApp = () => {
+        const text = `¡Mira mi tienda online! ${storeUrl}`;
+        window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
+    };
+
+    const downloadQR = () => {
+        const link = document.createElement('a');
+        link.href = qrCode;
+        link.download = `${slug}-qr.png`;
+        link.click();
+    };
+
+    return (
+        <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50 py-12 px-4">
+            <div className="max-w-4xl mx-auto">
+                {/* Header de éxito */}
+                <div className="text-center mb-12">
+                    <div className="inline-flex items-center justify-center w-20 h-20 bg-green-500 rounded-full mb-6">
+                        <svg className="w-10 h-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                        </svg>
                     </div>
+                    <h1 className="text-4xl font-bold text-gray-900 mb-4">
+                        ¡Tu Tienda Está Lista! 🎉
+                    </h1>
+                    <p className="text-xl text-gray-600">
+                        Empieza a recibir pedidos por WhatsApp ahora mismo
+                    </p>
                 </div>
 
-                <div className="p-10 space-y-10">
-                    <div className="bg-slate-50 rounded-[2.5rem] p-10 text-center border border-slate-100">
-                        <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-6">Escanea para ver en tu móvil</p>
-                        <div className="flex justify-center mb-6">
-                            <div className="p-6 bg-white rounded-[2rem] shadow-xl border border-slate-100">
-                                {publicUrl ? (
-                                    <StoreQRCode url={publicUrl} size={220} storeName={slug || 'Tienda'} />
-                                ) : (
-                                    <div className="w-[220px] h-[220px] bg-slate-50 animate-pulse rounded-xl" />
-                                )}
-                            </div>
-                        </div>
-                        <p className="text-slate-500 text-sm font-medium">Tus clientes pueden acceder instantáneamente escaneando este código.</p>
-                    </div>
-
-                    <div className="space-y-6">
-                        <div className="flex flex-col gap-3">
-                            <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 px-2">Enlace directo:</label>
-                            <div className="flex gap-2 p-2 bg-slate-50 rounded-2xl border border-slate-100">
-                                <input
-                                    readOnly
-                                    value={publicUrl}
-                                    className="flex-1 bg-transparent border-none outline-none px-4 text-slate-600 font-bold"
-                                />
-                                <button
-                                    onClick={() => {
-                                        if (typeof navigator !== 'undefined' && navigator.clipboard) {
-                                            navigator.clipboard.writeText(publicUrl);
-                                            const btn = document.getElementById('copy-btn');
-                                            if (btn) btn.innerText = '✅ Copiado';
-                                            setTimeout(() => { if (btn) btn.innerText = '📋 Copiar'; }, 2000);
-                                        }
-                                    }}
-                                    id="copy-btn"
-                                    className="px-6 py-2 bg-slate-900 text-white rounded-xl font-black text-xs hover:bg-slate-800 transition-all active:scale-95"
-                                >
-                                    📋 Copiar
-                                </button>
-                            </div>
-                        </div>
-
-                        <div className="flex flex-col gap-4">
+                {/* Card principal */}
+                <div className="bg-white rounded-3xl shadow-2xl p-8 mb-8">
+                    {/* URL de la tienda */}
+                    <div className="mb-8">
+                        <label className="block text-sm font-bold text-gray-700 mb-3">
+                            Enlace de tu tienda:
+                        </label>
+                        <div className="flex gap-3">
+                            <input
+                                type="text"
+                                value={storeUrl}
+                                readOnly
+                                className="flex-1 px-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl font-mono text-sm"
+                            />
                             <button
-                                onClick={() => {
-                                    if (typeof window !== 'undefined') {
-                                        window.open(`https://wa.me/?text=¡Hola! Mira mi nueva tienda online: ${publicUrl}`, '_blank');
-                                    }
-                                }}
-                                className="w-full bg-[#25D366] hover:bg-[#1ebd5e] text-white py-6 rounded-[2rem] font-black text-xl shadow-xl shadow-green-200 transition-all flex items-center justify-center gap-4 group"
+                                onClick={copyToClipboard}
+                                className="px-6 py-3 bg-gray-900 text-white rounded-xl font-bold hover:bg-gray-800 transition-colors"
                             >
-                                <Share2 className="w-7 h-7" />
-                                <span>Compartir en WhatsApp</span>
+                                Copiar
                             </button>
-
-                            <a
-                                href={publicUrl}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="w-full bg-slate-900 hover:bg-slate-800 text-white py-6 rounded-[2rem] font-black text-xl shadow-xl shadow-slate-200 transition-all flex items-center justify-center gap-4 no-underline group"
-                            >
-                                <ExternalLink className="w-7 h-7" />
-                                <span>Visitar mi Tienda</span>
-                            </a>
-                        </div>
-
-                        <div className="pt-8 border-t border-slate-100 text-center">
-                            <Link href="/dashboard" className="inline-flex items-center gap-2 text-slate-400 hover:text-slate-900 font-black text-sm uppercase tracking-widest transition-all">
-                                <ArrowLeft className="w-5 h-5" />
-                                Volver a mi Panel
-                            </Link>
                         </div>
                     </div>
+
+                    {/* QR Code */}
+                    <div className="mb-8 text-center">
+                        <label className="block text-sm font-bold text-gray-700 mb-4">
+                            Código QR:
+                        </label>
+                        <div className="inline-block p-6 bg-white border-4 border-gray-100 rounded-2xl shadow-lg">
+                            <img
+                                src={qrCode}
+                                alt="QR Code"
+                                className="w-64 h-64"
+                            />
+                        </div>
+                        <button
+                            onClick={downloadQR}
+                            className="mt-4 px-6 py-3 bg-blue-500 text-white rounded-xl font-bold hover:bg-blue-600 transition-colors inline-flex items-center gap-2"
+                        >
+                            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                            </svg>
+                            Descargar QR
+                        </button>
+                    </div>
+
+                    {/* Botones de acción */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <a
+                            href={storeUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center justify-center gap-3 px-6 py-4 bg-green-500 text-white rounded-xl font-bold hover:bg-green-600 transition-all shadow-lg"
+                        >
+                            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                            </svg>
+                            Ver mi Tienda
+                        </a>
+                        <button
+                            onClick={shareWhatsApp}
+                            className="flex items-center justify-center gap-3 px-6 py-4 bg-[#25D366] text-white rounded-xl font-bold hover:bg-[#1ebd5e] transition-all shadow-lg"
+                        >
+                            <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
+                            </svg>
+                            Compartir en WhatsApp
+                        </button>
+                    </div>
+                </div>
+
+                {/* Botón volver */}
+                <div className="text-center">
+                    <Link
+                        href="/dashboard"
+                        className="inline-flex items-center gap-2 text-gray-600 hover:text-gray-900 font-bold transition-colors"
+                    >
+                        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                        </svg>
+                        Volver al Panel
+                    </Link>
                 </div>
             </div>
-            <p className="mt-12 text-slate-400 font-black text-[10px] uppercase tracking-[0.3em] relative z-10">© 2026 Creatiendas · Hecho para vender</p>
         </div>
-    );
-}
-
-export default function BuilderSuccessPage() {
-    return (
-        <Suspense fallback={
-            <div className="min-h-screen flex items-center justify-center bg-gray-50">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600"></div>
-            </div>
-        }>
-            <SuccessContent />
-        </Suspense>
     );
 }
