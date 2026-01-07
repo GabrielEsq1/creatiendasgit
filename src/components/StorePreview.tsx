@@ -51,7 +51,7 @@ export default function StorePreview({ data, products, viewMode = 'desktop', rea
         ? Array.from(new Set(products.map(p => p.category).filter(Boolean)))
         : [];
 
-    const cleanPhone = (phone: string) => phone.replace(/\D/g, '');
+    const cleanPhone = (phone: string | null | undefined) => (phone || '').replace(/\D/g, '');
 
     return (
         <>

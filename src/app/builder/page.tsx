@@ -132,10 +132,24 @@ function BuilderContent() {
                         const mergedData: StoreData = {
                             ...INITIAL_DATA,
                             ...rawData,
+                            // Safety checks for critical fields
+                            name: rawData.name || INITIAL_DATA.name,
+                            desc: rawData.desc || INITIAL_DATA.desc,
+                            whatsapp: rawData.whatsapp || INITIAL_DATA.whatsapp,
+                            color: rawData.color || INITIAL_DATA.color,
                             id: storeId,
-                            socials: { ...INITIAL_DATA.socials, ...(rawData.socials || {}) },
-                            about: { ...INITIAL_DATA.about, ...(rawData.about || {}) },
-                            careers: { ...INITIAL_DATA.careers, ...(rawData.careers || {}) }
+                            socials: {
+                                ...INITIAL_DATA.socials,
+                                ...(rawData.socials || {})
+                            },
+                            about: {
+                                ...INITIAL_DATA.about,
+                                ...(rawData.about || {})
+                            },
+                            careers: {
+                                ...INITIAL_DATA.careers,
+                                ...(rawData.careers || {})
+                            }
                         };
 
                         setStoreData(mergedData);
