@@ -6,7 +6,6 @@ import Navbar from "../components/Navbar";
 import { Providers } from "./providers";
 import WhatsAppButton from "../components/WhatsAppButton";
 import { AnalyticsTracker } from "../components/Analytics";
-import GA4Professional from "../components/GA4Professional";
 import TranslationPrompt from "../components/TranslationPrompt";
 import LayoutWrapper from "@/components/LayoutWrapper";
 import OrganizationSchema from "@/components/OrganizationSchema";
@@ -75,9 +74,6 @@ export default function RootLayout({
             </head>
             <body className={inter.className}>
                 <Providers>
-                    <Suspense fallback={null}>
-                        <GA4Professional />
-                    </Suspense>
                     <AnalyticsTracker />
                     <LayoutWrapper>
                         <OrganizationSchema />

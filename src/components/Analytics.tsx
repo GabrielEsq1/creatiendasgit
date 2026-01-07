@@ -23,6 +23,7 @@ export type AnalyticsEventType =
     | 'scroll_75'
     | 'scroll_90'
     | 'qualified_view'
+    | 'qualified_page_view'
     | 'feature_enabled'
     | 'primary_cta_click'
     | 'explore_click'
@@ -36,6 +37,7 @@ export type AnalyticsEventType =
     | 'video_start'
     | 'video_complete'
     | 'social_proof_view'
+    | 'form_abandonment'
     | 'store_publish_success';
 
 const PIXEL_ID = '1419499733092502'; // Píxel de Gabriel Esquivia
@@ -56,29 +58,26 @@ export const useAnalytics = () => {
                 }),
             }).catch(() => { }); // Silent fail
 
-            // 2. Log to console in development
-            if (process.env.NODE_ENV === 'development') {
-                console.log(`[Analytics] ${eventType}:`, data);
-            }
-
-            // 3. Send to Meta Pixel
+            // 2. Send to Meta Pixel
             if (typeof window !== 'undefined' && (window as any).fbq) {
                 const fbEvent = mapToPixelEvent(eventType);
                 (window as any).fbq('track', fbEvent, data);
             }
 
-            // 4. Send to GA4
+            // 3. Send to GA4
             trackGAEvent({ action: eventType, ...data });
 
+            if (process.env.NODE_ENV === 'development') {
+                console.log(`[Analytics] ${eventType}:`, data);
+            }
         } catch (error) {
-            // Silent fail - don't break user experience
+            // Silent fail
         }
     };
 
     return { trackEvent };
 };
 
-// Map internal events to Meta Pixel standard events
 function mapToPixelEvent(eventType: AnalyticsEventType): string {
     switch (eventType) {
         case 'page_view': return 'PageView';
@@ -91,131 +90,90 @@ function mapToPixelEvent(eventType: AnalyticsEventType): string {
     }
 }
 
-// Inner tracker component that uses searchParams
 function AnalyticsTrackerInner() {
     const pathname = usePathname();
     const searchParams = useSearchParams();
     const { trackEvent } = useAnalytics();
 
-    // Refs for qualified view logic
+    // Tracking refs
     const startTime = useRef(Date.now());
     const hasScrolled50 = useRef(false);
+    const scrollTracked = useRef<Record<number, boolean>>({});
 
     useEffect(() => {
-        // 1. Detect and Store UTMs automatically
+        if (!pathname) return;
+
+        // 1. Store UTMs
         if (searchParams && searchParams.toString().includes('utm_')) {
             storeUTMs(searchParams);
         }
 
-        // 2. Auto-trigger landing_view if coming from a campaign
-        const stored = getStoredUTMs();
-        let isLandingVisit = false;
-        try {
-            isLandingVisit = !sessionStorage.getItem('ct_landing_tracked');
-        } catch (e) { }
-
-        if (isLandingVisit && (stored.utm_source || (searchParams && searchParams.get('utm_source')))) {
-            trackEvent('landing_view', {
-                path: pathname,
-                source: stored.utm_source || searchParams?.get('utm_source'),
-            });
-            try {
-                sessionStorage.setItem('ct_landing_tracked', 'true');
-            } catch (e) { }
-        }
-
-        // 3. Track page view on route change
-        trackEvent('page_view', {
-            path: pathname,
-            search: searchParams?.toString(),
+        // 2. Page View (GA4 & Meta)
+        trackGAEvent({
+            action: 'page_view',
+            page_path: pathname + (searchParams?.toString() ? `?${searchParams.toString()}` : '')
         });
 
-        // 4. Manually trigger Pixel PageView on route change
         if (typeof window !== 'undefined' && (window as any).fbq) {
             (window as any).fbq('track', 'PageView');
         }
 
-        // Reset/Update start time on path change
+        // Reset trackers
         startTime.current = Date.now();
         hasScrolled50.current = false;
+        scrollTracked.current = {};
 
-    }, [pathname, searchParams, trackEvent]);
+    }, [pathname, searchParams]);
 
-    // 5. Advanced Scroll & Engagement Tracking
     useEffect(() => {
-        let scrollTimeout: NodeJS.Timeout;
-        let qualifiedTimer: NodeJS.Timeout;
-        const trackedMilestones = new Set<number>();
-
-        const checkQualifiedView = () => {
-            const timeSpent = Date.now() - startTime.current;
-            const qualifiedStorageKey = `ct_qualified_${pathname}`;
-
-            // Check for Time + Scroll qualification (if 30s passed)
-            const scroll50StorageKey = `ct_scroll_50_${pathname}`;
-            try {
-                if (sessionStorage.getItem(scroll50StorageKey) && !sessionStorage.getItem(qualifiedStorageKey)) {
-                    trackEvent('qualified_view', { path: pathname, trigger: 'time_and_scroll_met' });
-                    sessionStorage.setItem(qualifiedStorageKey, 'true');
-                }
-            } catch (e) { }
-        };
-
         const handleScroll = () => {
-            if (scrollTimeout) clearTimeout(scrollTimeout);
+            if (!window || !document) return;
 
-            scrollTimeout = setTimeout(() => {
-                const scrollPercent = (window.scrollY + window.innerHeight) / document.documentElement.scrollHeight * 100;
-                const milestones = [25, 50, 75, 90];
+            const scrollPercent = (window.scrollY + window.innerHeight) / document.documentElement.scrollHeight * 100;
+            const milestones = [25, 50, 75, 90];
 
-                milestones.forEach(milestone => {
-                    if (scrollPercent >= milestone && !trackedMilestones.has(milestone)) {
-                        const storageKey = `ct_scroll_${milestone}_${pathname}`;
-                        let alreadyTracked = false;
-                        try {
-                            alreadyTracked = !!sessionStorage.getItem(storageKey);
-                        } catch (e) { }
-
-                        if (!alreadyTracked) {
-                            trackEvent(`scroll_${milestone}` as AnalyticsEventType, {
-                                path: pathname,
-                                scroll_depth: milestone
-                            });
-                            try {
-                                sessionStorage.setItem(storageKey, 'true');
-                            } catch (e) { }
-                            trackedMilestones.add(milestone);
-
-                            // Mark 50% for qualified view
-                            if (milestone === 50) {
-                                hasScrolled50.current = true;
-                                checkQualifiedView(); // Check immediately
-                            }
+            milestones.forEach(m => {
+                if (scrollPercent >= m && !scrollTracked.current[m]) {
+                    trackEvent(`scroll_${m}` as AnalyticsEventType, { scroll_depth: m });
+                    scrollTracked.current[m] = true;
+                    if (m === 50 && !hasScrolled50.current) {
+                        hasScrolled50.current = true;
+                        if (Date.now() - startTime.current > 10000) {
+                            trackEvent('qualified_page_view', { milestone: '50_percent_scroll' });
                         }
                     }
-                });
-            }, 100);
+                }
+            });
         };
 
-        // Timer to check qualification after 30s
-        qualifiedTimer = setTimeout(checkQualifiedView, 30000);
+        const handleInteraction = () => {
+            // Qualify view after 30s
+            if (Date.now() - startTime.current > 30000) {
+                const key = `ct_qualified_${pathname}`;
+                try {
+                    if (!sessionStorage.getItem(key)) {
+                        trackEvent('qualified_view', { path: pathname });
+                        sessionStorage.setItem(key, 'true');
+                    }
+                } catch (e) { }
+            }
+        };
 
-        window.addEventListener('scroll', handleScroll);
+        window.addEventListener('scroll', handleScroll, { passive: true });
+        window.addEventListener('click', handleInteraction, { passive: true });
+
         return () => {
             window.removeEventListener('scroll', handleScroll);
-            if (scrollTimeout) clearTimeout(scrollTimeout);
-            clearTimeout(qualifiedTimer);
+            window.removeEventListener('click', handleInteraction);
         };
     }, [pathname, trackEvent]);
 
     return null;
 }
 
-// Main exported component with Suspense boundary
 export const AnalyticsTracker = () => {
     return (
         <>
-            {/* GA4 Code */}
             <Script
                 src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`}
                 strategy="afterInteractive"
@@ -227,12 +185,11 @@ export const AnalyticsTracker = () => {
                     gtag('js', new Date());
                     gtag('config', '${GA_MEASUREMENT_ID}', {
                         page_path: window.location.pathname,
-                        send_page_view: false // We handle it manually via trackEvent
+                        send_page_view: false
                     });
                 `}
             </Script>
 
-            {/* Meta Pixel Code */}
             <Script
                 id="meta-pixel"
                 strategy="afterInteractive"
@@ -251,20 +208,9 @@ export const AnalyticsTracker = () => {
                     `,
                 }}
             />
-            <noscript>
-                <img
-                    height="1"
-                    width="1"
-                    style={{ display: 'none' }}
-                    src={`https://www.facebook.com/tr?id=${PIXEL_ID}&ev=PageView&noscript=1`}
-                    alt=""
-                />
-            </noscript>
-            {/* Wrap searchParams usage in Suspense */}
             <Suspense fallback={null}>
                 <AnalyticsTrackerInner />
             </Suspense>
         </>
     );
 };
-

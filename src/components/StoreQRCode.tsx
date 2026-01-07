@@ -9,12 +9,13 @@ interface StoreQRCodeProps {
     storeName?: string;
 }
 
-const StoreQRCode: React.FC<StoreQRCodeProps> = ({ url, size = 200, storeName = 'Mi Tienda' }) => {
+const StoreQRCode: React.FC<StoreQRCodeProps> = ({ url, size = 200, storeName }) => {
     const qrRef = useRef<HTMLDivElement>(null);
+    const safeStoreName = storeName || 'Mi Tienda';
 
     const handleDownload = () => {
         const svg = qrRef.current?.querySelector('svg');
-        if (!svg) return;
+        if (!svg || !url) return;
 
         // Convert SVG to canvas
         const canvas = document.createElement('canvas');
@@ -34,12 +35,12 @@ const StoreQRCode: React.FC<StoreQRCodeProps> = ({ url, size = 200, storeName = 
             // Download as PNG
             canvas.toBlob((blob) => {
                 if (!blob) return;
-                const url = URL.createObjectURL(blob);
+                const blobUrl = URL.createObjectURL(blob);
                 const link = document.createElement('a');
-                link.download = `${storeName.replace(/\s+/g, '-').toLowerCase()}-qr.png`;
-                link.href = url;
+                link.download = `${safeStoreName.replace(/\s+/g, '-').toLowerCase()}-qr.png`;
+                link.href = blobUrl;
                 link.click();
-                URL.revokeObjectURL(url);
+                URL.revokeObjectURL(blobUrl);
             });
         };
 

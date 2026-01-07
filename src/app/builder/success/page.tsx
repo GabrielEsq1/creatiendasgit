@@ -18,22 +18,23 @@ function SuccessContent() {
 
         try {
             const finalUrl = getStoreUrl(slug);
-            setPublicUrl(finalUrl);
+            setPublicUrl(finalUrl || '');
 
             // Fire confetti with safety
-            if (typeof window !== 'undefined' && typeof confetti === 'function') {
+            const confettiFn = (confetti as any) || (typeof window !== 'undefined' ? (window as any).confetti : null);
+            if (typeof confettiFn === 'function') {
                 const duration = 3000;
                 const end = Date.now() + duration;
 
                 const frame = () => {
-                    confetti({
+                    confettiFn({
                         particleCount: 2,
                         angle: 60,
                         spread: 55,
                         origin: { x: 0, y: 0.6 },
                         colors: ['#2196F3', '#FFEB3B', '#4CAF50']
                     });
-                    confetti({
+                    confettiFn({
                         particleCount: 2,
                         angle: 120,
                         spread: 55,
@@ -88,7 +89,7 @@ function SuccessContent() {
                         <div className="flex justify-center mb-6">
                             <div className="p-6 bg-white rounded-[2rem] shadow-xl border border-slate-100">
                                 {publicUrl ? (
-                                    <StoreQRCode url={publicUrl} size={220} storeName={slug} />
+                                    <StoreQRCode url={publicUrl} size={220} storeName={slug || 'Tienda'} />
                                 ) : (
                                     <div className="w-[220px] h-[220px] bg-slate-50 animate-pulse rounded-xl" />
                                 )}
