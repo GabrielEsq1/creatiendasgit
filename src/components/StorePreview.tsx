@@ -47,7 +47,9 @@ export default function StorePreview({ data, products, viewMode = 'desktop', rea
         );
     };
 
-    const uniqueCategories = Array.from(new Set(products.map(p => p.category).filter(Boolean)));
+    const uniqueCategories = Array.isArray(products)
+        ? Array.from(new Set(products.map(p => p.category).filter(Boolean)))
+        : [];
 
     const cleanPhone = (phone: string) => phone.replace(/\D/g, '');
 
@@ -61,7 +63,7 @@ export default function StorePreview({ data, products, viewMode = 'desktop', rea
                 maxWidth: viewMode === 'mobile' ? '430px' : '1000px',
                 width: '100%',
                 fontFamily: data.font || 'Inter, sans-serif',
-                '--border-radius': data.borderRadius || '8px',
+                '--border-radius': data?.borderRadius || '8px',
                 margin: '0 auto'
             } as React.CSSProperties}>
                 {/* TOPBAR */}
@@ -135,9 +137,8 @@ export default function StorePreview({ data, products, viewMode = 'desktop', rea
                             </div>
                         )}
 
-                        {/* PRODUCTS */}
                         <div className="store-products">
-                            {products.map(product => (
+                            {Array.isArray(products) && products.map(product => (
                                 <div key={product.id} className="product-card">
                                     <div className="product-image">
                                         {product.image ? (
@@ -174,31 +175,31 @@ export default function StorePreview({ data, products, viewMode = 'desktop', rea
                         <div className="about-inner">
                             <div>
                                 <p className="about-block-title">Quiénes somos</p>
-                                <h2 className="about-hero-title">{data.about.heroTitle}</h2>
-                                <p className="about-hero-subtitle">{renderMultiline(data.about.heroSubtitle)}</p>
+                                <h2 className="about-hero-title">{data.about?.heroTitle}</h2>
+                                <p className="about-hero-subtitle">{renderMultiline(data.about?.heroSubtitle || '')}</p>
 
-                                {data.about.mission && (
+                                {data.about?.mission && (
                                     <div>
                                         <p className="about-block-title">Nuestro propósito / misión</p>
-                                        <p className="about-text">{data.about.mission}</p>
+                                        <p className="about-text">{data.about?.mission}</p>
                                     </div>
                                 )}
 
-                                {data.about.vision && (
+                                {data.about?.vision && (
                                     <div>
                                         <p className="about-block-title">Visión</p>
-                                        <p className="about-text">{data.about.vision}</p>
+                                        <p className="about-text">{data.about?.vision}</p>
                                     </div>
                                 )}
 
-                                {data.about.values.length > 0 && (
+                                {data.about?.values && data.about.values.length > 0 && (
                                     <div>
                                         <p className="about-block-title">Valores</p>
                                         {renderList(data.about.values, 'dot')}
                                     </div>
                                 )}
 
-                                {data.about.diff.length > 0 && (
+                                {data.about?.diff && data.about.diff.length > 0 && (
                                     <div>
                                         <p className="about-block-title">Qué nos diferencia</p>
                                         <ul className="about-diff-list">
@@ -207,21 +208,21 @@ export default function StorePreview({ data, products, viewMode = 'desktop', rea
                                     </div>
                                 )}
 
-                                {data.about.team && (
+                                {data.about?.team && (
                                     <div>
                                         <p className="about-block-title">Equipo y cultura</p>
-                                        <p className="about-text">{data.about.team}</p>
+                                        <p className="about-text">{data.about?.team}</p>
                                     </div>
                                 )}
 
                                 <div className="about-cta">
                                     <button onClick={() => setActiveView('catalogo')} style={{ background: data.color, border: 'none', color: 'white', padding: '0.65rem 1.1rem', borderRadius: '999px', fontWeight: 600, cursor: 'pointer' }}>
-                                        {data.about.ctaText || 'Conócenos más'}
+                                        {data.about?.ctaText || 'Conócenos más'}
                                     </button>
                                 </div>
                             </div>
 
-                            {data.about.timeline.length > 0 && (
+                            {data.about?.timeline && data.about.timeline.length > 0 && (
                                 <div>
                                     <p className="about-block-title">Nuestra historia</p>
                                     <div className="about-timeline">
@@ -241,7 +242,7 @@ export default function StorePreview({ data, products, viewMode = 'desktop', rea
                                 </div>
                             )}
 
-                            {data.about.gallery.length > 0 && (
+                            {data.about?.gallery && data.about.gallery.length > 0 && (
                                 <div className="about-gallery">
                                     <p className="about-gallery-title">Galería</p>
                                     <div className="about-gallery-grid">
@@ -263,9 +264,9 @@ export default function StorePreview({ data, products, viewMode = 'desktop', rea
                 {activeView === 'careers' && (
                     <section className="careers-section view-section" style={{ display: 'block' }}>
                         <div className="careers-inner">
-                            <h2 className="careers-title">{data.careers.title}</h2>
-                            <p className="careers-desc">{data.careers.desc}</p>
-                            {data.careers.benefits.length > 0 && (
+                            <h2 className="careers-title">{data.careers?.title}</h2>
+                            <p className="careers-desc">{data.careers?.desc}</p>
+                            {data.careers?.benefits && data.careers.benefits.length > 0 && (
                                 <ul className="careers-benefits">
                                     {data.careers.benefits.map((b, i) => (
                                         <li key={i} style={{ '--primary-color': data.color } as any}>{b}</li>
@@ -274,12 +275,12 @@ export default function StorePreview({ data, products, viewMode = 'desktop', rea
                             )}
                             <div className="careers-cta">
                                 <a
-                                    href={`https://wa.me/${cleanPhone(data.whatsapp)}?text=${encodeURIComponent('Hola, me interesa trabajar con ustedes.')}`}
+                                    href={`https://wa.me/${cleanPhone(data.whatsapp || '')}?text=${encodeURIComponent('Hola, me interesa trabajar con ustedes.')}`}
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     style={{ backgroundColor: data.color }}
                                 >
-                                    <span>💼</span> {data.careers.ctaText}
+                                    <span>💼</span> {data.careers?.ctaText || 'Trabaja con nosotros'}
                                 </a>
                             </div>
                         </div>
@@ -319,13 +320,13 @@ export default function StorePreview({ data, products, viewMode = 'desktop', rea
                         <div className="footer-column">
                             <h4>Contacto</h4>
                             <div className="store-contact">
-                                {data.socials.phone && <p>📞 {data.socials.phone}</p>}
-                                {data.socials.email && <p>✉️ {data.socials.email}</p>}
+                                {data.socials?.phone && <p>📞 {data.socials.phone}</p>}
+                                {data.socials?.email && <p>✉️ {data.socials.email}</p>}
                             </div>
                             <div className="store-socials">
-                                {data.socials.instagram && <a href={data.socials.instagram} target="_blank" rel="noopener noreferrer">Instagram</a>}
-                                {data.socials.facebook && <a href={data.socials.facebook} target="_blank" rel="noopener noreferrer">Facebook</a>}
-                                {data.socials.tiktok && <a href={data.socials.tiktok} target="_blank" rel="noopener noreferrer">TikTok</a>}
+                                {data.socials?.instagram && <a href={data.socials.instagram} target="_blank" rel="noopener noreferrer">Instagram</a>}
+                                {data.socials?.facebook && <a href={data.socials.facebook} target="_blank" rel="noopener noreferrer">Facebook</a>}
+                                {data.socials?.tiktok && <a href={data.socials.tiktok} target="_blank" rel="noopener noreferrer">TikTok</a>}
                             </div>
                         </div>
                     </div>

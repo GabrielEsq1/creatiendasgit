@@ -61,8 +61,13 @@ function SuccessContent() {
 
     if (!slug) {
         return (
-            <div className="min-h-screen flex items-center justify-center bg-gray-50">
-                <p>Cargando...</p>
+            <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 p-6">
+                <div className="bg-white p-8 rounded-[2rem] shadow-xl text-center max-w-sm">
+                    <p className="text-slate-500 mb-6">No se encontró información de la tienda.</p>
+                    <Link href="/dashboard" className="btn btn-primary block w-full">
+                        Volver al Panel
+                    </Link>
+                </div>
             </div>
         );
     }

@@ -118,15 +118,27 @@ function BuilderContent() {
                     }
                 })
                 .then(data => {
-                    if (data && data.store) {
-                        setStoreData({ ...data.store.data, id: data.store.id });
-                        idRef.current = data.store.id;
-                        slugRef.current = data.store.slug;
-                        if (data.store.products) setProducts(data.store.products);
-                    } else if (data && data.data) {
-                        // Fallback for potential legacy API structure
-                        setStoreData({ ...data.data, id: data.id });
-                        if (data.products) setProducts(data.products);
+                    if (data && (data.store || data.data)) {
+                        const rawData = data.store ? data.store.data : data.data;
+                        const storeId = data.store ? data.store.id : data.id;
+                        const storeSlug = data.store ? data.store.slug : data.slug;
+
+                        // Deep merge with INITIAL_DATA to ensure structure
+                        const mergedData: StoreData = {
+                            ...INITIAL_DATA,
+                            ...rawData,
+                            id: storeId,
+                            socials: { ...INITIAL_DATA.socials, ...(rawData.socials || {}) },
+                            about: { ...INITIAL_DATA.about, ...(rawData.about || {}) },
+                            careers: { ...INITIAL_DATA.careers, ...(rawData.careers || {}) }
+                        };
+
+                        setStoreData(mergedData);
+                        idRef.current = storeId;
+                        slugRef.current = storeSlug;
+                        if (data.store?.products || data.products) {
+                            setProducts(data.store?.products || data.products);
+                        }
                     } else {
                         alert('No se pudo cargar la tienda para editar');
                     }
@@ -321,17 +333,28 @@ function BuilderContent() {
 
         if (!silent) setPublicUrl(null);
         try {
-            // SLUG STABILIZATION: Generate once and reuse to avoid duplicates
+            // SLUG STABILIZATION
             if (!slugRef.current && !editSlug) {
-                slugRef.current = storeData.name.toLowerCase()
+                const namePart = storeData.name.toLowerCase()
                     .normalize('NFD')
                     .replace(/[\u0300-\u036f]/g, '')
                     .replace(/[^a-z0-9]+/g, '-')
                     .replace(/^-+|-+$/g, '')
-                    .replace(/-+/g, '-') + '-' + Math.random().toString(36).substring(2, 7);
+                    .replace(/-+/g, '-');
+
+                if (!namePart && !silent) {
+                    throw new Error('Por favor ingresa un nombre para tu tienda antes de publicar.');
+                }
+
+                slugRef.current = (namePart || 'tienda') + '-' + Math.random().toString(36).substring(2, 7);
             }
 
             const currentSlug = slugRef.current || storeData.slug || editSlug;
+
+            if (!currentSlug && !silent) {
+                throw new Error('Error de enlace: No se pudo determinar la dirección de la tienda.');
+            }
+
             const currentId = idRef.current || storeData.id;
 
             // Determine method and URL based on persistent ID
@@ -393,11 +416,10 @@ function BuilderContent() {
                 // TRACK CONVERSION
                 trackEvent('store_publish_success', { store_name: storeData.name });
 
-                if (!editSlug && !silent) {
-                    // Manual publish: Redirect to success landing
+                if (!silent) {
+                    // Manual publish/update: Redirect to success landing to show QR and Share options
+                    console.log('Redirecting to success page with slug:', currentSlug);
                     router.push(`/builder/success?slug=${currentSlug}`);
-                } else if (editSlug && !silent) {
-                    alert(`¡Tienda actualizada con éxito!`);
                 }
             } else {
                 throw new Error(json.message || 'Error inesperado');

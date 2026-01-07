@@ -4,6 +4,9 @@ import { Metadata } from 'next';
 export const metadata: Metadata = {
     title: "Crea tu Tienda Online por WhatsApp Gratis en Minutos",
     description: "La plataforma líder en LATAM para vender por WhatsApp. Crea tu catálogo digital sin comisiones y empieza a recibir pedidos hoy mismo.",
+    alternates: {
+        canonical: 'https://creatiendas.co',
+    },
 };
 
 export const dynamic = 'force-dynamic';
@@ -23,11 +26,15 @@ import SoftwareSchema from '@/components/SoftwareSchema';
 
 import { SocialProofSection } from '@/components/SocialProofSection';
 import SuccessBanner from '@/components/SuccessBanner';
+import FAQSchema from '@/components/FAQSchema';
+import LocalBusinessSchema from '@/components/LocalBusinessSchema';
 
 export default function LandingPage() {
     return (
         <div className="min-h-screen bg-white text-slate-900 flex flex-col selection:bg-green-500/30">
             <SoftwareSchema />
+            <FAQSchema />
+            <LocalBusinessSchema />
             <main className="flex-1">
                 <Hero />
                 <WhatIs />
