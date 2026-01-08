@@ -88,10 +88,10 @@ export default function Hero() {
                     </button>
                 </div>
 
-                {/* PWA Install Button - TEMPORARILY DISABLED DUE TO MOBILE CRASH */}
-                {/* <div className="flex justify-center mb-12">
-                     <InstallAppButton />
-                </div> */}
+                {/* PWA Install Button - Creates app shortcut with logo */}
+                <div className="flex justify-center mb-12">
+                    <InstallAppButton />
+                </div>
 
                 {/* 4. Comparison Table */}
                 <div className="max-w-4xl mx-auto mb-20">

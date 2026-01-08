@@ -67,10 +67,10 @@ export default function HeroEN() {
                     </button>
                 </div>
 
-                {/* PWA Install Button - TEMPORARILY DISABLED */}
-                {/* <div className="flex justify-center mb-12">
-                     <InstallAppButton />
-                </div> */}
+                {/* PWA Install Button - Creates app shortcut with logo */}
+                <div className="flex justify-center mb-12">
+                    <InstallAppButton />
+                </div>
 
                 {/* Comparison Table */}
                 <div className="max-w-4xl mx-auto mb-20">
