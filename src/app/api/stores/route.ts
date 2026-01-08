@@ -56,12 +56,13 @@ export async function POST(request: Request) {
         console.log('API Create Store Response - ID:', store.id);
 
         return NextResponse.json({
+            success: true, // CRITICAL: Builder checks for this flag
             store,
             id: store.id,
             slug: store.slug,
-            version: '1.0.1', // Debug version
             url: publicUrl,
-            publicUrl
+            publicUrl,
+            version: '1.0.2' // Track API version
         });
     } catch (error) {
         console.error('Error creating store:', error);
