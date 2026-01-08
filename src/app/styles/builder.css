@@ -909,54 +909,46 @@ body {
 }
 
 @media (max-width: 900px) {
-
-    /* Enforce desktop-like layout with horizontal scroll on mobile as requested */
-    body {
-        overflow-y: hidden;
-        /* Prevent body scroll, handle in panels */
-    }
-
     .app-container {
         flex-direction: row;
-        /* Keep side-by-side */
         height: calc(100vh - 64px);
-        overflow-x: auto;
-        /* Allow horizontal scroll to see both panels */
-        overflow-y: hidden;
-        width: 100vw;
     }
 
     .builder-panel {
-        width: 350px;
-        /* Fixed width for editor on mobile */
-        min-width: 350px;
+        width: 50%;
+        min-width: 0;
+        /* Allow shrinking */
         border-right: 1px solid #ddd;
         border-bottom: none;
-        padding: 1.25rem;
-        flex-shrink: 0;
-        /* Prevent shrinking */
-    }
-
-    .preview-panel {
-        min-width: 375px;
-        /* Ensure preview has enough space */
-        flex: 1;
         padding: 1rem;
         overflow-y: auto;
     }
 
-    /* Adjust topbar for narrower preview */
-    .store-topbar-inner {
-        flex-direction: row;
-        /* Keep row in preview */
+    .preview-panel {
+        width: 50%;
+        min-width: 0;
+        border-left: none;
+        background: #eef2f6;
+        padding: 0.5rem;
+        overflow-y: hidden;
+        /* Hide scroll to keep layout clean, preview container handles scale */
+        display: flex;
+        flex-direction: column;
         align-items: center;
     }
-}
 
-@media (max-width: 480px) {
+    /* Scale the preview to fit in the 50% width */
+    .store-preview-container {
+        transform: scale(0.5);
+        transform-origin: top center;
+        width: 190%;
+        /* Compensate for scale */
+        margin-bottom: -90%;
+        margin-top: 1rem;
+    }
 
-    /* On very small screens, exact side-by-side might be too tight, but horizontal scroll handles it. */
-    .store-products {
-        grid-template-columns: 1fr;
+    .device-toggle {
+        display: none;
+        /* Hide device toggle on mobile to save space */
     }
 }
