@@ -188,30 +188,30 @@ function SuccessContent() {
                         <div className="space-y-3">
                             <button
                                 onClick={() => {
-                                    if (slug && slug !== 'undefined') {
-                                        router.push(`/builder?edit=${slug}`);
+                                    if (slug && slug !== 'undefined' && slug !== 'null') {
+                                        window.location.href = `/builder?edit=${slug}`;
                                     } else {
-                                        router.push('/dashboard');
+                                        window.location.href = '/dashboard';
                                     }
                                 }}
-                                className="w-full text-left flex items-center gap-3 text-white cursor-pointer hover:bg-white/5 p-3 rounded-xl transition-colors"
+                                className="w-full text-left flex items-center gap-3 text-white cursor-pointer hover:bg-white/5 p-3 rounded-xl transition-all"
                             >
                                 <span className="w-6 h-6 rounded-full bg-indigo-500 flex items-center justify-center text-xs font-mono">1</span>
-                                <span className="flex-1">{t.step1}</span>
+                                <span className="flex-1 font-bold">{t.step1}</span>
                                 <ArrowRight className="w-4 h-4 opacity-50" />
                             </button>
                             <button
                                 onClick={() => {
-                                    if (slug && slug !== 'undefined') {
-                                        router.push(`/builder?edit=${slug}`);
+                                    if (slug && slug !== 'undefined' && slug !== 'null') {
+                                        window.location.href = `/builder?edit=${slug}`;
                                     } else {
-                                        router.push('/dashboard');
+                                        window.location.href = '/dashboard';
                                     }
                                 }}
-                                className="w-full text-left flex items-center gap-3 text-white cursor-pointer hover:bg-white/5 p-3 rounded-xl transition-colors"
+                                className="w-full text-left flex items-center gap-3 text-white cursor-pointer hover:bg-white/5 p-3 rounded-xl transition-all"
                             >
                                 <span className="w-6 h-6 rounded-full bg-green-500 flex items-center justify-center text-xs font-mono">2</span>
-                                <span className="flex-1">{t.step2}</span>
+                                <span className="flex-1 font-bold">{t.step2}</span>
                                 <ArrowRight className="w-4 h-4 opacity-50" />
                             </button>
                         </div>

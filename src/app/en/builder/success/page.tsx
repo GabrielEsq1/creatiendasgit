@@ -151,10 +151,10 @@ function SuccessContentEN() {
                         <div className="space-y-4">
                             <button
                                 onClick={() => {
-                                    if (slug && slug !== 'undefined') {
-                                        router.push(`/en/builder?edit=${slug}`);
+                                    if (slug && slug !== 'undefined' && slug !== 'null') {
+                                        window.location.href = `/en/builder?edit=${slug}`;
                                     } else {
-                                        router.push('/en/dashboard');
+                                        window.location.href = '/en/dashboard';
                                     }
                                 }}
                                 className="w-full text-left flex items-center gap-4 text-white bg-white/5 hover:bg-white/10 p-4 rounded-2xl transition-all border border-white/5 group"
@@ -165,10 +165,10 @@ function SuccessContentEN() {
                             </button>
                             <button
                                 onClick={() => {
-                                    if (slug && slug !== 'undefined') {
-                                        router.push(`/en/builder?edit=${slug}`);
+                                    if (slug && slug !== 'undefined' && slug !== 'null') {
+                                        window.location.href = `/en/builder?edit=${slug}`;
                                     } else {
-                                        router.push('/en/dashboard');
+                                        window.location.href = '/en/dashboard';
                                     }
                                 }}
                                 className="w-full text-left flex items-center gap-4 text-white bg-white/5 hover:bg-white/10 p-4 rounded-2xl transition-all border border-white/5 group"
