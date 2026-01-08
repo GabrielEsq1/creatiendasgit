@@ -105,6 +105,7 @@ function BuilderContent() {
                             ...INITIAL_DATA,
                             ...loadedData,
                             id: data.store.id,
+                            slug: data.store.slug, // CRITICAL: Store slug for "Compartir / QR" button
                             socials: { ...INITIAL_DATA.socials, ...(loadedData.socials || {}) },
                             about: { ...INITIAL_DATA.about, ...(loadedData.about || {}) },
                             careers: { ...INITIAL_DATA.careers, ...(loadedData.careers || {}) }
@@ -117,6 +118,7 @@ function BuilderContent() {
                             ...INITIAL_DATA,
                             ...loadedData,
                             id: data.id,
+                            slug: data.slug || editSlug, // Store slug for "Compartir / QR" button
                             socials: { ...INITIAL_DATA.socials, ...(loadedData.socials || {}) },
                             about: { ...INITIAL_DATA.about, ...(loadedData.about || {}) },
                             careers: { ...INITIAL_DATA.careers, ...(loadedData.careers || {}) }
