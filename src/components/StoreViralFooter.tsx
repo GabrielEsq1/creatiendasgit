@@ -1,6 +1,6 @@
 "use client";
 
-import Link from 'next/link';
+// External link to main domain - no next/link import needed
 import { Sparkles } from 'lucide-react';
 
 export default function StoreViralFooter() {
@@ -39,15 +39,17 @@ export default function StoreViralFooter() {
                 </div>
 
                 {/* CTA Button */}
-                <Link
-                    href="/crear-tienda"
+                <a
+                    href="https://creatiendas.co/crear-tienda"
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="inline-flex items-center gap-2 bg-white text-indigo-600 px-8 py-4 rounded-xl font-black text-lg shadow-2xl hover:scale-105 transition-transform active:scale-95"
                 >
                     Crear Mi Tienda Gratis
                     <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M13 7l5 5m0 0l-5 5m5-5H6" />
                     </svg>
-                </Link>
+                </a>
 
                 {/* Powered by */}
                 <p className="mt-8 text-white/60 text-sm font-medium">
