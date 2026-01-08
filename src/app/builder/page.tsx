@@ -260,16 +260,30 @@ function BuilderContent() {
         setIsSaving(true);
         setPublicUrl(null);
         try {
-            // Generate slug from store name
-            const slug = storeData.name.toLowerCase()
-                .normalize('NFD')
-                .replace(/[\u0300-\u036f]/g, '')
-                .replace(/[^a-z0-9]+/g, '-')
-                .replace(/^-+|-+$/g, '')
-                .replace(/-+/g, '-') + '-' + Date.now().toString(36);
+            // Determine if this is an update (existing store) or create (new store)
+            const isUpdate = !!editSlug || !!storeData.id;
 
-            const res = await fetch('/api/stores', {
-                method: 'POST',
+            // Only generate new slug for NEW stores, not for updates
+            let slug: string;
+            if (isUpdate) {
+                // Use existing slug for updates
+                slug = editSlug || storeData.slug || '';
+            } else {
+                // Generate new slug only for new stores
+                slug = storeData.name.toLowerCase()
+                    .normalize('NFD')
+                    .replace(/[\u0300-\u036f]/g, '')
+                    .replace(/[^a-z0-9]+/g, '-')
+                    .replace(/^-+|-+$/g, '')
+                    .replace(/-+/g, '-') + '-' + Date.now().toString(36);
+            }
+
+            // Use PUT for updates, POST for new stores
+            const endpoint = isUpdate ? `/api/stores/${editSlug || storeData.id}` : '/api/stores';
+            const method = isUpdate ? 'PUT' : 'POST';
+
+            const res = await fetch(endpoint, {
+                method,
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ name: storeData.name, slug, data: storeData, products, id: storeData.id })
             });
