@@ -99,11 +99,28 @@ function BuilderContent() {
                 })
                 .then(data => {
                     if (data && data.store) {
-                        setStoreData({ ...data.store.data, id: data.store.id });
+                        // Deep merge to ensure all sections exist even if DB data is partial
+                        const loadedData = data.store.data || {};
+                        setStoreData({
+                            ...INITIAL_DATA,
+                            ...loadedData,
+                            id: data.store.id,
+                            socials: { ...INITIAL_DATA.socials, ...(loadedData.socials || {}) },
+                            about: { ...INITIAL_DATA.about, ...(loadedData.about || {}) },
+                            careers: { ...INITIAL_DATA.careers, ...(loadedData.careers || {}) }
+                        });
                         if (data.store.products) setProducts(data.store.products);
                     } else if (data && data.data) {
-                        // Fallback for potential legacy API structure
-                        setStoreData({ ...data.data, id: data.id });
+                        // Fallback for legacy API
+                        const loadedData = data.data || {};
+                        setStoreData({
+                            ...INITIAL_DATA,
+                            ...loadedData,
+                            id: data.id,
+                            socials: { ...INITIAL_DATA.socials, ...(loadedData.socials || {}) },
+                            about: { ...INITIAL_DATA.about, ...(loadedData.about || {}) },
+                            careers: { ...INITIAL_DATA.careers, ...(loadedData.careers || {}) }
+                        });
                         if (data.products) setProducts(data.products);
                     } else {
                         alert('No se pudo cargar la tienda para editar');
@@ -189,7 +206,7 @@ function BuilderContent() {
                 setStoreData(prev => ({ ...prev, [field]: base64 }));
             } catch (err) {
                 console.error('Error compressing image:', err);
-                alert('Error al procesar la imagen. Intenta con una m├ís peque├▒a.');
+                alert('Error al procesar la imagen. Intenta con una más pequeña.');
             }
         }
     };
@@ -217,7 +234,7 @@ function BuilderContent() {
         if (!prodForm.name || !prodForm.price) return alert('Nombre y precio requeridos');
 
         if (editingProductId) {
-            // Modo edici├│n
+            // Modo edición
             setProducts(products.map(p =>
                 p.id === editingProductId
                     ? { ...p, name: prodForm.name, description: prodForm.desc, category: prodForm.category, price: prodForm.price, image: prodForm.image }
@@ -225,7 +242,7 @@ function BuilderContent() {
             ));
             setEditingProductId(null);
         } else {
-            // Modo creaci├│n
+            // Modo creación
             const newProduct: Product = {
                 id: Date.now(),
                 name: prodForm.name,
@@ -291,20 +308,20 @@ function BuilderContent() {
 
             if (!res.ok) {
                 if (res.status === 413) {
-                    throw new Error('La tienda contiene demasiados datos o im├ígenes muy pesadas. Por favor, intenta reducir el tama├▒o de las im├ígenes o eliminar algunas.');
+                    throw new Error('La tienda contiene demasiados datos o imágenes muy pesadas. Por favor, intenta reducir el tamaño de las imágenes o eliminar algunas.');
                 }
 
                 const contentType = res.headers.get("content-type");
                 if (contentType && contentType.indexOf("application/json") !== -1) {
                     const json = await res.json();
                     if (res.status === 401) {
-                        alert('Debes iniciar sesi├│n para guardar tu tienda.');
+                        alert('Debes iniciar sesión para guardar tu tienda.');
                         window.location.href = '/auth/login';
                         return;
                     }
                     if (res.status === 403 && json.upgradeUrl) {
                         // This case should not be hit for edits anymore, but keeping for safety
-                        alert(`${json.message}\n\nSer├ís redirigido a WhatsApp para recibir asesor├¡a personalizada.`);
+                        alert(`${json.message}\n\nSerás redirigido a WhatsApp para recibir asesoría personalizada.`);
                         window.location.href = json.upgradeUrl;
                         return;
                     }
@@ -330,7 +347,10 @@ function BuilderContent() {
                     // NEW STORE: Redirect to Success Page immediately
                     setHasUnsavedChanges(false); // Ensure no popup on redirect
                     alert('¡Tienda creada con éxito! Vamos a compartirla.');
-                    window.location.href = `/builder/success?slug=${json.slug}&storeName=${encodeURIComponent(storeData.name)}`;
+                    // Use local slug if server doesn't return it to ensure we never get "undefined"
+                    const finalSlug = json.slug || slug || storeData.slug;
+                    console.log('Redirecting to success with slug:', finalSlug);
+                    window.location.href = `/builder/success?slug=${finalSlug}&storeName=${encodeURIComponent(storeData.name)}`;
                 } else {
                     // EDITING: Stay on page but notify
                     alert(`¡Cambios guardados con éxito!\n\nTu tienda está actualizada.`);
@@ -340,7 +360,7 @@ function BuilderContent() {
             }
         } catch (e: any) {
             console.error('Save error:', e);
-            alert(`No se pudo guardar la tienda.\n${e.message || 'Error de conexi├│n. Intenta reducir el tama├▒o de las im├ígenes.'}`);
+            alert(`No se pudo guardar la tienda.\n${e.message || 'Error de conexión. Intenta reducir el tamaño de las imágenes.'}`);
         } finally {
             setIsSaving(false);
         }
@@ -351,10 +371,10 @@ function BuilderContent() {
             {/* LEFT PANEL */}
             <aside className="builder-panel">
                 <div className="panel-header">
-                    <Link href="/dashboard" style={{ marginBottom: '0.5rem', display: 'inline-block', color: '#2196F3', textDecoration: 'none', fontSize: '0.9rem' }}>ÔåÉ Back to Dashboard</Link>
-                    <h2>{editSlug ? 'Ô£Å´©Å Editar Tienda' : '­ƒøá´©Å Constructor de Tienda'}</h2>
+                    <Link href="/dashboard" style={{ marginBottom: '0.5rem', display: 'inline-block', color: '#2196F3', textDecoration: 'none', fontSize: '0.9rem' }}>← Volver al Panel</Link>
+                    <h2>{editSlug ? '✏️ Editar Tienda' : '🛠️ Constructor de Tienda'}</h2>
                     <p>{editSlug ? 'Modifica tu tienda y guarda los cambios.' : 'Configura tu tienda, añade productos y ve los cambios en tiempo real.'}</p>
-                    {isLoading && <p style={{ color: '#2196F3', fontWeight: 'bold' }}>­ƒöä Cargando datos de la tienda...</p>}
+                    {isLoading && <p style={{ color: '#2196F3', fontWeight: 'bold' }}>🔄 Cargando datos de la tienda...</p>}
                 </div>
 
                 {/* 1. Identidad */}
@@ -384,18 +404,18 @@ function BuilderContent() {
                         </div>
                     </div>
                     <div className="form-group">
-                        <label>Tipograf├¡a</label>
+                        <label>Tipografía</label>
                         <select value={storeData.font || 'Inter'} onChange={e => handleInputChange(null, 'font', e.target.value)} className="w-full p-2 border rounded">
-                            <option value="Inter">Inter (Est├índar)</option>
-                            <option value="Roboto">Roboto (Cl├ísica)</option>
+                            <option value="Inter">Inter (Estándar)</option>
+                            <option value="Roboto">Roboto (Clásica)</option>
                             <option value="Open Sans">Open Sans (Legible)</option>
                             <option value="Lato">Lato (Elegante)</option>
-                            <option value="Montserrat">Montserrat (Geom├®trica)</option>
+                            <option value="Montserrat">Montserrat (Geométrica)</option>
                             <option value="Poppins">Poppins (Moderna)</option>
                             <option value="Playfair Display">Playfair Display (Lujo/Serif)</option>
                             <option value="Merriweather">Merriweather (Editorial)</option>
                             <option value="Raleway">Raleway (Sofisticada)</option>
-                            <option value="Oswald">Oswald (Urbano/T├¡tulo)</option>
+                            <option value="Oswald">Oswald (Urbano/Título)</option>
                             <option value="Nunito">Nunito (Amigable)</option>
                         </select>
                     </div>
@@ -482,10 +502,10 @@ function BuilderContent() {
                     </div>
                     <div style={{ display: 'flex', gap: '0.5rem' }}>
                         <button className="btn btn-secondary" onClick={handleSaveProduct}>
-                            {editingProductId ? '­ƒÆ¥ Actualizar Producto' : 'Ô×ò Agregar Producto'}
+                            {editingProductId ? '💾 Actualizar Producto' : '➕ Agregar Producto'}
                         </button>
                         {editingProductId && (
-                            <button className="btn btn-danger" onClick={handleCancelEdit}>ÔØî Cancelar</button>
+                            <button className="btn btn-danger" onClick={handleCancelEdit}>❌ Cancelar</button>
                         )}
                     </div>
                     <div className="product-list-mini">
@@ -500,8 +520,8 @@ function BuilderContent() {
                                     </div>
                                 </div>
                                 <div style={{ display: 'flex', gap: '0.35rem' }}>
-                                    <button className="btn btn-secondary" onClick={() => handleEditProduct(p)} title="Editar producto">Ô£Å´©Å</button>
-                                    <button className="btn btn-danger" onClick={() => setProducts(products.filter(x => x.id !== p.id))} title="Eliminar producto">­ƒùæ´©Å</button>
+                                    <button className="btn btn-secondary" onClick={() => handleEditProduct(p)} title="Editar producto">✏️</button>
+                                    <button className="btn btn-danger" onClick={() => setProducts(products.filter(x => x.id !== p.id))} title="Eliminar producto">🗑️</button>
                                 </div>
                             </div>
                         ))}
@@ -510,22 +530,22 @@ function BuilderContent() {
 
                 <section className="form-section" style={{ position: 'sticky', bottom: 0, zIndex: 10 }}>
                     <button className="btn btn-primary" onClick={handleSave} disabled={isSaving || isLoading} style={{ marginBottom: '1rem' }}>
-                        {isSaving ? 'Guardando...' : (editSlug ? '­ƒöä Actualizar Tienda' : '­ƒöä Validar / Crear Tienda')}
+                        {isSaving ? 'Guardando...' : (editSlug ? '💾 Actualizar Tienda' : '🚀 Validar / Crear Tienda')}
                     </button>
                     {editSlug && publicUrl && (
                         <a href={publicUrl} target="_blank" rel="noopener noreferrer" className="btn btn-secondary" style={{ display: 'block', textAlign: 'center', marginBottom: '1rem', textDecoration: 'none' }}>
-                            ­ƒæü´©Å Ver Tienda
+                            👁️ Ver Tienda
                         </a>
                     )}
                     {publicUrl && (
                         <div className="public-url-box" style={{ marginTop: '1rem', padding: '1rem', background: '#e8f5e9', borderRadius: '8px', border: '1px solid #c8e6c9' }}>
-                            <p style={{ margin: '0 0 0.5rem 0', fontWeight: 'bold', color: '#2e7d32' }}>Ô£à ┬íTu tienda est├í {editSlug ? 'actualizada' : 'lista'}!</p>
+                            <p style={{ margin: '0 0 0.5rem 0', fontWeight: 'bold', color: '#2e7d32' }}>✅ ¡Tu tienda está {editSlug ? 'actualizada' : 'lista'}!</p>
                             <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
                                 <input readOnly value={publicUrl} style={{ flex: 1, padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc', minWidth: '150px' }} />
                                 <button className="btn btn-secondary" onClick={() => { navigator.clipboard.writeText(publicUrl); alert('URL copiada!'); }} style={{ padding: '0.5rem 1rem' }}>Copiar</button>
                             </div>
                             <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.5rem' }}>
-                                <a href={publicUrl} target="_blank" rel="noopener noreferrer" style={{ flex: 1, textAlign: 'center', color: '#2e7d32', textDecoration: 'underline', padding: '0.5rem', border: '1px solid #c8e6c9', borderRadius: '4px' }}>Visitar tienda ÔåÆ</a>
+                                <a href={publicUrl} target="_blank" rel="noopener noreferrer" style={{ flex: 1, textAlign: 'center', color: '#2e7d32', textDecoration: 'underline', padding: '0.5rem', border: '1px solid #c8e6c9', borderRadius: '4px' }}>Visitar tienda →</a>
                                 <Link
                                     href={`/builder/success?slug=${editSlug || storeData.slug || ''}&storeName=${encodeURIComponent(storeData.name)}`}
                                     className="btn btn-primary"
@@ -542,8 +562,8 @@ function BuilderContent() {
             {/* RIGHT PANEL */}
             <main className="preview-panel">
                 <div className="device-toggle">
-                    <button className={`device-btn ${viewMode === 'desktop' ? 'active' : ''}`} onClick={() => setViewMode('desktop')}>­ƒûÑ Vista escritorio</button>
-                    <button className={`device-btn ${viewMode === 'mobile' ? 'active' : ''}`} onClick={() => setViewMode('mobile')}>­ƒô▒ Vista m├│vil</button>
+                    <button className={`device-btn ${viewMode === 'desktop' ? 'active' : ''}`} onClick={() => setViewMode('desktop')}>💻 Vista escritorio</button>
+                    <button className={`device-btn ${viewMode === 'mobile' ? 'active' : ''}`} onClick={() => setViewMode('mobile')}>📱 Vista móvil</button>
                 </div>
                 <StorePreview data={storeData} products={products} viewMode={viewMode} />
             </main>

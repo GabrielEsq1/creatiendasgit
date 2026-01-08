@@ -9,7 +9,6 @@ import { QRCodeSVG } from 'qrcode.react';
 function SuccessContent() {
     const searchParams = useSearchParams();
     const router = useRouter();
-    const [mounted, setMounted] = useState(false);
     const [copied, setCopied] = useState(false);
     const qrRef = useRef<HTMLDivElement>(null);
 
@@ -18,12 +17,12 @@ function SuccessContent() {
     const slug = searchParams.get('slug') || '';
 
     // IMPORTANT: Always use path-based URL format
-    const storeUrl = slug
+    const hasValidSlug = slug && slug !== 'undefined' && slug !== 'null';
+    const storeUrl = hasValidSlug
         ? `https://creatiendas.co/stores/${slug}`
         : 'https://creatiendas.co';
 
     useEffect(() => {
-        setMounted(true);
         // Simple confetti effect using dynamic import to avoid SSR issues
         import('canvas-confetti').then(confettiModule => {
             const confetti = confettiModule.default;
@@ -64,13 +63,6 @@ function SuccessContent() {
         window.open(storeUrl, '_blank');
     };
 
-    if (!mounted) {
-        return (
-            <div className="min-h-screen flex items-center justify-center bg-indigo-900 text-white">
-                <p>Preparando tu tienda...</p>
-            </div>
-        );
-    }
 
     const t = {
         title: '🎉 ¡Tu tienda está lista!',

@@ -9,7 +9,6 @@ import { QRCodeSVG } from 'qrcode.react';
 function SuccessContentEN() {
     const searchParams = useSearchParams();
     const router = useRouter();
-    const [mounted, setMounted] = useState(false);
     const [copied, setCopied] = useState(false);
     const qrRef = useRef<HTMLDivElement>(null);
 
@@ -23,7 +22,6 @@ function SuccessContentEN() {
         : 'https://creatiendas.co';
 
     useEffect(() => {
-        setMounted(true);
         import('canvas-confetti').then(confettiModule => {
             const confetti = confettiModule.default;
             confetti({
@@ -59,13 +57,6 @@ function SuccessContentEN() {
         setTimeout(() => setCopied(false), 2000);
     };
 
-    if (!mounted) {
-        return (
-            <div className="min-h-screen flex items-center justify-center bg-indigo-900 text-white font-sans">
-                <p>Preparing your store...</p>
-            </div>
-        );
-    }
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-indigo-900 via-indigo-800 to-purple-900 flex flex-col items-center justify-center p-4 md:p-8 font-sans selection:bg-green-500/30">

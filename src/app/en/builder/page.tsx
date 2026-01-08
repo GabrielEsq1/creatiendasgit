@@ -97,10 +97,26 @@ function BuilderContentEN() {
                 })
                 .then(data => {
                     if (data && data.store) {
-                        setStoreData({ ...data.store.data, id: data.store.id });
+                        const loadedData = data.store.data || {};
+                        setStoreData({
+                            ...INITIAL_DATA,
+                            ...loadedData,
+                            id: data.store.id,
+                            socials: { ...INITIAL_DATA.socials, ...(loadedData.socials || {}) },
+                            about: { ...INITIAL_DATA.about, ...(loadedData.about || {}) },
+                            careers: { ...INITIAL_DATA.careers, ...(loadedData.careers || {}) }
+                        });
                         if (data.store.products) setProducts(data.store.products);
                     } else if (data && data.data) {
-                        setStoreData({ ...data.data, id: data.id });
+                        const loadedData = data.data || {};
+                        setStoreData({
+                            ...INITIAL_DATA,
+                            ...loadedData,
+                            id: data.id,
+                            socials: { ...INITIAL_DATA.socials, ...(loadedData.socials || {}) },
+                            about: { ...INITIAL_DATA.about, ...(loadedData.about || {}) },
+                            careers: { ...INITIAL_DATA.careers, ...(loadedData.careers || {}) }
+                        });
                         if (data.products) setProducts(data.products);
                     } else {
                         alert('Could not load store for editing');
@@ -322,7 +338,9 @@ function BuilderContentEN() {
                     setHasUnsavedChanges(false); // Ensure no popup on redirect
                     alert('Store created successfully! Let\'s share it.');
                     // Use getStoreUrl to ensure correct formatting implicitly, but here we just need to pass slug
-                    window.location.href = `/en/builder/success?slug=${json.slug}&storeName=${encodeURIComponent(storeData.name)}`;
+                    const finalSlug = json.slug || slug || storeData.slug;
+                    console.log('Redirecting to success with slug:', finalSlug);
+                    window.location.href = `/en/builder/success?slug=${finalSlug}&storeName=${encodeURIComponent(storeData.name)}`;
                 } else {
                     // EDITING: Stay on page but notify
                     alert(`Changes saved successfully!\n\nYour store is updated.`);

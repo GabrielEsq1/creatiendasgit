@@ -52,10 +52,13 @@ export async function POST(request: Request) {
         const host = request.headers.get('host') || 'localhost:3000';
         const publicUrl = `${protocol}://${host}/stores/${slug}`;
 
+        console.log('API Create Store Response - Slug:', store.slug);
+        console.log('API Create Store Response - ID:', store.id);
+
         return NextResponse.json({
-            success: true,
             store,
             id: store.id,
+            slug: store.slug,
             url: publicUrl,
             publicUrl
         });

@@ -238,7 +238,7 @@ export default function CreatiendasDashboardEN() {
                                         {store.productCount}
                                     </span>
                                     <span className="text-slate-400">
-                                        {new Date(store.createdAt).toLocaleDateString()}
+                                        {store.createdAt ? new Date(store.createdAt).toLocaleDateString() : ''}
                                     </span>
                                 </div>
 
