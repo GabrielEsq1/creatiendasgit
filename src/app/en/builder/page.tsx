@@ -249,6 +249,7 @@ function BuilderContentEN() {
     };
 
     const handleSave = async () => {
+        if (isSaving) return;
         setIsSaving(true);
         setPublicUrl(null);
         try {
@@ -318,6 +319,7 @@ function BuilderContentEN() {
                 alert(`Store saved successfully!\n\nYour store is ready at:\n${finalUrl}`);
                 if (!editSlug) {
                     // NEW STORE: Redirect to Success Page immediately
+                    setHasUnsavedChanges(false); // Ensure no popup on redirect
                     alert('Store created successfully! Let\'s share it.');
                     // Use getStoreUrl to ensure correct formatting implicitly, but here we just need to pass slug
                     window.location.href = `/en/builder/success?slug=${json.slug}&storeName=${encodeURIComponent(storeData.name)}`;

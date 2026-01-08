@@ -1,4 +1,5 @@
 'use client';
+export const dynamic = "force-dynamic";
 
 import React, { useEffect, useRef, useState, Suspense } from 'react';
 import { useSearchParams, useRouter, usePathname } from 'next/navigation';
@@ -7,23 +8,19 @@ import { QRCodeSVG } from 'qrcode.react';
 
 function SuccessContent() {
     const searchParams = useSearchParams();
-    const pathname = usePathname();
     const router = useRouter();
     const [mounted, setMounted] = useState(false);
     const [copied, setCopied] = useState(false);
-
-    const isEn = pathname?.startsWith('/en');
+    const qrRef = useRef<HTMLDivElement>(null);
 
     // Get store details from URL
-    const storeName = searchParams.get('storeName') || (isEn ? 'Your Store' : 'Tu Tienda');
+    const storeName = searchParams.get('storeName') || 'Tu Tienda';
     const slug = searchParams.get('slug') || '';
 
     // IMPORTANT: Always use path-based URL format
     const storeUrl = slug
         ? `https://creatiendas.co/stores/${slug}`
         : 'https://creatiendas.co';
-
-    const qrRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         setMounted(true);
@@ -53,9 +50,7 @@ function SuccessContent() {
     };
 
     const handleWhatsAppShare = () => {
-        const message = isEn
-            ? `🚀 I already have my online store!\nVisit it here 👉 ${storeUrl}\nWrite me on WhatsApp if you are interested in something.`
-            : `🚀 ¡Ya tengo tienda online!\nVisítala aquí 👉 ${storeUrl}\nEscríbeme por WhatsApp si te interesa algo.`;
+        const message = `🚀 ¡Ya tengo tienda online!\nVisítala aquí 👉 ${storeUrl}\nEscríbeme por WhatsApp si te interesa algo.`;
         window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, '_blank');
     };
 
@@ -72,29 +67,29 @@ function SuccessContent() {
     if (!mounted) {
         return (
             <div className="min-h-screen flex items-center justify-center bg-indigo-900 text-white">
-                <p>{isEn ? 'Preparing your store...' : 'Preparando tu tienda...'}</p>
+                <p>Preparando tu tienda...</p>
             </div>
         );
     }
 
     const t = {
-        title: isEn ? '🎉 Your store is ready!' : '🎉 ¡Tu tienda está lista!',
-        subtitle: isEn ? 'Now share it with the world' : 'Ahora compártela con el mundo',
-        descriptionPrefix: isEn ? 'Your store' : 'Tu tienda',
-        descriptionSuffix: isEn ? 'is now online.' : 'ya está en línea.',
-        onlineStore: isEn ? 'Online Store' : 'Tienda Online',
-        downloadQR: isEn ? 'Download QR' : 'Descargar QR',
-        shareTitle: isEn ? 'Share your store' : 'Comparte tu tienda',
-        shareDescription: isEn ? 'Send your store to your customers via WhatsApp.' : 'Envía tu tienda a tus clientes por WhatsApp.',
-        whatsappButton: isEn ? 'Share on WhatsApp' : 'Compartir por WhatsApp',
-        viewStore: isEn ? 'View my store' : 'Ver mi tienda',
-        copyLink: isEn ? 'Copy link' : 'Copiar enlace',
-        copied: isEn ? 'Link copied!' : '¡Enlace copiado!',
-        storeLinkLabel: isEn ? 'Store link:' : 'Enlace de tu tienda:',
-        nextSteps: isEn ? 'Next steps' : 'Próximos pasos',
-        step1: isEn ? 'Add more products' : 'Agregar más productos',
-        step2: isEn ? 'Share on your networks' : 'Compartir en tus redes',
-        trust: isEn ? 'More than 1,000 stores already sell with Creatiendas 🚀' : 'Más de 1,000 tiendas ya venden con Creatiendas 🚀'
+        title: '🎉 ¡Tu tienda está lista!',
+        subtitle: 'Ahora compártela con el mundo',
+        descriptionPrefix: 'Tu tienda',
+        descriptionSuffix: 'ya está en línea.',
+        onlineStore: 'Tienda Online',
+        downloadQR: 'Descargar QR',
+        shareTitle: 'Comparte tu tienda',
+        shareDescription: 'Envía tu tienda a tus clientes por WhatsApp.',
+        whatsappButton: 'Compartir por WhatsApp',
+        viewStore: 'Ver mi tienda',
+        copyLink: 'Copiar enlace',
+        copied: '¡Enlace copiado!',
+        storeLinkLabel: 'Enlace de tu tienda:',
+        nextSteps: 'Próximos pasos',
+        step1: 'Agregar más productos',
+        step2: 'Compartir en tus redes',
+        trust: 'Más de 1,000 tiendas ya venden con Creatiendas 🚀'
     };
 
     return (
@@ -199,7 +194,7 @@ function SuccessContent() {
                         </h3>
                         <div className="space-y-3">
                             <button
-                                onClick={() => router.push(isEn ? '/en/dashboard' : '/dashboard')}
+                                onClick={() => router.push('/dashboard')}
                                 className="w-full text-left flex items-center gap-3 text-white cursor-pointer hover:bg-white/5 p-3 rounded-xl transition-colors"
                             >
                                 <span className="w-6 h-6 rounded-full bg-indigo-500 flex items-center justify-center text-xs font-mono">1</span>

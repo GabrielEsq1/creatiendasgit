@@ -257,6 +257,7 @@ function BuilderContent() {
     };
 
     const handleSave = async () => {
+        if (isSaving) return;
         setIsSaving(true);
         setPublicUrl(null);
         try {
@@ -327,6 +328,7 @@ function BuilderContent() {
 
                 if (!editSlug) {
                     // NEW STORE: Redirect to Success Page immediately
+                    setHasUnsavedChanges(false); // Ensure no popup on redirect
                     alert('¡Tienda creada con éxito! Vamos a compartirla.');
                     window.location.href = `/builder/success?slug=${json.slug}&storeName=${encodeURIComponent(storeData.name)}`;
                 } else {

@@ -1,4 +1,5 @@
 'use client';
+export const dynamic = "force-dynamic";
 
 import React, { useEffect, useRef, useState, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
@@ -10,6 +11,7 @@ function SuccessContentEN() {
     const router = useRouter();
     const [mounted, setMounted] = useState(false);
     const [copied, setCopied] = useState(false);
+    const qrRef = useRef<HTMLDivElement>(null);
 
     // Get store details from URL
     const storeName = searchParams.get('storeName') || 'Your Store';
@@ -19,8 +21,6 @@ function SuccessContentEN() {
     const storeUrl = slug
         ? `https://creatiendas.co/stores/${slug}`
         : 'https://creatiendas.co';
-
-    const qrRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         setMounted(true);

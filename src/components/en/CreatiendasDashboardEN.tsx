@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import { Store, Plus, Settings, Eye, Trash2, Edit, Package, QrCode } from 'lucide-react';
+import { Store, Plus, Settings, Eye, Trash2, Edit, Package, QrCode, MessageCircle } from 'lucide-react';
 import { getStoreUrl } from '@/lib/utils';
 import ActivationChecklistEN from '../en/ActivationChecklistEN';
 
@@ -193,6 +193,17 @@ export default function CreatiendasDashboardEN() {
                                         <Store className="w-6 h-6 text-purple-600" />
                                     </div>
                                     <div className="flex gap-2">
+                                        <button
+                                            onClick={() => {
+                                                const url = getStoreUrl(store.slug);
+                                                const text = `Hi! Check out my new online store: ${url}`;
+                                                window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
+                                            }}
+                                            className="p-2 hover:bg-green-50 rounded-lg transition-colors"
+                                            title="Share on WhatsApp"
+                                        >
+                                            <MessageCircle className="w-4 h-4 text-green-600" />
+                                        </button>
                                         <button
                                             onClick={() => router.push(`/en/builder?edit=${store.slug}`)}
                                             className="p-2 hover:bg-blue-50 rounded-lg transition-colors"
