@@ -47,7 +47,7 @@ export default function HeroEN() {
                 {/* CTA Buttons */}
                 <div className="flex flex-col sm:flex-row justify-center items-center gap-4 sm:gap-6 mb-24 px-4">
                     <Link
-                        href="/auth/register"
+                        href="/en/auth/register"
                         className="group relative inline-flex min-h-[48px] sm:min-h-[56px] md:h-16 w-full sm:w-auto items-center justify-center rounded-xl sm:rounded-2xl bg-green-600 px-6 sm:px-8 md:px-10 font-black text-white shadow-2xl shadow-green-600/30 transition-all hover:bg-green-700 hover:scale-105 active:scale-95 text-base sm:text-lg md:text-xl tracking-tight">
                         <span>Create my store NOW</span>
                         <div className="absolute inset-0 -z-10 bg-gradient-to-r from-transparent via-white/20 to-transparent skew-x-12 -translate-x-full group-hover:animate-shine" />

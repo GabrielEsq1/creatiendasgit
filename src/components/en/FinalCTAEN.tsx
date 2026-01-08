@@ -8,7 +8,7 @@ export default function FinalCTAEN() {
                 Create your store today and start selling without limits.
             </p>
             <a
-                href="/auth/register"
+                href="/en/auth/register"
                 className="inline-block w-full sm:w-auto bg-white text-[#22c55e] font-bold px-8 py-4 rounded-xl hover:bg-gray-50 transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5"
             >
                 Create my store now
