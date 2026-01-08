@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { StoreData, Product } from '@/lib/store-service';
+import StoreViralFooter from './StoreViralFooter';
 
 interface StorePreviewProps {
     data: StoreData;
@@ -335,6 +336,9 @@ export default function StorePreview({ data, products, viewMode = 'desktop', rea
                         &copy; {new Date().getFullYear()} {data.name} - Tienda generada automáticamente
                     </div>
                 </footer>
+
+                {/* VIRAL FOOTER - Converts store visitors into Creatiendas users */}
+                <StoreViralFooter />
             </div>
 
             {/* LIGHTBOX */}
