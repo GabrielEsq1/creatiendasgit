@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import { Store, Plus, Settings, Eye, Trash2, Edit, Package } from 'lucide-react';
+import { Store, Plus, Settings, Eye, Trash2, Edit, Package, QrCode } from 'lucide-react';
 import ActivationChecklistEN from '../en/ActivationChecklistEN';
 
 
@@ -229,6 +229,25 @@ export default function CreatiendasDashboardEN() {
                                         {new Date(store.createdAt).toLocaleDateString()}
                                     </span>
                                 </div>
+
+                                <button
+                                    onClick={() => {
+                                        try {
+                                            if (!store.slug) {
+                                                console.error('Missing slug for store:', store.id);
+                                                alert('Error: The store does not have a valid address.');
+                                                return;
+                                            }
+                                            router.push(`/en/builder/success?slug=${encodeURIComponent(store.slug)}&storeName=${encodeURIComponent(store.name)}`);
+                                        } catch (err) {
+                                            console.error('Navigation error:', err);
+                                        }
+                                    }}
+                                    className="w-full mt-6 py-3 bg-purple-50 hover:bg-purple-100 text-purple-700 font-bold rounded-xl border border-purple-100 transition-all flex items-center justify-center gap-2 group-hover:scale-[1.02]"
+                                >
+                                    <QrCode className="w-4 h-4" />
+                                    Manage QR and Share
+                                </button>
                             </div>
                         ))}
                     </div>

@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import { usePathname } from "next/navigation";
 import Navbar from "./Navbar";
 
@@ -10,6 +11,23 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
     const isStorePage = pathname?.includes('/stores/');
     const isSuccessPage = pathname?.includes('/builder/success');
     const hidePadding = isStorePage || isSuccessPage;
+
+    useEffect(() => {
+        if (typeof window === 'undefined') return;
+
+        const preferredLang = localStorage.getItem('ct_lang');
+        const isEnRoute = pathname?.startsWith('/en');
+
+        if (preferredLang === 'en' && !isEnRoute) {
+            // Redirect to English version if on Spanish route
+            const targetPath = `/en${pathname === '/' ? '' : pathname}`;
+            window.location.href = targetPath;
+        } else if (preferredLang === 'es' && isEnRoute) {
+            // Redirect to Spanish version if on English route
+            const targetPath = pathname?.replace(/^\/en/, '') || '/';
+            window.location.href = targetPath;
+        }
+    }, [pathname]);
 
     return (
         <>

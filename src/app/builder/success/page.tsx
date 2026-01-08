@@ -1,18 +1,21 @@
 'use client';
 
 import React, { useEffect, useRef, useState, Suspense } from 'react';
-import { useSearchParams, useRouter } from 'next/navigation';
+import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 import { Download, Share2, ArrowRight, Store, PartyPopper, CheckCircle2, Copy, QrCode, ExternalLink } from 'lucide-react';
 import { QRCodeSVG } from 'qrcode.react';
 
 function SuccessContent() {
     const searchParams = useSearchParams();
+    const pathname = usePathname();
     const router = useRouter();
     const [mounted, setMounted] = useState(false);
     const [copied, setCopied] = useState(false);
 
+    const isEn = pathname?.startsWith('/en');
+
     // Get store details from URL
-    const storeName = searchParams.get('storeName') || 'Tu Tienda';
+    const storeName = searchParams.get('storeName') || (isEn ? 'Your Store' : 'Tu Tienda');
     const slug = searchParams.get('slug') || '';
 
     // IMPORTANT: Always use path-based URL format
@@ -50,7 +53,9 @@ function SuccessContent() {
     };
 
     const handleWhatsAppShare = () => {
-        const message = `🚀 ¡Ya tengo tienda online!\nVisítala aquí 👉 ${storeUrl}\nEscríbeme por WhatsApp si te interesa algo.`;
+        const message = isEn
+            ? `🚀 I already have my online store!\nVisit it here 👉 ${storeUrl}\nWrite me on WhatsApp if you are interested in something.`
+            : `🚀 ¡Ya tengo tienda online!\nVisítala aquí 👉 ${storeUrl}\nEscríbeme por WhatsApp si te interesa algo.`;
         window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, '_blank');
     };
 
@@ -67,10 +72,30 @@ function SuccessContent() {
     if (!mounted) {
         return (
             <div className="min-h-screen flex items-center justify-center bg-indigo-900 text-white">
-                <p>Preparando tu tienda...</p>
+                <p>{isEn ? 'Preparing your store...' : 'Preparando tu tienda...'}</p>
             </div>
         );
     }
+
+    const t = {
+        title: isEn ? '🎉 Your store is ready!' : '🎉 ¡Tu tienda está lista!',
+        subtitle: isEn ? 'Now share it with the world' : 'Ahora compártela con el mundo',
+        descriptionPrefix: isEn ? 'Your store' : 'Tu tienda',
+        descriptionSuffix: isEn ? 'is now online.' : 'ya está en línea.',
+        onlineStore: isEn ? 'Online Store' : 'Tienda Online',
+        downloadQR: isEn ? 'Download QR' : 'Descargar QR',
+        shareTitle: isEn ? 'Share your store' : 'Comparte tu tienda',
+        shareDescription: isEn ? 'Send your store to your customers via WhatsApp.' : 'Envía tu tienda a tus clientes por WhatsApp.',
+        whatsappButton: isEn ? 'Share on WhatsApp' : 'Compartir por WhatsApp',
+        viewStore: isEn ? 'View my store' : 'Ver mi tienda',
+        copyLink: isEn ? 'Copy link' : 'Copiar enlace',
+        copied: isEn ? 'Link copied!' : '¡Enlace copiado!',
+        storeLinkLabel: isEn ? 'Store link:' : 'Enlace de tu tienda:',
+        nextSteps: isEn ? 'Next steps' : 'Próximos pasos',
+        step1: isEn ? 'Add more products' : 'Agregar más productos',
+        step2: isEn ? 'Share on your networks' : 'Compartir en tus redes',
+        trust: isEn ? 'More than 1,000 stores already sell with Creatiendas 🚀' : 'Más de 1,000 tiendas ya venden con Creatiendas 🚀'
+    };
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-indigo-900 via-indigo-800 to-purple-900 flex flex-col items-center justify-center p-4 md:p-8">
@@ -81,14 +106,14 @@ function SuccessContent() {
                     <PartyPopper className="w-8 h-8 text-green-400" />
                 </div>
                 <h1 className="text-3xl md:text-5xl font-black text-white mb-4 tracking-tight leading-tight">
-                    🎉 ¡Tu tienda está lista!
+                    {t.title}
                     <br />
                     <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-emerald-400">
-                        Ahora compártela con el mundo
+                        {t.subtitle}
                     </span>
                 </h1>
                 <p className="text-lg text-indigo-100 max-w-xl mx-auto font-medium">
-                    Tu tienda <strong>{storeName}</strong> ya está en línea.
+                    {t.descriptionPrefix} <strong>{storeName}</strong> {t.descriptionSuffix}
                 </p>
             </div>
 
@@ -100,7 +125,7 @@ function SuccessContent() {
                         <div className="bg-indigo-600 p-6 text-white text-center">
                             <h3 className="font-bold text-xl mb-1">{storeName}</h3>
                             <p className="text-indigo-200 text-sm flex items-center justify-center gap-1">
-                                <Store className="w-3 h-3" /> Tienda Online
+                                <Store className="w-3 h-3" /> {t.onlineStore}
                             </p>
                         </div>
                         <div className="p-8 flex flex-col items-center justify-center bg-gray-50">
@@ -121,7 +146,7 @@ function SuccessContent() {
                             className="w-full bg-gray-900 text-white p-4 text-center text-xs uppercase tracking-widest font-semibold hover:bg-black transition-colors flex items-center justify-center gap-2"
                         >
                             <Download className="w-4 h-4" />
-                            Descargar QR
+                            {t.downloadQR}
                         </button>
                     </div>
                 </div>
@@ -129,8 +154,8 @@ function SuccessContent() {
                 {/* Right Column: Share Actions */}
                 <div className="w-full lg:max-w-md">
                     <div className="bg-white rounded-3xl shadow-xl p-8">
-                        <h2 className="text-2xl font-bold text-gray-900 mb-2">Comparte tu tienda</h2>
-                        <p className="text-gray-500 text-sm mb-6">Envía tu tienda a tus clientes por WhatsApp.</p>
+                        <h2 className="text-2xl font-bold text-gray-900 mb-2">{t.shareTitle}</h2>
+                        <p className="text-gray-500 text-sm mb-6">{t.shareDescription}</p>
 
                         {/* WhatsApp Share - Primary Action */}
                         <button
@@ -138,7 +163,7 @@ function SuccessContent() {
                             className="w-full bg-[#25D366] hover:bg-[#128C7E] text-white text-lg font-bold py-4 px-6 rounded-xl flex items-center justify-center gap-3 transition-transform active:scale-95 shadow-lg shadow-green-500/20 mb-4"
                         >
                             <Share2 className="w-6 h-6" />
-                            Compartir por WhatsApp
+                            {t.whatsappButton}
                         </button>
 
                         {/* Visit Store */}
@@ -147,7 +172,7 @@ function SuccessContent() {
                             className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-6 rounded-xl flex items-center justify-center gap-2 transition-colors mb-4"
                         >
                             <ExternalLink className="w-5 h-5" />
-                            Ver mi tienda
+                            {t.viewStore}
                         </button>
 
                         {/* Copy Link */}
@@ -156,12 +181,12 @@ function SuccessContent() {
                             className="w-full py-3 px-4 rounded-xl border border-gray-200 text-gray-600 font-medium hover:bg-gray-50 transition-colors flex items-center justify-center gap-2"
                         >
                             {copied ? <CheckCircle2 className="w-5 h-5 text-green-500" /> : <Copy className="w-5 h-5" />}
-                            {copied ? '¡Enlace copiado!' : 'Copiar enlace'}
+                            {copied ? t.copied : t.copyLink}
                         </button>
 
                         {/* URL Display */}
                         <div className="mt-6 p-4 bg-gray-50 rounded-xl">
-                            <p className="text-xs text-gray-500 mb-1">Enlace de tu tienda:</p>
+                            <p className="text-xs text-gray-500 mb-1">{t.storeLinkLabel}</p>
                             <p className="text-sm font-mono text-indigo-600 break-all">{storeUrl}</p>
                         </div>
                     </div>
@@ -170,15 +195,15 @@ function SuccessContent() {
                     <div className="mt-6 bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/10">
                         <h3 className="text-white font-bold text-lg mb-4 flex items-center gap-2">
                             <CheckCircle2 className="w-5 h-5 text-green-400" />
-                            Próximos pasos
+                            {t.nextSteps}
                         </h3>
                         <div className="space-y-3">
                             <button
-                                onClick={() => router.push('/dashboard')}
+                                onClick={() => router.push(isEn ? '/en/dashboard' : '/dashboard')}
                                 className="w-full text-left flex items-center gap-3 text-white cursor-pointer hover:bg-white/5 p-3 rounded-xl transition-colors"
                             >
                                 <span className="w-6 h-6 rounded-full bg-indigo-500 flex items-center justify-center text-xs font-mono">1</span>
-                                <span className="flex-1">Agregar más productos</span>
+                                <span className="flex-1">{t.step1}</span>
                                 <ArrowRight className="w-4 h-4 opacity-50" />
                             </button>
                             <button
@@ -186,7 +211,7 @@ function SuccessContent() {
                                 className="w-full text-left flex items-center gap-3 text-white cursor-pointer hover:bg-white/5 p-3 rounded-xl transition-colors"
                             >
                                 <span className="w-6 h-6 rounded-full bg-green-500 flex items-center justify-center text-xs font-mono">2</span>
-                                <span className="flex-1">Compartir en tus redes</span>
+                                <span className="flex-1">{t.step2}</span>
                                 <ArrowRight className="w-4 h-4 opacity-50" />
                             </button>
                         </div>
@@ -197,7 +222,7 @@ function SuccessContent() {
             {/* Trust Strip */}
             <div className="mt-8 text-center">
                 <p className="text-indigo-200 text-xs font-medium">
-                    Más de 1,000 tiendas ya venden con Creatiendas 🚀
+                    {t.trust}
                 </p>
             </div>
         </div>

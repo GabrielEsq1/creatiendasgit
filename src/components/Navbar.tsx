@@ -40,21 +40,21 @@ export default function Navbar() {
                 <div className="flex justify-between items-center h-16">
                     {/* Logo Area */}
                     <div className="flex items-center">
-                        <Link href={session ? "/dashboard" : "/"} className="flex items-center group relative">
+                        <Link href={pathname?.startsWith('/en') ? (session ? "/en/dashboard" : "/en") : (session ? "/dashboard" : "/")} className="flex items-center group relative">
                             <img src="/logo.png" className="h-8 sm:h-10 w-auto object-contain" alt="CreaTiendas" />
                         </Link>
 
                         {/* Desktop Menu */}
                         {session && (
                             <div className="hidden lg:flex ml-10 space-x-8 items-center h-16">
-                                <Link href="/dashboard" className={isActive('/dashboard')}>
-                                    Dashboard
+                                <Link href={pathname?.startsWith('/en') ? "/en/dashboard" : "/dashboard"} className={isActive(pathname?.startsWith('/en') ? '/en/dashboard' : '/dashboard')}>
+                                    {pathname?.startsWith('/en') ? 'Dashboard' : 'Dashboard'}
                                 </Link>
-                                <Link href="/dashboard/stores" className={isActive('/dashboard/stores')}>
-                                    Mis Tiendas
+                                <Link href={pathname?.startsWith('/en') ? "/en/dashboard/stores" : "/dashboard/stores"} className={isActive(pathname?.startsWith('/en') ? '/en/dashboard/stores' : '/dashboard/stores')}>
+                                    {pathname?.startsWith('/en') ? 'My Stores' : 'Mis Tiendas'}
                                 </Link>
-                                <Link href="/dashboard/billing" className={isActive('/dashboard/billing')}>
-                                    Mi Plan
+                                <Link href={pathname?.startsWith('/en') ? "/en/dashboard/billing" : "/dashboard/billing"} className={isActive(pathname?.startsWith('/en') ? '/en/dashboard/billing' : '/dashboard/billing')}>
+                                    {pathname?.startsWith('/en') ? 'My Plan' : 'Mi Plan'}
                                 </Link>
 
                                 {/* Admin-Only Menu */}
@@ -97,9 +97,13 @@ export default function Navbar() {
                         <button
                             onClick={() => {
                                 const isEn = pathname?.startsWith('/en');
+                                const targetLang = isEn ? 'es' : 'en';
                                 const targetPath = isEn
                                     ? (pathname?.replace(/^\/en/, '') || '/')
                                     : `/en${pathname === '/' ? '' : pathname}`;
+
+                                // Save preference
+                                localStorage.setItem('ct_lang', targetLang);
                                 window.location.href = targetPath;
                             }}
                             className="hidden lg:block group relative w-24 h-10 bg-slate-50 rounded-full p-1 cursor-pointer border border-slate-200 shadow-inner overflow-hidden transition-all hover:border-green-500/30"
@@ -123,10 +127,10 @@ export default function Navbar() {
                         ) : session ? (
                             <div className="flex items-center gap-2 sm:gap-4">
                                 <Link
-                                    href="/dashboard"
+                                    href={pathname?.startsWith('/en') ? "/en/dashboard" : "/dashboard"}
                                     className="bg-green-500 hover:bg-green-600 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-xl text-xs sm:text-sm font-black shadow-lg shadow-green-200 transition-all hover:-translate-y-0.5 active:scale-95 flex items-center gap-2"
                                 >
-                                    <span className="hidden md:inline">Ir a mi</span><span>Panel</span>
+                                    <span className="hidden md:inline">{pathname?.startsWith('/en') ? 'Go to my' : 'Ir a mi'}</span><span>{pathname?.startsWith('/en') ? 'Panel' : 'Panel'}</span>
                                     <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M13 7l5 5m0 0l-5 5m5-5H6" />
                                     </svg>
@@ -166,9 +170,13 @@ export default function Navbar() {
                             <button
                                 onClick={() => {
                                     const isEn = pathname?.startsWith('/en');
+                                    const targetLang = isEn ? 'es' : 'en';
                                     const targetPath = isEn
                                         ? (pathname?.replace(/^\/en/, '') || '/')
                                         : `/en${pathname === '/' ? '' : pathname}`;
+
+                                    // Save preference
+                                    localStorage.setItem('ct_lang', targetLang);
                                     window.location.href = targetPath;
                                 }}
                                 className={`p-2 rounded-xl border font-bold transition-all ${pathname?.startsWith('/en')
