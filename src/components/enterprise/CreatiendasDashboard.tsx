@@ -257,7 +257,7 @@ export default function CreatiendasDashboard() {
                                                 alert('Error: La tienda no tiene una dirección válida.');
                                                 return;
                                             }
-                                            router.push(`/builder/success?slug=${encodeURIComponent(store.slug)}`);
+                                            router.push(`/builder/success?slug=${encodeURIComponent(store.slug)}&storeName=${encodeURIComponent(store.name)}`);
                                         } catch (err) {
                                             console.error('Navigation error:', err);
                                         }

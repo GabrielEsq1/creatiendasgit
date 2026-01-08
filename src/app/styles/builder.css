@@ -909,69 +909,54 @@ body {
 }
 
 @media (max-width: 900px) {
+
+    /* Enforce desktop-like layout with horizontal scroll on mobile as requested */
     body {
-        overflow-y: auto;
+        overflow-y: hidden;
+        /* Prevent body scroll, handle in panels */
     }
 
     .app-container {
-        flex-direction: column;
-        height: auto;
-        overflow: visible;
+        flex-direction: row;
+        /* Keep side-by-side */
+        height: calc(100vh - 64px);
+        overflow-x: auto;
+        /* Allow horizontal scroll to see both panels */
+        overflow-y: hidden;
+        width: 100vw;
     }
 
     .builder-panel {
-        width: 100%;
-        border-right: none;
-        border-bottom: 1px solid #ddd;
+        width: 350px;
+        /* Fixed width for editor on mobile */
+        min-width: 350px;
+        border-right: 1px solid #ddd;
+        border-bottom: none;
         padding: 1.25rem;
+        flex-shrink: 0;
+        /* Prevent shrinking */
     }
 
     .preview-panel {
-        min-height: 100vh;
+        min-width: 375px;
+        /* Ensure preview has enough space */
+        flex: 1;
         padding: 1rem;
+        overflow-y: auto;
     }
 
-    .store-preview-container {
-        border-radius: 0;
-    }
-
-    .store-products {
-        padding: 1.5rem 1rem 2rem;
-    }
-
-    .store-categories {
-        padding: 1.25rem 1rem 0.5rem;
-    }
-
-    .store-footer {
-        padding: 1.5rem 1.5rem 1.25rem;
-    }
-
+    /* Adjust topbar for narrower preview */
     .store-topbar-inner {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-
-    .device-toggle {
-        justify-content: center;
+        flex-direction: row;
+        /* Keep row in preview */
+        align-items: center;
     }
 }
 
 @media (max-width: 480px) {
-    .store-name {
-        font-size: 1.8rem;
-    }
 
-    .store-header {
-        padding: 2.5rem 1.25rem 2.3rem;
-    }
-
+    /* On very small screens, exact side-by-side might be too tight, but horizontal scroll handles it. */
     .store-products {
         grid-template-columns: 1fr;
-    }
-
-    .about-section,
-    .careers-section {
-        padding: 2rem 1.4rem 2.2rem;
     }
 }

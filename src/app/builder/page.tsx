@@ -306,12 +306,18 @@ function BuilderContent() {
                 setPublicUrl(finalUrl);
                 setHasUnsavedChanges(false); // Mark as saved
                 // Store the returned id for future updates
+                // Store the returned id for future updates
                 if (json.id) {
                     setStoreData(prev => ({ ...prev, id: json.id }));
                 }
-                alert(`┬íTienda guardada con ├®xito!\n\nTu tienda est├í lista en:\n${finalUrl}`);
+
                 if (!editSlug) {
-                    window.open(finalUrl, '_blank');
+                    // NEW STORE: Redirect to Success Page immediately
+                    alert('¡Tienda creada con éxito! Vamos a compartirla.');
+                    window.location.href = `/builder/success?slug=${json.slug}&storeName=${encodeURIComponent(storeData.name)}`;
+                } else {
+                    // EDITING: Stay on page but notify
+                    alert(`¡Cambios guardados con éxito!\n\nTu tienda está actualizada.`);
                 }
             } else {
                 throw new Error(json.message || 'Error inesperado');
@@ -497,12 +503,21 @@ function BuilderContent() {
                     )}
                     {publicUrl && (
                         <div className="public-url-box" style={{ marginTop: '1rem', padding: '1rem', background: '#e8f5e9', borderRadius: '8px', border: '1px solid #c8e6c9' }}>
-                            <p style={{ margin: '0 0 0.5rem 0', fontWeight: 'bold', color: '#2e7d32' }}>Ô£à ┬íTu tienda est├í lista!</p>
-                            <div style={{ display: 'flex', gap: '0.5rem' }}>
-                                <input readOnly value={publicUrl} style={{ flex: 1, padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc' }} />
+                            <p style={{ margin: '0 0 0.5rem 0', fontWeight: 'bold', color: '#2e7d32' }}>Ô£à ┬íTu tienda est├í {editSlug ? 'actualizada' : 'lista'}!</p>
+                            <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                                <input readOnly value={publicUrl} style={{ flex: 1, padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc', minWidth: '150px' }} />
                                 <button className="btn btn-secondary" onClick={() => { navigator.clipboard.writeText(publicUrl); alert('URL copiada!'); }} style={{ padding: '0.5rem 1rem' }}>Copiar</button>
                             </div>
-                            <a href={publicUrl} target="_blank" rel="noopener noreferrer" style={{ display: 'block', marginTop: '0.5rem', color: '#2e7d32', textDecoration: 'underline' }}>Visitar tienda ÔåÆ</a>
+                            <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.5rem' }}>
+                                <a href={publicUrl} target="_blank" rel="noopener noreferrer" style={{ flex: 1, textAlign: 'center', color: '#2e7d32', textDecoration: 'underline', padding: '0.5rem', border: '1px solid #c8e6c9', borderRadius: '4px' }}>Visitar tienda ÔåÆ</a>
+                                <Link
+                                    href={`/builder/success?slug=${editSlug || storeData.slug || ''}&storeName=${encodeURIComponent(storeData.name)}`}
+                                    className="btn btn-primary"
+                                    style={{ flex: 1, textAlign: 'center', textDecoration: 'none', background: '#25D366', borderColor: '#25D366' }}
+                                >
+                                    Compartir / QR
+                                </Link>
+                            </div>
                         </div>
                     )}
                 </section>

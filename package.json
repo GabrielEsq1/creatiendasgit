@@ -24,6 +24,7 @@
     "canvas-confetti": "^1.9.4",
     "clsx": "^2.1.1",
     "dotenv": "^16.4.5",
+    "html2canvas": "^1.4.1",
     "lucide-react": "^0.330.0",
     "next": "^14.2.33",
     "next-auth": "^4.24.13",

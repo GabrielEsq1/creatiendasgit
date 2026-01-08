@@ -5,6 +5,7 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import { Download, Share2, ArrowRight, Store, PartyPopper, CheckCircle2, Copy, Instagram, Facebook, Zap } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { QRCodeSVG } from 'qrcode.react';
+import SocialShareImageGenerator from '@/components/SocialShareImageGenerator';
 
 function SuccessContent() {
     const searchParams = useSearchParams();
@@ -236,19 +237,7 @@ function SuccessContent() {
 
                         {activeTab === 'instagram' && (
                             <div className="animate-in fade-in zoom-in duration-300 text-center py-8">
-                                <div className="bg-gradient-to-tr from-purple-500 to-pink-500 w-16 h-16 rounded-2xl mx-auto flex items-center justify-center mb-4 text-white shadow-lg shadow-pink-500/30">
-                                    <Instagram className="w-8 h-8" />
-                                </div>
-                                <h3 className="font-bold text-gray-900 mb-2">Comparte en Stories</h3>
-                                <p className="text-gray-500 text-sm mb-6 max-w-xs mx-auto">
-                                    Descarga tu QR, súbelo a tus historias y agrega el link de tu tienda con el sticker de "Enlace".
-                                </p>
-                                <button
-                                    onClick={handleDownloadQR}
-                                    className="w-full bg-gray-900 text-white font-bold py-3 px-6 rounded-xl hover:bg-black transition-colors"
-                                >
-                                    Descargar Imagen para Story
-                                </button>
+                                <SocialShareImageGenerator storeName={storeName} slug={slug || ''} />
                             </div>
                         )}
 
