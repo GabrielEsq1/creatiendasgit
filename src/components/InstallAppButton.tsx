@@ -61,8 +61,7 @@ export default function InstallAppButton() {
     // Don't show if already installed as PWA
     if (isStandalone) return null;
 
-    // Always show on mobile devices
-    if (!isMobile) return null;
+    // Show on all devices - removed mobile-only restriction
 
     return (
         <>
@@ -121,7 +120,7 @@ export default function InstallAppButton() {
                                     </div>
                                 </div>
                             </div>
-                        ) : (
+                        ) : isMobile ? (
                             <div className="space-y-4 text-left">
                                 <div className="flex items-start gap-3">
                                     <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center shrink-0 text-lg">1</div>
@@ -133,7 +132,7 @@ export default function InstallAppButton() {
                                 <div className="flex items-start gap-3">
                                     <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center shrink-0 text-lg">2</div>
                                     <div>
-                                        <p className="font-bold text-slate-900">Busca "Instalar app" o "Agregar a inicio"</p>
+                                        <p className="font-bold text-slate-900">Busca "Instalar app"</p>
                                         <p className="text-sm text-slate-500">O "Añadir a pantalla de inicio"</p>
                                     </div>
                                 </div>
@@ -142,6 +141,30 @@ export default function InstallAppButton() {
                                     <div>
                                         <p className="font-bold text-slate-900">¡Listo!</p>
                                         <p className="text-sm text-slate-500">Creatiendas en tu pantalla</p>
+                                    </div>
+                                </div>
+                            </div>
+                        ) : (
+                            <div className="space-y-4 text-left">
+                                <div className="flex items-start gap-3">
+                                    <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center shrink-0 text-lg">1</div>
+                                    <div>
+                                        <p className="font-bold text-slate-900">Usa Chrome o Edge</p>
+                                        <p className="text-sm text-slate-500">Necesitas uno de estos navegadores</p>
+                                    </div>
+                                </div>
+                                <div className="flex items-start gap-3">
+                                    <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center shrink-0 text-lg">2</div>
+                                    <div>
+                                        <p className="font-bold text-slate-900">Busca el ícono de instalar</p>
+                                        <p className="text-sm text-slate-500">En la barra de direcciones o menú ⋮</p>
+                                    </div>
+                                </div>
+                                <div className="flex items-start gap-3">
+                                    <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center shrink-0 text-lg">✓</div>
+                                    <div>
+                                        <p className="font-bold text-slate-900">¡Instalada!</p>
+                                        <p className="text-sm text-slate-500">Acceso directo en tu escritorio</p>
                                     </div>
                                 </div>
                             </div>
