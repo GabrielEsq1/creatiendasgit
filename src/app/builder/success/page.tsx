@@ -201,7 +201,13 @@ function SuccessContent() {
                                 <ArrowRight className="w-4 h-4 opacity-50" />
                             </button>
                             <button
-                                onClick={handleWhatsAppShare}
+                                onClick={() => {
+                                    if (slug && slug !== 'undefined') {
+                                        router.push(`/builder?edit=${slug}`);
+                                    } else {
+                                        router.push('/dashboard');
+                                    }
+                                }}
                                 className="w-full text-left flex items-center gap-3 text-white cursor-pointer hover:bg-white/5 p-3 rounded-xl transition-colors"
                             >
                                 <span className="w-6 h-6 rounded-full bg-green-500 flex items-center justify-center text-xs font-mono">2</span>

@@ -150,15 +150,27 @@ function SuccessContentEN() {
                         </h3>
                         <div className="space-y-4">
                             <button
-                                onClick={() => router.push('/en/dashboard')}
+                                onClick={() => {
+                                    if (slug && slug !== 'undefined') {
+                                        router.push(`/en/builder?edit=${slug}`);
+                                    } else {
+                                        router.push('/en/dashboard');
+                                    }
+                                }}
                                 className="w-full text-left flex items-center gap-4 text-white bg-white/5 hover:bg-white/10 p-4 rounded-2xl transition-all border border-white/5 group"
                             >
                                 <span className="w-8 h-8 rounded-xl bg-indigo-500 flex items-center justify-center text-sm font-black shadow-lg">1</span>
-                                <span className="flex-1 font-bold">Go to Dashboard</span>
+                                <span className="flex-1 font-bold">Manage Store</span>
                                 <ArrowRight className="w-5 h-5 opacity-30 group-hover:opacity-100 group-hover:translate-x-1 transition-all" />
                             </button>
                             <button
-                                onClick={() => router.push(`/en/builder?edit=${slug}`)}
+                                onClick={() => {
+                                    if (slug && slug !== 'undefined') {
+                                        router.push(`/en/builder?edit=${slug}`);
+                                    } else {
+                                        router.push('/en/dashboard');
+                                    }
+                                }}
                                 className="w-full text-left flex items-center gap-4 text-white bg-white/5 hover:bg-white/10 p-4 rounded-2xl transition-all border border-white/5 group"
                             >
                                 <span className="w-8 h-8 rounded-xl bg-purple-500 flex items-center justify-center text-sm font-black shadow-lg">2</span>
