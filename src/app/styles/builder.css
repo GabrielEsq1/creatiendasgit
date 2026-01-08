@@ -1,4 +1,4 @@
-:root {
+﻿:root {
     --primary-color: #1877F2;
     --text-color: #333;
     --bg-color: #f4f4f9;
@@ -220,32 +220,15 @@ body {
 
 .store-preview-container {
     width: 100%;
+    max-width: 1100px;
     background: #ffffff;
     min-height: 100%;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08);
+    border-radius: 24px;
     /* overflow: hidden; Removed to allow scrolling */
     display: flex;
     flex-direction: column;
     transition: max-width 0.2s ease;
-    margin: 0 auto;
-}
-
-/* Base styles for public pages */
-.public-store-wrapper {
-    min-height: 100vh;
-    background: #f4f4f9;
-}
-
-.public-store-wrapper .store-preview-container {
-    max-width: 1200px;
-    border-radius: 0;
-    box-shadow: none;
-}
-
-/* Builder specific preview styling */
-.preview-panel .store-preview-container {
-    max-width: 1100px;
-    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08);
-    border-radius: 24px;
 }
 
 .store-preview-container.device-mobile {
@@ -313,30 +296,6 @@ body {
     gap: 0.35rem;
 }
 
-@media (max-width: 600px) {
-    .store-topbar-inner {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-
-    .topbar-right {
-        width: 100%;
-        overflow-x: auto;
-        flex-wrap: nowrap;
-        padding: 0.5rem 0;
-        -webkit-overflow-scrolling: touch;
-        scrollbar-width: none;
-    }
-
-    .topbar-right::-webkit-scrollbar {
-        display: none;
-    }
-
-    .store-nav-item {
-        white-space: nowrap;
-    }
-}
-
 .store-nav-item {
     background: transparent;
     border: none;
@@ -357,15 +316,9 @@ body {
 
 .store-header {
     color: white;
-    padding: 2rem 1rem;
+    padding: 3.25rem 2.25rem 3rem;
     text-align: center;
     position: relative;
-}
-
-@media (min-width: 768px) {
-    .store-header {
-        padding: 3.25rem 2.25rem 3rem;
-    }
 }
 
 .store-header::after {
@@ -415,7 +368,7 @@ body {
     display: none;
 }
 
-/* CATEGORÍAS */
+/* CATEGOR├ìAS */
 
 .store-categories {
     padding: 1.5rem 2.25rem 0.75rem;
@@ -619,7 +572,7 @@ body {
 
 .about-values-list li::before,
 .about-diff-list li::before {
-    content: "• ";
+    content: "ÔÇó ";
     color: var(--primary-color);
     font-weight: 700;
 }
@@ -743,7 +696,7 @@ body {
 }
 
 .careers-benefits li::before {
-    content: "✓ ";
+    content: "Ô£ô ";
     color: var(--primary-color);
     font-weight: 700;
 }
@@ -896,7 +849,7 @@ body {
     border-color: #d32f2f !important;
 }
 
-/* LIGHTBOX IMÁGENES GALERÍA */
+/* LIGHTBOX IM├üGENES GALER├ìA */
 
 #galleryPopup {
     position: fixed;
@@ -956,75 +909,53 @@ body {
 }
 
 @media (max-width: 900px) {
-
-    /* Only apply overflow hidden to body in the builder/admin pages, never on stores */
-    body:has(.app-container) {
-        overflow-y: hidden;
+    body {
+        overflow-y: auto;
     }
 
     .app-container {
-        /* Force side-by-side on larger mobiles/tablets or if user requests, 
-           BUT for standard mobile portrait, we really should defaults to proper tabs or split.
-           User asked for "Left Form, Right Preview" style. 
-           We will use a flex row but allow wrapping on very small screens if needed, 
-           or keep them side-by-side with horizontal scroll? 
-           NO, user likely wants a SPLIT SCREEN (Top/Bottom) or Side-by-Side on Landscape.
-        */
-        flex-direction: row;
-        height: calc(100vh - 64px);
-        /* Keep fixed height */
+        flex-direction: column;
+        height: auto;
+        overflow: visible;
     }
 
     .builder-panel {
-        width: 50%;
-        border-right: 1px solid #ddd;
-        border-bottom: none;
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid #ddd;
         padding: 1.25rem;
     }
 
     .preview-panel {
-        width: 50%;
-        min-height: auto;
+        min-height: 100vh;
         padding: 1rem;
-        border-left: 1px solid #ddd;
-    }
-}
-
-/* Specific adjustments for very small screens (phones in portrait) where side-by-side is impossible */
-@media (max-width: 650px) {
-    .app-container {
-        flex-direction: column;
-        /* Stack vertically for portrait phones */
-    }
-
-    .builder-panel {
-        width: 100%;
-        height: 50%;
-        /* Split height */
-        border-right: none;
-        border-bottom: 2px solid #ddd;
-    }
-
-    .preview-panel {
-        width: 100%;
-        height: 50%;
-        /* Split height */
-        min-height: auto;
-        border-left: none;
-        background: #eef2f6;
-        /* Distinct bg */
     }
 
     .store-preview-container {
-        transform: scale(0.65);
-        /* Scale down preview to fit */
-        transform-origin: top center;
-        width: 154%;
-        /* Compensate for scale (1 / 0.65) */
-        margin-bottom: -35%;
+        border-radius: 0;
+    }
+
+    .store-products {
+        padding: 1.5rem 1rem 2rem;
+    }
+
+    .store-categories {
+        padding: 1.25rem 1rem 0.5rem;
+    }
+
+    .store-footer {
+        padding: 1.5rem 1.5rem 1.25rem;
+    }
+
+    .store-topbar-inner {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .device-toggle {
+        justify-content: center;
     }
 }
-
 
 @media (max-width: 480px) {
     .store-name {
