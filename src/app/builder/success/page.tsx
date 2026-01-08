@@ -48,20 +48,11 @@ function SuccessContent() {
         }
     };
 
-    const handleWhatsAppShare = () => {
-        // Use encoded text to prevent character issues
-        const text = encodeURIComponent(`¡Ya tengo tienda online! Visítala aquí: ${storeUrl}`);
-        window.open(`https://wa.me/?text=${text}`, '_blank');
-    };
 
     const handleCopyLink = () => {
         navigator.clipboard.writeText(storeUrl);
         setCopied(true);
         setTimeout(() => setCopied(false), 2000);
-    };
-
-    const handleVisitStore = () => {
-        window.open(storeUrl, '_blank');
     };
 
 
@@ -146,22 +137,26 @@ function SuccessContent() {
                         <p className="text-gray-500 text-sm mb-6">{t.shareDescription}</p>
 
                         {/* WhatsApp Share - Primary Action */}
-                        <button
-                            onClick={handleWhatsAppShare}
-                            className="w-full bg-[#25D366] hover:bg-[#128C7E] text-white text-lg font-bold py-4 px-6 rounded-xl flex items-center justify-center gap-3 transition-transform active:scale-95 shadow-lg shadow-green-500/20 mb-4"
+                        <a
+                            href={`https://wa.me/?text=${encodeURIComponent(`¡Ya tengo tienda online! Visítala aquí: ${storeUrl}`)}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="w-full bg-[#25D366] hover:bg-[#128C7E] text-white text-lg font-bold py-4 px-6 rounded-xl flex items-center justify-center gap-3 transition-transform active:scale-95 shadow-lg shadow-green-500/20 mb-4 no-underline"
                         >
                             <Share2 className="w-6 h-6" />
                             {t.whatsappButton}
-                        </button>
+                        </a>
 
                         {/* Visit Store */}
-                        <button
-                            onClick={handleVisitStore}
-                            className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-6 rounded-xl flex items-center justify-center gap-2 transition-colors mb-4"
+                        <a
+                            href={storeUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-6 rounded-xl flex items-center justify-center gap-2 transition-colors mb-4 no-underline"
                         >
                             <ExternalLink className="w-5 h-5" />
                             {t.viewStore}
-                        </button>
+                        </a>
 
                         {/* Copy Link */}
                         <button
