@@ -40,7 +40,7 @@ export default function StoreViralFooter() {
 
                 {/* CTA Button */}
                 <Link
-                    href="/auth/register"
+                    href="/crear-tienda"
                     className="inline-flex items-center gap-2 bg-white text-indigo-600 px-8 py-4 rounded-xl font-black text-lg shadow-2xl hover:scale-105 transition-transform active:scale-95"
                 >
                     Crear Mi Tienda Gratis
