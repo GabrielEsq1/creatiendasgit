@@ -348,7 +348,20 @@ function BuilderContent() {
                     setHasUnsavedChanges(false); // Ensure no popup on redirect
                     alert('¡Tienda creada con éxito! Vamos a compartirla.');
                     // Use local slug if server doesn't return it to ensure we never get "undefined"
-                    const finalSlug = json.slug || slug || storeData.slug;
+                    let finalSlug = json.slug || slug || storeData.slug;
+
+                    // CRITICAL SAFETY CHECK
+                    if (!finalSlug || finalSlug === 'undefined' || finalSlug === 'null') {
+                        console.error('CRITICAL: Slug missing in redirect', { jsonSlug: json.slug, localSlug: slug, stateSlug: storeData.slug });
+                        // Emergency fallback: use name
+                        if (storeData.name) {
+                            finalSlug = storeData.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+                        } else {
+                            alert('Error crítico: No se pudo generar el enlace de la tienda. Por favor contacta a soporte.');
+                            return;
+                        }
+                    }
+
                     console.log('Redirecting to success with slug:', finalSlug);
                     window.location.href = `/builder/success?slug=${finalSlug}&storeName=${encodeURIComponent(storeData.name)}`;
                 } else {

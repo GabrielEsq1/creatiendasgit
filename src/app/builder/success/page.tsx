@@ -49,8 +49,9 @@ function SuccessContent() {
     };
 
     const handleWhatsAppShare = () => {
-        const message = `🚀 ¡Ya tengo tienda online!\nVisítala aquí 👉 ${storeUrl}\nEscríbeme por WhatsApp si te interesa algo.`;
-        window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, '_blank');
+        // Use encoded text to prevent character issues
+        const text = encodeURIComponent(`¡Ya tengo tienda online! Visítala aquí: ${storeUrl}`);
+        window.open(`https://wa.me/?text=${text}`, '_blank');
     };
 
     const handleCopyLink = () => {
@@ -186,7 +187,13 @@ function SuccessContent() {
                         </h3>
                         <div className="space-y-3">
                             <button
-                                onClick={() => router.push('/dashboard')}
+                                onClick={() => {
+                                    if (slug && slug !== 'undefined') {
+                                        router.push(`/builder?edit=${slug}`);
+                                    } else {
+                                        router.push('/dashboard');
+                                    }
+                                }}
                                 className="w-full text-left flex items-center gap-3 text-white cursor-pointer hover:bg-white/5 p-3 rounded-xl transition-colors"
                             >
                                 <span className="w-6 h-6 rounded-full bg-indigo-500 flex items-center justify-center text-xs font-mono">1</span>

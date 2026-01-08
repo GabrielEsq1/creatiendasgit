@@ -338,7 +338,20 @@ function BuilderContentEN() {
                     setHasUnsavedChanges(false); // Ensure no popup on redirect
                     alert('Store created successfully! Let\'s share it.');
                     // Use getStoreUrl to ensure correct formatting implicitly, but here we just need to pass slug
-                    const finalSlug = json.slug || slug || storeData.slug;
+                    let finalSlug = json.slug || slug || storeData.slug;
+
+                    // CRITICAL SAFETY CHECK
+                    if (!finalSlug || finalSlug === 'undefined' || finalSlug === 'null') {
+                        console.error('CRITICAL: Slug missing in redirect (EN)', { jsonSlug: json.slug, localSlug: slug, stateSlug: storeData.slug });
+                        // Emergency fallback
+                        if (storeData.name) {
+                            finalSlug = storeData.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+                        } else {
+                            alert('Critical Error: Could not generate store link. Please contact support.');
+                            return;
+                        }
+                    }
+
                     console.log('Redirecting to success with slug:', finalSlug);
                     window.location.href = `/en/builder/success?slug=${finalSlug}&storeName=${encodeURIComponent(storeData.name)}`;
                 } else {

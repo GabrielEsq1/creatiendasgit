@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react';
 import VideoModal from './VideoModal';
 import { useAnalytics } from './Analytics';
 import { useSession } from 'next-auth/react';
+import InstallAppButton from './InstallAppButton';
 
 export default function Hero() {
     const { data: session } = useSession();
@@ -86,6 +87,11 @@ export default function Hero() {
                         Ver Demo
                     </button>
                 </div>
+
+                {/* PWA Install Button - TEMPORARILY DISABLED DUE TO MOBILE CRASH */}
+                {/* <div className="flex justify-center mb-12">
+                     <InstallAppButton />
+                </div> */}
 
                 {/* 4. Comparison Table */}
                 <div className="max-w-4xl mx-auto mb-20">

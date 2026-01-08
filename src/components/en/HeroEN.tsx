@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
+import InstallAppButton from '@/components/InstallAppButton';
 import VideoModal from '../VideoModal';
 
 export default function HeroEN() {
@@ -65,6 +66,11 @@ export default function HeroEN() {
                         Watch Demo
                     </button>
                 </div>
+
+                {/* PWA Install Button - TEMPORARILY DISABLED */}
+                {/* <div className="flex justify-center mb-12">
+                     <InstallAppButton />
+                </div> */}
 
                 {/* Comparison Table */}
                 <div className="max-w-4xl mx-auto mb-20">

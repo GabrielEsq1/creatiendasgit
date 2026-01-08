@@ -59,6 +59,7 @@ export async function POST(request: Request) {
             store,
             id: store.id,
             slug: store.slug,
+            version: '1.0.1', // Debug version
             url: publicUrl,
             publicUrl
         });
