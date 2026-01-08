@@ -7,11 +7,9 @@ import { prisma } from '@/lib/prisma';
 export async function GET() {
     try {
         const session = await getServerSession(authOptions);
-        console.log('Admin API Session:', session?.user?.email);
 
         // 1. Authentication Check
         if (!session?.user?.email) {
-            console.log('Admin API: Not authenticated');
             return NextResponse.json({ error: 'No autenticado' }, { status: 401 });
         }
 
@@ -20,11 +18,9 @@ export async function GET() {
             where: { email: session.user.email },
             select: { role: true }
         });
-        console.log('Admin API Role:', currentUser?.role);
 
         const allowedRoles = ['ADMIN', 'SUPERADMIN'];
         if (!currentUser || !allowedRoles.includes(currentUser.role)) {
-            console.log('Admin API: Not authorized');
             return NextResponse.json({ error: 'No autorizado' }, { status: 403 });
         }
 
@@ -45,7 +41,6 @@ export async function GET() {
                 stores: u.stores.length
             }
         }));
-        console.log('Admin API: Fetched users', users.length);
 
         return NextResponse.json(users);
     } catch (error) {
@@ -58,7 +53,6 @@ export async function GET() {
 export async function PATCH(req: Request) {
     try {
         const session = await getServerSession(authOptions);
-        console.log('Admin API PATCH Session:', session?.user?.email);
 
         // 1. Authentication Check
         if (!session?.user?.email) {

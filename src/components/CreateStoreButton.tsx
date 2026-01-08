@@ -16,7 +16,6 @@ export default function CreateStoreButton({ storeCount, userRole, userPlan, clas
     const [isModalOpen, setIsModalOpen] = useState(false);
     const router = useRouter();
 
-    console.log('CreateStoreButton props:', { storeCount, userRole, userPlan });
 
     const handleClick = (e: React.MouseEvent) => {
         e.preventDefault();

@@ -406,7 +406,7 @@ function BuilderContent() {
                         <textarea value={storeData.desc} onChange={e => handleInputChange(null, 'desc', e.target.value)} />
                     </div>
                     <div className="form-group">
-                        <label>N├║mero de WhatsApp *</label>
+                        <label>Número de WhatsApp *</label>
                         <input value={storeData.whatsapp} onChange={e => handleInputChange(null, 'whatsapp', e.target.value)} />
                     </div>
                     <div className="form-group">
@@ -437,7 +437,7 @@ function BuilderContent() {
                         <select value={storeData.borderRadius || '16px'} onChange={e => handleInputChange(null, 'borderRadius', e.target.value)} className="w-full p-2 border rounded">
                             <option value="0px">Cuadrado (0px)</option>
                             <option value="4px">Sutil (4px)</option>
-                            <option value="8px">Est├índar (8px)</option>
+                            <option value="8px">Estándar (8px)</option>
                             <option value="16px">Moderno (16px)</option>
                             <option value="24px">Muy Redondeado (24px)</option>
                             <option value="30px">Curvo (30px)</option>

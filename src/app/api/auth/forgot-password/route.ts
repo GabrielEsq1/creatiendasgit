@@ -34,7 +34,8 @@ export async function POST(req: Request) {
             },
         });
 
-        console.log(`\n=== PASSWORD RESET CODE ===\nUser: ${email}\nCode: ${resetCode}\n===========================\n`);
+        // In a real production app, we would send this code via email here.
+        // For now the system is configured to handle the flow without external SMTP for testing.
 
         return NextResponse.json({ success: true });
     } catch (error) {
