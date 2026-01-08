@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { Store, Plus, Settings, Eye, Trash2, Edit, Package, QrCode } from 'lucide-react';
+import { getStoreUrl } from '@/lib/utils';
 import ActivationChecklistEN from '../en/ActivationChecklistEN';
 
 
@@ -200,7 +201,7 @@ export default function CreatiendasDashboardEN() {
                                             <Edit className="w-4 h-4 text-blue-600" />
                                         </button>
                                         <button
-                                            onClick={() => window.open(`/stores/${store.slug}`, '_blank')}
+                                            onClick={() => window.open(getStoreUrl(store.slug), '_blank')}
                                             className="p-2 hover:bg-slate-100 rounded-lg transition-colors"
                                             title="View store"
                                         >

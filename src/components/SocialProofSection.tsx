@@ -6,12 +6,33 @@ import { cn } from '@/lib/utils';
 import WorldActivityMap from './WorldActivityMap';
 import { useAnalytics } from '@/components/Analytics';
 
-export const SocialProofSection = () => {
+interface SocialProofProps {
+    lang?: 'es' | 'en';
+}
+
+export const SocialProofSection = ({ lang = 'es' }: SocialProofProps) => {
     const [apiData, setApiData] = useState<any>(null); // Renamed from 'data' to avoid conflict with derived 'metrics'
     const [loading, setLoading] = useState(true);
     const { trackEvent } = useAnalytics();
     const sectionRef = useRef<HTMLDivElement>(null);
     const hasTrackedView = useRef(false);
+
+    const isEn = lang === 'en';
+
+    const t = {
+        title: isEn ? 'This is happening right now' : 'Esto está pasando ahora mismo',
+        subtitle: isEn ? 'Real-time data from our active community.' : 'Datos en tiempo real de nuestra comunidad activa.',
+        liveBadge: isEn ? 'Live: Creatiendas Global' : 'En vivo: Creatiendas Global',
+        activeNow: isEn ? 'Active Now' : 'Active Now', // Often kept in English or "Activos ahora"
+        registrations: isEn ? 'Signups 24h' : 'Registros 24h',
+        first: isEn ? 'Be the first!' : '¡Sé el primero!',
+        storesToday: isEn ? 'Stores Today' : 'Tiendas Hoy',
+        launching: isEn ? 'Launching now' : 'Lanzamientos en curso',
+        views: isEn ? 'Views 24h' : 'Vistas 24h',
+        interactions: isEn ? 'Interactions' : 'Interacciones',
+        countries: isEn ? 'Active Countries' : 'Países Activos',
+        realData: isEn ? '* 100% real data from our Open Source community' : '* Datos 100% reales de nuestra comunidad Open Source'
+    };
 
     useEffect(() => {
         // Fetch Social Proof Data
@@ -83,10 +104,10 @@ export const SocialProofSection = () => {
             {/* 1. VISUAL HERO: Realistic Map */}
             <div className="text-center mb-8">
                 <h2 className="text-2xl md:text-3xl font-black text-slate-900 mb-2">
-                    Esto está pasando ahora mismo
+                    {t.title}
                 </h2>
                 <p className="text-slate-500 font-medium">
-                    Datos en tiempo real de nuestra comunidad activa.
+                    {t.subtitle}
                 </p>
             </div>
 
@@ -98,7 +119,7 @@ export const SocialProofSection = () => {
                         <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-blue-500"></span>
                     </span>
                     <span className="text-[10px] font-bold text-blue-800/80 uppercase tracking-widest bg-white/90 px-2 py-0.5 rounded-full shadow-sm backdrop-blur-md">
-                        En vivo: Creatiendas Global
+                        {t.liveBadge}
                     </span>
                 </div>
 
@@ -129,7 +150,7 @@ export const SocialProofSection = () => {
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                 {/* Row 1 */}
                 <MetricCard
-                    label="Active Now"
+                    label={t.activeNow}
                     value={metrics.activeNow}
                     icon={Activity}
                     color="text-blue-400"
@@ -137,15 +158,15 @@ export const SocialProofSection = () => {
                     trend="Live"
                 />
                 <MetricCard
-                    label="Registros 24h"
-                    value={metrics.recentSignups > 0 ? metrics.recentSignups : "¡Sé el primero!"}
+                    label={t.registrations}
+                    value={metrics.recentSignups > 0 ? metrics.recentSignups : t.first}
                     icon={Users}
                     color="text-emerald-600"
                     bg="bg-emerald-500/10"
                 />
                 <MetricCard
-                    label="Tiendas Hoy"
-                    value={metrics.totalStoresToday > 0 ? metrics.totalStoresToday : "Lanzamientos en curso"}
+                    label={t.storesToday}
+                    value={metrics.totalStoresToday > 0 ? metrics.totalStoresToday : t.launching}
                     icon={StoreIcon}
                     color="text-indigo-600"
                     bg="bg-indigo-500/10"
@@ -153,21 +174,21 @@ export const SocialProofSection = () => {
 
                 {/* Row 2 */}
                 <MetricCard
-                    label="Vistas 24h"
+                    label={t.views}
                     value={metrics.pageViews24h.toLocaleString()}
                     icon={Eye}
                     color="text-sky-400"
                     bg="bg-sky-500/10"
                 />
                 <MetricCard
-                    label="Interacciones"
+                    label={t.interactions}
                     value={metrics.clicks24h.toLocaleString()}
                     icon={MousePointerClick}
                     color="text-purple-400"
                     bg="bg-purple-500/10"
                 />
                 <MetricCard
-                    label="Países Activos"
+                    label={t.countries}
                     value={metrics.activeCountriesCount}
                     icon={Globe2}
                     color="text-amber-400"
@@ -188,7 +209,7 @@ export const SocialProofSection = () => {
 
             {/* Micro-copy for trust */}
             <p className="text-xs text-slate-400 font-medium text-center">
-                * Datos 100% reales de nuestra comunidad Open Source
+                {t.realData}
             </p>
         </div>
     );

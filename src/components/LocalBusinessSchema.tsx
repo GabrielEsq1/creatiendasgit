@@ -1,6 +1,7 @@
 import React from 'react';
 
-export default function LocalBusinessSchema() {
+export default function LocalBusinessSchema({ lang = 'es' }: { lang?: 'es' | 'en' }) {
+    const isEn = lang === 'en';
     const schema = {
         "@context": "https://schema.org",
         "@type": "Service",
@@ -21,7 +22,9 @@ export default function LocalBusinessSchema() {
             "@type": "Country",
             "name": ["Colombia", "México", "Perú", "Chile", "Argentina"]
         },
-        "description": "Plataforma para crear tiendas online optimizadas para WhatsApp en toda Latinoamérica."
+        "description": isEn
+            ? "Platform to create WhatsApp-optimized online stores across Latin America."
+            : "Plataforma para crear tiendas online optimizadas para WhatsApp en toda Latinoamérica."
     };
 
     return (

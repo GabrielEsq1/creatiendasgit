@@ -7,6 +7,7 @@ import StorePreview from '@/components/en/StorePreviewEN';
 import StoreQRCode from '@/components/StoreQRCode';
 import { StoreData, Product } from '@/lib/store-service';
 import { compressImage } from '@/lib/image-utils';
+import { getStoreUrl } from '@/lib/utils';
 import '../../styles/builder.css'; // Path adjusted for /en/builder
 
 export const dynamic = "force-dynamic";
@@ -251,12 +252,19 @@ function BuilderContentEN() {
         setIsSaving(true);
         setPublicUrl(null);
         try {
-            const slug = storeData.name.toLowerCase()
-                .normalize('NFD')
-                .replace(/[\u0300-\u036f]/g, '')
-                .replace(/[^a-z0-9]+/g, '-')
-                .replace(/^-+|-+$/g, '')
-                .replace(/-+/g, '-') + '-' + Date.now().toString(36);
+            // ONLY generate a new slug if we don't have one (NEW store)
+            // or if the user changed the name AND we are not editing.
+            // Actually, best practice: if storeData.id exists, we keep the current slug.
+            let slug = storeData.slug;
+
+            if (!storeData.id && !editSlug) {
+                slug = storeData.name.toLowerCase()
+                    .normalize('NFD')
+                    .replace(/[\u0300-\u036f]/g, '')
+                    .replace(/[^a-z0-9]+/g, '-')
+                    .replace(/^-+|-+$/g, '')
+                    .replace(/-+/g, '-') + '-' + Date.now().toString(36);
+            }
 
             const method = storeData.id ? 'PUT' : 'POST';
             const url = storeData.id ? `/api/stores/${storeData.id}` : '/api/stores';
@@ -309,7 +317,13 @@ function BuilderContentEN() {
                 }
                 alert(`Store saved successfully!\n\nYour store is ready at:\n${finalUrl}`);
                 if (!editSlug) {
-                    window.open(finalUrl, '_blank');
+                    // NEW STORE: Redirect to Success Page immediately
+                    alert('Store created successfully! Let\'s share it.');
+                    // Use getStoreUrl to ensure correct formatting implicitly, but here we just need to pass slug
+                    window.location.href = `/en/builder/success?slug=${json.slug}&storeName=${encodeURIComponent(storeData.name)}`;
+                } else {
+                    // EDITING: Stay on page but notify
+                    alert(`Changes saved successfully!\n\nYour store is updated.`);
                 }
             } else {
                 throw new Error(json.message || 'Unexpected error');

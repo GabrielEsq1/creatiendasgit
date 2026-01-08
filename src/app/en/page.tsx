@@ -11,13 +11,30 @@ import BlogSectionEN from '@/components/en/BlogSectionEN';
 import TestimonialsEN from '@/components/en/TestimonialsEN';
 import HubPromoBannerEN from '@/components/en/HubPromoBannerEN';
 import FinalCTAEN from '@/components/en/FinalCTAEN';
+import { SocialProofSection } from '@/components/SocialProofSection';
+import SoftwareSchema from '@/components/SoftwareSchema';
+import FAQSchema from '@/components/FAQSchema';
+import LocalBusinessSchema from '@/components/LocalBusinessSchema';
+import SuccessBanner from '@/components/SuccessBanner';
 
 export default function EnglishLandingPage() {
     return (
         <div className="min-h-screen bg-white text-slate-900 flex flex-col selection:bg-green-500/30">
+            <SoftwareSchema lang="en" />
+            <FAQSchema lang="en" />
+            <LocalBusinessSchema lang="en" />
+            <SuccessBanner />
             <main className="flex-1">
                 <HeroEN />
                 <WhatIsEN />
+
+                {/* VALIDATION: Real metrics (Psychological Step 3) */}
+                <div className="py-8 bg-slate-50/50">
+                    <div className="max-w-7xl mx-auto px-4 md:px-8">
+                        <SocialProofSection lang="en" />
+                    </div>
+                </div>
+
                 <BenefitsEN />
                 <HowItWorksEN />
                 <div id="demo">

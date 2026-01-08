@@ -1,6 +1,7 @@
 import React from 'react';
 
-export default function SoftwareSchema() {
+export default function SoftwareSchema({ lang = 'es' }: { lang?: 'es' | 'en' }) {
+    const isEn = lang === 'en';
     const schema = {
         "@context": "https://schema.org",
         "@type": "SoftwareApplication",
@@ -12,7 +13,9 @@ export default function SoftwareSchema() {
             "price": "0",
             "priceCurrency": "USD"
         },
-        "description": "Crea tu tienda online por WhatsApp gratis en minutos. Sin comisiones, diseñado para emprendedores en LATAM.",
+        "description": isEn
+            ? "Create your online store via WhatsApp for free in minutes. No commissions, designed for entrepreneurs in LATAM."
+            : "Crea tu tienda online por WhatsApp gratis en minutos. Sin comisiones, diseñado para emprendedores en LATAM.",
         "aggregateRating": {
             "@type": "AggregateRating",
             "ratingValue": "4.9",

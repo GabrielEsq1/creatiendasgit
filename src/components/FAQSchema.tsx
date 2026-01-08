@@ -1,10 +1,44 @@
 import React from 'react';
 
-export default function FAQSchema() {
+export default function FAQSchema({ lang = 'es' }: { lang?: 'es' | 'en' }) {
+    const isEn = lang === 'en';
     const schema = {
         "@context": "https://schema.org",
         "@type": "FAQPage",
-        "mainEntity": [
+        "mainEntity": isEn ? [
+            {
+                "@type": "Question",
+                "name": "Is Creatiendas really free?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Yes, Creatiendas offers a permanent free plan that allows you to create your catalog and receive orders via WhatsApp without paying monthly fees or sales commissions."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "How do I receive payments from my customers?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "You coordinate the payment directly with the customer. You can use bank transfers, local apps (Nequi, Daviplata), cash on delivery, or any other method you prefer. We do not hold your money."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Do I need technical knowledge to create my store?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Not at all. Creatiendas is designed to be used from your phone. If you know how to send a WhatsApp message, you can create your store on our platform."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Can I use my own domain?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Yes, professional plans allow you to connect your own domain (e.g., www.yourname.com) to give more credibility to your brand."
+                }
+            }
+        ] : [
             {
                 "@type": "Question",
                 "name": "¿Es realmente gratis Creatiendas?",
