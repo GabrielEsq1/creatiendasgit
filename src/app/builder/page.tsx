@@ -13,9 +13,9 @@ export const dynamic = "force-dynamic";
 
 // Initial store data structure
 const INITIAL_DATA: StoreData = {
-    title: 'Especiales del d├¡a',
+    title: 'Especiales del día',
     name: 'Mi Tienda Bonita',
-    desc: 'Descripci├│n corta de la tienda',
+    desc: 'Descripción corta de la tienda',
     whatsapp: '',
     color: '#ff0000',
     font: 'Inter',
@@ -54,7 +54,7 @@ const INITIAL_PRODUCTS: Product[] = [
     {
         id: 1,
         name: 'Combo Especial',
-        description: 'Nuestro combo estrella con bebida y acompa├▒amiento.',
+        description: 'Nuestro combo estrella con bebida y acompañamiento.',
         category: 'Combos',
         price: '10900',
         image: null
@@ -351,7 +351,7 @@ function BuilderContent() {
                 <div className="panel-header">
                     <Link href="/dashboard" style={{ marginBottom: '0.5rem', display: 'inline-block', color: '#2196F3', textDecoration: 'none', fontSize: '0.9rem' }}>ÔåÉ Back to Dashboard</Link>
                     <h2>{editSlug ? 'Ô£Å´©Å Editar Tienda' : '­ƒøá´©Å Constructor de Tienda'}</h2>
-                    <p>{editSlug ? 'Modifica tu tienda y guarda los cambios.' : 'Configura tu tienda, a├▒ade productos y ve los cambios en tiempo real.'}</p>
+                    <p>{editSlug ? 'Modifica tu tienda y guarda los cambios.' : 'Configura tu tienda, añade productos y ve los cambios en tiempo real.'}</p>
                     {isLoading && <p style={{ color: '#2196F3', fontWeight: 'bold' }}>­ƒöä Cargando datos de la tienda...</p>}
                 </div>
 
@@ -359,15 +359,15 @@ function BuilderContent() {
                 <section className="form-section">
                     <h3>1. Identidad de la Tienda</h3>
                     <div className="form-group">
-                        <label>T├¡tulo principal</label>
-                        <input value={storeData.title} onChange={e => handleInputChange(null, 'title', e.target.value)} placeholder="Ej: Especiales del d├¡a" />
+                        <label>Título principal</label>
+                        <input value={storeData.title} onChange={e => handleInputChange(null, 'title', e.target.value)} placeholder="Ej: Especiales del día" />
                     </div>
                     <div className="form-group">
                         <label>Nombre de la Tienda *</label>
                         <input value={storeData.name} onChange={e => handleInputChange(null, 'name', e.target.value)} />
                     </div>
                     <div className="form-group">
-                        <label>Descripci├│n corta</label>
+                        <label>Descripción corta</label>
                         <textarea value={storeData.desc} onChange={e => handleInputChange(null, 'desc', e.target.value)} />
                     </div>
                     <div className="form-group">
@@ -423,22 +423,22 @@ function BuilderContent() {
                     <div className="form-group"><label>Facebook</label><input value={storeData.socials.facebook} onChange={e => handleInputChange('socials', 'facebook', e.target.value)} /></div>
                     <div className="form-group"><label>TikTok</label><input value={storeData.socials.tiktok} onChange={e => handleInputChange('socials', 'tiktok', e.target.value)} /></div>
                     <div className="form-group"><label>Email</label><input value={storeData.socials.email} onChange={e => handleInputChange('socials', 'email', e.target.value)} /></div>
-                    <div className="form-group"><label>Tel├®fono</label><input value={storeData.socials.phone} onChange={e => handleInputChange('socials', 'phone', e.target.value)} /></div>
+                    <div className="form-group"><label>Teléfono</label><input value={storeData.socials.phone} onChange={e => handleInputChange('socials', 'phone', e.target.value)} /></div>
                 </section>
 
                 {/* 3. Sobre Nosotros */}
                 <section className="form-section">
                     <h3>3. Sobre Nosotros (Micrositio)</h3>
-                    <div className="form-group"><label>Encabezado Hero ÔÇô t├¡tulo</label><input value={storeData.about.heroTitle} onChange={e => handleInputChange('about', 'heroTitle', e.target.value)} /></div>
-                    <div className="form-group"><label>Encabezado Hero ÔÇô frase corta</label><textarea value={storeData.about.heroSubtitle} onChange={e => handleInputChange('about', 'heroSubtitle', e.target.value)} /></div>
-                    <div className="form-group"><label>Nuestro Prop├│sito / Misi├│n</label><textarea value={storeData.about.mission} onChange={e => handleInputChange('about', 'mission', e.target.value)} /></div>
-                    <div className="form-group"><label>Visi├│n</label><textarea value={storeData.about.vision} onChange={e => handleInputChange('about', 'vision', e.target.value)} /></div>
-                    <div className="form-group"><label>Valores (uno por l├¡nea)</label><textarea value={storeData.about.values.join('\\n')} onChange={e => handleArrayChange('about', 'values', e.target.value)} rows={3} /></div>
-                    <div className="form-group"><label>Historia / Timeline (un hito por l├¡nea)</label><textarea value={storeData.about.timeline.join('\\n')} onChange={e => handleArrayChange('about', 'timeline', e.target.value)} rows={3} /></div>
-                    <div className="form-group"><label>Qu├® nos diferencia (uno por l├¡nea)</label><textarea value={storeData.about.diff.join('\\n')} onChange={e => handleArrayChange('about', 'diff', e.target.value)} rows={3} /></div>
+                    <div className="form-group"><label>Encabezado Hero – título</label><input value={storeData.about.heroTitle} onChange={e => handleInputChange('about', 'heroTitle', e.target.value)} /></div>
+                    <div className="form-group"><label>Encabezado Hero – frase corta</label><textarea value={storeData.about.heroSubtitle} onChange={e => handleInputChange('about', 'heroSubtitle', e.target.value)} /></div>
+                    <div className="form-group"><label>Nuestro Propósito / Misión</label><textarea value={storeData.about.mission} onChange={e => handleInputChange('about', 'mission', e.target.value)} /></div>
+                    <div className="form-group"><label>Visión</label><textarea value={storeData.about.vision} onChange={e => handleInputChange('about', 'vision', e.target.value)} /></div>
+                    <div className="form-group"><label>Valores (uno por línea)</label><textarea value={storeData.about.values.join('\\n')} onChange={e => handleArrayChange('about', 'values', e.target.value)} rows={3} /></div>
+                    <div className="form-group"><label>Historia / Timeline (un hito por línea)</label><textarea value={storeData.about.timeline.join('\\n')} onChange={e => handleArrayChange('about', 'timeline', e.target.value)} rows={3} /></div>
+                    <div className="form-group"><label>Qué nos diferencia (uno por línea)</label><textarea value={storeData.about.diff.join('\\n')} onChange={e => handleArrayChange('about', 'diff', e.target.value)} rows={3} /></div>
                     <div className="form-group"><label>Equipo o cultura</label><textarea value={storeData.about.team} onChange={e => handleInputChange('about', 'team', e.target.value)} /></div>
-                    <div className="form-group"><label>Call to Action (texto del bot├│n)</label><input value={storeData.about.ctaText} onChange={e => handleInputChange('about', 'ctaText', e.target.value)} /></div>
-                    <div className="form-group"><label>Galer├¡a de im├ígenes de la empresa</label><input type="file" accept="image/*" multiple onChange={handleGalleryUpload} />
+                    <div className="form-group"><label>Call to Action (texto del botón)</label><input value={storeData.about.ctaText} onChange={e => handleInputChange('about', 'ctaText', e.target.value)} /></div>
+                    <div className="form-group"><label>Galería de imágenes de la empresa</label><input type="file" accept="image/*" multiple onChange={handleGalleryUpload} />
                         <div className="about-gallery-mini">{storeData.about.gallery.map((img, i) => (<img key={i} src={img} alt="Gallery" />))}</div>
                     </div>
                 </section>
@@ -446,18 +446,18 @@ function BuilderContent() {
                 {/* 4. Trabaja con Nosotros */}
                 <section className="form-section">
                     <h3>4. Trabaja con Nosotros</h3>
-                    <div className="form-group"><label>T├¡tulo "Trabaja con nosotros"</label><input value={storeData.careers.title} onChange={e => handleInputChange('careers', 'title', e.target.value)} /></div>
-                    <div className="form-group"><label>Descripci├│n / Invitaci├│n</label><textarea value={storeData.careers.desc} onChange={e => handleInputChange('careers', 'desc', e.target.value)} /></div>
-                    <div className="form-group"><label>Beneficios (uno por l├¡nea)</label><textarea value={storeData.careers.benefits.join('\\n')} onChange={e => handleArrayChange('careers', 'benefits', e.target.value)} rows={3} /></div>
-                    <div className="form-group"><label>Texto del bot├│n (WhatsApp)</label><input value={storeData.careers.ctaText} onChange={e => handleInputChange('careers', 'ctaText', e.target.value)} /></div>
+                    <div className="form-group"><label>Título "Trabaja con nosotros"</label><input value={storeData.careers.title} onChange={e => handleInputChange('careers', 'title', e.target.value)} /></div>
+                    <div className="form-group"><label>Descripción / Invitación</label><textarea value={storeData.careers.desc} onChange={e => handleInputChange('careers', 'desc', e.target.value)} /></div>
+                    <div className="form-group"><label>Beneficios (uno por línea)</label><textarea value={storeData.careers.benefits.join('\\n')} onChange={e => handleArrayChange('careers', 'benefits', e.target.value)} rows={3} /></div>
+                    <div className="form-group"><label>Texto del botón (WhatsApp)</label><input value={storeData.careers.ctaText} onChange={e => handleInputChange('careers', 'ctaText', e.target.value)} /></div>
                 </section>
 
                 {/* 5. Productos */}
                 <section className="form-section">
                     <h3>5. Agregar / Editar Productos</h3>
                     <div className="form-group"><label>Nombre del Producto *</label><input value={prodForm.name} onChange={e => setProdForm({ ...prodForm, name: e.target.value })} /></div>
-                    <div className="form-group"><label>Descripci├│n *</label><textarea value={prodForm.desc} onChange={e => setProdForm({ ...prodForm, desc: e.target.value })} /></div>
-                    <div className="form-group"><label>Categor├¡a *</label><input value={prodForm.category} onChange={e => setProdForm({ ...prodForm, category: e.target.value })} /></div>
+                    <div className="form-group"><label>Descripción *</label><textarea value={prodForm.desc} onChange={e => setProdForm({ ...prodForm, desc: e.target.value })} /></div>
+                    <div className="form-group"><label>Categoría *</label><input value={prodForm.category} onChange={e => setProdForm({ ...prodForm, category: e.target.value })} /></div>
                     <div className="form-group"><label>Precio *</label><input type="number" value={prodForm.price} onChange={e => setProdForm({ ...prodForm, price: e.target.value })} /></div>
                     <div className="form-group">
                         <ImageUploader

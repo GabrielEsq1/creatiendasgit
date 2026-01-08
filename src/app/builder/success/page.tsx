@@ -17,9 +17,10 @@ function SuccessContent() {
     // Get store details from URL or local storage
     const storeName = searchParams.get('storeName') || 'Tu Tienda';
     const slug = searchParams.get('slug');
-    const host = typeof window !== 'undefined' ? window.location.host : 'creatiendas.co';
+    // IMPORTANT: Use path-based URL format for stores (creatiendas.co/stores/slug)
+    // NOT subdomain format (slug.creatiendas.co) which doesn't work
     const storeUrl = slug
-        ? `${window.location.protocol}//${host}/${slug}`
+        ? `https://creatiendas.co/stores/${slug}`
         : 'https://creatiendas.co';
 
     const qrRef = useRef<HTMLDivElement>(null);
@@ -139,7 +140,7 @@ function SuccessContent() {
                                 />
                             </div>
                             <p className="mt-4 text-gray-900 font-mono text-sm bg-gray-100 px-3 py-1 rounded-full">
-                                {host}/{slug}
+                                creatiendas.co/stores/{slug}
                             </p>
                         </div>
                         <div className="bg-gray-900 text-white p-4 text-center text-xs uppercase tracking-widest font-semibold cursor-pointer hover:bg-black transition-colors" onClick={handleDownloadQR}>
