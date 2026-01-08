@@ -81,12 +81,6 @@ export default function RootLayout({
                     </LayoutWrapper>
                     <WhatsAppButton />
                     <TranslationPrompt />
-                    {/* B2Chat Widget - Adjust path if necessary based on B2Chat-main contents */}
-                    {/* B2Chat Widget - Lazy loaded to prioritize LCP */}
-                    <script
-                        src="/b2chat/B2Chat-main/widget.js"
-                        defer
-                    />
                 </Providers>
             </body>
         </html>

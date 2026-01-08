@@ -10,6 +10,13 @@ export default function TranslationPrompt() {
     const router = useRouter();
 
     useEffect(() => {
+        // Don't show if user already has a language preference saved
+        const savedLang = localStorage.getItem("ct_lang");
+        if (savedLang) {
+            setIsVisible(false);
+            return;
+        }
+
         // Check if already shown in this session
         const hasShown = sessionStorage.getItem("translationPromptShown");
         if (!hasShown) {
