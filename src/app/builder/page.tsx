@@ -552,6 +552,18 @@ function BuilderContent() {
                             👁️ Ver Tienda
                         </a>
                     )}
+
+                    {/* ALWAYS show Compartir/QR button in edit mode, even without publicUrl */}
+                    {editSlug && (
+                        <Link
+                            href={`/builder/success?slug=${editSlug}&storeName=${encodeURIComponent(storeData.name)}`}
+                            className="btn btn-primary"
+                            style={{ display: 'block', textAlign: 'center', marginBottom: '1rem', textDecoration: 'none', background: '#25D366', borderColor: '#25D366' }}
+                        >
+                            📤 Compartir / QR
+                        </Link>
+                    )}
+
                     {publicUrl && (
                         <div className="public-url-box" style={{ marginTop: '1rem', padding: '1rem', background: '#e8f5e9', borderRadius: '8px', border: '1px solid #c8e6c9' }}>
                             <p style={{ margin: '0 0 0.5rem 0', fontWeight: 'bold', color: '#2e7d32' }}>✅ ¡Tu tienda está {editSlug ? 'actualizada' : 'lista'}!</p>
@@ -561,13 +573,6 @@ function BuilderContent() {
                             </div>
                             <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.5rem' }}>
                                 <a href={publicUrl} target="_blank" rel="noopener noreferrer" style={{ flex: 1, textAlign: 'center', color: '#2e7d32', textDecoration: 'underline', padding: '0.5rem', border: '1px solid #c8e6c9', borderRadius: '4px' }}>Visitar tienda →</a>
-                                <Link
-                                    href={`/builder/success?slug=${editSlug || storeData.slug || ''}&storeName=${encodeURIComponent(storeData.name)}`}
-                                    className="btn btn-primary"
-                                    style={{ flex: 1, textAlign: 'center', textDecoration: 'none', background: '#25D366', borderColor: '#25D366' }}
-                                >
-                                    Compartir / QR
-                                </Link>
                             </div>
                         </div>
                     )}
