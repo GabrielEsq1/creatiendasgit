@@ -22,15 +22,8 @@ function SuccessContentEN() {
         : 'https://creatiendas.co';
 
     useEffect(() => {
-        import('canvas-confetti').then(confettiModule => {
-            const confetti = confettiModule.default;
-            confetti({
-                particleCount: 100,
-                spread: 70,
-                origin: { y: 0.6 }
-            });
-        }).catch(err => console.log('Confetti not available'));
-    }, []);
+        console.log('Success page mounted (EN)', { storeName, slug });
+    }, [storeName, slug]);
 
     const handleDownloadQR = () => {
         const svg = qrRef.current?.querySelector('svg');

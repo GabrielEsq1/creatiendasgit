@@ -150,7 +150,7 @@ function BuilderContent() {
             const savedStore = await res.json();
 
             // Navegar a éxito
-            router.push(`/builder/success?slug=${savedStore.slug || 'unknown'}`);
+            window.location.href = `/builder/share?slug=${savedStore.slug || 'unknown'}&storeName=${encodeURIComponent(storeData.name)}`;
 
         } catch (error) {
             console.error(error);
@@ -284,8 +284,8 @@ function BuilderContent() {
                 <div className="flex-1 flex items-center justify-center p-8 overflow-hidden">
                     <div
                         className={`transition-all duration-500 ease-in-out bg-white shadow-2xl border-4 border-slate-900 overflow-hidden relative ${viewMode === 'mobile'
-                                ? 'w-[375px] h-[750px] rounded-[3rem]'
-                                : 'w-full max-w-5xl h-[800px] rounded-xl'
+                            ? 'w-[375px] h-[750px] rounded-[3rem]'
+                            : 'w-full max-w-5xl h-[800px] rounded-xl'
                             }`}
                     >
                         {/* Notch para modo móvil */}

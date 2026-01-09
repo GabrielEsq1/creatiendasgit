@@ -364,8 +364,8 @@ function BuilderContent() {
                         }
                     }
 
-                    console.log('Redirecting to success with slug:', finalSlug);
-                    window.location.href = `/builder/success?slug=${finalSlug}&storeName=${encodeURIComponent(storeData.name)}`;
+                    console.log('Redirecting to share page with slug:', finalSlug);
+                    window.location.href = `/builder/share?slug=${finalSlug}&storeName=${encodeURIComponent(storeData.name)}`;
                 } else {
                     // EDITING: Stay on page but notify
                     alert(`¡Cambios guardados con éxito!\n\nTu tienda está actualizada.`);
@@ -386,7 +386,7 @@ function BuilderContent() {
             {/* LEFT PANEL */}
             <aside className="builder-panel">
                 <div className="panel-header">
-                    <Link href="/dashboard" style={{ marginBottom: '0.5rem', display: 'inline-block', color: '#2196F3', textDecoration: 'none', fontSize: '0.9rem' }}>← Volver al Panel</Link>
+                    <a href="/dashboard" style={{ marginBottom: '0.5rem', display: 'inline-block', color: '#2196F3', textDecoration: 'none', fontSize: '0.9rem' }}>← Volver al Panel</a>
                     <h2>{editSlug ? '✏️ Editar Tienda' : '🛠️ Constructor de Tienda'}</h2>
                     <p>{editSlug ? 'Modifica tu tienda y guarda los cambios.' : 'Configura tu tienda, añade productos y ve los cambios en tiempo real.'}</p>
                     {isLoading && <p style={{ color: '#2196F3', fontWeight: 'bold' }}>🔄 Cargando datos de la tienda...</p>}
@@ -555,13 +555,13 @@ function BuilderContent() {
 
                     {/* ALWAYS show Compartir/QR button in edit mode, even without publicUrl */}
                     {editSlug && (
-                        <Link
-                            href={`/builder/success?slug=${editSlug}&storeName=${encodeURIComponent(storeData.name)}`}
+                        <a
+                            href={`/builder/share?slug=${editSlug || ''}&storeName=${encodeURIComponent(storeData.name || 'Mi Tienda')}`}
                             className="btn btn-primary"
-                            style={{ display: 'block', textAlign: 'center', marginBottom: '1rem', textDecoration: 'none', background: '#25D366', borderColor: '#25D366' }}
+                            style={{ display: 'block', width: '100%', textAlign: 'center', marginBottom: '1rem', textDecoration: 'none', background: '#25D366', borderColor: '#25D366' }}
                         >
                             📤 Compartir / QR
-                        </Link>
+                        </a>
                     )}
 
                     {publicUrl && (

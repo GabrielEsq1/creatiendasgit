@@ -11,7 +11,8 @@ export default function WhatsAppButton() {
     const isHiddenPath = pathname?.includes('/builder') ||
         pathname?.includes('/dashboard') ||
         pathname?.includes('/admin') ||
-        pathname?.includes('/builder/success');
+        pathname?.includes('/builder/success') ||
+        pathname?.includes('/builder/share');
 
     if (isHiddenPath) return null;
 

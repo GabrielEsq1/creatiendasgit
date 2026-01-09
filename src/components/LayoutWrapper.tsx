@@ -4,12 +4,14 @@ import { useEffect } from "react";
 import { usePathname } from "next/navigation";
 import Navbar from "./Navbar";
 
+import InstallPrompt from "./InstallPrompt";
+
 export default function LayoutWrapper({ children }: { children: React.ReactNode }) {
     const pathname = usePathname();
 
     // Logic matches Navbar's internal hiding logic
     const isStorePage = pathname?.includes('/stores/');
-    const isSuccessPage = pathname?.includes('/builder/success');
+    const isSuccessPage = pathname?.includes('/builder/success') || pathname?.includes('/builder/share');
     const hidePadding = isStorePage || isSuccessPage;
 
     useEffect(() => {
@@ -32,6 +34,7 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
     return (
         <>
             <Navbar />
+            <InstallPrompt />
             <main className={hidePadding ? "" : "pt-16"}>
                 {children}
             </main>

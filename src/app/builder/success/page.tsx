@@ -2,14 +2,14 @@
 export const dynamic = "force-dynamic";
 
 import React, { useEffect, useRef, useState, Suspense } from 'react';
-import { useSearchParams, useRouter, usePathname } from 'next/navigation';
-import { Download, Share2, ArrowRight, Store, PartyPopper, CheckCircle2, Copy, QrCode, ExternalLink } from 'lucide-react';
+import { useSearchParams, useRouter } from 'next/navigation';
+import { Download, Share2, ArrowRight, Store, PartyPopper, CheckCircle2, Copy, ExternalLink } from 'lucide-react';
 import { QRCodeSVG } from 'qrcode.react';
 
 function SuccessContent() {
     const searchParams = useSearchParams();
-    const router = useRouter();
     const [copied, setCopied] = useState(false);
+    const [mounted, setMounted] = useState(false);
     const qrRef = useRef<HTMLDivElement>(null);
 
     // Get store details from URL
@@ -23,16 +23,13 @@ function SuccessContent() {
         : 'https://creatiendas.co';
 
     useEffect(() => {
-        // Simple confetti effect using dynamic import to avoid SSR issues
-        import('canvas-confetti').then(confettiModule => {
-            const confetti = confettiModule.default;
-            confetti({
-                particleCount: 100,
-                spread: 70,
-                origin: { y: 0.6 }
-            });
-        }).catch(err => console.log('Confetti not available'));
-    }, []);
+        setMounted(true);
+        console.log('Success page mounted, redirecting to share page', { storeName, slug });
+        // Redirect to new share page
+        if (slug) {
+            window.location.href = `/builder/share?slug=${slug}&storeName=${encodeURIComponent(storeName)}`;
+        }
+    }, [storeName, slug]);
 
     const handleDownloadQR = () => {
         const svg = qrRef.current?.querySelector('svg');
@@ -48,13 +45,11 @@ function SuccessContent() {
         }
     };
 
-
     const handleCopyLink = () => {
         navigator.clipboard.writeText(storeUrl);
         setCopied(true);
         setTimeout(() => setCopied(false), 2000);
     };
-
 
     const t = {
         title: '🎉 ¡Tu tienda está lista!',
@@ -109,12 +104,14 @@ function SuccessContent() {
                         </div>
                         <div className="p-8 flex flex-col items-center justify-center bg-gray-50">
                             <div className="bg-white p-4 rounded-2xl shadow-sm border border-gray-100" ref={qrRef}>
-                                <QRCodeSVG
-                                    value={storeUrl}
-                                    size={180}
-                                    level="H"
-                                    includeMargin={true}
-                                />
+                                {mounted && (
+                                    <QRCodeSVG
+                                        value={storeUrl}
+                                        size={180}
+                                        level="H"
+                                        includeMargin={true}
+                                    />
+                                )}
                             </div>
                             <p className="mt-4 text-gray-900 font-mono text-xs bg-gray-100 px-3 py-1 rounded-full">
                                 creatiendas.co/stores/{slug}

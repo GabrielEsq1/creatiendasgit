@@ -93,12 +93,12 @@ export default function SuccessBanner() {
                     </div>
                 </div>
 
-                <button
-                    onClick={() => window.location.href = isEn ? '/en/dashboard' : '/dashboard'}
-                    className="text-slate-400 font-bold hover:text-slate-600 transition-colors"
+                <a
+                    href={isEn ? '/en/dashboard' : '/dashboard'}
+                    className="text-slate-400 font-bold hover:text-slate-600 transition-colors no-underline block mt-4"
                 >
                     {t.goDashboard}
-                </button>
+                </a>
             </div>
         </div>
     );

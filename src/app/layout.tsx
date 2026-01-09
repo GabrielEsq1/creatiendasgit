@@ -57,6 +57,11 @@ export const metadata: Metadata = {
         icon: '/favicon.png',
         apple: '/apple-icon.png',
     },
+    appleWebApp: {
+        capable: true,
+        statusBarStyle: "default",
+        title: "Creatiendas",
+    },
 };
 
 export default function RootLayout({

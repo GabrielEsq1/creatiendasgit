@@ -153,13 +153,21 @@ export default function CreatiendasDashboardEN() {
                             {session?.user?.name ? `Hello, ${session.user.name}` : 'Manage your online stores'}
                         </p>
                     </div>
-                    <button
-                        onClick={handleCreateStore}
-                        className="flex items-center gap-2 bg-purple-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-purple-700 transition-all shadow-lg hover:shadow-xl"
+                    <a
+                        href="/en/builder"
+                        onClick={(e) => {
+                            const plan = (session?.user as any)?.plan || 'FREE';
+                            const limit = plan === 'PRO' ? 10 : 1;
+                            if (stores.length >= limit) {
+                                e.preventDefault();
+                                setIsLimitModalOpen(true);
+                            }
+                        }}
+                        className="flex items-center gap-2 bg-purple-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-purple-700 transition-all shadow-lg hover:shadow-xl no-underline"
                     >
                         <Plus className="w-5 h-5" />
                         New Store
-                    </button>
+                    </a>
                 </div>
 
                 {/* Activation Checklist (Gamification) */}
@@ -193,31 +201,31 @@ export default function CreatiendasDashboardEN() {
                                         <Store className="w-6 h-6 text-purple-600" />
                                     </div>
                                     <div className="flex gap-2">
-                                        <button
-                                            onClick={() => {
-                                                const url = getStoreUrl(store.slug);
-                                                const text = `Hi! Check out my new online store: ${url}`;
-                                                window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
-                                            }}
-                                            className="p-2 hover:bg-green-50 rounded-lg transition-colors"
+                                        <a
+                                            href={`https://wa.me/?text=${encodeURIComponent(`Hi! Check out my new online store: ${getStoreUrl(store.slug)}`)}`}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="p-2 hover:bg-green-50 rounded-lg transition-colors inline-flex items-center justify-center"
                                             title="Share on WhatsApp"
                                         >
                                             <MessageCircle className="w-4 h-4 text-green-600" />
-                                        </button>
-                                        <button
-                                            onClick={() => router.push(`/en/builder?edit=${store.slug}`)}
-                                            className="p-2 hover:bg-blue-50 rounded-lg transition-colors"
+                                        </a>
+                                        <a
+                                            href={`/en/builder?edit=${store.slug}`}
+                                            className="p-2 hover:bg-blue-50 rounded-lg transition-colors inline-flex items-center justify-center"
                                             title="Edit store"
                                         >
                                             <Edit className="w-4 h-4 text-blue-600" />
-                                        </button>
-                                        <button
-                                            onClick={() => window.open(getStoreUrl(store.slug), '_blank')}
-                                            className="p-2 hover:bg-slate-100 rounded-lg transition-colors"
+                                        </a>
+                                        <a
+                                            href={getStoreUrl(store.slug)}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="p-2 hover:bg-slate-100 rounded-lg transition-colors inline-flex items-center justify-center"
                                             title="View store"
                                         >
                                             <Eye className="w-4 h-4 text-slate-600" />
-                                        </button>
+                                        </a>
                                         <button
                                             onClick={() => deleteStore(store.id)}
                                             className="p-2 hover:bg-red-50 rounded-lg transition-colors"
@@ -242,24 +250,13 @@ export default function CreatiendasDashboardEN() {
                                     </span>
                                 </div>
 
-                                <button
-                                    onClick={() => {
-                                        try {
-                                            if (!store.slug) {
-                                                console.error('Missing slug for store:', store.id);
-                                                alert('Error: The store does not have a valid address.');
-                                                return;
-                                            }
-                                            router.push(`/en/builder/success?slug=${encodeURIComponent(store.slug)}&storeName=${encodeURIComponent(store.name)}`);
-                                        } catch (err) {
-                                            console.error('Navigation error:', err);
-                                        }
-                                    }}
-                                    className="w-full mt-6 py-3 bg-purple-50 hover:bg-purple-100 text-purple-700 font-bold rounded-xl border border-purple-100 transition-all flex items-center justify-center gap-2 group-hover:scale-[1.02]"
+                                <a
+                                    href={`/builder/share?slug=${encodeURIComponent(store.slug || '')}&storeName=${encodeURIComponent(store.name)}`}
+                                    className="w-full mt-6 py-3 bg-purple-50 hover:bg-purple-100 text-purple-700 font-bold rounded-xl border border-purple-100 transition-all flex items-center justify-center gap-2 group-hover:scale-[1.02] no-underline"
                                 >
                                     <QrCode className="w-4 h-4" />
                                     Manage QR and Share
-                                </button>
+                                </a>
                             </div>
                         ))}
                     </div>

@@ -158,13 +158,21 @@ export default function CreatiendasDashboard() {
                             {session?.user?.name ? `Hola, ${session.user.name}` : 'Gestiona tus tiendas online'}
                         </p>
                     </div>
-                    <button
-                        onClick={handleCreateStore}
-                        className="flex items-center gap-2 bg-purple-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-purple-700 transition-all shadow-lg hover:shadow-xl"
+                    <a
+                        href="/builder"
+                        onClick={(e) => {
+                            const plan = (session?.user as any)?.plan || 'FREE';
+                            const limit = plan === 'PRO' ? 10 : 1;
+                            if (stores.length >= limit) {
+                                e.preventDefault();
+                                setIsLimitModalOpen(true);
+                            }
+                        }}
+                        className="flex items-center gap-2 bg-purple-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-purple-700 transition-all shadow-lg hover:shadow-xl no-underline"
                     >
                         <Plus className="w-5 h-5" />
                         Nueva Tienda
-                    </button>
+                    </a>
                 </div>
 
                 {/* Activation Checklist (Gamification) */}
@@ -198,34 +206,31 @@ export default function CreatiendasDashboard() {
                                         <Store className="w-6 h-6 text-purple-600" />
                                     </div>
                                     <div className="flex gap-2">
-                                        <button
-                                            onClick={() => {
-                                                const url = getStoreUrl(store.slug);
-                                                const text = `¡Hola! Mira mi nueva tienda online: ${url}`;
-                                                window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
-                                            }}
-                                            className="p-2 hover:bg-green-50 rounded-lg transition-colors"
+                                        <a
+                                            href={`https://wa.me/?text=${encodeURIComponent(`¡Hola! Mira mi nueva tienda online: ${getStoreUrl(store.slug)}`)}`}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="p-2 hover:bg-green-50 rounded-lg transition-colors inline-flex items-center justify-center"
                                             title="Compartir en WhatsApp"
                                         >
                                             <MessageCircle className="w-4 h-4 text-green-600" />
-                                        </button>
-                                        <button
-                                            onClick={() => router.push(`/builder?edit=${store.slug}`)}
-                                            className="p-2 hover:bg-blue-50 rounded-lg transition-colors"
+                                        </a>
+                                        <a
+                                            href={`/builder?edit=${store.slug}`}
+                                            className="p-2 hover:bg-blue-50 rounded-lg transition-colors inline-flex items-center justify-center"
                                             title="Editar tienda"
                                         >
                                             <Edit className="w-4 h-4 text-blue-600" />
-                                        </button>
-                                        <button
-                                            onClick={() => {
-                                                const url = getStoreUrl(store.slug);
-                                                window.open(url, '_blank')
-                                            }}
-                                            className="p-2 hover:bg-slate-100 rounded-lg transition-colors"
+                                        </a>
+                                        <a
+                                            href={getStoreUrl(store.slug)}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="p-2 hover:bg-slate-100 rounded-lg transition-colors inline-flex items-center justify-center"
                                             title="Ver tienda"
                                         >
                                             <Eye className="w-4 h-4 text-slate-600" />
-                                        </button>
+                                        </a>
                                         <button
                                             onClick={() => deleteStore(store.id)}
                                             className="p-2 hover:bg-red-50 rounded-lg transition-colors"
@@ -250,13 +255,13 @@ export default function CreatiendasDashboard() {
                                     </span>
                                 </div>
 
-                                <Link
-                                    href={`/builder/success?slug=${encodeURIComponent(store.slug || store.name.toLowerCase().replace(/[^a-z0-9]+/g, '-'))}&storeName=${encodeURIComponent(store.name)}`}
+                                <a
+                                    href={`/builder/share?slug=${encodeURIComponent(store.slug || store.name.toLowerCase().replace(/[^a-z0-9]+/g, '-'))}&storeName=${encodeURIComponent(store.name)}`}
                                     className="w-full mt-6 py-3 bg-purple-50 hover:bg-purple-100 text-purple-700 font-bold rounded-xl border border-purple-100 transition-all flex items-center justify-center gap-2 group-hover:scale-[1.02] no-underline"
                                 >
                                     <QrCode className="w-4 h-4" />
                                     Gestionar QR y Compartir
-                                </Link>
+                                </a>
                             </div>
                         ))}
                     </div>

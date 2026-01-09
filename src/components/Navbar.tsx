@@ -15,7 +15,7 @@ export default function Navbar() {
 
     // HIDE NAVBAR on store pages or specialized preview views to avoid clutter
     const isStorePage = pathname?.includes('/stores/');
-    const isSuccessPage = pathname?.includes('/builder/success');
+    const isSuccessPage = pathname?.includes('/builder/success') || pathname?.includes('/builder/share');
     if (isStorePage || isSuccessPage) return null;
 
     useEffect(() => {
