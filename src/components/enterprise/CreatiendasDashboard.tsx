@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { Store, Plus, Settings, Eye, Trash2, Edit, Package, MessageCircle, QrCode } from 'lucide-react';
 import { getStoreUrl } from '@/lib/utils';
 import ActivationChecklist from '../dashboard/ActivationChecklist';
@@ -249,27 +250,13 @@ export default function CreatiendasDashboard() {
                                     </span>
                                 </div>
 
-                                <button
-                                    onClick={() => {
-                                        let targetSlug = store.slug;
-                                        // Fallback if slug is missing
-                                        if (!targetSlug) {
-                                            console.warn('Slug missing in dashboard for:', store.name);
-                                            // Attempt to reconstruct or just warn
-                                            targetSlug = store.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
-                                        }
-
-                                        if (targetSlug) {
-                                            window.location.href = `/builder/success?slug=${encodeURIComponent(targetSlug)}&storeName=${encodeURIComponent(store.name)}`;
-                                        } else {
-                                            alert('Error: No se pudo generar el enlace. Por favor edita y guarda la tienda nuevamente.');
-                                        }
-                                    }}
-                                    className="w-full mt-6 py-3 bg-purple-50 hover:bg-purple-100 text-purple-700 font-bold rounded-xl border border-purple-100 transition-all flex items-center justify-center gap-2 group-hover:scale-[1.02]"
+                                <Link
+                                    href={`/builder/success?slug=${encodeURIComponent(store.slug || store.name.toLowerCase().replace(/[^a-z0-9]+/g, '-'))}&storeName=${encodeURIComponent(store.name)}`}
+                                    className="w-full mt-6 py-3 bg-purple-50 hover:bg-purple-100 text-purple-700 font-bold rounded-xl border border-purple-100 transition-all flex items-center justify-center gap-2 group-hover:scale-[1.02] no-underline"
                                 >
                                     <QrCode className="w-4 h-4" />
                                     Gestionar QR y Compartir
-                                </button>
+                                </Link>
                             </div>
                         ))}
                     </div>
