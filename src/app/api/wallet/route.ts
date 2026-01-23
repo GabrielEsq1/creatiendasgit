@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import { getAccount, getTransactions } from '@/lib/wallet-db';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(req: Request) {
     try {
         // In a real app, get userId from session. 
