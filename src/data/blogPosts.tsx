@@ -215,7 +215,7 @@ export const blogPosts: BlogPostContent[] = [
                 <section className="mt-12 text-center">
                     <p className="text-lg font-medium text-slate-900 mb-6">¿Ya tienes tu idea ganadora?</p>
                     <Link href="/auth/register" className="inline-flex items-center gap-2 bg-green-500 text-white font-black py-4 px-8 rounded-full shadow-lg hover:bg-green-600 transition-all">
-                        �xa� Lanzar mi Tienda Gratis
+                        🚀 Lanzar mi Tienda Gratis
                     </Link>
                 </section>
             </>
@@ -244,9 +244,9 @@ export const blogPosts: BlogPostContent[] = [
                             </h3>
                             <p className="mt-2 text-slate-600">El estándar mundial. Potente, con miles de apps e integraciones. Es como un Ferrari: excelente si tienes para la gasolina y el mantenimiento.</p>
                             <ul className="mt-4 space-y-1 text-sm text-slate-500">
-                                <li className="text-red-500 font-bold">�a�️ Costo: Desde $29 USD/mes + comisiones por venta.</li>
-                                <li>�S& Ventaja: Ecosistema de apps infinito.</li>
-                                <li>�R Desventaja: Pensado para mercado anglo (tarjetas de crédito).</li>
+                                <li className="text-red-500 font-bold">⚠️ Costo: Desde $29 USD/mes + comisiones por venta.</li>
+                                <li>✅ Ventaja: Ecosistema de apps infinito.</li>
+                                <li>❌ Desventaja: Pensado para mercado anglo (tarjetas de crédito).</li>
                             </ul>
                         </div>
                     </div>
@@ -259,9 +259,9 @@ export const blogPosts: BlogPostContent[] = [
                             </h3>
                             <p className="mt-2 text-slate-600">Plugin gratuito para WordPress. Te da control total, pero eres responsable de tu propio hosting, seguridad y actualizaciones.</p>
                             <ul className="mt-4 space-y-1 text-sm text-slate-500">
-                                <li>�a�️ Costo: Software $0, pero necesitas Hosting ($10-50/mes) + Plugins pago.</li>
-                                <li>�S& Ventaja: Personalización total.</li>
-                                <li>�R Desventaja: Curva técnica alta. Si se cae el servidor, es tu problema.</li>
+                                <li>⚠️ Costo: Software $0, pero necesitas Hosting ($10-50/mes) + Plugins pago.</li>
+                                <li>✅ Ventaja: Personalización total.</li>
+                                <li>❌ Desventaja: Curva técnica alta. Si se cae el servidor, es tu problema.</li>
                             </ul>
                         </div>
                     </div>
@@ -274,8 +274,8 @@ export const blogPosts: BlogPostContent[] = [
                             </h3>
                             <p className="mt-2 text-slate-600">La solución de MercadoLibre. Integración logística buena, pero pierdes identidad de marca y terminas compitiendo por precio.</p>
                             <ul className="mt-4 space-y-1 text-sm text-slate-500">
-                                <li>�a�️ Costo: Comisiones altas por venta si quieres exposición.</li>
-                                <li>�R Desventaja: Los clientes son de MercadoLibre, no tuyos.</li>
+                                <li>⚠️ Costo: Comisiones altas por venta si quieres exposición.</li>
+                                <li>❌ Desventaja: Los clientes son de MercadoLibre, no tuyos.</li>
                             </ul>
                         </div>
                     </div>
@@ -368,7 +368,7 @@ export const blogPosts: BlogPostContent[] = [
                 </section>
 
                 <section className="my-10">
-                    <h2 className="text-3xl font-black text-gray-900 mb-6">�xa� Por qué 2026 es el mejor año para lanzar</h2>
+                    <h2 className="text-3xl font-black text-gray-900 mb-6">🚀 Por qué 2026 es el mejor año para lanzar</h2>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div className="p-6 bg-slate-50 rounded-2xl border border-slate-100">
                             <h4 className="font-bold text-lg mb-2">Madurez del Chat</h4>
@@ -401,7 +401,7 @@ export const blogPosts: BlogPostContent[] = [
                 </section>
 
                 <section className="my-12 p-8 bg-slate-900 text-white rounded-[2.5rem]">
-                    <h3 className="text-2xl font-bold mb-4">Evita estos errores comunes �a�️</h3>
+                    <h3 className="text-2xl font-bold mb-4">Evita estos errores comunes ⚠️</h3>
                     <p className="text-slate-400 mb-6 italic">La mayoría de las tiendas fallan por complicar lo simple.</p>
                     <div className="space-y-4">
                         <p><strong>1. Ignorar el Mobile-Only:</strong> El 90% de tus ventas llegarán desde un pulgar en una pantalla pequeña.</p>
@@ -476,7 +476,7 @@ export const blogPosts: BlogPostContent[] = [
 
                 <section className="mt-8 border-t pt-8">
                     <p className="text-slate-500 italic text-center">
-                        El futuro del ecommerce se escribe en el presente. <Link href="/en/auth/register" className="text-green-600 font-bold font-sans">�anete a la nueva generación.</Link>
+                        El futuro del ecommerce se escribe en el presente. <Link href="/en/auth/register" className="text-green-600 font-bold font-sans">�Únete a la nueva generación.</Link>
                     </p>
                 </section>
             </>
@@ -584,7 +584,7 @@ export const blogPosts: BlogPostContent[] = [
                 </section>
 
                 <section>
-                    <h2 className="text-3xl font-black text-gray-900 mb-6">�S& Paso a paso para lanzar tu tienda</h2>
+                    <h2 className="text-3xl font-black text-gray-900 mb-6">✅ Paso a paso para lanzar tu tienda</h2>
                     <p>Con Creatiendas, el proceso se reduce a tres pilares fundamentales que puedes completar en lo que te tomas un café.</p>
                     <ol className="list-decimal pl-6 space-y-6 mt-6">
                         <li>
@@ -621,13 +621,13 @@ export const blogPosts: BlogPostContent[] = [
         content: (
             <>
                 <section>
-                    <h2 className="text-3xl font-black text-gray-900 mb-6">�x:�️ El abismo de la conversión en LATAM</h2>
+                    <h2 className="text-3xl font-black text-gray-900 mb-6">⚠️ El abismo de la conversión en LATAM</h2>
                     <p>En mercados maduros como Estados Unidos o Europa, el flujo de "añadir al carrito", "ingresar tarjeta" y "recibir confirmación" es un estándar absoluto. Sin embargo, en Latinoamérica, este flujo se enfrenta a dos barreras infranqueables: <strong>la baja bancarización y la desconfianza sistémica</strong>.</p>
                     <p>Cuando un usuario ve un formulario de Stripe o PayPal, su primer instinto no es comprar, sino dudar. <em>"¿Es este sitio seguro?", "¿Qué pasa si el producto no llega?", "¿Cómo hago un reclamo?"</em>. Estas dudas matan la conversión. Es aquí donde las tiendas conectadas a WhatsApp ganan la batalla.</p>
                 </section>
 
                 <section className="my-10 space-y-8">
-                    <h2 className="text-3xl font-black text-gray-900 mb-6">�x�� ¿Por qué el cliente prefiere WhatsApp?</h2>
+                    <h2 className="text-3xl font-black text-gray-900 mb-6">🤔 ¿Por qué el cliente prefiere WhatsApp?</h2>
                     <p>La psicología del comprador latino es relacional, no transaccional. Queremos hablar con alguien. WhatsApp ofrece lo que ninguna pasarela de pago puede: <strong>presencia humana inmediata</strong>.</p>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <div className="p-6 bg-white border border-gray-200 rounded-2xl shadow-sm hover:border-green-500 transition-colors">
@@ -641,7 +641,7 @@ export const blogPosts: BlogPostContent[] = [
                             <p className="text-sm text-gray-600">Puedes ofrecer transferencias, Nequi, Daviplata o pago contra entrega directamente.</p>
                         </div>
                         <div className="p-6 bg-white border border-gray-200 rounded-2xl shadow-sm hover:border-green-500 transition-colors">
-                            <span className="text-3xl mb-4 block">�S&</span>
+                            <span className="text-3xl mb-4 block">🤝</span>
                             <h4 className="font-bold mb-2">Cierre Directo</h4>
                             <p className="text-sm text-gray-600">El pedido llega listo: nombre, variante y total. Solo falta enviar el comprobante.</p>
                         </div>
@@ -789,14 +789,14 @@ export const blogPosts: BlogPostContent[] = [
                 </section>
 
                 <section className="my-12">
-                    <h3 className="text-2xl font-bold text-gray-900 mb-6">�R Problemas comunes de vender a la antigua (sin tienda)</h3>
+                    <h3 className="text-2xl font-bold text-gray-900 mb-6">❌ Problemas comunes de vender a la antigua (sin tienda)</h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="bg-red-50 p-4 rounded-xl border border-red-100 flex items-center gap-3">
-                            <span className="text-red-500 text-xl font-bold">�S"</span>
+                            <span className="text-red-500 text-xl font-bold">❌</span>
                             <span className="text-red-900 font-medium">Enviar precios uno por uno manualmente</span>
                         </div>
                         <div className="bg-red-50 p-4 rounded-xl border border-red-100 flex items-center gap-3">
-                            <span className="text-red-500 text-xl font-bold">�S"</span>
+                            <span className="text-red-500 text-xl font-bold">❌</span>
                             <span className="text-red-900 font-medium">Clientes preguntando lo mismo 100 veces</span>
                         </div>
                         <div className="bg-red-50 p-4 rounded-xl border border-red-100 flex items-center gap-3">

@@ -93,7 +93,7 @@ export default function Navbar() {
 
                     {/* Right Side Actions */}
                     <div className="flex items-center gap-4">
-                        {/* 3D Language Switcher */}
+                        {/* 3D Language Switcher - NOW VISIBLE ALWAYS */}
                         <button
                             onClick={() => {
                                 const isEn = pathname?.startsWith('/en');
@@ -106,7 +106,7 @@ export default function Navbar() {
                                 localStorage.setItem('ct_lang', targetLang);
                                 window.location.href = targetPath;
                             }}
-                            className="hidden lg:block group relative w-24 h-10 bg-slate-50 rounded-full p-1 cursor-pointer border border-slate-200 shadow-inner overflow-hidden transition-all hover:border-green-500/30"
+                            className="group relative w-24 h-10 bg-slate-50 rounded-full p-1 cursor-pointer border border-slate-200 shadow-inner overflow-hidden transition-all hover:border-green-500/30 mr-2 lg:mr-0"
                             title="Cambiar idioma / Switch language"
                         >
                             {/* Sliding Background */}
@@ -122,6 +122,7 @@ export default function Navbar() {
                             </div>
                         </button>
 
+                        {/* Login/CTA Section */}
                         {status === 'loading' ? (
                             <div className="h-4 w-20 bg-slate-800 animate-pulse rounded" />
                         ) : session ? (
@@ -167,26 +168,7 @@ export default function Navbar() {
 
                         {/* Mobile Toggle */}
                         <div className="flex items-center gap-2 lg:hidden">
-                            <button
-                                onClick={() => {
-                                    const isEn = pathname?.startsWith('/en');
-                                    const targetLang = isEn ? 'es' : 'en';
-                                    const targetPath = isEn
-                                        ? (pathname?.replace(/^\/en/, '') || '/')
-                                        : `/en${pathname === '/' ? '' : pathname}`;
-
-                                    // Save preference
-                                    localStorage.setItem('ct_lang', targetLang);
-                                    window.location.href = targetPath;
-                                }}
-                                className={`p-2 rounded-xl border font-bold transition-all ${pathname?.startsWith('/en')
-                                    ? 'bg-green-500/10 border-green-500 text-green-400'
-                                    : 'bg-slate-900 border-slate-800 text-slate-400'
-                                    }`}
-                            >
-                                {pathname?.startsWith('/en') ? 'EN' : 'ES'}
-                            </button>
-
+                            {/* Removed duplicate mobile language text button from here, using the 3D one above instead */}
                             <button
                                 onClick={() => setIsOpen(!isOpen)}
                                 className="p-2 rounded-xl hover:bg-gray-100 text-gray-600 transition-colors"

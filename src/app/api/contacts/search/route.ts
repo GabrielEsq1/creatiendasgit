@@ -3,6 +3,8 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
+export const dynamic = 'force-dynamic';
+
 // GET /api/contacts/search?phone=123456789 - Search user by phone number
 export async function GET(req: NextRequest) {
     try {
