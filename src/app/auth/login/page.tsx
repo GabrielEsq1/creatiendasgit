@@ -106,10 +106,10 @@ function LoginForm() {
 
                         {/* Credentials Form */}
                         <form onSubmit={handleLogin} className="space-y-4">
-                            {/* Social Login - Placeholder */}
-                            <button
+                            {/* Social Login - Disabled for now */}
+                            {/* <button
                                 type="button"
-                                onClick={() => alert('Próximamente: Inicio de sesión con Google')}
+                                onClick={() => signIn("google", { callbackUrl })}
                                 className="w-full flex items-center justify-center gap-3 bg-white border border-slate-200 text-slate-700 font-bold py-3.5 rounded-2xl hover:bg-slate-50 hover:border-slate-300 transition-all shadow-sm mb-4"
                             >
                                 <Chrome className="w-5 h-5 text-slate-900" />
@@ -123,7 +123,7 @@ function LoginForm() {
                                 <div className="relative flex justify-center text-xs">
                                     <span className="px-2 bg-white text-slate-400 font-bold uppercase tracking-wider">O usa tu correo</span>
                                 </div>
-                            </div>
+                            </div> */}
                             <div className="space-y-1.5">
                                 <label className="text-xs font-bold text-slate-500 ml-1 uppercase tracking-wider">Correo Electrónico</label>
                                 <div className="relative group/input">

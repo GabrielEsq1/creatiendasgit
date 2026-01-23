@@ -2,11 +2,16 @@ import { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import bcrypt from "bcryptjs";
+import GoogleProvider from "next-auth/providers/google";
 import { prisma } from "@/lib/prisma";
 
 export const authOptions: NextAuthOptions = {
     adapter: PrismaAdapter(prisma),
     providers: [
+        GoogleProvider({
+            clientId: process.env.GOOGLE_CLIENT_ID || "",
+            clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
+        }),
         CredentialsProvider({
             name: "Credenciales",
             credentials: {
@@ -102,4 +107,26 @@ export const authOptions: NextAuthOptions = {
         signIn: "/auth/login",
         error: "/auth/login",
     },
+    events: {
+        async createUser({ user }) {
+            try {
+                // Check if wallet already exists (just in case)
+                const existingWallet = await prisma.walletAccount.findUnique({
+                    where: { userId: user.id }
+                });
+
+                if (!existingWallet) {
+                    await prisma.walletAccount.create({
+                        data: {
+                            userId: user.id,
+                            balance: 0,
+                            currency: "COP",
+                        }
+                    });
+                }
+            } catch (error) {
+                console.error("Error creating wallet for new user:", error);
+            }
+        }
+    }
 };
