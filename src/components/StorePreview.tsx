@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { StoreData, Product } from '@/lib/store-service';
 import StoreViralFooter from './StoreViralFooter';
+import { useAnalytics } from '@/components/Analytics';
 
 interface StorePreviewProps {
     data: StoreData;
@@ -22,6 +23,7 @@ const formatPrice = (value: string | number) => {
 export default function StorePreview({ data, products, viewMode = 'desktop', readOnly = false }: StorePreviewProps) {
     const [activeView, setActiveView] = useState<'catalogo' | 'about' | 'careers'>('catalogo');
     const [lightboxImage, setLightboxImage] = useState<string | null>(null);
+    const { trackEvent } = useAnalytics();
 
     const containerClass = `store-preview-container ${viewMode === 'mobile' ? 'device-mobile' : ''}`;
 
@@ -161,6 +163,13 @@ export default function StorePreview({ data, products, viewMode = 'desktop', rea
                                             rel="noopener noreferrer"
                                             className="btn-whatsapp"
                                             style={{ backgroundColor: data.color }}
+                                            onClick={() => {
+                                                trackEvent('whatsapp_open', {
+                                                    product_name: product.name,
+                                                    store_name: data.name,
+                                                    price: product.price
+                                                });
+                                            }}
                                         >
                                             <span>📱</span> Comprar por WhatsApp
                                         </a>

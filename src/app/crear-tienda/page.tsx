@@ -3,8 +3,8 @@ import { Sparkles, CheckCircle, MessageCircle, Clock, Store, ArrowRight } from '
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-    title: 'Crea tu Tienda Online Gratis | 30 Días Gratis | Creatiendas',
-    description: 'Crea tu tienda online en 2 minutos y vende por WhatsApp. Sin comisiones, sin complicaciones. 30 días gratis para empezar.',
+    title: 'Crea tu Tienda Online Gratis | Creatiendas',
+    description: 'Crea tu tienda online en 2 minutos y vende por WhatsApp. Sin comisiones, sin complicaciones. Empieza gratis hoy.',
     openGraph: {
         title: 'Crea tu Tienda Online Gratis | Creatiendas',
         description: 'Vende por WhatsApp en minutos. Sin comisiones, sin complicaciones.',
@@ -36,7 +36,7 @@ export default function CrearTiendaPage() {
                     {/* Badge */}
                     <div className="inline-flex items-center gap-2 bg-green-500/20 text-green-300 px-4 py-2 rounded-full mb-8 font-bold text-sm">
                         <Sparkles className="w-4 h-4" />
-                        30 DIAS GRATIS - SIN TARJETA
+                        PLAN GRATUITO DISPONIBLE
                     </div>
 
                     {/* Headline */}
@@ -52,7 +52,7 @@ export default function CrearTiendaPage() {
                     <p className="text-xl md:text-2xl text-white/80 mb-12 max-w-2xl mx-auto">
                         Vende por WhatsApp sin comisiones, sin inventario, sin complicaciones.
                         <br />
-                        Miles de emprendedores ya venden con Creatiendas.
+                        Comienza gratis y crece con nosotros.
                     </p>
 
                     {/* CTA */}

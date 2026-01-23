@@ -25,7 +25,7 @@ import FinalCTA from '@/components/FinalCTA';
 import SoftwareSchema from '@/components/SoftwareSchema';
 
 import { SocialProofSection } from '@/components/SocialProofSection';
-import SuccessBanner from '@/components/SuccessBanner';
+import StickyMobileCTA from '@/components/StickyMobileCTA';
 import FAQSchema from '@/components/FAQSchema';
 import LocalBusinessSchema from '@/components/LocalBusinessSchema';
 
@@ -35,6 +35,7 @@ export default function LandingPage() {
             <SoftwareSchema />
             <FAQSchema />
             <LocalBusinessSchema />
+            <StickyMobileCTA />
             <main className="flex-1">
                 <Hero />
                 <WhatIs />

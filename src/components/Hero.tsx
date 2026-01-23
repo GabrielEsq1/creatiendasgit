@@ -27,40 +27,18 @@ export default function Hero() {
 
             <div className="max-w-7xl mx-auto relative z-10">
 
-                {/* 1. Onboarding Button */}
-                <div className="flex justify-center mb-10">
-                    <a
-                        href="https://meet.brevo.com/gabriel-esquivia"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="group relative inline-flex items-center gap-4 bg-slate-50 border-2 border-slate-200 hover:border-green-500/30 rounded-2xl px-6 py-3 transition-all hover:shadow-2xl hover:shadow-green-500/10 hover:-translate-y-1"
-                    >
-                        <div className="flex h-3 w-3">
-                            <span className="animate-ping absolute inline-flex h-3 w-3 rounded-full bg-green-400 opacity-75"></span>
-                            <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
-                        </div>
-                        <div className="text-left">
-                            <p className="text-[10px] uppercase font-black text-slate-500 tracking-widest leading-none mb-1">Cupos Limitados</p>
-                            <p className="text-sm font-black text-slate-900">Agenda tu Onboarding GRATIS</p>
-                        </div>
-                        <div className="bg-slate-200 p-2 rounded-xl text-slate-600 group-hover:bg-green-500/10 group-hover:text-green-600 transition-colors">
-                            <svg className="w-5 h-5 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                            </svg>
-                        </div>
-                    </a>
-                </div>
+
 
                 {/* 2. Main Headline */}
                 <div className="text-center max-w-5xl mx-auto mb-16">
                     <h1 className="text-5xl md:text-7xl lg:text-8xl font-black tracking-tight mb-8 leading-[1.1] text-slate-900">
-                        Vende por <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-600 to-emerald-600">WhatsApp</span>
+                        Tu Tienda Online en <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-600 to-emerald-600">WhatsApp</span>
                         <br />
-                        <span className="text-slate-900">en solo <span className="text-green-600 underline decoration-green-600/30 decoration-8 underline-offset-8">3 Minutos</span></span>
+                        <span className="text-slate-900">Gratis y en <span className="text-green-600 underline decoration-green-600/30 decoration-8 underline-offset-8">3 Minutos</span></span>
                     </h1>
                     <p className="text-xl md:text-2xl text-slate-600 max-w-3xl mx-auto leading-relaxed font-medium">
-                        Crea tu catálogo digital sin comisiones ni configuraciones complejas. <br className="hidden md:block" />
-                        Ahorra horas de setup y empieza a recibir pedidos hoy mismo.
+                        Sin comisiones · Sin tarjeta de crédito · Todo automático. <br className="hidden md:block" />
+                        Únete a miles de emprendedores y empieza a recibir pedidos hoy.
                     </p>
                 </div>
 
@@ -109,19 +87,19 @@ export default function Hero() {
                                         <tr className="bg-slate-50">
                                             <th className="p-3 sm:p-4 md:p-6 lg:p-8 text-[9px] sm:text-[10px] font-black text-slate-500 uppercase tracking-wider">Característica</th>
                                             <th className="p-3 sm:p-4 md:p-6 lg:p-8 text-[9px] sm:text-[10px] font-black text-slate-500 uppercase tracking-wider text-center">Otros</th>
-                                            <th className="p-3 sm:p-4 md:p-6 lg:p-8 text-[9px] sm:text-[10px] font-black text-white uppercase tracking-wider text-center bg-green-500">Creatiendas</th>
+                                            <th className="p-3 sm:p-4 md:p-6 lg:p-8 text-[9px] sm:text-[10px] font-black text-white uppercase tracking-wider text-center bg-green-500 sticky right-0 z-20 shadow-[-5px_0_10px_-5px_rgba(0,0,0,0.1)] sm:shadow-none">Creatiendas</th>
                                         </tr>
                                     </thead>
                                     <tbody className="divide-y divide-slate-100">
                                         <tr className="group hover:bg-slate-50 transition-colors">
                                             <td className="p-3 sm:p-4 md:p-6 lg:p-8 font-bold text-xs sm:text-sm md:text-base text-slate-700">Precio mensual</td>
                                             <td className="p-3 sm:p-4 md:p-6 lg:p-8 text-center text-rose-500 font-extrabold text-xs sm:text-sm md:text-base">$29+ USD</td>
-                                            <td className="p-3 sm:p-4 md:p-6 lg:p-8 text-center text-green-600 font-black bg-green-50 text-xs sm:text-sm md:text-base">¡GRATIS!</td>
+                                            <td className="p-3 sm:p-4 md:p-6 lg:p-8 text-center text-green-600 font-black bg-green-50 text-xs sm:text-sm md:text-base sticky right-0 z-20 shadow-[-5px_0_10px_-5px_rgba(0,0,0,0.1)] sm:shadow-none">¡GRATIS!</td>
                                         </tr>
                                         <tr className="group hover:bg-slate-50 transition-colors">
                                             <td className="p-3 sm:p-4 md:p-6 lg:p-8 font-bold text-xs sm:text-sm md:text-base text-slate-700">Tiempo de setup</td>
                                             <td className="p-3 sm:p-4 md:p-6 lg:p-8 text-center text-slate-400 font-semibold text-xs sm:text-sm md:text-base">Horas / Días</td>
-                                            <td className="p-3 sm:p-4 md:p-6 lg:p-8 text-center text-green-600 font-black bg-green-50 text-xs sm:text-sm md:text-base">2 minutos</td>
+                                            <td className="p-3 sm:p-4 md:p-6 lg:p-8 text-center text-green-600 font-black bg-green-50 text-xs sm:text-sm md:text-base sticky right-0 z-20 shadow-[-5px_0_10px_-5px_rgba(0,0,0,0.1)] sm:shadow-none">2 minutos</td>
                                         </tr>
                                         <tr className="group hover:bg-slate-50 transition-colors">
                                             <td className="p-3 sm:p-4 md:p-6 lg:p-8 font-bold text-xs sm:text-sm md:text-base text-slate-700">WhatsApp nativo</td>
@@ -130,7 +108,7 @@ export default function Hero() {
                                                     ❌ Plugins extra
                                                 </div>
                                             </td>
-                                            <td className="p-3 sm:p-4 md:p-6 lg:p-8 text-center text-green-600 font-black bg-green-50">
+                                            <td className="p-3 sm:p-4 md:p-6 lg:p-8 text-center text-green-600 font-black bg-green-50 sticky right-0 z-20 shadow-[-5px_0_10px_-5px_rgba(0,0,0,0.1)] sm:shadow-none">
                                                 <div className="flex items-center justify-center gap-1 sm:gap-2 font-black text-xs sm:text-sm md:text-base">
                                                     ✅ Integrado
                                                 </div>
