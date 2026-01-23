@@ -76,6 +76,15 @@ export async function PUT(
     { params }: { params: { storeId: string } }
 ) {
     try {
+        const session = await getServerSession(authOptions);
+
+        if (!session?.user?.email) {
+            return NextResponse.json(
+                { success: false, message: 'No autenticado' },
+                { status: 401 }
+            );
+        }
+
         const body = await request.json();
         const { name, data, products } = body;
 
@@ -93,6 +102,18 @@ export async function PUT(
             return NextResponse.json(
                 { success: false, message: 'Tienda no encontrada' },
                 { status: 404 }
+            );
+        }
+
+        // Verify ownership
+        const user = await prisma.user.findUnique({
+            where: { email: session.user.email }
+        });
+
+        if (storeRecord.ownerId !== user?.id && user?.role !== 'ADMIN') {
+            return NextResponse.json(
+                { success: false, message: 'No autorizado para editar esta tienda' },
+                { status: 403 }
             );
         }
 
@@ -121,7 +142,7 @@ export async function PUT(
     } catch (error) {
         console.error('Error updating store:', error);
         return NextResponse.json(
-            { success: false, message: 'Error interno' },
+            { success: false, message: 'Error interno o datos demasiado grandes' },
             { status: 500 }
         );
     }
