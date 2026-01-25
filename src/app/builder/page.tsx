@@ -321,13 +321,21 @@ function BuilderContent() {
                         window.location.href = '/auth/login';
                         return;
                     }
-                    if (res.status === 403 && json.upgradeUrl) {
-                        // This case should not be hit for edits anymore, but keeping for safety
-                        alert(`${json.message}\n\nSerás redirigido a WhatsApp para recibir asesoría personalizada.`);
-                        window.location.href = json.upgradeUrl;
+                    if (res.status === 403) {
+                        // Store limit reached - show detailed error
+                        const limitMessage = json.message || 'Has alcanzado el límite de tiendas.';
+                        const detailedMessage = `${limitMessage}\n\nPlan actual: ${json.plan || 'FREE'}\nTiendas actuales: ${json.currentStores || 0}\nLímite: ${json.limit || 1}`;
+
+                        alert(detailedMessage);
+
+                        // Redirect to WhatsApp for upgrade
+                        if (confirm('¿Deseas hablar con un asesor para actualizar tu plan?')) {
+                            const whatsappMessage = "Hola, quiero actualizar mi plan para crear más tiendas.";
+                            window.open(`https://wa.me/573026687991?text=${encodeURIComponent(whatsappMessage)}`, '_blank');
+                        }
                         return;
                     }
-                    throw new Error(json.message || 'Error desconocido en el servidor');
+                    throw new Error(json.message || json.error || 'Error desconocido en el servidor');
                 } else {
                     throw new Error(`Error del servidor: ${res.status} ${res.statusText}. Es posible que el contenido sea demasiado grande.`);
                 }

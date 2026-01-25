@@ -25,6 +25,41 @@ export async function POST(request: Request) {
             );
         }
 
+        // SECURITY: Validate store limit based on user plan
+        const user = await prisma.user.findUnique({
+            where: { id: userId },
+            include: { stores: true }
+        });
+
+        if (!user) {
+            return NextResponse.json(
+                { error: 'Usuario no encontrado' },
+                { status: 404 }
+            );
+        }
+
+        // Determine store limit based on plan and role
+        const isAdmin = user.role === 'ADMIN' || user.role === 'SUPERADMIN';
+        const isPro = user.plan === 'PRO';
+        const storeLimit = isAdmin ? 999 : (isPro ? 5 : 1); // FREE = 1 store, PRO = 5 stores, ADMIN = unlimited
+
+        if (user.stores.length >= storeLimit) {
+            const planMessage = isPro
+                ? `Has alcanzado el límite de ${storeLimit} tiendas de tu plan PRO. Contacta con soporte para más información.`
+                : `Tu plan gratuito permite solo ${storeLimit} tienda. Actualiza a PRO para crear hasta 5 tiendas.`;
+
+            return NextResponse.json(
+                {
+                    error: 'Límite de tiendas alcanzado',
+                    message: planMessage,
+                    currentStores: user.stores.length,
+                    limit: storeLimit,
+                    plan: user.plan
+                },
+                { status: 403 } // 403 Forbidden
+            );
+        }
+
         // Check if slug is already taken
         const existingStore = await prisma.store.findUnique({
             where: { slug }

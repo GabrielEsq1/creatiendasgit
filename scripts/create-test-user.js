@@ -1,34 +1,58 @@
 const { PrismaClient } = require('@prisma/client');
 const bcrypt = require('bcryptjs');
-
 const prisma = new PrismaClient();
 
-async function main() {
-    const email = 'demo@monedera.com';
-    const password = 'demo123';
-    const hashedPassword = await bcrypt.hash(password, 10);
+async function createTestUser() {
+    try {
+        // Hash the password
+        const passwordHash = await bcrypt.hash('Test123!', 10);
 
-    const user = await prisma.user.upsert({
-        where: { email },
-        update: {
-            passwordHash: hashedPassword
-        },
-        create: {
-            email,
-            name: 'Demo User',
-            passwordHash: hashedPassword,
-            role: 'USER'
-        },
-    });
+        // Check if user already exists
+        const existing = await prisma.user.findUnique({
+            where: { email: 'testauth@creatiendas.com' }
+        });
 
-    console.log({ user });
+        if (existing) {
+            console.log('Test user already exists. Updating password...');
+            await prisma.user.update({
+                where: { email: 'testauth@creatiendas.com' },
+                data: { passwordHash }
+            });
+            console.log('Password updated successfully!');
+        } else {
+            console.log('Creating new test user...');
+            const user = await prisma.user.create({
+                data: {
+                    email: 'testauth@creatiendas.com',
+                    name: 'Test User',
+                    passwordHash,
+                    emailVerified: new Date(),
+                    role: 'USER',
+                    plan: 'FREE'
+                }
+            });
+
+            // Create wallet for the user
+            await prisma.walletAccount.create({
+                data: {
+                    userId: user.id,
+                    balance: 0,
+                    currency: 'COP'
+                }
+            });
+
+            console.log('Test user created successfully!');
+        }
+
+        console.log('\nTest credentials:');
+        console.log('Email: testauth@creatiendas.com');
+        console.log('Password: Test123!');
+
+    } catch (error) {
+        console.error('Error:', error);
+    } finally {
+        await prisma.$disconnect();
+    }
 }
 
-main()
-    .catch((e) => {
-        console.error(e);
-        process.exit(1);
-    })
-    .finally(async () => {
-        await prisma.$disconnect();
-    });
+createTestUser();
