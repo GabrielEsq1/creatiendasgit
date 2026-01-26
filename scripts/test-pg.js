@@ -3,14 +3,15 @@ const { Client } = require('pg');
 require('dotenv').config({ path: '.env.local' });
 
 async function checkConnection() {
-    console.log('Using DATABASE_URL:', process.env.DATABASE_URL ? 'FOUND' : 'MISSING');
-    if (!process.env.DATABASE_URL) {
-        console.log('No DATABASE_URL in .env.local, checking .env...');
+    const dbUrl = process.env.CREATIENDAS_FINAL_DB || process.env.DATABASE_URL;
+    console.log('Using CREATIENDAS_FINAL_DB:', dbUrl ? 'FOUND' : 'MISSING');
+    if (!dbUrl) {
+        console.log('No CREATIENDAS_FINAL_DB in .env.local, checking .env...');
         require('dotenv').config({ path: '.env' });
     }
 
     const client = new Client({
-        connectionString: process.env.DATABASE_URL,
+        connectionString: dbUrl,
         ssl: {
             rejectUnauthorized: false
         }

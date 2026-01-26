@@ -17,7 +17,7 @@ let passed = [];
 console.log('\n📋 Verificando variables de entorno...');
 
 const requiredEnvVars = [
-    'DATABASE_URL',
+    'CREATIENDAS_FINAL_DB',
     'NEXTAUTH_SECRET',
     'NEXTAUTH_URL',
 ];

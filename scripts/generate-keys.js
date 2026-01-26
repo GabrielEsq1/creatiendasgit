@@ -61,7 +61,7 @@ API_KEY=${apiKey}
 WEBHOOK_SECRET=${webhookSecret}
 
 # Configuración completa de ejemplo:
-# DATABASE_URL=postgresql://user:password@host:5432/database
+# CREATIENDAS_FINAL_DB=postgresql://user:password@host:5432/database
 # NEXTAUTH_URL=https://creatiendasgit1.vercel.app
 # NEXTAUTH_SECRET=${nextAuthSecret}
 # ENCRYPTION_KEY=${encryptionKey}
