@@ -56,11 +56,26 @@ export default function StorePreview({ data, products, viewMode = 'desktop', rea
 
     const cleanPhone = (phone: string | null | undefined) => (phone || '').replace(/\D/g, '');
 
+    // OPTIMIZATION: Only load the font that is actually used
+    const getGoogleFontUrl = (fontString: string | undefined) => {
+        if (!fontString) return null; // Default font
+        const fontName = fontString.split(',')[0].replace(/['"]/g, '').trim();
+        const supported = ['Inter', 'Lato', 'Merriweather', 'Montserrat', 'Nunito', 'Open Sans', 'Oswald', 'Playfair Display', 'Poppins', 'Raleway', 'Roboto'];
+
+        if (supported.includes(fontName)) {
+            return `https://fonts.googleapis.com/css2?family=${fontName.replace(/ /g, '+')}:wght@300;400;500;600;700&display=swap`;
+        }
+        return null; // Fallback or system font
+    };
+
+    const activeFontUrl = getGoogleFontUrl(data.font);
+
     return (
         <>
-            <style jsx global>{`
-                @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lato:wght@400;700&family=Merriweather:wght@400;700&family=Montserrat:wght@400;600;700&family=Nunito:wght@400;600;700&family=Open+Sans:wght@400;600;700&family=Oswald:wght@400;600&family=Playfair+Display:wght@400;600;700&family=Poppins:wght@400;600;700&family=Raleway:wght@400;600;700&family=Roboto:wght@400;500;700&display=swap');
-            `}</style>
+            {activeFontUrl && (
+                <link href={activeFontUrl} rel="stylesheet" />
+            )}
+
             <div className={containerClass} style={{
                 // CRITICAL: Full width for professional Shopify-like appearance
                 // Only constrain mobile preview in builder
@@ -76,7 +91,7 @@ export default function StorePreview({ data, products, viewMode = 'desktop', rea
                         <div className="topbar-left">
                             <div className="topbar-logo-small" style={{ borderColor: data.color, color: data.color }}>
                                 {data.logo ? (
-                                    <img src={data.logo} alt="Logo" />
+                                    <img src={data.logo} alt="Logo" loading="lazy" width={36} height={36} />
                                 ) : (
                                     data.name ? data.name.substring(0, 1).toUpperCase() : 'T'
                                 )}
@@ -142,11 +157,17 @@ export default function StorePreview({ data, products, viewMode = 'desktop', rea
                         )}
 
                         <div className="store-products">
-                            {Array.isArray(products) && products.map(product => (
+                            {Array.isArray(products) && products.map((product, index) => (
                                 <div key={product.id} className="product-card">
-                                    <div className="product-image">
+                                    <div className="product-image" style={{ position: 'relative', overflow: 'hidden' }}>
                                         {product.image ? (
-                                            <img src={product.image} alt={product.name} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+                                            <img
+                                                src={product.image}
+                                                alt={product.name}
+                                                style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+                                                loading={index < 4 ? "eager" : "lazy"}
+                                                decoding="async"
+                                            />
                                         ) : (
                                             <div style={{ color: '#ccc' }}>Sin Imagen</div>
                                         )}
@@ -262,6 +283,7 @@ export default function StorePreview({ data, products, viewMode = 'desktop', rea
                                                 key={i}
                                                 src={img}
                                                 alt={`Foto empresa ${i}`}
+                                                loading="lazy"
                                                 onClick={() => setLightboxImage(img)}
                                             />
                                         ))}
@@ -305,7 +327,7 @@ export default function StorePreview({ data, products, viewMode = 'desktop', rea
                             <div className="footer-logo-circle" style={{ borderColor: data.color, color: data.color }}>
                                 {data.logo ? (
                                     <div className="footer-logo-img-wrap">
-                                        <img src={data.logo} alt="Logo" />
+                                        <img src={data.logo} alt="Logo" loading="lazy" />
                                     </div>
                                 ) : (
                                     data.name ? data.name.substring(0, 1).toUpperCase() : 'T'
