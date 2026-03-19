@@ -181,10 +181,10 @@ export default function AdminDashboard() {
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                    <StatCard icon={<Users className="w-6 h-6" />} title="USR_COUNT" value={stats?.totalUsers || 0} change={`+${stats?.todayUsers || 0} 24H`} color="blue" />
-                    <StatCard icon={<Store className="w-6 h-6" />} title="STR_COUNT" value={stats?.totalStores || 0} change={`+${stats?.todayStores || 0} 24H`} color="purple" />
-                    <StatCard icon={<TrendingUp className="w-6 h-6" />} title="SYS_GROWTH" value={`${stats?.growthPercent || 0}%`} change="7 DAYS" color="emerald" />
-                    <StatCard icon={<Clock className="w-6 h-6" />} title="ACT_LOGS" value={(stats?.todayUsers || 0) + (stats?.todayStores || 0)} change="24H VOL" color="orange" />
+                    <StatCard icon={<Users className="w-6 h-6" />} title="Usuarios Totales" value={stats?.totalUsers || 0} change={`+${stats?.todayUsers || 0} 24H`} color="blue" />
+                    <StatCard icon={<Store className="w-6 h-6" />} title="Tiendas Totales" value={stats?.totalStores || 0} change={`+${stats?.todayStores || 0} 24H`} color="purple" />
+                    <StatCard icon={<TrendingUp className="w-6 h-6" />} title="Crecimiento Total" value={`${stats?.growthPercent || 0}%`} change="7 DÍAS" color="emerald" />
+                    <StatCard icon={<Clock className="w-6 h-6" />} title="Actividad (Logs)" value={(stats?.todayUsers || 0) + (stats?.todayStores || 0)} change="24H VOL" color="orange" />
                 </div>
 
                 <div className="bg-slate-900 border border-slate-800 rounded flex flex-col overflow-hidden">
