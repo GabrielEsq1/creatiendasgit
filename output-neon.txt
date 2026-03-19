@@ -1,0 +1,304 @@
+﻿=== TIENDAS CREADAS EN PRODUCCION ===
+Total: 50
+
+FOUND MAGIS!
+- ID: cmmvdnrcp001314ngs24tim2s
+  Nombre: Magis Store
+  Url: /magis-store-mmvdns55
+  Dueño: Jeissondavidr50 (jeissondavidr50@gmail.com)
+  Creada: Tue Mar 17 2026 20:43:36 GMT-0500 (hora estándar de Colombia)
+--------------------------------------------------
+- ID: cmms6zlie0008kodjcpkq02bk
+  Nombre: Isabella Bazar 🌟
+  Url: /isabella-bazar-mms6zkuj
+  Dueño: Oliviaisabella0910 (oliviaisabella0910@gmail.com)
+  Creada: Sun Mar 15 2026 15:13:32 GMT-0500 (hora estándar de Colombia)
+--------------------------------------------------
+- ID: cmmmu5j9p000xq3cdni543byx
+  Nombre: Variedades Emma
+  Url: /mi-tienda-bonita-mmmu5hpj
+  Dueño: Camilobecerra0046 (camilobecerra0046@gmail.com)
+  Creada: Wed Mar 11 2026 21:15:24 GMT-0500 (hora estándar de Colombia)
+--------------------------------------------------
+- ID: cmmlzaid70002vz7ivwz5322n
+  Nombre: EL PEROLERO
+  Url: /el-perolero-mmlzai92
+  Dueño: Radamical (radamical@gmail.com)
+  Creada: Wed Mar 11 2026 06:51:28 GMT-0500 (hora estándar de Colombia)
+--------------------------------------------------
+- ID: cmmhssut300011a2vqjkz1to0
+  Nombre: Oleria Joyería
+  Url: /oleria-joyeria-mmhssu1u
+  Dueño: Oleria.joyeria (oleria.joyeria@gmail.com)
+  Creada: Sun Mar 08 2026 08:38:42 GMT-0500 (hora estándar de Colombia)
+--------------------------------------------------
+- ID: cmme6d5yp00028jfqa8f7bm3y
+  Nombre: Gorras, columbia, bass pro shop, Guy arvey.
+  Url: /gorras-columbia-bass-pro-shop-guy-arvey-mme6d5qs
+  Dueño: Moramartinezjuancamilo (moramartinezjuancamilo@gmail.com)
+  Creada: Thu Mar 05 2026 19:47:19 GMT-0500 (hora estándar de Colombia)
+--------------------------------------------------
+- ID: cmmdirbw40005ev9h90vyp908
+  Nombre: Natura by Nati
+  Url: /mi-tienda-bonita-mmdir9f3
+  Dueño: Nati.sa.ortiz (nati.sa.ortiz@gmail.com)
+  Creada: Thu Mar 05 2026 08:46:30 GMT-0500 (hora estándar de Colombia)
+--------------------------------------------------
+- ID: cmm52qffk000169crdhrdvfi2
+  Nombre: CARNICERIA HERMANOS E
+  Url: /carniceria-hermanos-e-mm52qfoz
+  Dueño: Carniceriahermanose10 (carniceriahermanose10@gmail.com)
+  Creada: Fri Feb 27 2026 10:55:44 GMT-0500 (hora estándar de Colombia)
+--------------------------------------------------
+- ID: cmm14q4pe00015lfx7k8vy2l2
+  Nombre: Dakita
+  Url: /dakita-mm14q3e5
+  Dueño: Clarapiazza20 (clarapiazza20@gmail.com)
+  Creada: Tue Feb 24 2026 16:40:25 GMT-0500 (hora estándar de Colombia)
+--------------------------------------------------
+- ID: cmlq12a5a0004fe92dwd5jubq
+  Nombre: Mi Tienda Bonita
+  Url: /mi-tienda-bonita-mlq128ri
+  Dueño: Michelrivera860 (michelrivera860@gmail.com)
+  Creada: Mon Feb 16 2026 22:12:25 GMT-0500 (hora estándar de Colombia)
+--------------------------------------------------
+- ID: cml2s5bnj0004az5ai44ecd46
+  Nombre: Divina Fragancia
+  Url: /divina-fragancia-ml2s5aki
+  Dueño: Jv863274 (jv863274@gmail.com)
+  Creada: Sat Jan 31 2026 15:44:09 GMT-0500 (hora estándar de Colombia)
+--------------------------------------------------
+- ID: cmkw1kcpo0002u0w55iu2v1a9
+  Nombre: Mi Tienda Bonita
+  Url: /mi-tienda-bonita-mkw1kbpw
+  Dueño: Gabrielesqmaq (gabrielesqmaq@gmail.com)
+  Creada: Mon Jan 26 2026 22:33:23 GMT-0500 (hora estándar de Colombia)
+--------------------------------------------------
+- ID: cmku1nkgs000uwkjf6kl5a2j0
+  Nombre: Mi Tienda Bonita
+  Url: /mi-tienda-bonita-mku1njyz
+  Dueño: Testass (testass@gmail.com)
+  Creada: Sun Jan 25 2026 13:00:21 GMT-0500 (hora estándar de Colombia)
+--------------------------------------------------
+- ID: cmku0cjen000q1vf2p987kupw
+  Nombre: Run further. Pay less.
+  Url: /shoes-homie-mku0cimg
+  Dueño: Gabrieleskwnwnquivia (gabrieleskwnwnquivia@gmail.com)
+  Creada: Sun Jan 25 2026 12:23:47 GMT-0500 (hora estándar de Colombia)
+--------------------------------------------------
+- ID: cmktwtz0d000894qfwbmobj2x
+  Nombre: new wife in china?
+  Url: /new-wife-in-china-mktwtyxg
+  Dueño: Newteaasuserairport (newteaasuserairport@gmail.com)
+  Creada: Sun Jan 25 2026 10:45:22 GMT-0500 (hora estándar de Colombia)
+--------------------------------------------------
+- ID: cmktwt3ns000594qf88e4q4z3
+  Nombre: get married now!
+  Url: /my-new-store-mktwt330
+  Dueño: Newteaasuserairport (newteaasuserairport@gmail.com)
+  Creada: Sun Jan 25 2026 10:44:41 GMT-0500 (hora estándar de Colombia)
+--------------------------------------------------
+- ID: cmkr7tnd60004mwebbuzhvnec
+  Nombre: Mi Tienda Bonita
+  Url: /mi-tienda-bonita-mkr7tnig
+  Dueño: Gabrijbsksnelesquivia (gabrijbsksnelesquivia@gmail.com)
+  Creada: Fri Jan 23 2026 13:29:44 GMT-0500 (hora estándar de Colombia)
+--------------------------------------------------
+- ID: cmkr4d8n7000p755wzpxyvikd
+  Nombre: My New Store
+  Url: /my-new-store-mkr4d80e
+  Dueño: Juanjosasdasdsae.cardenas (juanjosasdasdsae.cardenas@swevenbpm.com)
+  Creada: Fri Jan 23 2026 11:52:59 GMT-0500 (hora estándar de Colombia)
+--------------------------------------------------
+- ID: cmkmw71950001208zfwhcx66j
+  Nombre: Como Perros y Gatos
+  Url: /como-perros-y-gatos-mkmw6zzu
+  Dueño: Cristianfontalvo (cristianfontalvo@gmail.com)
+  Creada: Tue Jan 20 2026 12:53:08 GMT-0500 (hora estándar de Colombia)
+--------------------------------------------------
+- ID: cmkh830az000913jbrq4g80st
+  Nombre: Foodstation 
+  Url: /foodstation-mkh82yzi
+  Dueño: Loganruiz999 (loganruiz999@gmail.com)
+  Creada: Fri Jan 16 2026 13:39:19 GMT-0500 (hora estándar de Colombia)
+--------------------------------------------------
+- ID: cmka3jd360008wlu8r0ysvsih
+  Nombre: Mi Tienda Bonita
+  Url: /mi-tienda-bonita-mka3jadl
+  Dueño: Gabrielesqhshshsuivia (gabrielesqhshshsuivia@gmail.com)
+  Creada: Sun Jan 11 2026 13:57:40 GMT-0500 (hora estándar de Colombia)
+--------------------------------------------------
+- ID: cmk7kw78500j611gld1wofnvy
+  Nombre: Mi Tienda Bonita
+  Url: /mi-tienda-bonita-mk7kw6ik
+  Dueño: Toyamaggquilon (toyamaggquilon@gmail.com)
+  Creada: Fri Jan 09 2026 19:40:14 GMT-0500 (hora estándar de Colombia)
+--------------------------------------------------
+- ID: cmk72p2u5002ha0tntbo2jsgt
+  Nombre: ShareTest
+  Url: /sharetest-mk72p3k8
+  Dueño: Test_share_7362 (test_share_7362@example.com)
+  Creada: Fri Jan 09 2026 11:10:49 GMT-0500 (hora estándar de Colombia)
+--------------------------------------------------
+- ID: cmk70z5ck0001flge73c8779h
+  Nombre: Mi Tienda Bonita
+  Url: /mi-tienda-bonita-mk70z56y
+  Dueño: Test_1736435844 (test_1736435844@example.com)
+  Creada: Fri Jan 09 2026 10:22:39 GMT-0500 (hora estándar de Colombia)
+--------------------------------------------------
+- ID: cmk62nc1700wgpdw1asu59vfm
+  Nombre: Mi Tienda Bonitakhvkmhfc ,jgsaca
+  Url: /mi-tienda-bonitakhvkmhfc-jg-mk62nblu
+  Dueño: Gabsssrielesquivia (gabsssrielesquivia@gmail.com)
+  Creada: Thu Jan 08 2026 18:21:41 GMT-0500 (hora estándar de Colombia)
+--------------------------------------------------
+- ID: cmk5sv5z701fw119zmre9075g
+  Nombre: Mi Tienda Bonita
+  Url: /mi-tienda-bonita-mk5sv3t3
+  Dueño: Toyamaqbivuilon (toyamaqbivuilon@gmail.com)
+  Creada: Thu Jan 08 2026 13:47:51 GMT-0500 (hora estándar de Colombia)
+--------------------------------------------------
+- ID: cmk5jsn3k0004112qqogp51c8
+  Nombre: Mi Tienda BonitaTest Final Verification
+  Url: /mi-tienda-bonitatest-final-verification-mk5jsm3s
+  Dueño: Test_user_jetski (test_user_jetski@example.com)
+  Creada: Thu Jan 08 2026 09:33:56 GMT-0500 (hora estándar de Colombia)
+--------------------------------------------------
+- ID: cmk5j7wom000dj6hw3t9klxt9
+  Nombre: jetskitest
+  Url: /jetskitest-mk5j7vo7
+  Dueño: Test_user_jetski (test_user_jetski@example.com)
+  Creada: Thu Jan 08 2026 09:17:49 GMT-0500 (hora estándar de Colombia)
+--------------------------------------------------
+- ID: cmk5j6isq000bj6hwutytg4ag
+  Nombre: Mi Tienda BonitaTienda Test Jetski
+  Url: /mi-tienda-bonitatienda-test-jetski-mk5j6hrx
+  Dueño: Test_user_jetski (test_user_jetski@example.com)
+  Creada: Thu Jan 08 2026 09:16:44 GMT-0500 (hora estándar de Colombia)
+--------------------------------------------------
+- ID: cmk5j55s500017sgll6re4hz3
+  Nombre: Mi Tienda BonitaTienda Test Jetski
+  Url: /mi-tienda-bonitatienda-test-jetski-mk5j53n1
+  Dueño: Test_user_jetski (test_user_jetski@example.com)
+  Creada: Thu Jan 08 2026 09:15:41 GMT-0500 (hora estándar de Colombia)
+--------------------------------------------------
+- ID: cmk5gmrvd00096yiwww4v1l3j
+  Nombre: Fixed Store 732
+  Url: /fixed-store-732-mk5gmqtd
+  Dueño: Test_user_jetski (test_user_jetski@example.com)
+  Creada: Thu Jan 08 2026 08:05:24 GMT-0500 (hora estándar de Colombia)
+--------------------------------------------------
+- ID: cmk5giy6w00026yiw1nc0nies
+  Nombre: Mi Tienda Bonita
+  Url: /mi-tienda-bonita-mk5gix3y
+  Dueño: Toyamasasasaaquilon (toyamasasasaaquilon@gmail.com)
+  Creada: Thu Jan 08 2026 08:02:25 GMT-0500 (hora estándar de Colombia)
+--------------------------------------------------
+- ID: cmk5gc5o9000fevjk1577soms
+  Nombre: Mi Tienda Bonita
+  Url: /mi-tienda-bonita-mk5gc4mb
+  Dueño: Test_user_jetski (test_user_jetski@example.com)
+  Creada: Thu Jan 08 2026 07:57:08 GMT-0500 (hora estándar de Colombia)
+--------------------------------------------------
+- ID: cmk5g8lfe0002evjkcpx8uk1v
+  Nombre: Live Test Store 123456
+  Url: /live-test-store-123456-mk5g8k3g
+  Dueño: Test_user_jetski (test_user_jetski@example.com)
+  Creada: Thu Jan 08 2026 07:54:22 GMT-0500 (hora estándar de Colombia)
+--------------------------------------------------
+- ID: cmk5cvglk0003101pyf8bzlkt
+  Nombre: My New Storeteststorejetski
+  Url: /my-new-storeteststorejetski-mk5cvfd4
+  Dueño: Test_user_jetski (test_user_jetski@example.com)
+  Creada: Thu Jan 08 2026 06:20:10 GMT-0500 (hora estándar de Colombia)
+--------------------------------------------------
+- ID: cmk5bkp7q0002hjq2mjv4pkb9
+  Nombre: Mi Tienda Bonita
+  Url: /mi-tienda-bonita-mk5bkpuc
+  Dueño: Gabriiiiiielesquivia (gabriiiiiielesquivia@gmail.com)
+  Creada: Thu Jan 08 2026 05:43:49 GMT-0500 (hora estándar de Colombia)
+--------------------------------------------------
+- ID: cmk5bixic001k10yy2i0k45g7
+  Nombre: Mi Tienda Bonitaggg
+  Url: /mi-tienda-bonitaggg-mk5biy7n
+  Dueño: Gabriiiiiielesquivia (gabriiiiiielesquivia@gmail.com)
+  Creada: Thu Jan 08 2026 05:42:26 GMT-0500 (hora estándar de Colombia)
+--------------------------------------------------
+- ID: cmk5binr0000hxctor51g44cx
+  Nombre: My New Storegggybh
+  Url: /my-new-storegggybh-mk5biogi
+  Dueño: Gabriiiiiielesquivia (gabriiiiiielesquivia@gmail.com)
+  Creada: Thu Jan 08 2026 05:42:14 GMT-0500 (hora estándar de Colombia)
+--------------------------------------------------
+- ID: cmk5b2qd90004xcto9gvq4ao4
+  Nombre: Mi Tienda Bonita wbe tes
+  Url: /mi-tienda-bonita-wbe-tes-mk5b2qvl
+  Dueño: Gabrielesquivia (gabrielesquivia@hotmail.com)
+  Creada: Thu Jan 08 2026 05:29:50 GMT-0500 (hora estándar de Colombia)
+--------------------------------------------------
+- ID: cmk58wq490004ufyeynw9ikcq
+  Nombre: Mi Tienda Bonita,M , ,MLL
+  Url: /mi-tienda-bonita-m-mll-mk58wotx
+  Dueño: Javaes17a (javaes17a@gmail.com)
+  Creada: Thu Jan 08 2026 04:29:11 GMT-0500 (hora estándar de Colombia)
+--------------------------------------------------
+- ID: cmk5329e10009el3gxqaciac8
+  Nombre: Mi Nueva Tiendaaaaa
+  Url: /mi-nueva-tiendaaaaa-mk5327ou
+  Dueño: Socialmedia (socialmedia@betonyouagency.com)
+  Creada: Thu Jan 08 2026 01:45:32 GMT-0500 (hora estándar de Colombia)
+--------------------------------------------------
+- ID: cmk531cjp000ddndgmjuhvmdo
+  Nombre: Mi Nueva Tiendaaaaa
+  Url: /mi-nueva-tiendaaaaa-mk531awn
+  Dueño: Socialmedia (socialmedia@betonyouagency.com)
+  Creada: Thu Jan 08 2026 01:44:49 GMT-0500 (hora estándar de Colombia)
+--------------------------------------------------
+- ID: cmk530bmg000adndgqz8ohx6k
+  Nombre: Mi Nueva Tiendaaaaa
+  Url: /mi-nueva-tiendaaaaa-mk530a3d
+  Dueño: Socialmedia (socialmedia@betonyouagency.com)
+  Creada: Thu Jan 08 2026 01:44:01 GMT-0500 (hora estándar de Colombia)
+--------------------------------------------------
+- ID: cmk45lzju0001hnot03czspry
+  Nombre: Mi Nueva Tienda
+  Url: /mi-nueva-tienda-w0qj9
+  Dueño: Test-1736259145 (test-1736259145@example.com)
+  Creada: Wed Jan 07 2026 10:09:05 GMT-0500 (hora estándar de Colombia)
+--------------------------------------------------
+- ID: cmk43r72a000kpno3wmr4lj2m
+  Nombre: Antigravity QR Test Store 1736259145
+  Url: /mi-nueva-tiendaantigravity-qr-test-store-1736259145-k6uzj
+  Dueño: Test-1736259145 (test-1736259145@example.com)
+  Creada: Wed Jan 07 2026 09:17:09 GMT-0500 (hora estándar de Colombia)
+--------------------------------------------------
+- ID: cmk40fi9o000z149jmr2kgq6j
+  Nombre: Mi Nueva Tiendaaaaa
+  Url: /mi-nueva-tiendaaaaa-4ys9b
+  Dueño: Socialmedia (socialmedia@betonyouagency.com)
+  Creada: Wed Jan 07 2026 07:44:05 GMT-0500 (hora estándar de Colombia)
+--------------------------------------------------
+- ID: cmk3gx8iw0011p9kssgksr2dn
+  Nombre: Mi Nueva Tiendajrjrjej
+  Url: /mi-nueva-tiendajrjrjej-scne6
+  Dueño: Gabrihhelesquivia (gabrihhelesquivia@gmail.com)
+  Creada: Tue Jan 06 2026 22:37:59 GMT-0500 (hora estándar de Colombia)
+--------------------------------------------------
+- ID: cmk3daamo000w5mccxm7ubifu
+  Nombre: Mi Nueva Tiendakhhbkh
+  Url: /mi-nueva-tiendakhhbkh-bo9en
+  Dueño: Gabrielebfsquivia (gabrielebfsquivia@gmail.com)
+  Creada: Tue Jan 06 2026 20:56:10 GMT-0500 (hora estándar de Colombia)
+--------------------------------------------------
+- ID: cmk38yjr4000svxx3ys5ui29j
+  Nombre: beegiih
+  Url: /mi-nueva-tienda-iiaix
+  Dueño: Nandov1234 (nandov1234@gmail.com)
+  Creada: Tue Jan 06 2026 18:55:04 GMT-0500 (hora estándar de Colombia)
+--------------------------------------------------
+- ID: cmk34ywc70006aa7bo2vw2wa6
+  Nombre: Mi Nueva Tiendaaslkaslk
+  Url: /mi-nueva-tiendaaslkaslk-u50uj
+  Dueño: Toyamaqaaauilon (toyamaqaaauilon@gmail.com)
+  Creada: Tue Jan 06 2026 17:03:22 GMT-0500 (hora estándar de Colombia)
+--------------------------------------------------

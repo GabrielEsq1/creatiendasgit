@@ -85,8 +85,19 @@ export default function RegisterPage() {
                 trackEvent('signup', { method: 'email' });
                 router.push("/auth/login?registered=true");
             } else {
-                const data = await res.json();
-                setError(data.message || "Error al registrarse");
+                const contentType = res.headers.get("content-type");
+                let errorMessage = "Error al registrarse";
+
+                if (contentType && contentType.includes("application/json")) {
+                    const data = await res.json();
+                    errorMessage = data.message || errorMessage;
+                } else {
+                    const text = await res.text();
+                    console.error("Non-JSON error response:", text);
+                    errorMessage = "Error de conexión con el servidor (500).";
+                }
+
+                setError(errorMessage);
             }
         } catch (err) {
             setError("Ocurrió un error al registrarse.");

@@ -17,4 +17,9 @@ if (process.env.NODE_ENV !== 'production') {
 
 if (!process.env.CREATIENDAS_FINAL_DB) {
     console.error('❌ FATAL: CREATIENDAS_FINAL_DB is not set in environment variables!');
+} else {
+    // Log the connection string (masked) for debugging
+    const dbUrl = process.env.CREATIENDAS_FINAL_DB;
+    const maskedUrl = dbUrl.replace(/:([^:@]+)@/, ':****@');
+    console.log(`[Prisma] Initializing with DB URL: ${maskedUrl}`);
 }

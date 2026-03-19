@@ -1,0 +1,39 @@
+﻿=== TIENDAS RECIENTEMENTE CREADAS ===
+Total: 6
+
+- ID: cmk42a2tn0056rl5jlgpouyoz
+  Nombre: Tienda Prueba Final
+  Url: /mi-nueva-tienda-hkilb
+  Dueño: Testuser2 (testuser2@gmail.com)
+  Creada: Wed Jan 07 2026 08:35:50 GMT-0500 (hora estándar de Colombia)
+--------------------------------------------------
+- ID: cmk41v1gb001wrl5jfypa7g1g
+  Nombre: Tienda Prueba Final
+  Url: /mi-nueva-tienda-9g9ra
+  Dueño: Testuser2 (testuser2@gmail.com)
+  Creada: Wed Jan 07 2026 08:24:09 GMT-0500 (hora estándar de Colombia)
+--------------------------------------------------
+- ID: cmivx55kr0028bhm9s2d26kn0
+  Nombre: Las mejores empanadas caseras de la ciudadMi Tienda Bonita
+  Url: /las-mejores-empanadas-caseras-de-la-ciudadmi-tienda-bonita-mivx51oc
+  Dueño: María Rodríguez (maria.rodriguez.final@test.com)
+  Creada: Sun Dec 07 2025 11:10:11 GMT-0500 (hora estándar de Colombia)
+--------------------------------------------------
+- ID: cmivws8vk001ibhm93vl9qm5k
+  Nombre: Tienda Campaña TestMi Tienda Bonita
+  Url: /tienda-campana-testmi-tienda-bonita-mivwrxv2
+  Dueño: Test Campaign User (testcampaign@test.com)
+  Creada: Sun Dec 07 2025 11:00:09 GMT-0500 (hora estándar de Colombia)
+--------------------------------------------------
+- ID: cmis2he6h00027pkdi17o1mi1
+  Nombre: Tienda Demo Oficial
+  Url: /tienda-demo-oficial
+  Dueño: Demo User (demo@creatiendas.com)
+  Creada: Thu Dec 04 2025 18:28:35 GMT-0500 (hora estándar de Colombia)
+--------------------------------------------------
+- ID: cminfwdy80003xlpo5acx9rzy
+  Nombre: Test Store 1764611107660
+  Url: /store-1764611107660
+  Dueño: Test User 1764611107660 (testuser_1764611107660@example.com)
+  Creada: Mon Dec 01 2025 12:45:19 GMT-0500 (hora estándar de Colombia)
+--------------------------------------------------

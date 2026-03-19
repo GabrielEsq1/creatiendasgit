@@ -1,0 +1,33 @@
+﻿=== ADMIN USERS IN PRODUCTION ===
+Total admins: 5
+
+- ID: cmiaygwhk0000hk8qid1yrfjt
+  Email: gabrielesquivffia@gmail.com
+  Nombre: gabriel esquivia
+  Rol: ADMIN
+  Creado: Sat Nov 22 2025 19:04:09 GMT-0500 (hora estándar de Colombia)
+--------------------------------------------------
+- ID: cmibui29w0003xpyg1nsxqrce
+  Email: admin1@creatiendas.com
+  Nombre: Admin User
+  Rol: ADMIN
+  Creado: Sun Nov 23 2025 10:00:51 GMT-0500 (hora estándar de Colombia)
+--------------------------------------------------
+- ID: cmjapwsuu00009oc8ijzr9n6j
+  Email: localadmin@test.com
+  Nombre: Local Admin
+  Rol: ADMIN
+  Creado: Wed Dec 17 2025 19:44:17 GMT-0500 (hora estándar de Colombia)
+--------------------------------------------------
+- ID: 8acad926-402d-46be-8d7a-d1cb2bf38a77
+  Email: superadmin@creatiendas.com
+  Nombre: N/A
+  Rol: ADMIN
+  Creado: Wed Dec 17 2025 00:27:27 GMT-0500 (hora estándar de Colombia)
+--------------------------------------------------
+- ID: cmj1t1w4a0004c1ncjfvsk7o1
+  Email: admin2@creatiendas.com
+  Nombre: Admin Two
+  Rol: ADMIN
+  Creado: Thu Dec 11 2025 14:02:17 GMT-0500 (hora estándar de Colombia)
+--------------------------------------------------
