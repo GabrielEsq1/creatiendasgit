@@ -33,9 +33,10 @@ body {
 }
 
 /* WhatsApp Floating Button */
+/* Sits ABOVE the cart button (which is at bottom-6 / ~24px) */
 .whatsapp-float-container {
   position: fixed;
-  bottom: 20px;
+  bottom: 90px;
   right: 20px;
   z-index: 1000;
   display: flex;
@@ -91,7 +92,7 @@ body {
 
 @media (max-width: 768px) {
   .whatsapp-float-container {
-    bottom: 15px;
+    bottom: 80px;
     right: 15px;
   }
 
