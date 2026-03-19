@@ -7,12 +7,14 @@ export default function WhatsAppButton() {
     const { trackEvent } = useAnalytics();
     const pathname = usePathname();
 
-    // Hide on app/builder/admin paths
+    // Hide on builder/dashboard/admin AND on public store pages
+    // (visitors on store pages would think it's the store's WhatsApp — it's not, it's Creatiendas support)
     const isHiddenPath = pathname?.includes('/builder') ||
         pathname?.includes('/dashboard') ||
         pathname?.includes('/admin') ||
         pathname?.includes('/builder/success') ||
-        pathname?.includes('/builder/share');
+        pathname?.includes('/builder/share') ||
+        pathname?.includes('/stores/');
 
     if (isHiddenPath) return null;
 

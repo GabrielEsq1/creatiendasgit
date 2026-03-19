@@ -55,7 +55,7 @@ export default function TranslationPrompt() {
     };
 
     return (
-        <div className="fixed bottom-6 left-4 sm:left-6 z-50 animate-in slide-in-from-bottom-5 fade-in duration-500">
+        <div className="fixed bottom-24 left-4 sm:left-6 z-50 animate-in slide-in-from-bottom-5 fade-in duration-500">
             <div className="bg-slate-900 border border-white/10 text-white p-4 rounded-2xl shadow-2xl shadow-black/50 max-w-[300px] relative overflow-hidden group">
                 {/* Glow effect */}
                 <div className="absolute top-0 right-0 w-24 h-24 bg-green-500/10 rounded-full blur-2xl -mr-10 -mt-10 pointer-events-none"></div>
