@@ -38,7 +38,9 @@ export type AnalyticsEventType =
     | 'video_complete'
     | 'social_proof_view'
     | 'form_abandonment'
-    | 'store_publish_success';
+    | 'store_publish_success'
+    | 'add_to_cart'
+    | 'whatsapp_checkout_clicked';
 
 const PIXEL_ID = '1419499733092502'; // Píxel de Gabriel Esquivia
 

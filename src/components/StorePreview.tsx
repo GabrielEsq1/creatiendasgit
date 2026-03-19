@@ -4,6 +4,9 @@ import React, { useState } from 'react';
 import { StoreData, Product } from '@/lib/store-service';
 import StoreViralFooter from './StoreViralFooter';
 import { useAnalytics } from '@/components/Analytics';
+import FloatingCartButton from '@/components/store/FloatingCartButton';
+import CartDrawer from '@/components/store/CartDrawer';
+import { useCartStore } from '@/store/cartStore';
 
 interface StorePreviewProps {
     data: StoreData;
@@ -24,6 +27,7 @@ export default function StorePreview({ data, products, viewMode = 'desktop', rea
     const [activeView, setActiveView] = useState<'catalogo' | 'about' | 'careers'>('catalogo');
     const [lightboxImage, setLightboxImage] = useState<string | null>(null);
     const { trackEvent } = useAnalytics();
+    const { addItem } = useCartStore();
 
     const containerClass = `store-preview-container ${viewMode === 'mobile' ? 'device-mobile' : ''}`;
 
@@ -178,22 +182,53 @@ export default function StorePreview({ data, products, viewMode = 'desktop', rea
                                         <div className="product-desc">{product.description}</div>
                                         <div className="product-price" suppressHydrationWarning>${formatPrice(product.price)}</div>
 
-                                        <a
-                                            href={`https://wa.me/${cleanPhone(data.whatsapp)}?text=${encodeURIComponent(`Hola, quiero pedir: ${product.name}`)}`}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="btn-whatsapp"
-                                            style={{ backgroundColor: data.color }}
-                                            onClick={() => {
-                                                trackEvent('whatsapp_open', {
-                                                    product_name: product.name,
-                                                    store_name: data.name,
-                                                    price: product.price
-                                                });
-                                            }}
-                                        >
-                                            <span>📱</span> Comprar por WhatsApp
-                                        </a>
+                                        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '16px' }}>
+                                            <a
+                                                href={`https://wa.me/${cleanPhone(data.whatsapp)}?text=${encodeURIComponent(`Hola, quiero este producto:\n\n🛍️ *${product.name}*\nPrecio: $${formatPrice(product.price)}\n\nMi nombre es:\nDirección:\nMétodo de pago:`)}`}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="btn-whatsapp"
+                                                style={{ backgroundColor: data.color || '#25D366', color: '#fff', textAlign: 'center', padding: '10px', borderRadius: '8px', fontWeight: 'bold' }}
+                                                onClick={() => {
+                                                    trackEvent('whatsapp_open', {
+                                                        product_name: product.name,
+                                                        store_name: data.name,
+                                                        price: product.price
+                                                    });
+                                                }}
+                                            >
+                                                <span>📱</span> Comprar ahora
+                                            </a>
+                                            <button
+                                                onClick={() => {
+                                                    addItem({
+                                                        id: String(product.id),
+                                                        name: product.name,
+                                                        price: Number(product.price),
+                                                        image: product.image,
+                                                        quantity: 1,
+                                                        storeSlug: data.id ? String(data.id) : 'preview'
+                                                    });
+                                                    trackEvent('add_to_cart', {
+                                                        product_name: product.name,
+                                                        price: product.price
+                                                    });
+                                                    alert('Producto agregado al carrito 🛒');
+                                                }}
+                                                style={{ 
+                                                    backgroundColor: 'transparent', 
+                                                    color: data.color || '#333', 
+                                                    border: `1.5px solid ${data.color || '#ccc'}`,
+                                                    textAlign: 'center', 
+                                                    padding: '10px', 
+                                                    borderRadius: '8px', 
+                                                    fontWeight: 'bold',
+                                                    cursor: 'pointer'
+                                                }}
+                                            >
+                                                Agregar al carrito
+                                            </button>
+                                        </div>
 
                                     </div>
                                 </div>
@@ -371,6 +406,11 @@ export default function StorePreview({ data, products, viewMode = 'desktop', rea
                 {/* VIRAL FOOTER - Converts store visitors into Creatiendas users */}
                 <StoreViralFooter />
             </div>
+
+            {/* Cart System */ }
+            <FloatingCartButton storeSlug={data.id || 'preview'} styleColor={data.color} />
+            {isCartOpenState => <CartDrawer storeSlug={data.id || 'preview'} storeName={data.name || 'Tienda'} whatsapp={data.whatsapp || ''} styleColor={data.color} />}
+            <CartDrawer storeSlug={data.id || 'preview'} storeName={data.name || 'Tienda'} whatsapp={data.whatsapp || ''} styleColor={data.color} />
 
             {/* LIGHTBOX */}
             {lightboxImage && (
