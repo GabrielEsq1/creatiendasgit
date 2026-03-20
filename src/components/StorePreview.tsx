@@ -69,19 +69,30 @@ export default function StorePreview({ data, products, viewMode = 'desktop', rea
         )
         : [];
 
-    // Combined filter: category + search query
+    // Combined filter: category + intelligent multi-term search query
     const filteredProducts = Array.isArray(products)
         ? products
             .filter(p => !activeCategory || p.category === activeCategory)
             .filter(p => {
                 if (!searchQuery.trim()) return true;
-                const q = searchQuery.toLowerCase();
-                return (
-                    p.name?.toLowerCase().includes(q) ||
-                    p.description?.toLowerCase().includes(q)
-                );
+
+                // Split query into individual terms for "intelligent" multi-word search
+                const terms = searchQuery.toLowerCase().trim().split(/\s+/);
+                const searchStr = `${p.name || ''} ${p.description || ''} ${p.category || ''}`.toLowerCase();
+
+                // All terms must be present somewhere in the product string
+                return terms.every(term => searchStr.includes(term));
             })
         : [];
+
+    const handleCategoryClick = (cat: string | null) => {
+        setActiveCategory(cat);
+        trackEvent('click', {
+            action: 'category_filter_click',
+            category: cat || 'all',
+            store_name: data.name
+        });
+    };
 
     const cleanPhone = (phone: string | null | undefined) => (phone || '').replace(/\D/g, '');
 
@@ -176,7 +187,7 @@ export default function StorePreview({ data, products, viewMode = 'desktop', rea
                                 <button
                                     key="all"
                                     className={`category-pill ${!activeCategory ? 'category-pill--active' : ''}`}
-                                    onClick={() => setActiveCategory(null)}
+                                    onClick={() => handleCategoryClick(null)}
                                     style={!activeCategory ? { borderColor: data.color } : {}}
                                 >
                                     <div className="category-icon category-icon--all" style={!activeCategory ? { background: data.color } : {}}>
@@ -191,7 +202,7 @@ export default function StorePreview({ data, products, viewMode = 'desktop', rea
                                         <button
                                             key={cat}
                                             className={`category-pill ${isActive ? 'category-pill--active' : ''}`}
-                                            onClick={() => setActiveCategory(isActive ? null : cat)}
+                                            onClick={() => handleCategoryClick(isActive ? null : cat)}
                                             style={isActive ? { borderColor: data.color } : {}}
                                         >
                                             <div
@@ -217,19 +228,20 @@ export default function StorePreview({ data, products, viewMode = 'desktop', rea
                             </div>
                         )}
 
-                        {/* SEARCH BAR */}
-                        <div className="store-search-wrapper">
+                        {/* SEARCH BAR with Suggestions */}
+                        <div className="store-search-wrapper" style={{ position: 'relative', zIndex: 10 }}>
                             <div className="store-search-inner">
-                                <svg className="store-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                <svg className="store-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                                     <circle cx="11" cy="11" r="8" />
                                     <path d="m21 21-4.35-4.35" />
                                 </svg>
                                 <input
                                     type="text"
                                     className="store-search-input"
-                                    placeholder="Buscar productos..."
+                                    placeholder="¿Qué estás buscando hoy?"
                                     value={searchQuery}
                                     onChange={e => setSearchQuery(e.target.value)}
+                                    autoComplete="off"
                                 />
                                 {searchQuery && (
                                     <button
@@ -239,6 +251,26 @@ export default function StorePreview({ data, products, viewMode = 'desktop', rea
                                     >
                                         ×
                                     </button>
+                                )}
+
+                                {/* Suggestions Dropdown */}
+                                {searchQuery.trim().length > 1 && filteredProducts.length > 0 && searchQuery.length < 15 && (
+                                    <div className="search-suggestions">
+                                        {filteredProducts.slice(0, 5).map(p => (
+                                            <button
+                                                key={p.id}
+                                                className="suggestion-item"
+                                                onClick={() => {
+                                                    setSearchQuery(p.name);
+                                                    trackEvent('click', { action: 'autocomplete_select', item: p.name });
+                                                }}
+                                            >
+                                                <span className="suggestion-icon">🔍</span>
+                                                <span className="suggestion-text">{p.name}</span>
+                                                <span className="suggestion-cat">{p.category}</span>
+                                            </button>
+                                        ))}
+                                    </div>
                                 )}
                             </div>
                         </div>
