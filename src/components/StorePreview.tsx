@@ -101,6 +101,7 @@ export default function StorePreview({ data, products, viewMode = 'desktop', rea
 
     const handleCategoryClick = (catKey: string | null) => {
         setActiveCategory(catKey);
+        setSearchQuery(''); // Limpiar buscador al cambiar categoría
         trackEvent('click', {
             action: 'category_filter_click',
             category: catKey || 'all',
