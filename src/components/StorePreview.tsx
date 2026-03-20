@@ -114,7 +114,12 @@ export default function StorePreview({ data, products, viewMode = 'desktop', rea
         setSelectedProduct(filteredProducts[prevIndex]);
     }, [selectedProduct, filteredProducts]);
 
-    const containerClass = `store-preview-container ${viewMode === 'mobile' ? 'device-mobile' : ''}`;
+    // When readOnly=true (live public store), use 'store-live' class - completely unconstrained.
+    // When in builder preview, use 'store-preview-container' with its card/frame visuals.
+    const containerClass = readOnly
+        ? 'store-live'
+        : `store-preview-container ${viewMode === 'mobile' ? 'device-mobile' : ''}`;
+
 
     // Helper to handle line breaks in textareas
     const renderMultiline = (text: string) => {
@@ -179,6 +184,8 @@ export default function StorePreview({ data, products, viewMode = 'desktop', rea
                 ...(readOnly ? {} : {
                     maxWidth: viewMode === 'mobile' ? '430px' : 'none',
                     margin: '0 auto',
+                    boxShadow: '0 15px 40px rgba(0, 0, 0, 0.08)',
+                    borderRadius: '24px',
                 }),
                 width: '100%',
                 fontFamily: data.font || 'Inter, sans-serif',
