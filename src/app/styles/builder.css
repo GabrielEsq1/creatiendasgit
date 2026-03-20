@@ -1,4 +1,4 @@
-﻿:root {
+:root {
     --primary-color: #1877F2;
     --text-color: #333;
     --bg-color: #f4f4f9;
@@ -952,3 +952,161 @@ body {
         /* Hide device toggle on mobile to save space */
     }
 }
+
+/* =====================================================
+   INTERACTIVE CATEGORY PILLS
+   ===================================================== */
+
+.category-pill {
+    flex: 0 0 auto;
+    min-width: 80px;
+    text-align: center;
+    font-size: 0.86rem;
+    color: #333;
+    background: none;
+    border: 2px solid transparent;
+    border-radius: 16px;
+    padding: 0.5rem 0.3rem 0.4rem;
+    cursor: pointer;
+    transition: border-color 0.18s ease, transform 0.15s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+}
+
+.category-pill:hover {
+    transform: translateY(-2px);
+}
+
+.category-pill--active {
+    border-color: currentColor; /* overridden inline */
+    transform: translateY(-2px);
+}
+
+.category-icon--all {
+    background: #e0e0e0 !important;
+    color: #fff;
+    font-size: 1rem;
+    transition: background 0.18s;
+}
+
+/* =====================================================
+   PRODUCT SEARCH BAR
+   ===================================================== */
+
+.store-search-wrapper {
+    padding: 0.75rem 2.25rem 0;
+    background: #fafafa;
+}
+
+.store-search-inner {
+    position: relative;
+    max-width: 560px;
+    margin: 0 auto;
+}
+
+.store-search-icon {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 18px;
+    height: 18px;
+    color: #aaa;
+    pointer-events: none;
+}
+
+.store-search-input {
+    width: 100%;
+    padding: 0.7rem 2.8rem 0.7rem 2.6rem;
+    border: 1.5px solid #e0e0e0;
+    border-radius: 999px;
+    font-size: 0.95rem;
+    background: #fff;
+    color: #333;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    outline: none;
+}
+
+.store-search-input:focus {
+    border-color: #bbb;
+    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
+}
+
+.store-search-input::placeholder {
+    color: #bbb;
+}
+
+.store-search-clear {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: #eee;
+    border: none;
+    border-radius: 50%;
+    width: 22px;
+    height: 22px;
+    font-size: 1rem;
+    line-height: 1;
+    color: #888;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s;
+}
+
+.store-search-clear:hover {
+    background: #ddd;
+    color: #333;
+}
+
+/* =====================================================
+   EMPTY STATE
+   ===================================================== */
+
+.store-empty-state {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 3rem 1rem;
+    color: #999;
+}
+
+.store-empty-icon {
+    font-size: 2.5rem;
+    display: block;
+    margin-bottom: 0.75rem;
+}
+
+.store-empty-state p {
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: #555;
+    margin-bottom: 0.3rem;
+}
+
+.store-empty-state small {
+    font-size: 0.88rem;
+    color: #aaa;
+}
+
+/* =====================================================
+   PRODUCT COUNT BADGE (Builder panel)
+   ===================================================== */
+
+.product-count-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    padding: 0.2rem 0.6rem;
+    border-radius: 999px;
+    margin-left: 0.5rem;
+}
+
+.product-count-badge--ok   { background: #e8f5e9; color: #2e7d32; }
+.product-count-badge--warn { background: #fff8e1; color: #f57f17; }
+.product-count-badge--max  { background: #ffebee; color: #c62828; }

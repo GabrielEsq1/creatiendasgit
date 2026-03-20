@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import React, { useState } from 'react';
 import { StoreData, Product } from '@/lib/store-service';
@@ -26,6 +26,8 @@ const formatPrice = (value: string | number) => {
 export default function StorePreview({ data, products, viewMode = 'desktop', readOnly = false }: StorePreviewProps) {
     const [activeView, setActiveView] = useState<'catalogo' | 'about' | 'careers'>('catalogo');
     const [lightboxImage, setLightboxImage] = useState<string | null>(null);
+    const [activeCategory, setActiveCategory] = useState<string | null>(null);
+    const [searchQuery, setSearchQuery] = useState('');
     const { trackEvent } = useAnalytics();
     const { addItem } = useCartStore();
 
@@ -54,22 +56,44 @@ export default function StorePreview({ data, products, viewMode = 'desktop', rea
         );
     };
 
-    const uniqueCategories = Array.isArray(products)
-        ? Array.from(new Set(products.map(p => p.category).filter(Boolean)))
+    // Build unique categories with a representative image from the first product of that category
+    const categoryData = Array.isArray(products)
+        ? Array.from(
+            products.reduce((map, p) => {
+                if (p.category && !map.has(p.category)) {
+                    map.set(p.category, p.image || null);
+                }
+                return map;
+            }, new Map<string, string | null>()),
+            ([cat, img]) => ({ cat, img })
+        )
+        : [];
+
+    // Combined filter: category + search query
+    const filteredProducts = Array.isArray(products)
+        ? products
+            .filter(p => !activeCategory || p.category === activeCategory)
+            .filter(p => {
+                if (!searchQuery.trim()) return true;
+                const q = searchQuery.toLowerCase();
+                return (
+                    p.name?.toLowerCase().includes(q) ||
+                    p.description?.toLowerCase().includes(q)
+                );
+            })
         : [];
 
     const cleanPhone = (phone: string | null | undefined) => (phone || '').replace(/\D/g, '');
 
     // OPTIMIZATION: Only load the font that is actually used
     const getGoogleFontUrl = (fontString: string | undefined) => {
-        if (!fontString) return null; // Default font
+        if (!fontString) return null;
         const fontName = fontString.split(',')[0].replace(/['"]/g, '').trim();
         const supported = ['Inter', 'Lato', 'Merriweather', 'Montserrat', 'Nunito', 'Open Sans', 'Oswald', 'Playfair Display', 'Poppins', 'Raleway', 'Roboto'];
-
         if (supported.includes(fontName)) {
             return `https://fonts.googleapis.com/css2?family=${fontName.replace(/ /g, '+')}:wght@300;400;500;600;700&display=swap`;
         }
-        return null; // Fallback or system font
+        return null;
     };
 
     const activeFontUrl = getGoogleFontUrl(data.font);
@@ -81,8 +105,6 @@ export default function StorePreview({ data, products, viewMode = 'desktop', rea
             )}
 
             <div className={containerClass} style={{
-                // CRITICAL: Full width for professional Shopify-like appearance
-                // Only constrain mobile preview in builder
                 maxWidth: viewMode === 'mobile' ? '430px' : 'none',
                 width: '100%',
                 fontFamily: data.font || 'Inter, sans-serif',
@@ -143,99 +165,169 @@ export default function StorePreview({ data, products, viewMode = 'desktop', rea
                     </div>
                 </header>
 
-                {/* VIEWS */}
+                {/* CATALOG VIEW */}
                 {activeView === 'catalogo' && (
                     <div className="view-section" style={{ display: 'block' }}>
-                        {/* CATEGORIES */}
-                        {uniqueCategories.length > 0 && (
+
+                        {/* CATEGORY PILLS — interactive with product image */}
+                        {categoryData.length > 0 && (
                             <div className="store-categories">
-                                {uniqueCategories.map(cat => (
-                                    <div key={cat} className="category-pill">
-                                        <div className="category-icon">
-                                            <span>{cat[0].toUpperCase()}</span>
-                                        </div>
-                                        <div className="category-label">{cat}</div>
+                                {/* "All" pill */}
+                                <button
+                                    key="all"
+                                    className={`category-pill ${!activeCategory ? 'category-pill--active' : ''}`}
+                                    onClick={() => setActiveCategory(null)}
+                                    style={!activeCategory ? { borderColor: data.color } : {}}
+                                >
+                                    <div className="category-icon category-icon--all" style={!activeCategory ? { background: data.color } : {}}>
+                                        <span>✦</span>
                                     </div>
-                                ))}
+                                    <div className="category-label">Todos</div>
+                                </button>
+
+                                {categoryData.map(({ cat, img }) => {
+                                    const isActive = activeCategory === cat;
+                                    return (
+                                        <button
+                                            key={cat}
+                                            className={`category-pill ${isActive ? 'category-pill--active' : ''}`}
+                                            onClick={() => setActiveCategory(isActive ? null : cat)}
+                                            style={isActive ? { borderColor: data.color } : {}}
+                                        >
+                                            <div
+                                                className="category-icon"
+                                                style={!img ? { background: data.color } : {}}
+                                            >
+                                                {img ? (
+                                                    <img
+                                                        src={img}
+                                                        alt={cat}
+                                                        style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%' }}
+                                                    />
+                                                ) : (
+                                                    <span style={{ color: '#fff' }}>{cat[0].toUpperCase()}</span>
+                                                )}
+                                            </div>
+                                            <div className="category-label" style={isActive ? { color: data.color, fontWeight: 700 } : {}}>
+                                                {cat}
+                                            </div>
+                                        </button>
+                                    );
+                                })}
                             </div>
                         )}
 
+                        {/* SEARCH BAR */}
+                        <div className="store-search-wrapper">
+                            <div className="store-search-inner">
+                                <svg className="store-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                    <circle cx="11" cy="11" r="8" />
+                                    <path d="m21 21-4.35-4.35" />
+                                </svg>
+                                <input
+                                    type="text"
+                                    className="store-search-input"
+                                    placeholder="Buscar productos..."
+                                    value={searchQuery}
+                                    onChange={e => setSearchQuery(e.target.value)}
+                                />
+                                {searchQuery && (
+                                    <button
+                                        className="store-search-clear"
+                                        onClick={() => setSearchQuery('')}
+                                        aria-label="Limpiar búsqueda"
+                                    >
+                                        ×
+                                    </button>
+                                )}
+                            </div>
+                        </div>
+
+                        {/* PRODUCTS GRID */}
                         <div className="store-products">
-                            {Array.isArray(products) && products.map((product, index) => (
-                                <div key={product.id} className="product-card">
-                                    <div className="product-image" style={{ position: 'relative', overflow: 'hidden' }}>
-                                        {product.image ? (
-                                            <img
-                                                src={product.image}
-                                                alt={product.name}
-                                                style={{ width: '100%', height: '100%', objectFit: 'contain' }}
-                                                loading={index < 4 ? "eager" : "lazy"}
-                                                decoding="async"
-                                            />
-                                        ) : (
-                                            <div style={{ color: '#ccc' }}>Sin Imagen</div>
-                                        )}
-                                    </div>
-                                    <div className="product-details">
-                                        <div className="product-category">{product.category}</div>
-                                        <div className="product-name">{product.name}</div>
-                                        <div className="product-desc">{product.description}</div>
-                                        <div className="product-price" suppressHydrationWarning>${formatPrice(product.price)}</div>
-
-                                        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '16px' }}>
-                                            <a
-                                                href={`https://wa.me/${cleanPhone(data.whatsapp)}?text=${encodeURIComponent(`Hola, quiero este producto:\n\n🛍️ *${product.name}*\nPrecio: $${formatPrice(product.price)}\n\nMi nombre es:\nDirección:\nMétodo de pago:`)}`}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                className="btn-whatsapp"
-                                                style={{ backgroundColor: data.color || '#25D366', color: '#fff', textAlign: 'center', padding: '10px', borderRadius: '8px', fontWeight: 'bold' }}
-                                                onClick={() => {
-                                                    trackEvent('whatsapp_open', {
-                                                        product_name: product.name,
-                                                        store_name: data.name,
-                                                        price: product.price
-                                                    });
-                                                }}
-                                            >
-                                                <span>📱</span> Comprar ahora
-                                            </a>
-                                            <button
-                                                onClick={() => {
-                                                    addItem({
-                                                        id: String(product.id),
-                                                        name: product.name,
-                                                        price: Number(product.price),
-                                                        image: product.image,
-                                                        quantity: 1,
-                                                        storeSlug: data.id ? String(data.id) : 'preview'
-                                                    });
-                                                    trackEvent('add_to_cart', {
-                                                        product_name: product.name,
-                                                        price: product.price
-                                                    });
-                                                    alert('Producto agregado al carrito 🛒');
-                                                }}
-                                                style={{ 
-                                                    backgroundColor: 'transparent', 
-                                                    color: data.color || '#333', 
-                                                    border: `1.5px solid ${data.color || '#ccc'}`,
-                                                    textAlign: 'center', 
-                                                    padding: '10px', 
-                                                    borderRadius: '8px', 
-                                                    fontWeight: 'bold',
-                                                    cursor: 'pointer'
-                                                }}
-                                            >
-                                                Agregar al carrito
-                                            </button>
-                                        </div>
-
-                                    </div>
+                            {filteredProducts.length === 0 ? (
+                                <div className="store-empty-state">
+                                    <span className="store-empty-icon">🔍</span>
+                                    <p>No encontramos productos</p>
+                                    <small>Intenta con otro nombre o categoría</small>
                                 </div>
-                            ))}
+                            ) : (
+                                filteredProducts.map((product, index) => (
+                                    <div key={product.id} className="product-card">
+                                        <div className="product-image" style={{ position: 'relative', overflow: 'hidden' }}>
+                                            {product.image ? (
+                                                <img
+                                                    src={product.image}
+                                                    alt={product.name}
+                                                    style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+                                                    loading={index < 4 ? "eager" : "lazy"}
+                                                    decoding="async"
+                                                />
+                                            ) : (
+                                                <div style={{ color: '#ccc' }}>Sin Imagen</div>
+                                            )}
+                                        </div>
+                                        <div className="product-details">
+                                            <div className="product-category">{product.category}</div>
+                                            <div className="product-name">{product.name}</div>
+                                            <div className="product-desc">{product.description}</div>
+                                            <div className="product-price" suppressHydrationWarning>${formatPrice(product.price)}</div>
+
+                                            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '16px' }}>
+                                                <a
+                                                    href={`https://wa.me/${cleanPhone(data.whatsapp)}?text=${encodeURIComponent(`Hola, quiero este producto:\n\n🛍️ *${product.name}*\nPrecio: $${formatPrice(product.price)}\n\nMi nombre es:\nDirección:\nMétodo de pago:`)}`}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="btn-whatsapp"
+                                                    style={{ backgroundColor: data.color || '#25D366', color: '#fff', textAlign: 'center', padding: '10px', borderRadius: '8px', fontWeight: 'bold' }}
+                                                    onClick={() => {
+                                                        trackEvent('whatsapp_open', {
+                                                            product_name: product.name,
+                                                            store_name: data.name,
+                                                            price: product.price
+                                                        });
+                                                    }}
+                                                >
+                                                    <span>📱</span> Comprar ahora
+                                                </a>
+                                                <button
+                                                    onClick={() => {
+                                                        addItem({
+                                                            id: String(product.id),
+                                                            name: product.name,
+                                                            price: Number(product.price),
+                                                            image: product.image,
+                                                            quantity: 1,
+                                                            storeSlug: data.id ? String(data.id) : 'preview'
+                                                        });
+                                                        trackEvent('add_to_cart', {
+                                                            product_name: product.name,
+                                                            price: product.price
+                                                        });
+                                                        alert('Producto agregado al carrito 🛒');
+                                                    }}
+                                                    style={{
+                                                        backgroundColor: 'transparent',
+                                                        color: data.color || '#333',
+                                                        border: `1.5px solid ${data.color || '#ccc'}`,
+                                                        textAlign: 'center',
+                                                        padding: '10px',
+                                                        borderRadius: '8px',
+                                                        fontWeight: 'bold',
+                                                        cursor: 'pointer'
+                                                    }}
+                                                >
+                                                    Agregar al carrito
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))
+                            )}
                         </div>
                     </div>
                 )}
+
 
                 {activeView === 'about' && (
                     <section className="about-section view-section" style={{ display: 'block' }}>

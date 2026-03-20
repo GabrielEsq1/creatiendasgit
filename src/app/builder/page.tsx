@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import React, { useState, ChangeEvent, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
@@ -232,6 +232,8 @@ function BuilderContent() {
         }
     };
 
+    const PRODUCT_LIMIT = 1000;
+
     const handleSaveProduct = () => {
         if (!prodForm.name || !prodForm.price) return alert('Nombre y precio requeridos');
 
@@ -244,7 +246,10 @@ function BuilderContent() {
             ));
             setEditingProductId(null);
         } else {
-            // Modo creación
+            // Límite máximo
+            if (products.length >= PRODUCT_LIMIT) {
+                return alert(`Has alcanzado el límite de ${PRODUCT_LIMIT} productos por tienda.`);
+            }
             const newProduct: Product = {
                 id: Date.now(),
                 name: prodForm.name,
@@ -499,7 +504,16 @@ function BuilderContent() {
 
                 {/* 5. Productos */}
                 <section className="form-section">
-                    <h3>5. Agregar / Editar Productos</h3>
+                    <h3>
+                        5. Agregar / Editar Productos
+                        <span className={`product-count-badge ${
+                            products.length >= 1000 ? 'product-count-badge--max' :
+                            products.length >= 800  ? 'product-count-badge--warn' :
+                                                     'product-count-badge--ok'
+                        }`}>
+                            {products.length} / 1000
+                        </span>
+                    </h3>
                     <div className="form-group"><label>Nombre del Producto *</label><input value={prodForm.name} onChange={e => setProdForm({ ...prodForm, name: e.target.value })} /></div>
                     <div className="form-group"><label>Descripción *</label><textarea value={prodForm.desc} onChange={e => setProdForm({ ...prodForm, desc: e.target.value })} /></div>
                     <div className="form-group"><label>Categoría *</label><input value={prodForm.category} onChange={e => setProdForm({ ...prodForm, category: e.target.value })} /></div>
@@ -524,7 +538,12 @@ function BuilderContent() {
                         />
                     </div>
                     <div style={{ display: 'flex', gap: '0.5rem' }}>
-                        <button className="btn btn-secondary" onClick={handleSaveProduct}>
+                        <button
+                            className="btn btn-secondary"
+                            onClick={handleSaveProduct}
+                            disabled={!editingProductId && products.length >= 1000}
+                            title={!editingProductId && products.length >= 1000 ? 'Límite de 1000 productos alcanzado' : undefined}
+                        >
                             {editingProductId ? '💾 Actualizar Producto' : '➕ Agregar Producto'}
                         </button>
                         {editingProductId && (

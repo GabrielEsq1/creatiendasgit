@@ -117,6 +117,15 @@ export async function PUT(
             );
         }
 
+        // ── Limit: max 1000 products per store ──────────────────────────────
+        if (Array.isArray(products) && products.length > 1000) {
+            return NextResponse.json(
+                { success: false, message: `Tu tienda no puede tener más de 1000 productos. Tienes ${products.length}.` },
+                { status: 400 }
+            );
+        }
+        // ────────────────────────────────────────────────────────────────────
+
         const updatedStore = await prisma.store.update({
             where: { id: storeRecord.id },
             data: {
