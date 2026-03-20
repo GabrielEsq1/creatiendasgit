@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { StoreData, Product } from '@/lib/store-service';
 import StoreViralFooter from './StoreViralFooter';
 import { useAnalytics } from '@/components/Analytics';
@@ -32,6 +32,44 @@ export default function StorePreview({ data, products, viewMode = 'desktop', rea
     const productsPerPage = 24;
     const { trackEvent } = useAnalytics();
     const { addItem } = useCartStore();
+    const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+
+    // Sync selected product with URL for sharing (only on public pages)
+    useEffect(() => {
+        if (typeof window === 'undefined') return;
+        const params = new URLSearchParams(window.location.search);
+        const productId = params.get('p');
+        
+        if (productId && products.length > 0) {
+            const found = products.find(p => String(p.id) === productId);
+            if (found) setSelectedProduct(found);
+        }
+    }, [products]);
+
+    useEffect(() => {
+        if (typeof window === 'undefined') return;
+        const url = new URL(window.location.href);
+        if (selectedProduct) {
+            url.searchParams.set('p', String(selectedProduct.id));
+        } else {
+            url.searchParams.delete('p');
+        }
+        window.history.replaceState({}, '', url.toString());
+    }, [selectedProduct]);
+
+    const handleNextProduct = useCallback(() => {
+        if (!selectedProduct) return;
+        const currentIndex = filteredProducts.findIndex(p => p.id === selectedProduct.id);
+        const nextIndex = (currentIndex + 1) % filteredProducts.length;
+        setSelectedProduct(filteredProducts[nextIndex]);
+    }, [selectedProduct, filteredProducts]);
+
+    const handlePrevProduct = useCallback(() => {
+        if (!selectedProduct) return;
+        const currentIndex = filteredProducts.findIndex(p => p.id === selectedProduct.id);
+        const prevIndex = (currentIndex - 1 + filteredProducts.length) % filteredProducts.length;
+        setSelectedProduct(filteredProducts[prevIndex]);
+    }, [selectedProduct, filteredProducts]);
 
     const containerClass = `store-preview-container ${viewMode === 'mobile' ? 'device-mobile' : ''}`;
 
@@ -337,7 +375,11 @@ export default function StorePreview({ data, products, viewMode = 'desktop', rea
                                         .slice((currentPage - 1) * productsPerPage, currentPage * productsPerPage)
                                         .map((product, index) => (
                                             <div key={product.id} className="product-card">
-                                                <div className="product-image" style={{ position: 'relative', overflow: 'hidden' }}>
+                                                <div
+                                                    className="product-image"
+                                                    style={{ position: 'relative', overflow: 'hidden', cursor: 'pointer' }}
+                                                    onClick={() => setSelectedProduct(product)}
+                                                >
                                                     {product.image ? (
                                                         <img
                                                             src={product.image}
@@ -352,7 +394,13 @@ export default function StorePreview({ data, products, viewMode = 'desktop', rea
                                                 </div>
                                                 <div className="product-details">
                                                     <div className="product-category">{product.category}</div>
-                                                    <div className="product-name">{product.name}</div>
+                                                    <div
+                                                        className="product-name"
+                                                        style={{ cursor: 'pointer' }}
+                                                        onClick={() => setSelectedProduct(product)}
+                                                    >
+                                                        {product.name}
+                                                    </div>
                                                     <div className="product-desc">{product.description}</div>
                                                     <div className="product-price" suppressHydrationWarning>${formatPrice(product.price)}</div>
 
@@ -673,6 +721,67 @@ export default function StorePreview({ data, products, viewMode = 'desktop', rea
             <FloatingCartButton storeSlug={data.id || 'preview'} styleColor={data.color} />
             {isCartOpenState => <CartDrawer storeSlug={data.id || 'preview'} storeName={data.name || 'Tienda'} whatsapp={data.whatsapp || ''} styleColor={data.color} />}
             <CartDrawer storeSlug={data.id || 'preview'} storeName={data.name || 'Tienda'} whatsapp={data.whatsapp || ''} styleColor={data.color} />
+
+            {/* PRODUCT DETAIL MODAL */}
+            {selectedProduct && (
+                <div className="product-detail-overlay" onClick={() => setSelectedProduct(null)}>
+                    <div className="product-detail-modal" onClick={(e) => e.stopPropagation()}>
+                        <button className="product-detail-close" onClick={() => setSelectedProduct(null)}>&times;</button>
+                        
+                        <div className="product-detail-image-side">
+                            {selectedProduct.image ? (
+                                <img src={selectedProduct.image} alt={selectedProduct.name} />
+                            ) : (
+                                <div style={{ color: '#ccc' }}>Sin Imagen</div>
+                            )}
+                        </div>
+                        
+                        <div className="product-detail-info-side">
+                            <span className="detail-category" style={{ color: data.color }}>{selectedProduct.category}</span>
+                            <h2 className="detail-name">{selectedProduct.name}</h2>
+                            <div className="detail-price" style={{ color: data.color }}>${formatPrice(selectedProduct.price)}</div>
+                            <p className="detail-desc">{selectedProduct.description}</p>
+                            
+                            <div className="detail-actions">
+                                <button 
+                                    className="btn-detail-cart" 
+                                    style={{ backgroundColor: data.color }}
+                                    onClick={() => {
+                                        addItem({
+                                            id: String(selectedProduct.id),
+                                            name: selectedProduct.name,
+                                            price: Number(selectedProduct.price),
+                                            image: selectedProduct.image,
+                                            quantity: 1,
+                                            storeSlug: data.id ? String(data.id) : 'preview'
+                                        });
+                                        trackEvent('add_to_cart_modal', {
+                                            product_name: selectedProduct.name,
+                                            price: selectedProduct.price
+                                        });
+                                        alert('¡Agregado al carrito! 🛒');
+                                    }}
+                                >
+                                    Agregar al carrito
+                                </button>
+                                <a
+                                    href={`https://wa.me/${cleanPhone(data.whatsapp)}?text=${encodeURIComponent(`Hola, quiero más información de este producto:\n\n🛍️ *${selectedProduct.name}*\nPrecio: $${formatPrice(selectedProduct.price)}\n\nLink: ${typeof window !== 'undefined' ? window.location.href : ''}`)}`}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="btn-detail-wa"
+                                >
+                                    <span>📱</span> Consultar por WhatsApp
+                                </a>
+                            </div>
+
+                            <div className="detail-nav">
+                                <button className="detail-nav-btn" onClick={handlePrevProduct}>&larr;</button>
+                                <button className="detail-nav-btn" onClick={handleNextProduct}>&rarr;</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
 
             {/* LIGHTBOX */}
             {lightboxImage && (
