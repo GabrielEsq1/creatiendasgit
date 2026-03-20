@@ -744,9 +744,31 @@ export default function StorePreview({ data, products, viewMode = 'desktop', rea
                             <p className="detail-desc">{selectedProduct.description}</p>
                             
                             <div className="detail-actions">
+                                <a
+                                    href={`https://wa.me/${cleanPhone(data.whatsapp)}?text=${encodeURIComponent(`Hola, quiero este producto:\n\n🛍️ *${selectedProduct.name}*\nPrecio: $${formatPrice(selectedProduct.price)}\n\nMi nombre es:\nDirección:\nMétodo de pago:`)}`}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    style={{ 
+                                        backgroundColor: data.color || '#25D366', 
+                                        color: '#fff', 
+                                        textAlign: 'center', 
+                                        padding: '16px', 
+                                        borderRadius: '12px', 
+                                        fontWeight: 'bold',
+                                        textDecoration: 'none',
+                                        display: 'block'
+                                    }}
+                                    onClick={() => {
+                                        trackEvent('whatsapp_open', {
+                                            product_name: selectedProduct.name,
+                                            store_name: data.name,
+                                            price: selectedProduct.price
+                                        });
+                                    }}
+                                >
+                                    <span>📱</span> Comprar ahora
+                                </a>
                                 <button 
-                                    className="btn-detail-cart" 
-                                    style={{ backgroundColor: data.color }}
                                     onClick={() => {
                                         addItem({
                                             id: String(selectedProduct.id),
@@ -763,17 +785,20 @@ export default function StorePreview({ data, products, viewMode = 'desktop', rea
                                         });
                                         alert('¡Agregado al carrito! 🛒');
                                     }}
+                                    style={{
+                                        backgroundColor: 'transparent',
+                                        color: data.color || '#333',
+                                        border: `2px solid ${data.color || '#ccc'}`,
+                                        textAlign: 'center',
+                                        padding: '16px',
+                                        borderRadius: '12px',
+                                        fontWeight: 'bold',
+                                        cursor: 'pointer',
+                                        width: '100%'
+                                    }}
                                 >
                                     Agregar al carrito
                                 </button>
-                                <a
-                                    href={`https://wa.me/${cleanPhone(data.whatsapp)}?text=${encodeURIComponent(`Hola, quiero más información de este producto:\n\n🛍️ *${selectedProduct.name}*\nPrecio: $${formatPrice(selectedProduct.price)}\n\nLink: ${typeof window !== 'undefined' ? window.location.href : ''}`)}`}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="btn-detail-wa"
-                                >
-                                    <span>📱</span> Consultar por WhatsApp
-                                </a>
                             </div>
 
                             <div className="detail-nav">
