@@ -57,45 +57,6 @@ export default function StorePreview({ data, products, viewMode = 'desktop', rea
         window.history.replaceState({}, '', url.toString());
     }, [selectedProduct]);
 
-    const handleNextProduct = useCallback(() => {
-        if (!selectedProduct) return;
-        const currentIndex = filteredProducts.findIndex(p => p.id === selectedProduct.id);
-        const nextIndex = (currentIndex + 1) % filteredProducts.length;
-        setSelectedProduct(filteredProducts[nextIndex]);
-    }, [selectedProduct, filteredProducts]);
-
-    const handlePrevProduct = useCallback(() => {
-        if (!selectedProduct) return;
-        const currentIndex = filteredProducts.findIndex(p => p.id === selectedProduct.id);
-        const prevIndex = (currentIndex - 1 + filteredProducts.length) % filteredProducts.length;
-        setSelectedProduct(filteredProducts[prevIndex]);
-    }, [selectedProduct, filteredProducts]);
-
-    const containerClass = `store-preview-container ${viewMode === 'mobile' ? 'device-mobile' : ''}`;
-
-    // Helper to handle line breaks in textareas
-    const renderMultiline = (text: string) => {
-        if (!text) return null;
-        return text.split('\n').map((line, i) => (
-            <React.Fragment key={i}>
-                {line}
-                <br />
-            </React.Fragment>
-        ));
-    };
-
-    // Helper for lists
-    const renderList = (items: string[], iconClass: string) => {
-        if (!items || items.length === 0) return null;
-        return (
-            <ul className={iconClass === 'check' ? 'careers-benefits' : 'about-values-list'}>
-                {items.map((item, i) => (
-                    <li key={i}>{item}</li>
-                ))}
-            </ul>
-        );
-    };
-
     // Build unique categories (CASE-INSENSITIVE grouping)
     // We group by normalized name but keep the first version we found for display
     const categoryData = Array.isArray(products)
@@ -138,6 +99,46 @@ export default function StorePreview({ data, products, viewMode = 'desktop', rea
                 return terms.every(term => searchStr.includes(term));
             })
         : [];
+
+    const handleNextProduct = useCallback(() => {
+        if (!selectedProduct) return;
+        const currentIndex = filteredProducts.findIndex(p => p.id === selectedProduct.id);
+        const nextIndex = (currentIndex + 1) % filteredProducts.length;
+        setSelectedProduct(filteredProducts[nextIndex]);
+    }, [selectedProduct, filteredProducts]);
+
+    const handlePrevProduct = useCallback(() => {
+        if (!selectedProduct) return;
+        const currentIndex = filteredProducts.findIndex(p => p.id === selectedProduct.id);
+        const prevIndex = (currentIndex - 1 + filteredProducts.length) % filteredProducts.length;
+        setSelectedProduct(filteredProducts[prevIndex]);
+    }, [selectedProduct, filteredProducts]);
+
+    const containerClass = `store-preview-container ${viewMode === 'mobile' ? 'device-mobile' : ''}`;
+
+    // Helper to handle line breaks in textareas
+    const renderMultiline = (text: string) => {
+        if (!text) return null;
+        return text.split('\n').map((line, i) => (
+            <React.Fragment key={i}>
+                {line}
+                <br />
+            </React.Fragment>
+        ));
+    };
+
+    // Helper for lists
+    const renderList = (items: string[], iconClass: string) => {
+        if (!items || items.length === 0) return null;
+        return (
+            <ul className={iconClass === 'check' ? 'careers-benefits' : 'about-values-list'}>
+                {items.map((item, i) => (
+                    <li key={i}>{item}</li>
+                ))}
+            </ul>
+        );
+    };
+
 
     const handleCategoryClick = (catKey: string | null) => {
         setActiveCategory(catKey);
@@ -755,9 +756,10 @@ export default function StorePreview({ data, products, viewMode = 'desktop', rea
                                             quantity: 1,
                                             storeSlug: data.id ? String(data.id) : 'preview'
                                         });
-                                        trackEvent('add_to_cart_modal', {
+                                        trackEvent('add_to_cart', {
                                             product_name: selectedProduct.name,
-                                            price: selectedProduct.price
+                                            price: selectedProduct.price,
+                                            source: 'modal'
                                         });
                                         alert('¡Agregado al carrito! 🛒');
                                     }}
