@@ -57,38 +57,44 @@ export default function StorePreview({ data, products, viewMode = 'desktop', rea
     };
 
     // Build unique categories (CASE-INSENSITIVE grouping)
-    // We group by lowercased name but keep the first version we found for display
+    // We group by normalized name but keep the first version we found for display
     const categoryData = Array.isArray(products)
         ? Array.from(
             products.reduce((map, p) => {
                 const category = p.category?.trim() || '';
                 if (!category) return map;
                 
-                const key = category.toLowerCase();
+                // Aggressive normalization for the key
+                const key = category.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
                 if (!map.has(key)) {
                     map.set(key, { 
                         display: category, 
-                        image: p.image || null 
+                        image: p.image || null,
+                        originalKey: key
                     });
                 }
                 return map;
-            }, new Map<string, { display: string; image: string | null }>()),
-            ([key, data]) => ({ key, ...data })
+            }, new Map<string, { display: string; image: string | null; originalKey: string }>()),
+            ([key, data]) => ({ ...data })
         )
         : [];
 
     // Combined filter: category + intelligent multi-term search query
     const filteredProducts = Array.isArray(products)
         ? products
-            .filter(p => !activeCategory || p.category?.toLowerCase() === activeCategory)
             .filter(p => {
-                if (!searchQuery.trim()) return true;
+                if (!activeCategory) return true;
+                const pCat = p.category?.trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+                return pCat === activeCategory;
+            })
+            .filter(p => {
+                const query = searchQuery.trim().toLowerCase();
+                if (!query) return true;
 
-                // Split query into individual terms for "intelligent" multi-word search
-                const terms = searchQuery.toLowerCase().trim().split(/\s+/);
+                // Split query into individual terms
+                const terms = query.split(/\s+/);
                 const searchStr = `${p.name || ''} ${p.description || ''} ${p.category || ''}`.toLowerCase();
 
-                // All terms must be present somewhere in the product string
                 return terms.every(term => searchStr.includes(term));
             })
         : [];
@@ -100,6 +106,9 @@ export default function StorePreview({ data, products, viewMode = 'desktop', rea
             category: catKey || 'all',
             store_name: data.name
         });
+        if (process.env.NODE_ENV === 'development') {
+            console.log('Filtering by category key:', catKey);
+        }
     };
 
     const cleanPhone = (phone: string | null | undefined) => (phone || '').replace(/\D/g, '');
@@ -204,13 +213,13 @@ export default function StorePreview({ data, products, viewMode = 'desktop', rea
                                     <div className="category-label">Todos</div>
                                 </button>
 
-                                {categoryData.map(({ key, display, image }) => {
-                                    const isActive = activeCategory === key;
+                                {categoryData.map(({ originalKey, display, image }) => {
+                                    const isActive = activeCategory === originalKey;
                                     return (
                                         <button
-                                            key={key}
+                                            key={originalKey}
                                             className={`category-pill ${isActive ? 'category-pill--active' : ''}`}
-                                            onClick={() => handleCategoryClick(isActive ? null : key)}
+                                            onClick={() => handleCategoryClick(isActive ? null : originalKey)}
                                             style={isActive ? { borderColor: data.color } : {}}
                                         >
                                             <div
@@ -262,15 +271,15 @@ export default function StorePreview({ data, products, viewMode = 'desktop', rea
                                 )}
 
                                 {/* Suggestions Dropdown (Store-wide search) */}
-                                {searchQuery.trim().length > 1 && searchQuery.length < 40 && (
+                                {searchQuery.trim().length > 1 && searchQuery.length < 50 && (
                                     <div className="search-suggestions">
                                         {products
                                             .filter(p => {
                                                 const q = searchQuery.toLowerCase().trim();
-                                                const nameMatched = p.name?.toLowerCase().includes(q);
-                                                const descMatched = p.description?.toLowerCase().includes(q);
-                                                const catMatched = p.category?.toLowerCase().includes(q);
-                                                return nameMatched || descMatched || catMatched;
+                                                const name = (p.name || '').toLowerCase();
+                                                const desc = (p.description || '').toLowerCase();
+                                                const cat = (p.category || '').toLowerCase();
+                                                return name.includes(q) || desc.includes(q) || cat.includes(q);
                                             })
                                             .slice(0, 6)
                                             .map(p => (
@@ -278,28 +287,32 @@ export default function StorePreview({ data, products, viewMode = 'desktop', rea
                                                     key={p.id}
                                                     className="suggestion-item"
                                                     onClick={() => {
-                                                        setSearchQuery(p.name);
-                                                        // Auto-clear category if we selected a suggested product to ensure it shows up
-                                                        if (activeCategory && p.category !== activeCategory) {
+                                                        setSearchQuery(p.name || '');
+                                                        // Normalize for comparison
+                                                        const pCatKey = (p.category || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+                                                        if (activeCategory && pCatKey !== activeCategory) {
                                                             setActiveCategory(null);
                                                         }
                                                         trackEvent('click', { action: 'autocomplete_select', item: p.name });
                                                     }}
                                                 >
                                                     <div className="suggestion-img-wrap">
-                                                        {p.image ? <img src={p.image} alt="" /> : <span>🔍</span>}
+                                                        {p.image ? (
+                                                            <img src={p.image} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                                        ) : (
+                                                            <div className="suggestion-img-placeholder">🔍</div>
+                                                        )}
                                                     </div>
                                                     <div className="suggestion-content">
-                                                        <span className="suggestion-text">{p.name}</span>
-                                                        <span className="suggestion-price">{data.currency || '$'}{formatPrice(p.price)}</span>
+                                                        <span className="suggestion-text">{p.name || 'Producto'}</span>
+                                                        <span className="suggestion-price">${formatPrice(p.price)}</span>
                                                     </div>
-                                                    <span className="suggestion-cat-tag">{p.category}</span>
+                                                    <span className="suggestion-cat-tag">{p.category || 'Varios'}</span>
                                                 </button>
                                             ))
                                         }
-                                        {/* "Ver todos" option if results found but hidden from list */}
                                         <div className="suggestion-footer">
-                                            Mostrando resultados para "{searchQuery}"
+                                            Resultados para "{searchQuery}"
                                         </div>
                                     </div>
                                 )}
