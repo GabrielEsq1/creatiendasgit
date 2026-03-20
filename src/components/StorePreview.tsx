@@ -28,6 +28,8 @@ export default function StorePreview({ data, products, viewMode = 'desktop', rea
     const [lightboxImage, setLightboxImage] = useState<string | null>(null);
     const [activeCategory, setActiveCategory] = useState<string | null>(null);
     const [searchQuery, setSearchQuery] = useState('');
+    const [currentPage, setCurrentPage] = useState(1);
+    const productsPerPage = 24;
     const { trackEvent } = useAnalytics();
     const { addItem } = useCartStore();
 
@@ -101,7 +103,8 @@ export default function StorePreview({ data, products, viewMode = 'desktop', rea
 
     const handleCategoryClick = (catKey: string | null) => {
         setActiveCategory(catKey);
-        setSearchQuery(''); // Limpiar buscador al cambiar categoría
+        setSearchQuery(''); 
+        setCurrentPage(1); // Reset page on filter change
         trackEvent('click', {
             action: 'category_filter_click',
             category: catKey || 'all',
@@ -329,77 +332,167 @@ export default function StorePreview({ data, products, viewMode = 'desktop', rea
                                     <small>Intenta con otro nombre o categoría</small>
                                 </div>
                             ) : (
-                                filteredProducts.map((product, index) => (
-                                    <div key={product.id} className="product-card">
-                                        <div className="product-image" style={{ position: 'relative', overflow: 'hidden' }}>
-                                            {product.image ? (
-                                                <img
-                                                    src={product.image}
-                                                    alt={product.name}
-                                                    style={{ width: '100%', height: '100%', objectFit: 'contain' }}
-                                                    loading={index < 4 ? "eager" : "lazy"}
-                                                    decoding="async"
-                                                />
-                                            ) : (
-                                                <div style={{ color: '#ccc' }}>Sin Imagen</div>
-                                            )}
-                                        </div>
-                                        <div className="product-details">
-                                            <div className="product-category">{product.category}</div>
-                                            <div className="product-name">{product.name}</div>
-                                            <div className="product-desc">{product.description}</div>
-                                            <div className="product-price" suppressHydrationWarning>${formatPrice(product.price)}</div>
+                                <>
+                                    {filteredProducts
+                                        .slice((currentPage - 1) * productsPerPage, currentPage * productsPerPage)
+                                        .map((product, index) => (
+                                            <div key={product.id} className="product-card">
+                                                <div className="product-image" style={{ position: 'relative', overflow: 'hidden' }}>
+                                                    {product.image ? (
+                                                        <img
+                                                            src={product.image}
+                                                            alt={product.name}
+                                                            style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+                                                            loading={index < 4 ? "eager" : "lazy"}
+                                                            decoding="async"
+                                                        />
+                                                    ) : (
+                                                        <div style={{ color: '#ccc' }}>Sin Imagen</div>
+                                                    )}
+                                                </div>
+                                                <div className="product-details">
+                                                    <div className="product-category">{product.category}</div>
+                                                    <div className="product-name">{product.name}</div>
+                                                    <div className="product-desc">{product.description}</div>
+                                                    <div className="product-price" suppressHydrationWarning>${formatPrice(product.price)}</div>
 
-                                            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '16px' }}>
-                                                <a
-                                                    href={`https://wa.me/${cleanPhone(data.whatsapp)}?text=${encodeURIComponent(`Hola, quiero este producto:\n\n🛍️ *${product.name}*\nPrecio: $${formatPrice(product.price)}\n\nMi nombre es:\nDirección:\nMétodo de pago:`)}`}
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                    className="btn-whatsapp"
-                                                    style={{ backgroundColor: data.color || '#25D366', color: '#fff', textAlign: 'center', padding: '10px', borderRadius: '8px', fontWeight: 'bold' }}
-                                                    onClick={() => {
-                                                        trackEvent('whatsapp_open', {
-                                                            product_name: product.name,
-                                                            store_name: data.name,
-                                                            price: product.price
-                                                        });
-                                                    }}
-                                                >
-                                                    <span>📱</span> Comprar ahora
-                                                </a>
-                                                <button
-                                                    onClick={() => {
-                                                        addItem({
-                                                            id: String(product.id),
-                                                            name: product.name,
-                                                            price: Number(product.price),
-                                                            image: product.image,
-                                                            quantity: 1,
-                                                            storeSlug: data.id ? String(data.id) : 'preview'
-                                                        });
-                                                        trackEvent('add_to_cart', {
-                                                            product_name: product.name,
-                                                            price: product.price
-                                                        });
-                                                        alert('Producto agregado al carrito 🛒');
-                                                    }}
-                                                    style={{
-                                                        backgroundColor: 'transparent',
-                                                        color: data.color || '#333',
-                                                        border: `1.5px solid ${data.color || '#ccc'}`,
-                                                        textAlign: 'center',
-                                                        padding: '10px',
-                                                        borderRadius: '8px',
-                                                        fontWeight: 'bold',
-                                                        cursor: 'pointer'
-                                                    }}
-                                                >
-                                                    Agregar al carrito
-                                                </button>
+                                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '16px' }}>
+                                                        <a
+                                                            href={`https://wa.me/${cleanPhone(data.whatsapp)}?text=${encodeURIComponent(`Hola, quiero este producto:\n\n🛍️ *${product.name}*\nPrecio: $${formatPrice(product.price)}\n\nMi nombre es:\nDirección:\nMétodo de pago:`)}`}
+                                                            target="_blank"
+                                                            rel="noopener noreferrer"
+                                                            className="btn-whatsapp"
+                                                            style={{ backgroundColor: data.color || '#25D366', color: '#fff', textAlign: 'center', padding: '10px', borderRadius: '8px', fontWeight: 'bold' }}
+                                                            onClick={() => {
+                                                                trackEvent('whatsapp_open', {
+                                                                    product_name: product.name,
+                                                                    store_name: data.name,
+                                                                    price: product.price
+                                                                });
+                                                            }}
+                                                        >
+                                                            <span>📱</span> Comprar ahora
+                                                        </a>
+                                                        <button
+                                                            onClick={() => {
+                                                                addItem({
+                                                                    id: String(product.id),
+                                                                    name: product.name,
+                                                                    price: Number(product.price),
+                                                                    image: product.image,
+                                                                    quantity: 1,
+                                                                    storeSlug: data.id ? String(data.id) : 'preview'
+                                                                });
+                                                                trackEvent('add_to_cart', {
+                                                                    product_name: product.name,
+                                                                    price: product.price
+                                                                });
+                                                                alert('Producto agregado al carrito 🛒');
+                                                            }}
+                                                            style={{
+                                                                backgroundColor: 'transparent',
+                                                                color: data.color || '#333',
+                                                                border: `1.5px solid ${data.color || '#ccc'}`,
+                                                                textAlign: 'center',
+                                                                padding: '10px',
+                                                                borderRadius: '8px',
+                                                                fontWeight: 'bold',
+                                                                cursor: 'pointer'
+                                                            }}
+                                                        >
+                                                            Agregar al carrito
+                                                        </button>
+                                                    </div>
+                                                </div>
                                             </div>
+                                        ))}
+
+                                    {/* Numbered Pagination Control */}
+                                    {filteredProducts.length > productsPerPage && (
+                                        <div className="store-pagination" style={{
+                                            gridColumn: '1 / -1',
+                                            display: 'flex',
+                                            justifyContent: 'center',
+                                            alignItems: 'center',
+                                            gap: '8px',
+                                            marginTop: '40px',
+                                            paddingBottom: '20px'
+                                        }}>
+                                            <button
+                                                disabled={currentPage === 1}
+                                                onClick={() => {
+                                                    setCurrentPage(p => Math.max(1, p - 1));
+                                                    window.scrollTo({ top: 300, behavior: 'smooth' });
+                                                }}
+                                                className="pagination-btn"
+                                                style={{
+                                                    padding: '8px 12px',
+                                                    borderRadius: '8px',
+                                                    border: '1px solid #ddd',
+                                                    background: '#fff',
+                                                    cursor: currentPage === 1 ? 'not-allowed' : 'pointer',
+                                                    opacity: currentPage === 1 ? 0.5 : 1
+                                                }}
+                                            >
+                                                &larr;
+                                            </button>
+
+                                            {Array.from({ length: Math.ceil(filteredProducts.length / productsPerPage) }).map((_, i) => {
+                                                const pageNum = i + 1;
+                                                const isActive = currentPage === pageNum;
+                                                
+                                                // Responsive: only show close pages
+                                                const showPage = pageNum === 1 || pageNum === Math.ceil(filteredProducts.length / productsPerPage) || (pageNum >= currentPage - 2 && pageNum <= currentPage + 2);
+
+                                                if (!showPage) {
+                                                    if (pageNum === currentPage - 3 || pageNum === currentPage + 3) return <span key={pageNum}>...</span>;
+                                                    return null;
+                                                }
+
+                                                return (
+                                                    <button
+                                                        key={pageNum}
+                                                        onClick={() => {
+                                                            setCurrentPage(pageNum);
+                                                            window.scrollTo({ top: 300, behavior: 'smooth' });
+                                                        }}
+                                                        style={{
+                                                            width: '40px',
+                                                            height: '40px',
+                                                            borderRadius: '8px',
+                                                            border: isActive ? `2px solid ${data.color}` : '1px solid #ddd',
+                                                            background: isActive ? data.color : '#fff',
+                                                            color: isActive ? '#fff' : '#333',
+                                                            fontWeight: isActive ? 'bold' : 'normal',
+                                                            cursor: 'pointer'
+                                                        }}
+                                                    >
+                                                        {pageNum}
+                                                    </button>
+                                                );
+                                            })}
+
+                                            <button
+                                                disabled={currentPage === Math.ceil(filteredProducts.length / productsPerPage)}
+                                                onClick={() => {
+                                                    setCurrentPage(p => Math.min(Math.ceil(filteredProducts.length / productsPerPage), p + 1));
+                                                    window.scrollTo({ top: 300, behavior: 'smooth' });
+                                                }}
+                                                className="pagination-btn"
+                                                style={{
+                                                    padding: '8px 12px',
+                                                    borderRadius: '8px',
+                                                    border: '1px solid #ddd',
+                                                    background: '#fff',
+                                                    cursor: currentPage === Math.ceil(filteredProducts.length / productsPerPage) ? 'not-allowed' : 'pointer',
+                                                    opacity: currentPage === Math.ceil(filteredProducts.length / productsPerPage) ? 0.5 : 1
+                                                }}
+                                            >
+                                                &rarr;
+                                            </button>
                                         </div>
-                                    </div>
-                                ))
+                                    )}
+                                </>
                             )}
                         </div>
                     </div>
