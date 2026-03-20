@@ -243,12 +243,17 @@ body {
 }
 
 @media (max-width: 768px) {
-    .public-store-wrapper .store-preview-container {
+    .store-preview-container {
         max-width: 100% !important;
         width: 100% !important;
         border-radius: 0 !important;
         box-shadow: none !important;
         margin: 0 !important;
+    }
+    
+    .public-store-wrapper .store-preview-container {
+        height: min-content !important;
+        min-height: 100vh !important;
     }
     
     .store-header {

@@ -27,13 +27,7 @@ export default async function StorePageEN({ params }: Props) {
     }
 
     return (
-        <div style={{
-            minHeight: '100vh',
-            background: '#f4f4f9',
-            display: 'flex',
-            justifyContent: 'center',
-            padding: '20px'
-        }}>
+        <div className="public-store-wrapper">
             <StorePreviewEN
                 data={store.data}
                 products={store.products}
