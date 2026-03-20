@@ -176,11 +176,13 @@ export default function StorePreview({ data, products, viewMode = 'desktop', rea
             )}
 
             <div className={containerClass} style={{
-                maxWidth: viewMode === 'mobile' ? '430px' : 'none',
+                ...(readOnly ? {} : {
+                    maxWidth: viewMode === 'mobile' ? '430px' : 'none',
+                    margin: '0 auto',
+                }),
                 width: '100%',
                 fontFamily: data.font || 'Inter, sans-serif',
                 '--border-radius': data?.borderRadius || '8px',
-                margin: '0 auto'
             } as React.CSSProperties}>
                 {/* TOPBAR */}
                 <div className="store-topbar">
