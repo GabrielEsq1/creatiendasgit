@@ -407,7 +407,7 @@ export default function StorePreview({ data, products, viewMode = 'desktop', rea
 
                                                     <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '16px' }}>
                                                         <a
-                                                            href={`https://wa.me/${cleanPhone(data.whatsapp)}?text=${encodeURIComponent(`Hola, quiero este producto:\n\n🛍️ *${product.name}*\nPrecio: $${formatPrice(product.price)}\n\nMi nombre es:\nDirección:\nMétodo de pago:`)}`}
+                                                            href={`https://wa.me/${cleanPhone(data.whatsapp)}?text=${encodeURIComponent(`Hola, quiero este producto:\n\n🛍️ *${product.name}*\nPrecio: $${formatPrice(product.price)}\n\nTalla / Color (si aplica): \n\nMi nombre es:\nDirección:\nMétodo de pago:`)}`}
                                                             target="_blank"
                                                             rel="noopener noreferrer"
                                                             className="btn-whatsapp"
@@ -745,7 +745,7 @@ export default function StorePreview({ data, products, viewMode = 'desktop', rea
                             
                             <div className="detail-actions">
                                 <a
-                                    href={`https://wa.me/${cleanPhone(data.whatsapp)}?text=${encodeURIComponent(`Hola, quiero este producto:\n\n🛍️ *${selectedProduct.name}*\nPrecio: $${formatPrice(selectedProduct.price)}\n\nMi nombre es:\nDirección:\nMétodo de pago:`)}`}
+                                    href={`https://wa.me/${cleanPhone(data.whatsapp)}?text=${encodeURIComponent(`Hola, quiero este producto:\n\n🛍️ *${selectedProduct.name}*\nPrecio: $${formatPrice(selectedProduct.price)}\n\nTalla / Color (si aplica): \n\nMi nombre es:\nDirección:\nMétodo de pago:`)}`}
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     style={{ 

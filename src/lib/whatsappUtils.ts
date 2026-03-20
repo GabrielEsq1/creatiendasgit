@@ -14,6 +14,8 @@ export const buildSingleProductMessage = (productName: string, price: number | s
 🛍️ *${productName}*
 Precio: $${formatPriceConfig(price)}
 
+Talla / Color (si aplica): 
+
 Mi nombre es: 
 Dirección: 
 Método de pago: `;
@@ -28,6 +30,7 @@ export const buildCartMessage = (items: CartItem[]): string => {
         message += `• ${item.name} (x${item.quantity}) - $${formatPriceConfig(Number(item.price) * item.quantity)}\n`;
     });
     
+    message += `\nTalla / Color (si aplica): \n`;
     message += `\n*Total: $${formatPriceConfig(total)}*\n\nMi nombre es: \nDirección: \nMétodo de pago: `;
     
     return message;
