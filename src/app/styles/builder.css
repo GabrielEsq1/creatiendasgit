@@ -240,24 +240,41 @@ body {
     justify-content: center;
     width: 100%;
     min-height: 100vh;
+    background: #ffffff;
+}
+
+/* For LIVE stores, the container should NEVER be a floating card. It must span edge-to-edge on ALL devices */
+.public-store-wrapper .store-preview-container {
+    max-width: 100% !important;
+    width: 100% !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    margin: 0 !important;
+    min-height: 100vh !important;
+    overflow: visible !important;
 }
 
 @media (max-width: 768px) {
-    .store-preview-container {
-        max-width: 100% !important;
-        width: 100% !important;
-        border-radius: 0 !important;
-        box-shadow: none !important;
-        margin: 0 !important;
-    }
-    
-    .public-store-wrapper .store-preview-container {
-        height: min-content !important;
-        min-height: 100vh !important;
-    }
-    
+    /* Mobile-specific paddings for content, NOT for container max-widths */
     .store-header {
         padding: 2.5rem 1rem 2rem !important;
+    }
+    .store-categories {
+        padding: 1.2rem 1rem 0.5rem !important;
+        gap: 0.75rem !important;
+    }
+    .store-products {
+        padding: 1.5rem 1rem 2.25rem !important;
+        gap: 1.25rem !important;
+    }
+    .store-topbar {
+        padding: 0.6rem 1rem !important;
+    }
+    .about-section, .careers-section, .store-footer {
+        padding: 2rem 1rem !important;
+    }
+    .product-details {
+        padding: 1rem 1rem 1.2rem !important;
     }
     .store-categories {
         padding: 1.2rem 1rem 0.5rem !important;
