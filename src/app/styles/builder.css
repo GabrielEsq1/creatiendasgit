@@ -235,6 +235,23 @@ body {
     max-width: 430px;
 }
 
+.public-store-wrapper {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    min-height: 100vh;
+}
+
+@media (max-width: 768px) {
+    .public-store-wrapper .store-preview-container {
+        max-width: 100% !important;
+        width: 100% !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        margin: 0 !important;
+    }
+}
+
 /* TOPBAR */
 
 .store-topbar {

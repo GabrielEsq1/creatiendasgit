@@ -21,7 +21,8 @@
 html,
 body {
   max-width: 100%;
-  overflow-x: hidden;
+  width: 100%;
+  overflow-x: clip; /* Modern alternative to hidden that prevents scroll chaining */
   position: relative;
 }
 
