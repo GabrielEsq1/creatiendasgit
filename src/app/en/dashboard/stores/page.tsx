@@ -228,12 +228,14 @@ export default function StoresPageEN() {
                     </p>
                 </div>
                 {userData.plan === 'FREE' && (
-                    <Link
-                        href="/en/pricing"
-                        className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors"
+                    <a
+                        href="https://wa.me/573026687991?text=Hello,%20I%20would%20like%20to%20upgrade%20my%20Creatiendas%20account%20to%20the%20PRO%20plan"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors text-center"
                     >
                         Upgrade to PRO
-                    </Link>
+                    </a>
                 )}
             </div>
         </div>

@@ -227,12 +227,14 @@ export default function StoresPage() {
                     </p>
                 </div>
                 {userData.plan === 'FREE' && (
-                    <Link
-                        href="/pricing"
-                        className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors"
+                    <a
+                        href="https://wa.me/573026687991?text=Hola,%20me%20gustar%C3%ADa%20actualizar%20mi%20cuenta%20de%20Creatiendas%20al%20plan%20PRO"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors text-center"
                     >
                         Actualizar a PRO
-                    </Link>
+                    </a>
                 )}
             </div>
         </div>
