@@ -28,9 +28,11 @@ const BlogSectionEN = () => {
         return () => observer.disconnect();
     }, []);
 
+    const [isTouched, setIsTouched] = useState(false);
+
     useEffect(() => {
         const drift = () => {
-            if (isInView && !isHovered && scrollRef.current) {
+            if (isInView && !isHovered && !isTouched && scrollRef.current) {
                 const { scrollLeft, scrollWidth, clientWidth } = scrollRef.current;
                 
                 if (scrollLeft + clientWidth >= scrollWidth - 2) {
@@ -46,11 +48,11 @@ const BlogSectionEN = () => {
         return () => {
             if (animationFrameRef.current) cancelAnimationFrame(animationFrameRef.current);
         };
-    }, [isInView, isHovered]);
+    }, [isInView, isHovered, isTouched]);
 
     useEffect(() => {
         const handleScroll = () => {
-            if (!sectionRef.current || !scrollRef.current || isHovered) return;
+            if (!sectionRef.current || !scrollRef.current || isHovered || isTouched) return;
 
             const rect = sectionRef.current.getBoundingClientRect();
             const windowHeight = window.innerHeight;
@@ -111,6 +113,9 @@ const BlogSectionEN = () => {
                     className="relative group/slider"
                     onMouseEnter={() => setIsHovered(true)}
                     onMouseLeave={() => setIsHovered(false)}
+                    onTouchStart={() => setIsTouched(true)}
+                    onTouchEnd={() => setIsTouched(false)}
+                    onTouchCancel={() => setIsTouched(false)}
                 >
                     {/* Navigation Arrows ABOVE THE CARDS - Left and Right */}
                     <div className="hidden md:flex justify-between items-center mb-8 relative z-20">

@@ -103,6 +103,12 @@ export default function Testimonials() {
     const sectionRef = useRef<HTMLElement>(null);
     const [isInView, setIsInView] = useState(false);
 
+    const row1Ref = useRef<HTMLDivElement>(null);
+    const row2Ref = useRef<HTMLDivElement>(null);
+    const animationFrameRef = useRef<number>();
+    const [isHovered, setIsHovered] = useState(false);
+    const [isTouched, setIsTouched] = useState(false);
+
     useEffect(() => {
         const observer = new IntersectionObserver(
             ([entry]) => {
@@ -118,10 +124,48 @@ export default function Testimonials() {
         return () => observer.disconnect();
     }, []);
 
-    // Dividir testimonios en dos grupos
+    // Initial setup for the second row to start at the end so it can scroll backward
+    useEffect(() => {
+        if (row2Ref.current) {
+            row2Ref.current.scrollLeft = row2Ref.current.scrollWidth - row2Ref.current.clientWidth;
+        }
+    }, []);
+
+    useEffect(() => {
+        const drift = () => {
+            if (isInView && !isHovered && !isTouched) {
+                // Row 1: Scroll Left
+                if (row1Ref.current) {
+                    const { scrollLeft, scrollWidth, clientWidth } = row1Ref.current;
+                    if (scrollLeft + clientWidth >= scrollWidth - 2) {
+                        row1Ref.current.scrollTo({ left: 0, behavior: 'auto' });
+                    } else {
+                        row1Ref.current.scrollLeft += 0.5;
+                    }
+                }
+                // Row 2: Scroll Right (going backwards)
+                if (row2Ref.current) {
+                    const { scrollLeft, scrollWidth, clientWidth } = row2Ref.current;
+                    if (scrollLeft <= 2) {
+                        row2Ref.current.scrollTo({ left: scrollWidth - clientWidth, behavior: 'auto' });
+                    } else {
+                        row2Ref.current.scrollLeft -= 0.5;
+                    }
+                }
+            }
+            animationFrameRef.current = requestAnimationFrame(drift);
+        };
+
+        animationFrameRef.current = requestAnimationFrame(drift);
+        return () => {
+            if (animationFrameRef.current) cancelAnimationFrame(animationFrameRef.current);
+        };
+    }, [isInView, isHovered, isTouched]);
+
+    // Dividir testimonios en dos grupos y duplicarlos para el scroll infinito
     const half = Math.ceil(testimonials.length / 2);
-    const firstRow = testimonials.slice(0, half);
-    const secondRow = testimonials.slice(half);
+    const firstRow = [...testimonials.slice(0, half), ...testimonials.slice(0, half), ...testimonials.slice(0, half)];
+    const secondRow = [...testimonials.slice(half), ...testimonials.slice(half), ...testimonials.slice(half)];
 
     return (
         <section ref={sectionRef} className="py-24 bg-slate-50 border-t border-slate-100 overflow-hidden" id="testimonials">
@@ -137,23 +181,32 @@ export default function Testimonials() {
                 </p>
             </div>
 
-            <div className={`flex flex-col gap-8 transition-opacity duration-1000 ${isInView ? 'opacity-100' : 'opacity-50'}`}>
+            <div 
+                className={`flex flex-col gap-8 transition-opacity duration-1000 ${isInView ? 'opacity-100' : 'opacity-50'}`}
+                onMouseEnter={() => setIsHovered(true)}
+                onMouseLeave={() => setIsHovered(false)}
+                onTouchStart={() => setIsTouched(true)}
+                onTouchEnd={() => setIsTouched(false)}
+                onTouchCancel={() => setIsTouched(false)}
+            >
                 {/* Primera línea */}
-                <div className="flex overflow-hidden">
-                    <div className={`flex flex-nowrap gap-6 w-max pause-on-hover px-4 ${isInView ? 'animate-scroll-left' : ''}`}>
-                        {[...firstRow, ...firstRow].map((t, idx) => (
-                            <TestimonialCard key={idx} t={t} />
-                        ))}
-                    </div>
+                <div 
+                    ref={row1Ref}
+                    className="flex overflow-x-auto gap-6 pb-4 scrollbar-hide no-scrollbar -mx-4 px-4 md:mx-0 md:px-0"
+                >
+                    {firstRow.map((t, idx) => (
+                        <TestimonialCard key={`row1-${idx}`} t={t} />
+                    ))}
                 </div>
 
                 {/* Segunda línea */}
-                <div className="flex overflow-hidden">
-                    <div className={`flex flex-nowrap gap-6 w-max pause-on-hover px-4 ${isInView ? 'animate-scroll-right' : ''}`}>
-                        {[...secondRow, ...secondRow, ...secondRow].map((t, idx) => (
-                            <TestimonialCard key={idx} t={t} />
-                        ))}
-                    </div>
+                <div 
+                    ref={row2Ref}
+                    className="flex overflow-x-auto gap-6 pb-4 scrollbar-hide no-scrollbar -mx-4 px-4 md:mx-0 md:px-0"
+                >
+                    {secondRow.map((t, idx) => (
+                        <TestimonialCard key={`row2-${idx}`} t={t} />
+                    ))}
                 </div>
             </div>
         </section>
