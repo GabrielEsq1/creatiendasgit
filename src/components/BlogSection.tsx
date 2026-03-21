@@ -109,33 +109,34 @@ const BlogSection = () => {
                             Guías prácticas para crear tu tienda, automatizar tus ventas y escalar tu negocio sin pagar comisiones.
                         </p>
                     </div>
-
-                    <div className="hidden md:flex gap-3">
-                        <button
-                            onClick={() => scroll('left')}
-                            className="group w-14 h-14 rounded-2xl bg-slate-900/50 backdrop-blur-md border border-white/5 flex items-center justify-center text-white hover:bg-green-500 hover:text-black hover:border-green-400 transition-all duration-300 shadow-xl"
-                            aria-label="Anterior"
-                        >
-                            <ChevronLeft className="w-6 h-6 group-hover:scale-110 transition-transform" />
-                        </button>
-                        <button
-                            onClick={() => scroll('right')}
-                            className="group w-14 h-14 rounded-2xl bg-slate-900/50 backdrop-blur-md border border-white/5 flex items-center justify-center text-white hover:bg-green-500 hover:text-black hover:border-green-400 transition-all duration-300 shadow-xl"
-                            aria-label="Siguiente"
-                        >
-                            <ChevronRight className="w-6 h-6 group-hover:scale-110 transition-transform" />
-                        </button>
-                    </div>
                 </div>
 
                 <div 
-                    className="relative group"
+                    className="relative group/slider"
                     onMouseEnter={() => setIsHovered(true)}
                     onMouseLeave={() => setIsHovered(false)}
                 >
+                    {/* Navigation Arrows OVER the cards */}
+                    <div className="hidden md:block">
+                        <button
+                            onClick={() => scroll('left')}
+                            className="absolute -left-6 top-1/2 -translate-y-1/2 z-30 w-14 h-14 rounded-full bg-slate-900/80 backdrop-blur-xl border border-white/10 flex items-center justify-center text-white hover:bg-green-500 hover:text-black hover:border-green-400 transition-all duration-300 shadow-2xl opacity-0 group-hover/slider:opacity-100 group-hover/slider:left-4"
+                            aria-label="Anterior"
+                        >
+                            <ChevronLeft className="w-6 h-6" />
+                        </button>
+                        <button
+                            onClick={() => scroll('right')}
+                            className="absolute -right-6 top-1/2 -translate-y-1/2 z-30 w-14 h-14 rounded-full bg-slate-900/80 backdrop-blur-xl border border-white/10 flex items-center justify-center text-white hover:bg-green-500 hover:text-black hover:border-green-400 transition-all duration-300 shadow-2xl opacity-0 group-hover/slider:opacity-100 group-hover/slider:right-4"
+                            aria-label="Siguiente"
+                        >
+                            <ChevronRight className="w-6 h-6" />
+                        </button>
+                    </div>
+
                     <div
                         ref={scrollRef}
-                        className="flex overflow-x-auto gap-6 pb-12 scrollbar-hide no-scrollbar -mx-4 px-4 md:mx-0 md:px-0"
+                        className="flex overflow-x-auto gap-6 pb-12 scrollbar-hide no-scrollbar -mx-4 px-4 md:mx-0 md:px-0 scroll-smooth"
                     >
                         {blogPosts.map((post, index) => (
                             <div
