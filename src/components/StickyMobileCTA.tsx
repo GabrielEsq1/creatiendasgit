@@ -3,8 +3,10 @@
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { ArrowRight } from 'lucide-react';
+import { useSession } from 'next-auth/react';
 
 export default function StickyMobileCTA({ lang = 'es' }: { lang?: 'es' | 'en' }) {
+    const { data: session } = useSession();
     const [isVisible, setIsVisible] = useState(false);
     const isEn = lang === 'en';
 
@@ -21,7 +23,7 @@ export default function StickyMobileCTA({ lang = 'es' }: { lang?: 'es' | 'en' })
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
-    if (!isVisible) return null;
+    if (!isVisible || session) return null;
 
     return (
         <div className="fixed bottom-0 left-0 right-0 p-4 bg-white/80 backdrop-blur-md border-t border-slate-200 z-50 md:hidden animate-in slide-in-from-bottom-full duration-300">
