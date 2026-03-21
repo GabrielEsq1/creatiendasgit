@@ -21,6 +21,7 @@ import BlogSection from '@/components/BlogSection';
 import Testimonials from '@/components/Testimonials';
 import HubPromoBanner from '@/components/HubPromoBanner';
 import FinalCTA from '@/components/FinalCTA';
+import PricingSection from '@/components/PricingSection';
 
 import SoftwareSchema from '@/components/SoftwareSchema';
 
@@ -59,6 +60,7 @@ export default function LandingPage() {
                 <BlogSection />
                 <Testimonials />
                 <HubPromoBanner />
+                <PricingSection />
                 <FinalCTA />
             </main>
             <footer className="bg-slate-900 p-12 text-center border-t border-slate-800">

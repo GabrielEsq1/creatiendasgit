@@ -79,6 +79,12 @@ export default function Navbar() {
                             <div className="hidden lg:flex ml-10 space-x-8 items-center h-16">
                                 <Link href="/#demo" className="text-gray-600 hover:text-green-600 font-bold h-full flex items-center transition-colors">Demo</Link>
                                 <Link href="/#features" className="text-gray-600 hover:text-green-600 font-bold h-full flex items-center transition-colors">Características</Link>
+                                <Link
+                                    href="/#pricing"
+                                    className="text-sm font-black text-white bg-green-500 hover:bg-green-600 px-4 py-2 rounded-xl transition-all hover:-translate-y-0.5 shadow-md shadow-green-200 flex items-center gap-1.5 h-auto"
+                                >
+                                    💰 Precios
+                                </Link>
                             </div>
                         )}
                     </div>
@@ -205,6 +211,13 @@ export default function Navbar() {
                                     }}
                                 >
                                     Iniciar Sesión
+                                </Link>
+                                <Link
+                                    href="/#pricing"
+                                    className="block p-4 rounded-2xl bg-amber-500/10 border border-amber-400/20 text-amber-300 font-black text-center"
+                                    onClick={() => setIsOpen(false)}
+                                >
+                                    💰 Ver Precios
                                 </Link>
                                 <Link
                                     href="/auth/register"
