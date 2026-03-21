@@ -39,6 +39,7 @@ export default function LandingPage() {
             <StickyMobileCTA />
             <main className="flex-1">
                 <Hero />
+                <PricingSection />
                 <WhatIs />
 
                 {/* VALIDATION: Real metrics (Psychological Step 3) */}
@@ -60,7 +61,6 @@ export default function LandingPage() {
                 <BlogSection />
                 <Testimonials />
                 <HubPromoBanner />
-                <PricingSection />
                 <FinalCTA />
             </main>
             <footer className="bg-slate-900 p-12 text-center border-t border-slate-800">

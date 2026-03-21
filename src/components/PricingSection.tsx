@@ -38,7 +38,6 @@ const faqs = [
 const included = [
     "Catálogo ilimitado de productos",
     "Integración directa con WhatsApp",
-    "Link único de tu tienda",
     "Búsqueda y filtros por categoría",
     "Paginación de productos",
     "Sección Sobre nosotros & Trabaja con nosotros",
