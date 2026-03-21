@@ -230,14 +230,14 @@ export default function Navbar() {
                                     {pathname?.startsWith('/en') ? '\uD83D\uDCB0 Pricing' : '\uD83D\uDCB0 Ver Precios'}
                                 </Link>
                                 <Link
-                                    href="/auth/register"
+                                    href={pathname?.startsWith('/en') ? '/en/auth/register' : '/auth/register'}
                                     className="block p-4 rounded-2xl bg-green-500 text-white font-black text-center shadow-xl shadow-green-900/40"
                                     onClick={() => {
                                         setIsOpen(false);
                                         trackEvent('primary_cta_click', { location: 'navbar_mobile_cta' });
                                     }}
                                 >
-                                    EMPEZAR GRATIS
+                                    {pathname?.startsWith('/en') ? 'START FREE' : 'EMPEZAR GRATIS'}
                                 </Link>
                             </>
                         )}
