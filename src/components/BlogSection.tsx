@@ -38,7 +38,7 @@ const BlogSection = () => {
                 if (scrollLeft + clientWidth >= scrollWidth - 2) {
                     scrollRef.current.scrollTo({ left: 0, behavior: 'smooth' });
                 } else {
-                    scrollRef.current.scrollLeft += 0.8;
+                    scrollRef.current.scrollLeft += 0.3;
                 }
             }
             animationFrameRef.current = requestAnimationFrame(drift);
@@ -116,21 +116,21 @@ const BlogSection = () => {
                     onMouseEnter={() => setIsHovered(true)}
                     onMouseLeave={() => setIsHovered(false)}
                 >
-                    {/* Navigation Arrows OVER the cards */}
+                    {/* Navigation Arrows OVER the cards - ALWAYS VISIBLE but subtle */}
                     <div className="hidden md:block">
                         <button
                             onClick={() => scroll('left')}
-                            className="absolute -left-6 top-1/2 -translate-y-1/2 z-30 w-14 h-14 rounded-full bg-slate-900/80 backdrop-blur-xl border border-white/10 flex items-center justify-center text-white hover:bg-green-500 hover:text-black hover:border-green-400 transition-all duration-300 shadow-2xl opacity-0 group-hover/slider:opacity-100 group-hover/slider:left-4"
+                            className="absolute left-4 top-1/2 -translate-y-1/2 z-30 w-16 h-16 rounded-full bg-slate-900/60 backdrop-blur-xl border border-white/10 flex items-center justify-center text-white hover:bg-green-500 hover:text-black hover:border-green-400 transition-all duration-300 shadow-2xl group-hover/slider:scale-110 active:scale-95"
                             aria-label="Anterior"
                         >
-                            <ChevronLeft className="w-6 h-6" />
+                            <ChevronLeft className="w-8 h-8" />
                         </button>
                         <button
                             onClick={() => scroll('right')}
-                            className="absolute -right-6 top-1/2 -translate-y-1/2 z-30 w-14 h-14 rounded-full bg-slate-900/80 backdrop-blur-xl border border-white/10 flex items-center justify-center text-white hover:bg-green-500 hover:text-black hover:border-green-400 transition-all duration-300 shadow-2xl opacity-0 group-hover/slider:opacity-100 group-hover/slider:right-4"
+                            className="absolute right-4 top-1/2 -translate-y-1/2 z-30 w-16 h-16 rounded-full bg-slate-900/60 backdrop-blur-xl border border-white/10 flex items-center justify-center text-white hover:bg-green-500 hover:text-black hover:border-green-400 transition-all duration-300 shadow-2xl group-hover/slider:scale-110 active:scale-95"
                             aria-label="Siguiente"
                         >
-                            <ChevronRight className="w-6 h-6" />
+                            <ChevronRight className="w-8 h-8" />
                         </button>
                     </div>
 
