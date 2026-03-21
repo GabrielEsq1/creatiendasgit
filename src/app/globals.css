@@ -108,3 +108,26 @@ body {
     padding: 6px 10px;
   }
 }
+
+/* Infinite Scroll Animations */
+@keyframes scroll_left {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+@keyframes scroll_right {
+  0% { transform: translateX(-50%); }
+  100% { transform: translateX(0); }
+}
+
+.animate-scroll-left {
+  animation: scroll_left 30s linear infinite;
+}
+
+.animate-scroll-right {
+  animation: scroll_right 35s linear infinite;
+}
+
+.pause-on-hover:hover {
+  animation-play-state: paused;
+}

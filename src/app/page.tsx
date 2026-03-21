@@ -19,7 +19,6 @@ import LiveDemo from '@/components/LiveDemo';
 import Features from '@/components/Features';
 import BlogSection from '@/components/BlogSection';
 import Testimonials from '@/components/Testimonials';
-import HubPromoBanner from '@/components/HubPromoBanner';
 import FinalCTA from '@/components/FinalCTA';
 import PricingSection from '@/components/PricingSection';
 
@@ -36,7 +35,7 @@ export default function LandingPage() {
             <SoftwareSchema />
             <FAQSchema />
             <LocalBusinessSchema />
-            <StickyMobileCTA />
+            <StickyMobileCTA lang="es" />
             <main className="flex-1">
                 <Hero />
                 <WhatIs />
@@ -59,10 +58,8 @@ export default function LandingPage() {
 
                 {/* PRICING: After they understand the value, show the price */}
                 <PricingSection />
-
                 <BlogSection />
                 <Testimonials />
-                <HubPromoBanner />
                 <FinalCTA />
             </main>
             <footer className="bg-slate-900 p-12 text-center border-t border-slate-800">

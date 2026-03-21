@@ -9,7 +9,6 @@ import LiveDemoEN from '@/components/en/LiveDemoEN';
 import FeaturesEN from '@/components/en/FeaturesEN';
 import BlogSectionEN from '@/components/en/BlogSectionEN';
 import TestimonialsEN from '@/components/en/TestimonialsEN';
-import HubPromoBannerEN from '@/components/en/HubPromoBannerEN';
 import FinalCTAEN from '@/components/en/FinalCTAEN';
 import { SocialProofSection } from '@/components/SocialProofSection';
 import SoftwareSchema from '@/components/SoftwareSchema';
@@ -18,6 +17,8 @@ import LocalBusinessSchema from '@/components/LocalBusinessSchema';
 import SuccessBanner from '@/components/SuccessBanner';
 import PricingSection from '@/components/PricingSection';
 
+import StickyMobileCTA from '@/components/StickyMobileCTA';
+
 export default function EnglishLandingPage() {
     return (
         <div className="min-h-screen bg-white text-slate-900 flex flex-col selection:bg-green-500/30">
@@ -25,6 +26,7 @@ export default function EnglishLandingPage() {
             <FAQSchema lang="en" />
             <LocalBusinessSchema lang="en" />
             <SuccessBanner />
+            <StickyMobileCTA lang="en" />
             <main className="flex-1">
                 <HeroEN />
                 <WhatIsEN />
@@ -46,7 +48,6 @@ export default function EnglishLandingPage() {
                 <PricingSection locale="en" />
                 <BlogSectionEN />
                 <TestimonialsEN />
-                <HubPromoBannerEN />
                 <FinalCTAEN />
             </main>
             <footer className="bg-slate-50 p-12 text-center border-t border-slate-100">
