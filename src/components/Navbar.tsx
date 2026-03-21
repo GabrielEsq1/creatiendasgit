@@ -77,13 +77,17 @@ export default function Navbar() {
                         )}
                         {!session && (
                             <div className="hidden lg:flex ml-10 space-x-8 items-center h-16">
-                                <Link href="/#demo" className="text-gray-600 hover:text-green-600 font-bold h-full flex items-center transition-colors">Demo</Link>
-                                <Link href="/#features" className="text-gray-600 hover:text-green-600 font-bold h-full flex items-center transition-colors">Características</Link>
+                                <Link href={pathname?.startsWith('/en') ? "/en/#demo" : "/#demo"} className="text-gray-600 hover:text-green-600 font-bold h-full flex items-center transition-colors">
+                                    {pathname?.startsWith('/en') ? 'Demo' : 'Demo'}
+                                </Link>
+                                <Link href={pathname?.startsWith('/en') ? "/en/#features" : "/#features"} className="text-gray-600 hover:text-green-600 font-bold h-full flex items-center transition-colors">
+                                    {pathname?.startsWith('/en') ? 'Features' : 'Caracter\u00edsticas'}
+                                </Link>
                                 <Link
-                                    href="/#pricing"
+                                    href={pathname?.startsWith('/en') ? '/en/#pricing' : '/#pricing'}
                                     className="text-sm font-black text-white bg-green-500 hover:bg-green-600 px-4 py-2 rounded-xl transition-all hover:-translate-y-0.5 shadow-md shadow-green-200 flex items-center gap-1.5 h-auto"
                                 >
-                                    💰 Precios
+                                    {pathname?.startsWith('/en') ? '\uD83D\uDCB0 Pricing' : '\uD83D\uDCB0 Precios'}
                                 </Link>
                             </div>
                         )}
@@ -190,34 +194,40 @@ export default function Navbar() {
                     <div className="lg:hidden bg-slate-950 border-t border-white/5 py-6 px-4 space-y-4 shadow-2xl animate-in fade-in slide-in-from-top-4">
                         {session ? (
                             <>
-                                <Link href="/dashboard" className="block p-4 rounded-2xl bg-slate-900 font-black text-white" onClick={() => setIsOpen(false)}>Dashboard</Link>
-                                <Link href="/dashboard/stores" className="block p-4 rounded-2xl hover:bg-slate-900 font-bold text-slate-400" onClick={() => setIsOpen(false)}>Mis Tiendas</Link>
-                                <Link href="/dashboard/billing" className="block p-4 rounded-2xl hover:bg-slate-900 font-bold text-slate-400" onClick={() => setIsOpen(false)}>Mi Plan</Link>
+                                <Link href={pathname?.startsWith('/en') ? '/en/dashboard' : '/dashboard'} className="block p-4 rounded-2xl bg-slate-900 font-black text-white" onClick={() => setIsOpen(false)}>
+                                    Dashboard
+                                </Link>
+                                <Link href={pathname?.startsWith('/en') ? '/en/dashboard/stores' : '/dashboard/stores'} className="block p-4 rounded-2xl hover:bg-slate-900 font-bold text-slate-400" onClick={() => setIsOpen(false)}>
+                                    {pathname?.startsWith('/en') ? 'My Stores' : 'Mis Tiendas'}
+                                </Link>
+                                <Link href={pathname?.startsWith('/en') ? '/en/dashboard/billing' : '/dashboard/billing'} className="block p-4 rounded-2xl hover:bg-slate-900 font-bold text-slate-400" onClick={() => setIsOpen(false)}>
+                                    {pathname?.startsWith('/en') ? 'My Plan' : 'Mi Plan'}
+                                </Link>
                                 <button
                                     onClick={() => { setIsOpen(false); signOut({ callbackUrl: '/' }); }}
                                     className="w-full text-left p-4 rounded-2xl text-rose-500 font-black hover:bg-rose-950/30 transition-colors"
                                 >
-                                    Cerrar Sesión
+                                    {pathname?.startsWith('/en') ? 'Sign Out' : 'Cerrar Sesi\u00f3n'}
                                 </button>
                             </>
                         ) : (
                             <>
                                 <Link
-                                    href="/auth/login"
+                                    href={pathname?.startsWith('/en') ? '/en/auth/login' : '/auth/login'}
                                     className="block p-4 rounded-2xl hover:bg-slate-900 font-black text-white"
                                     onClick={() => {
                                         setIsOpen(false);
                                         trackEvent('login_click', { location: 'navbar_mobile' });
                                     }}
                                 >
-                                    Iniciar Sesión
+                                    {pathname?.startsWith('/en') ? 'Log In' : 'Iniciar Sesi\u00f3n'}
                                 </Link>
                                 <Link
-                                    href="/#pricing"
+                                    href={pathname?.startsWith('/en') ? '/en/#pricing' : '/#pricing'}
                                     className="block p-4 rounded-2xl bg-amber-500/10 border border-amber-400/20 text-amber-300 font-black text-center"
                                     onClick={() => setIsOpen(false)}
                                 >
-                                    💰 Ver Precios
+                                    {pathname?.startsWith('/en') ? '\uD83D\uDCB0 Pricing' : '\uD83D\uDCB0 Ver Precios'}
                                 </Link>
                                 <Link
                                     href="/auth/register"

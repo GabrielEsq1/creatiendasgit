@@ -16,6 +16,7 @@ import SoftwareSchema from '@/components/SoftwareSchema';
 import FAQSchema from '@/components/FAQSchema';
 import LocalBusinessSchema from '@/components/LocalBusinessSchema';
 import SuccessBanner from '@/components/SuccessBanner';
+import PricingSection from '@/components/PricingSection';
 
 export default function EnglishLandingPage() {
     return (
@@ -41,6 +42,8 @@ export default function EnglishLandingPage() {
                     <LiveDemoEN />
                 </div>
                 <FeaturesEN />
+                {/* PRICING: After they understand the value */}
+                <PricingSection locale="en" />
                 <BlogSectionEN />
                 <TestimonialsEN />
                 <HubPromoBannerEN />

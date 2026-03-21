@@ -39,7 +39,6 @@ export default function LandingPage() {
             <StickyMobileCTA />
             <main className="flex-1">
                 <Hero />
-                <PricingSection />
                 <WhatIs />
 
                 {/* VALIDATION: Real metrics (Psychological Step 3) */}
@@ -57,6 +56,9 @@ export default function LandingPage() {
 
                 {/* RISK REVERSAL: Why it's safe (Psychological Step 5) */}
                 <Benefits />
+
+                {/* PRICING: After they understand the value, show the price */}
+                <PricingSection />
 
                 <BlogSection />
                 <Testimonials />
