@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 
 const testimonials = [
     {
@@ -100,13 +100,31 @@ const TestimonialCard = ({ t }: { t: typeof testimonials[0] }) => (
 );
 
 export default function Testimonials() {
+    const sectionRef = useRef<HTMLElement>(null);
+    const [isInView, setIsInView] = useState(false);
+
+    useEffect(() => {
+        const observer = new IntersectionObserver(
+            ([entry]) => {
+                setIsInView(entry.isIntersecting);
+            },
+            { threshold: 0.1 }
+        );
+
+        if (sectionRef.current) {
+            observer.observe(sectionRef.current);
+        }
+
+        return () => observer.disconnect();
+    }, []);
+
     // Dividir testimonios en dos grupos
     const half = Math.ceil(testimonials.length / 2);
     const firstRow = testimonials.slice(0, half);
     const secondRow = testimonials.slice(half);
 
     return (
-        <section className="py-24 bg-slate-50 border-t border-slate-100 overflow-hidden" id="testimonials">
+        <section ref={sectionRef} className="py-24 bg-slate-50 border-t border-slate-100 overflow-hidden" id="testimonials">
             <div className="max-w-7xl mx-auto px-4 md:px-8 mb-16 text-center">
                 <span className="inline-block bg-green-100 text-green-700 text-[10px] font-black px-4 py-1 rounded-full mb-4 uppercase tracking-[0.2em] border border-green-200">
                     Historias Reales
@@ -119,10 +137,10 @@ export default function Testimonials() {
                 </p>
             </div>
 
-            <div className="flex flex-col gap-8">
+            <div className={`flex flex-col gap-8 transition-opacity duration-1000 ${isInView ? 'opacity-100' : 'opacity-50'}`}>
                 {/* Primera línea */}
                 <div className="flex overflow-hidden">
-                    <div className="flex flex-nowrap gap-6 w-max animate-scroll-left pause-on-hover px-4">
+                    <div className={`flex flex-nowrap gap-6 w-max pause-on-hover px-4 ${isInView ? 'animate-scroll-left' : ''}`}>
                         {[...firstRow, ...firstRow].map((t, idx) => (
                             <TestimonialCard key={idx} t={t} />
                         ))}
@@ -131,7 +149,7 @@ export default function Testimonials() {
 
                 {/* Segunda línea */}
                 <div className="flex overflow-hidden">
-                    <div className="flex flex-nowrap gap-6 w-max animate-scroll-right pause-on-hover px-4">
+                    <div className={`flex flex-nowrap gap-6 w-max pause-on-hover px-4 ${isInView ? 'animate-scroll-right' : ''}`}>
                         {[...secondRow, ...secondRow, ...secondRow].map((t, idx) => (
                             <TestimonialCard key={idx} t={t} />
                         ))}

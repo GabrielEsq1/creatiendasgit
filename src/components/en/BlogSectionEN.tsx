@@ -18,7 +18,7 @@ const BlogSectionEN = () => {
             ([entry]) => {
                 setIsInView(entry.isIntersecting);
             },
-            { threshold: 0.05 }
+            { threshold: 0 }
         );
 
         if (sectionRef.current) {
@@ -36,7 +36,7 @@ const BlogSectionEN = () => {
                 if (scrollLeft + clientWidth >= scrollWidth - 2) {
                     scrollRef.current.scrollTo({ left: 0, behavior: 'smooth' });
                 } else {
-                    scrollRef.current.scrollLeft += 0.5;
+                    scrollRef.current.scrollLeft += 0.8;
                 }
             }
             animationFrameRef.current = requestAnimationFrame(drift);
@@ -56,12 +56,15 @@ const BlogSectionEN = () => {
             const windowHeight = window.innerHeight;
 
             if (rect.top < windowHeight && rect.bottom > 0) {
-                const scrollProgress = (windowHeight - rect.top) / (windowHeight + rect.height);
+                const totalHeight = windowHeight + rect.height;
+                const distanceScrolled = windowHeight - rect.top;
+                const scrollProgress = Math.max(0, Math.min(1, distanceScrolled / totalHeight));
+                
                 const maxScroll = scrollRef.current.scrollWidth - scrollRef.current.clientWidth;
                 
                 if (maxScroll > 0) {
-                    const parallaxOffset = maxScroll * (scrollProgress - 0.5) * 0.6;
-                    scrollRef.current.scrollLeft = (maxScroll / 2) + parallaxOffset;
+                    const targetScroll = maxScroll * scrollProgress * 0.6;
+                    scrollRef.current.scrollLeft = targetScroll;
                 }
             }
         };

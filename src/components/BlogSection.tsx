@@ -12,13 +12,14 @@ const BlogSection = () => {
     const [isHovered, setIsHovered] = useState(false);
     const [isInView, setIsInView] = useState(false);
     const animationFrameRef = useRef<number>();
+    const lastScrollTop = useRef(0);
 
     useEffect(() => {
         const observer = new IntersectionObserver(
             ([entry]) => {
                 setIsInView(entry.isIntersecting);
             },
-            { threshold: 0.05 }
+            { threshold: 0 }
         );
 
         if (sectionRef.current) {
@@ -33,11 +34,11 @@ const BlogSection = () => {
             if (isInView && !isHovered && scrollRef.current) {
                 const { scrollLeft, scrollWidth, clientWidth } = scrollRef.current;
                 
-                // Very slow drift: 0.5px per frame roughly
+                // Drift slightly faster: 0.8px per frame
                 if (scrollLeft + clientWidth >= scrollWidth - 2) {
                     scrollRef.current.scrollTo({ left: 0, behavior: 'smooth' });
                 } else {
-                    scrollRef.current.scrollLeft += 0.5;
+                    scrollRef.current.scrollLeft += 0.8;
                 }
             }
             animationFrameRef.current = requestAnimationFrame(drift);
@@ -56,20 +57,18 @@ const BlogSection = () => {
             const rect = sectionRef.current.getBoundingClientRect();
             const windowHeight = window.innerHeight;
 
+            // Simple parallax: Move horizontal based on vertical scroll penetration
             if (rect.top < windowHeight && rect.bottom > 0) {
-                // Parallax: offset the scroll based on how much of the section has been passed
-                const scrollProgress = (windowHeight - rect.top) / (windowHeight + rect.height);
+                const totalHeight = windowHeight + rect.height;
+                const distanceScrolled = windowHeight - rect.top;
+                const scrollProgress = Math.max(0, Math.min(1, distanceScrolled / totalHeight));
+                
                 const maxScroll = scrollRef.current.scrollWidth - scrollRef.current.clientWidth;
                 
-                // Only act if there's actual overflow to scroll
                 if (maxScroll > 0) {
-                    // We add the parallax offset to the current position
-                    // This makes the section 'float' horizontally as you scroll vertically
-                    const parallaxOffset = maxScroll * (scrollProgress - 0.5) * 0.6;
-                    
-                    // Only apply if it doesn't conflict too much with manual position
-                    // For a more 'active' parallax, we can just set it:
-                    scrollRef.current.scrollLeft = (maxScroll / 2) + parallaxOffset;
+                    // Start from 0 and move up to 60% of the available scroll
+                    const targetScroll = maxScroll * scrollProgress * 0.6;
+                    scrollRef.current.scrollLeft = targetScroll;
                 }
             }
         };
@@ -92,8 +91,8 @@ const BlogSection = () => {
 
     return (
         <section ref={sectionRef} className="py-24 bg-black overflow-hidden relative" id="blog">
-            {/* Background elements for depth */}
-            <div className="absolute top-0 right-0 w-96 h-96 bg-green-500/5 rounded-full blur-[100px] pointer-events-none" />
+             {/* Background elements */}
+             <div className="absolute top-0 right-0 w-96 h-96 bg-green-500/5 rounded-full blur-[100px] pointer-events-none" />
             <div className="absolute bottom-0 left-0 w-96 h-96 bg-emerald-500/5 rounded-full blur-[100px] pointer-events-none" />
 
             <div className="max-w-7xl mx-auto px-4 md:px-8">
@@ -111,7 +110,6 @@ const BlogSection = () => {
                         </p>
                     </div>
 
-                    {/* Navigation Buttons */}
                     <div className="hidden md:flex gap-3">
                         <button
                             onClick={() => scroll('left')}
@@ -130,7 +128,6 @@ const BlogSection = () => {
                     </div>
                 </div>
 
-                {/* Slider Container */}
                 <div 
                     className="relative group"
                     onMouseEnter={() => setIsHovered(true)}
@@ -182,7 +179,6 @@ const BlogSection = () => {
                         ))}
                     </div>
 
-                    {/* Progress indicator or nav for mobile */}
                     <div className="md:hidden flex justify-center gap-2 mt-2">
                         {blogPosts.slice(0, 4).map((_, i) => (
                             <div key={i} className="w-1.5 h-1.5 rounded-full bg-slate-800" />
