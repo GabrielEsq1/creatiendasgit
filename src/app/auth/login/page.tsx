@@ -55,8 +55,8 @@ function LoginForm() {
     };
 
     return (
-        <div className="min-h-screen bg-white text-slate-900 flex items-center justify-center p-4 selection:bg-green-500/30">
-            <div className="max-w-6xl w-full grid lg:grid-cols-2 gap-12 items-center relative z-10">
+        <div className="min-h-screen bg-white text-slate-900 flex flex-col justify-center pt-24 pb-12 px-4 selection:bg-green-500/30 overflow-x-hidden">
+            <div className="max-w-6xl w-full mx-auto grid lg:grid-cols-2 gap-8 lg:gap-12 items-center relative z-10">
 
                 {/* LEFT COLUMN: Social Proof */}
                 <div className="order-2 lg:order-1 space-y-8 pr-0 lg:pr-8">
@@ -94,7 +94,7 @@ function LoginForm() {
 
                 {/* RIGHT COLUMN: Login Form */}
                 <div className="order-1 lg:order-2 flex justify-center lg:justify-end mb-8 lg:mb-0">
-                    <div className="w-full max-w-[420px] bg-white rounded-[3rem] shadow-2xl border border-slate-100 p-8 sm:p-10 relative overflow-hidden group">
+                    <div className="w-full max-w-[420px] bg-white rounded-[2rem] sm:rounded-[3rem] shadow-2xl border border-slate-100 p-6 sm:p-10 relative overflow-hidden group">
                         {/* Decoration blob */}
                         <div className="absolute top-0 right-0 w-32 h-32 bg-green-500/5 rounded-full blur-3xl -mr-10 -mt-10 pointer-events-none group-hover:bg-green-500/10 transition-all"></div>
 
@@ -173,8 +173,8 @@ function LoginForm() {
                                 </div>
                             )}
 
-                            <div className="text-center py-2">
-                                <p className="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] mb-4">
+                            <div className="text-center py-2 flex flex-col sm:block gap-1 max-w-full overflow-hidden">
+                                <p className="text-[9px] sm:text-[10px] font-black uppercase text-slate-400 tracking-wider mb-4 truncate whitespace-normal">
                                     Sin tarjeta · Cancelable · Acceso inmediato
                                 </p>
                             </div>

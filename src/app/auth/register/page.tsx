@@ -107,9 +107,9 @@ export default function RegisterPage() {
     };
 
     return (
-        <div className="min-h-screen bg-white text-slate-900 selection:bg-green-500/30">
+        <div className="min-h-screen bg-white text-slate-900 selection:bg-green-500/30 overflow-x-hidden pt-20">
             <div className="container mx-auto px-4 py-8 relative z-10">
-                <div className="grid lg:grid-cols-2 gap-12 items-center max-w-7xl mx-auto">
+                <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center max-w-7xl mx-auto">
 
                     {/* Left Column: Info & Value Prop */}
                     <div className="space-y-10 lg:pr-12 order-2 lg:order-1">
@@ -180,9 +180,9 @@ export default function RegisterPage() {
                         </div>
                         */}
 
-                        <div className="bg-white rounded-[2.5rem] shadow-2xl border border-slate-100 p-8 md:p-10 relative overflow-hidden group/form hover:border-green-500/30 transition-all duration-500">
+                        <div className="bg-white rounded-[2rem] sm:rounded-[2.5rem] shadow-2xl border border-slate-100 p-6 sm:p-8 md:p-10 mx-auto w-full max-w-[480px] lg:max-w-none relative overflow-hidden group/form hover:border-green-500/30 transition-all duration-500">
                             <div className="absolute top-0 right-0 w-32 h-32 bg-green-500/5 rounded-full blur-3xl -mr-10 -mt-10 pointer-events-none group-hover/form:bg-green-500/10 transition-all"></div>
-                            <h2 className="text-3xl font-black text-slate-900 mb-2 relative z-10">Crear cuenta <span className="text-green-600">gratis</span></h2>
+                            <h2 className="text-2xl sm:text-3xl font-black text-slate-900 mb-2 relative z-10">Crear cuenta <span className="text-green-600">gratis</span></h2>
                             <p className="text-sm sm:text-base text-slate-500 mb-8 font-medium">Tu tienda estará lista en el siguiente paso</p>
 
 
@@ -263,8 +263,8 @@ export default function RegisterPage() {
                                 )}
 
                                 {/* Submit Button */}
-                                <div className="text-center py-2">
-                                    <p className="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em]">
+                                <div className="text-center py-2 flex flex-col sm:block gap-1 max-w-full overflow-hidden">
+                                    <p className="text-[9px] sm:text-[10px] font-black uppercase text-slate-400 tracking-wider truncate whitespace-normal">
                                         Sin tarjeta · Cancelable · Acceso inmediato
                                     </p>
                                 </div>
