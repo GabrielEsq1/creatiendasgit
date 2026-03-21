@@ -36,7 +36,7 @@ const BlogSectionEN = () => {
                 if (scrollLeft + clientWidth >= scrollWidth - 2) {
                     scrollRef.current.scrollTo({ left: 0, behavior: 'smooth' });
                 } else {
-                    scrollRef.current.scrollLeft += 0.2;
+                    scrollRef.current.scrollLeft += 0.7;
                 }
             }
             animationFrameRef.current = requestAnimationFrame(drift);
