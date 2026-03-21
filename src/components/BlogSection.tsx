@@ -38,7 +38,7 @@ const BlogSection = () => {
                 if (scrollLeft + clientWidth >= scrollWidth - 2) {
                     scrollRef.current.scrollTo({ left: 0, behavior: 'smooth' });
                 } else {
-                    scrollRef.current.scrollLeft += 0.3;
+                    scrollRef.current.scrollLeft += 0.2;
                 }
             }
             animationFrameRef.current = requestAnimationFrame(drift);
@@ -96,7 +96,7 @@ const BlogSection = () => {
             <div className="absolute bottom-0 left-0 w-96 h-96 bg-emerald-500/5 rounded-full blur-[100px] pointer-events-none" />
 
             <div className="max-w-7xl mx-auto px-4 md:px-8">
-                <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
+                <div className="flex flex-col mb-12">
                     <div className="text-left relative z-10">
                         <div className="inline-block bg-green-500/10 text-green-400 px-4 py-2 rounded-full text-xs font-black uppercase tracking-widest mb-6 border border-green-500/20">
                             Blog & Recursos
@@ -116,21 +116,21 @@ const BlogSection = () => {
                     onMouseEnter={() => setIsHovered(true)}
                     onMouseLeave={() => setIsHovered(false)}
                 >
-                    {/* Navigation Arrows OVER the cards - ALWAYS VISIBLE but subtle */}
-                    <div className="hidden md:block">
+                    {/* Navigation Arrows ABOVE THE CARDS - Left and Right */}
+                    <div className="hidden md:flex justify-between items-center mb-8 relative z-20">
                         <button
                             onClick={() => scroll('left')}
-                            className="absolute left-4 top-1/2 -translate-y-1/2 z-30 w-16 h-16 rounded-full bg-slate-900/60 backdrop-blur-xl border border-white/10 flex items-center justify-center text-white hover:bg-green-500 hover:text-black hover:border-green-400 transition-all duration-300 shadow-2xl group-hover/slider:scale-110 active:scale-95"
+                            className="w-16 h-16 rounded-2xl bg-slate-900 border border-white/10 flex items-center justify-center text-white hover:bg-green-500 hover:text-black hover:border-green-400 transition-all duration-300 shadow-2xl hover:scale-110 active:scale-95 group/nav"
                             aria-label="Anterior"
                         >
-                            <ChevronLeft className="w-8 h-8" />
+                            <ChevronLeft className="w-8 h-8 group-hover/nav:scale-110 transition-transform" />
                         </button>
                         <button
                             onClick={() => scroll('right')}
-                            className="absolute right-4 top-1/2 -translate-y-1/2 z-30 w-16 h-16 rounded-full bg-slate-900/60 backdrop-blur-xl border border-white/10 flex items-center justify-center text-white hover:bg-green-500 hover:text-black hover:border-green-400 transition-all duration-300 shadow-2xl group-hover/slider:scale-110 active:scale-95"
+                            className="w-16 h-16 rounded-2xl bg-slate-900 border border-white/10 flex items-center justify-center text-white hover:bg-green-500 hover:text-black hover:border-green-400 transition-all duration-300 shadow-2xl hover:scale-110 active:scale-95 group/nav"
                             aria-label="Siguiente"
                         >
-                            <ChevronRight className="w-8 h-8" />
+                            <ChevronRight className="w-8 h-8 group-hover/nav:scale-110 transition-transform" />
                         </button>
                     </div>
 
