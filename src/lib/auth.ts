@@ -109,6 +109,7 @@ export const authOptions: NextAuthOptions = {
     pages: {
         signIn: "/auth/login",
         error: "/auth/login",
+        signOut: "/auth/logout",
     },
     events: {
         async createUser({ user }) {
