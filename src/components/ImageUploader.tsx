@@ -31,7 +31,7 @@ export default function ImageUploader({
 
     const handleCameraClick = () => {
         if (multiple && currentImages.length >= maxImages) {
-            setErrorMsg(`Puedes subir m\u00e1ximo ${maxImages} fotos por producto`);
+            setErrorMsg(`Puedes subir máximo ${maxImages} fotos por producto`);
             return;
         }
         setIsCameraOpen(true);
@@ -39,7 +39,7 @@ export default function ImageUploader({
 
     const handleFileClick = () => {
         if (multiple && currentImages.length >= maxImages) {
-            setErrorMsg(`Puedes subir m\u00e1ximo ${maxImages} fotos por producto`);
+            setErrorMsg(`Puedes subir máximo ${maxImages} fotos por producto`);
             return;
         }
         fileInputRef.current?.click();
@@ -53,7 +53,7 @@ export default function ImageUploader({
         if (multiple) {
             const newTotal = currentImages.length + files.length;
             if (newTotal > maxImages) {
-                setErrorMsg(`Puedes subir m\u00e1ximo ${maxImages} fotos por producto`);
+                setErrorMsg(`Puedes subir máximo ${maxImages} fotos por producto`);
                 if (fileInputRef.current) fileInputRef.current.value = '';
                 return;
             }
@@ -143,7 +143,7 @@ export default function ImageUploader({
                             {currentImages.length} / {maxImages} fotos
                         </span>
                         <span className="text-[10px] text-blue-500 font-medium">
-                            Puedes subir hasta {maxImages} fotos (manten presionado para seleccionar varias)
+                            Puedes subir hasta {maxImages} fotos (mantén presionado para seleccionar varias)
                         </span>
                     </div>
                     {errorMsg && (
@@ -162,7 +162,7 @@ export default function ImageUploader({
                     className={`flex-1 text-white py-2 px-3 rounded-xl flex items-center justify-center gap-2 font-bold transition-all active:scale-95 ${isProcessing ? 'bg-blue-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700 shadow-lg shadow-blue-200'
                         }`}
                 >
-                    \uD83D\uDCF7 <span className="text-sm">C\u00e1mara</span>
+                    📸 <span className="text-sm">Cámara</span>
                 </button>
                 <button
                     type="button"
@@ -171,13 +171,13 @@ export default function ImageUploader({
                     className={`flex-1 text-gray-800 py-2 px-3 rounded-xl flex items-center justify-center gap-2 font-bold transition-all active:scale-95 ${isProcessing ? 'bg-gray-200 cursor-not-allowed' : 'bg-white border-2 border-gray-200 hover:border-blue-400 hover:text-blue-600'
                         }`}
                 >
-                    \uD83D\uDCC1 <span className="text-sm">Galer\u00eda</span>
+                    📁 <span className="text-sm">Galería</span>
                 </button>
             </div>
 
             {isProcessing && (
                 <div className="mt-3 py-2 bg-blue-50 rounded-lg text-center text-xs text-blue-600 font-bold animate-pulse flex items-center justify-center gap-2">
-                    \u23F3 Procesando im\u00e1genes...
+                    ⏳ Procesando imágenes...
                 </div>
             )}
 

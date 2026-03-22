@@ -547,7 +547,7 @@ function BuilderContent() {
                     <div className="form-group"><label>Etiquetas (separadas por coma)</label><input value={prodForm.tags} onChange={e => setProdForm({ ...prodForm, tags: e.target.value })} placeholder="Ej: Running, Outdoor, Oferta" /></div>
                     <div className="form-group">
                         <ImageUploader
-                            label="Fotos del Producto (M\u00e1ximo 5)"
+                            label="Fotos del Producto (Máximo 5)"
                             currentImages={prodForm.images}
                             multiple={true}
                             maxImages={5}
@@ -610,7 +610,7 @@ function BuilderContent() {
                                     )}
                                     <div>
                                         <strong>{p.name}</strong><br />
-                                        <small>{p.category} ┬À ${p.price}</small>
+                                        <small>{p.category} · ${p.price}</small>
                                     </div>
                                 </div>
                                 <div style={{ display: 'flex', gap: '0.35rem' }}>
