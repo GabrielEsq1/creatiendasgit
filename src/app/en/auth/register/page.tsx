@@ -92,213 +92,148 @@ export default function RegisterPageEN() {
     };
 
     return (
-        <div className="min-h-screen bg-white text-slate-900 selection:bg-green-500/30 overflow-x-hidden pt-20">
-            <div className="container mx-auto px-4 py-8 relative z-10">
-                <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center max-w-7xl mx-auto">
+        <div className="min-h-screen bg-white md:bg-slate-50 text-slate-900 selection:bg-green-500/30 overflow-x-hidden pt-20 flex flex-col items-center">
+            
+            {/* --- MOBILE LAYOUT (FROM SCRATCH) --- */}
+            <div className="w-full max-w-[400px] mx-auto flex flex-col lg:hidden px-6 pt-6 pb-12 bg-white relative z-20">
+                <div className="text-center mb-10">
+                    <h1 className="text-3xl font-black text-slate-900 mb-1">Create <span className="text-green-600">free</span> account</h1>
+                    <p className="text-slate-500 text-[11px] font-bold uppercase tracking-widest mt-2">Your store will be ready in the next step</p>
+                </div>
 
-                    {/* Left Column: Info & Value Prop */}
-                    <div className="space-y-10 lg:pr-12 order-2 lg:order-1">
-                        {/* Main Message */}
-                        <div className="space-y-4">
-                            <h1 className="text-4xl md:text-6xl font-black text-slate-900 leading-tight">
-                                Create your online store in <span className="text-green-600">less than 2 minutes</span>
-                            </h1>
-                            <p className="text-xl text-slate-600 leading-relaxed">
-                                In the next step your store will be ready to share via WhatsApp. <strong className="text-slate-900">No card needed.</strong>
-                            </p>
-                        </div>
-
-                        {/* Benefits */}
-                        <ul className="space-y-4">
-                            <li className="flex items-start gap-3">
-                                <span className="text-2xl">⚡</span>
-                                <div>
-                                    <strong className="text-slate-900 text-lg font-bold">Publish products in minutes</strong>
-                                    <p className="text-slate-600">No complicated settings</p>
-                                </div>
-                            </li>
-                            <li className="flex items-start gap-3">
-                                <span className="text-2xl">📲</span>
-                                <div>
-                                    <strong className="text-slate-900 text-lg font-bold">Receive orders via WhatsApp</strong>
-                                    <p className="text-slate-600">Connect directly with your customers</p>
-                                </div>
-                            </li>
-                            <li className="flex items-start gap-3">
-                                <span className="text-2xl">💰</span>
-                                <div>
-                                    <strong className="text-slate-900 text-lg font-bold">0% commissions</strong>
-                                    <p className="text-slate-600">All the money is yours</p>
-                                </div>
-                            </li>
-                        </ul>
-
-                        {/* Social Proof (Real-time activity) */}
-                        <div className="pt-4 border-t border-slate-100">
-                            <SocialProofSection />
-                        </div>
-
-                        {/* Video Demo */}
-                        <div>
-                            <p className="text-sm font-bold text-slate-600 mb-3 uppercase tracking-widest flex items-center gap-2">
-                                <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-                                It's that easy
-                            </p>
-                            <div className="relative rounded-3xl overflow-hidden shadow-2xl border-4 border-slate-200 bg-slate-100" style={{ paddingBottom: '56.25%' }}>
-                                <iframe
-                                    id="demoVideo"
-                                    className="absolute top-0 left-0 w-full h-full"
-                                    src="https://www.youtube.com/embed/XQQfQYZ0Phk?enablejsapi=1&autoplay=1&mute=1&controls=0&rel=0&modestbranding=1&loop=1&playlist=XQQfQYZ0Phk"
-                                    frameBorder="0"
-                                    allow="autoplay; encrypted-media"
-                                    allowFullScreen
-                                />
-                            </div>
+                <form onSubmit={handleRegister} className="space-y-4">
+                    <div className="space-y-1.5">
+                        <label className="text-[11px] font-bold text-slate-500 ml-1 uppercase tracking-wider">Email Address</label>
+                        <div className="relative group/input">
+                            <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within/input:text-green-600 transition-colors" />
+                            <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} className="w-full pl-11 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-base text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-600/50 transition-all shadow-inner" placeholder="you@business.com" />
                         </div>
                     </div>
 
-                    {/* RIGHT COLUMN - Register Form */}
-                    <div className="order-1 lg:order-2">
-                        {/* WhatsApp Help Button */}
-                        <div className="mb-6 bg-white rounded-[2rem] p-6 shadow-lg border border-slate-100 relative overflow-hidden group">
-                            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 relative z-10">
-                                <div className="flex-shrink-0">
-                                    <div className="w-12 h-12 sm:w-14 sm:h-14 bg-green-500/10 rounded-full flex items-center justify-center">
-                                        <svg className="w-7 h-7 sm:w-8 sm:h-8 text-green-500" fill="currentColor" viewBox="0 0 24 24">
-                                            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z" />
-                                        </svg>
-                                    </div>
-                                </div>
-                                <div className="flex-1 min-w-0">
-                                    <p className="text-slate-900 font-black text-base sm:text-lg mb-1">Have any questions?</p>
-                                    <p className="text-slate-500 text-xs sm:text-sm mb-3 font-medium">Write me and I'll help you in less than 1 minute</p>
-                                    <a
-                                        href="https://wa.me/573026687991?text=Hi!%20I%20have%20a%20question%20about%20creating%20my%20store"
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="inline-flex items-center gap-2 bg-green-500 text-white font-bold py-2.5 px-5 rounded-xl text-sm hover:bg-green-600 transition-all shadow-lg hover:shadow-green-500/20 active:scale-95"
-                                    >
-                                        Chat with Gabriel
-                                    </a>
-                                </div>
-                            </div>
+                    <div className="space-y-1.5">
+                        <label className="text-[11px] font-bold text-slate-500 ml-1 uppercase tracking-wider">Password</label>
+                        <div className="relative group/input">
+                            <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within/input:text-green-600 transition-colors" />
+                            <input type="password" required value={password} onChange={(e) => setPassword(e.target.value)} className="w-full pl-11 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-base text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-600/50 transition-all shadow-inner" placeholder="••••••••" />
                         </div>
+                    </div>
 
-                        <div className="bg-white rounded-[2rem] sm:rounded-[2.5rem] shadow-2xl border border-slate-100 p-6 sm:p-8 md:p-10 mx-auto w-full max-w-[480px] lg:max-w-none relative overflow-hidden group/form hover:border-green-500/30 transition-all duration-500">
-                            <div className="absolute top-0 right-0 w-32 h-32 bg-green-500/5 rounded-full blur-3xl -mr-10 -mt-10 pointer-events-none group-hover/form:bg-green-500/10 transition-all"></div>
-                            <h2 className="text-2xl sm:text-3xl font-black text-slate-900 mb-2 relative z-10">Create <span className="text-green-600">free</span> account</h2>
-                            <p className="text-sm sm:text-base text-slate-500 mb-8 font-medium">Your store will be ready in the next step</p>
+                    {error && <div className="p-3 bg-rose-50 border border-rose-100 rounded-xl text-xs font-bold text-rose-600 flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-rose-600" />{error}</div>}
 
-                            <form onSubmit={handleRegister} className="space-y-5">
-                                {/* Email Input */}
-                                <div>
-                                    <div>
-                                        <label htmlFor="email" className="block text-xs font-bold text-slate-500 mb-2 uppercase tracking-wider ml-1">
-                                            Email Address
-                                        </label>
-                                        <div className="relative group/input">
-                                            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                                                <Mail className="h-5 w-5 text-slate-400 group-focus-within/input:text-green-600 transition-colors" />
-                                            </div>
-                                            <input
-                                                id="email"
-                                                name="email"
-                                                type="email"
-                                                required
-                                                autoComplete="email"
-                                                className="block w-full pl-12 pr-4 py-4 bg-slate-50 border border-slate-200 rounded-2xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500/50 transition-all text-lg shadow-inner"
-                                                placeholder="you@business.com"
-                                                value={email}
-                                                onChange={(e) => setEmail(e.target.value)}
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
+                    <div className="text-center py-1 mt-2">
+                        <p className="text-[9.5px] font-black uppercase text-slate-400 tracking-wider">No card · Cancelable · Instant access</p>
+                    </div>
 
-                                {/* Password Input */}
-                                <div>
-                                    <div>
-                                        <label htmlFor="password" className="block text-xs font-bold text-slate-500 mb-2 uppercase tracking-wider ml-1">
-                                            Password
-                                        </label>
-                                        <div className="relative group/input">
-                                            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                                                <Lock className="h-5 w-5 text-slate-400 group-focus-within/input:text-green-600 transition-colors" />
-                                            </div>
-                                            <input
-                                                id="password"
-                                                name="password"
-                                                type="password"
-                                                required
-                                                autoComplete="new-password"
-                                                className="block w-full pl-12 pr-4 py-4 bg-slate-50 border border-slate-200 rounded-2xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500/50 transition-all text-lg shadow-inner"
-                                                placeholder="••••••••"
-                                                value={password}
-                                                onChange={(e) => setPassword(e.target.value)}
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
+                    <button type="submit" disabled={loading} className="w-full bg-green-500 hover:bg-green-600 text-white text-sm font-black py-4 rounded-2xl transition-all shadow-xl shadow-green-200 active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2">
+                        {loading ? <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : <>Get Started Now <ArrowRight className="w-4 h-4" /></>}
+                    </button>
+                    
+                    <p className="text-center text-xs text-slate-500 mt-4 opacity-80">By continuing, your store is created automatically</p>
+                </form>
 
-                                {/* Error Message */}
-                                {error && (
-                                    <div className="bg-red-50 border-2 border-red-200 text-red-600 px-4 py-3 rounded-xl text-sm font-medium">
-                                        {error}
-                                    </div>
-                                )}
+                <div className="relative my-10">
+                    <div className="absolute inset-0 flex items-center">
+                        <div className="w-full border-t border-slate-100"></div>
+                    </div>
+                    <div className="relative flex justify-center text-sm">
+                        <span className="px-4 bg-white text-slate-500 font-bold uppercase tracking-widest text-[10px]">Already have an account?</span>
+                    </div>
+                </div>
 
-                                {/* Submit Button */}
-                                <div className="text-center py-2 flex flex-col sm:block gap-1 max-w-full overflow-hidden">
-                                    <p className="text-[9px] sm:text-[10px] font-black uppercase text-slate-400 tracking-wider truncate whitespace-normal">
-                                        No card · Cancelable · Instant access
-                                    </p>
-                                </div>
+                <Link href="/en/auth/login" className="block w-full text-center py-3.5 px-4 border border-slate-200 rounded-2xl font-black text-slate-700 hover:bg-slate-50 transition-all text-base mb-6 shadow-sm active:scale-95">
+                    Log In
+                </Link>
 
-                                <button
-                                    type="submit"
-                                    disabled={loading}
-                                    className="w-full relative group/btn h-16 bg-green-500 rounded-2xl overflow-hidden transition-all hover:scale-[1.02] active:scale-[0.98] shadow-2xl shadow-green-200 disabled:opacity-70"
-                                >
-                                    <div className="absolute inset-0 bg-gradient-to-r from-green-600 to-emerald-600 transition-opacity group-hover/btn:opacity-100 opacity-0" />
-                                    <div className="relative flex items-center justify-center gap-3 text-white font-black text-lg">
-                                        {loading ? (
-                                            <div className="w-6 h-6 border-3 border-white/30 border-t-white rounded-full animate-spin"></div>
-                                        ) : (
-                                            <>
-                                                Get Started Now
-                                                <ArrowRight className="w-5 h-5" />
-                                            </>
-                                        )}
-                                    </div>
-                                </button>
-                                <p className="text-center text-sm text-gray-500 mt-4">
-                                    By continuing, your store is created automatically
-                                </p>
-                            </form>
+                <p className="text-center text-slate-400 text-[10px] font-medium mt-auto">
+                    © {new Date().getFullYear()} Creatiendas. All rights reserved.
+                </p>
+            </div>
 
-                            {/* Divider */}
-                            <div className="relative my-10">
-                                <div className="absolute inset-0 flex items-center">
-                                    <div className="w-full border-t border-slate-100"></div>
-                                </div>
-                                <div className="relative flex justify-center text-sm">
-                                    <span className="px-4 bg-white text-slate-500 font-bold uppercase tracking-widest">Already have an account?</span>
-                                </div>
-                            </div>
-
-                            <Link
-                                href="/en/auth/login"
-                                className="block w-full text-center py-4 px-4 border border-slate-200 rounded-2xl font-black text-slate-700 hover:bg-slate-50 hover:border-slate-300 transition-all text-lg"
-                            >
-                                Log In
-                            </Link>
-                        </div>
-
-                        <p className="text-center text-slate-500 mt-6 font-medium">
-                            © {new Date().getFullYear()} Creatiendas. All rights reserved.
+            {/* --- DESKTOP LAYOUT --- */}
+            <div className="hidden lg:grid container mx-auto px-4 py-8 relative z-10 max-w-7xl grid-cols-2 gap-12 items-center">
+                <div className="space-y-10 lg:pr-12">
+                    <div className="space-y-4">
+                        <h1 className="text-4xl md:text-6xl font-black text-slate-900 leading-tight">
+                            Create your online store in <span className="text-green-600">less than 2 minutes</span>
+                        </h1>
+                        <p className="text-xl text-slate-600 leading-relaxed">
+                            In the next step your store will be ready to share via WhatsApp. <strong className="text-slate-900">No card needed.</strong>
                         </p>
                     </div>
+                    <ul className="space-y-4">
+                        <li className="flex items-start gap-3">
+                            <span className="text-2xl">⚡</span>
+                            <div>
+                                <strong className="text-slate-900 text-lg font-bold">Publish products in minutes</strong>
+                                <p className="text-slate-600">No complicated settings</p>
+                            </div>
+                        </li>
+                        <li className="flex items-start gap-3">
+                            <span className="text-2xl">📲</span>
+                            <div>
+                                <strong className="text-slate-900 text-lg font-bold">Receive orders via WhatsApp</strong>
+                                <p className="text-slate-600">Connect directly with your customers</p>
+                            </div>
+                        </li>
+                        <li className="flex items-start gap-3">
+                            <span className="text-2xl">💰</span>
+                            <div>
+                                <strong className="text-slate-900 text-lg font-bold">0% commissions</strong>
+                                <p className="text-slate-600">All the money is yours</p>
+                            </div>
+                        </li>
+                    </ul>
+                    <div className="pt-4 border-t border-slate-100">
+                        <SocialProofSection />
+                    </div>
+                    <div>
+                        <p className="text-sm font-bold text-slate-600 mb-3 uppercase tracking-widest flex items-center gap-2">
+                            <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse" /> It's that easy
+                        </p>
+                        <div className="relative rounded-3xl overflow-hidden shadow-2xl border-4 border-slate-200 bg-slate-100" style={{ paddingBottom: '56.25%' }}>
+                            <iframe id="demoVideo" className="absolute top-0 left-0 w-full h-full" src="https://www.youtube.com/embed/XQQfQYZ0Phk?enablejsapi=1&autoplay=1&mute=1&controls=0&rel=0&modestbranding=1&loop=1&playlist=XQQfQYZ0Phk" frameBorder="0" allow="autoplay; encrypted-media" allowFullScreen />
+                        </div>
+                    </div>
+                </div>
 
+                <div className="flex justify-end">
+                    <div className="bg-white rounded-[2.5rem] shadow-2xl border border-slate-100 p-10 max-w-[480px] w-full relative overflow-hidden group">
+                        <div className="absolute top-0 right-0 w-32 h-32 bg-green-500/5 rounded-full blur-3xl -mr-10 -mt-10 pointer-events-none group-hover:bg-green-500/10 transition-all"></div>
+                        <h2 className="text-3xl font-black text-slate-900 mb-2 relative z-10">Create <span className="text-green-600">free</span> account</h2>
+                        <p className="text-base text-slate-500 mb-8 font-medium">Your store will be ready in the next step</p>
+
+                        <form onSubmit={handleRegister} className="space-y-4">
+                            <div className="space-y-1.5">
+                                <label className="text-xs font-bold text-slate-500 ml-1 uppercase tracking-wider">Email Address</label>
+                                <div className="relative group/input">
+                                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within/input:text-green-600 transition-colors" />
+                                    <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} className="w-full pl-11 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-base text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-600/50 transition-all shadow-inner" placeholder="you@business.com" />
+                                </div>
+                            </div>
+                            <div className="space-y-1.5">
+                                <label className="text-xs font-bold text-slate-500 ml-1 uppercase tracking-wider">Password</label>
+                                <div className="relative group/input">
+                                    <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within/input:text-green-600 transition-colors" />
+                                    <input type="password" required value={password} onChange={(e) => setPassword(e.target.value)} className="w-full pl-11 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-base text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-600/50 transition-all shadow-inner" placeholder="••••••••" />
+                                </div>
+                            </div>
+                            {error && <div className="p-3 bg-rose-50 border border-rose-100 rounded-xl text-xs font-bold text-rose-600 flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-rose-600" />{error}</div>}
+                            <div className="text-center py-2"><p className="text-[10px] font-black uppercase text-slate-400 tracking-wider">No card · Cancelable · Instant access</p></div>
+                            <button type="submit" disabled={loading} className="w-full bg-green-500 hover:bg-green-600 text-white text-sm font-black py-4 rounded-2xl transition-all shadow-xl shadow-green-200 active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2">
+                                {loading ? <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : <>Get Started Now <ArrowRight className="w-4 h-4" /></>}
+                            </button>
+                            <p className="text-center text-sm text-gray-500 mt-4">By continuing, your store is created automatically</p>
+                        </form>
+
+                        <div className="relative my-10">
+                            <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-slate-100"></div></div>
+                            <div className="relative flex justify-center text-sm"><span className="px-4 bg-white text-slate-500 font-bold uppercase tracking-widest">Already have an account?</span></div>
+                        </div>
+
+                        <Link href="/en/auth/login" className="block w-full text-center py-4 px-4 border border-slate-200 rounded-2xl font-black text-slate-700 hover:bg-slate-50 transition-all text-lg">
+                            Log In
+                        </Link>
+                    </div>
                 </div>
             </div>
         </div>

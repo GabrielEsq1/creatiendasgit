@@ -107,222 +107,150 @@ export default function RegisterPage() {
     };
 
     return (
-        <div className="min-h-screen bg-white text-slate-900 selection:bg-green-500/30 overflow-x-hidden pt-20">
-            <div className="container mx-auto px-4 py-8 relative z-10">
-                <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center max-w-7xl mx-auto">
+        <div className="min-h-screen bg-white md:bg-slate-50 text-slate-900 selection:bg-green-500/30 overflow-x-hidden pt-20 flex flex-col items-center">
+            
+            {/* --- MOBILE LAYOUT (FROM SCRATCH) --- */}
+            <div className="w-full max-w-[400px] mx-auto flex flex-col lg:hidden px-6 pt-6 pb-12 bg-white relative z-20">
+                <div className="text-center mb-10">
+                    <h1 className="text-3xl font-black text-slate-900 mb-1">Crear cuenta <span className="text-green-600">gratis</span></h1>
+                    <p className="text-slate-500 text-[11px] font-bold uppercase tracking-widest mt-2">Tu tienda estará lista en el siguiente paso</p>
+                </div>
 
-                    {/* Left Column: Info & Value Prop */}
-                    <div className="space-y-10 lg:pr-12 order-2 lg:order-1">
-                        {/* Title Section (Optimized for 2026) */}
-                        <div className="space-y-4">
-                            <h1 className="text-4xl md:text-6xl font-black text-slate-900 leading-tight">
-                                Crea tu tienda online en <span className="text-green-600">menos de 2 minutos</span>
-                            </h1>
-                            <p className="text-xl text-slate-600 leading-relaxed">
-                                En el siguiente paso tu tienda ya estará lista para compartir por WhatsApp. <strong className="text-slate-900">No necesitas tarjeta.</strong>
-                            </p>
-                        </div>
-
-                        {/* Benefits */}
-                        <ul className="space-y-4">
-                            <li className="flex items-start gap-3">
-                                <span className="text-2xl">⚡</span>
-                                <div>
-                                    <strong className="text-slate-900 text-lg font-bold">Publica productos en minutos</strong>
-                                    <p className="text-slate-600">Sin configuraciones complicadas</p>
-                                </div>
-                            </li>
-                            <li className="flex items-start gap-3">
-                                <span className="text-2xl">📲</span>
-                                <div>
-                                    <strong className="text-slate-900 text-lg font-bold">Recibe pedidos por WhatsApp</strong>
-                                    <p className="text-slate-600">Conecta directo con tus clientes</p>
-                                </div>
-                            </li>
-                            <li className="flex items-start gap-3">
-                                <span className="text-2xl">💰</span>
-                                <div>
-                                    <strong className="text-slate-900 text-lg font-bold">0% comisiones</strong>
-                                    <p className="text-slate-600">Todo el dinero es tuyo</p>
-                                </div>
-                            </li>
-                        </ul>
-
-                        {/* Social Proof (Real-time activity) */}
-                        <div className="pt-4 border-t border-slate-100">
-                            <SocialProofSection />
-                        </div>
-
-                        {/* Video Demo */}
-                        <div>
-                            <p className="text-sm font-bold text-slate-600 mb-3 uppercase tracking-widest flex items-center gap-2">
-                                <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-                                Así de fácil
-                            </p>
-                            <div className="relative rounded-3xl overflow-hidden shadow-2xl border-4 border-slate-200 bg-slate-100" style={{ paddingBottom: '56.25%' }}>
-                                <iframe
-                                    id="demoVideo"
-                                    className="absolute top-0 left-0 w-full h-full"
-                                    src="https://www.youtube.com/embed/XQQfQYZ0Phk?enablejsapi=1&autoplay=1&mute=1&controls=0&rel=0&modestbranding=1&loop=1&playlist=XQQfQYZ0Phk"
-                                    frameBorder="0"
-                                    allow="autoplay; encrypted-media"
-                                    allowFullScreen
-                                />
-                            </div>
+                <form onSubmit={handleRegister} className="space-y-4">
+                    <div className="space-y-1.5">
+                        <label className="text-[11px] font-bold text-slate-500 ml-1 uppercase tracking-wider">Correo Electrónico</label>
+                        <div className="relative group/input">
+                            <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within/input:text-green-600 transition-colors" />
+                            <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} className="w-full pl-11 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-base text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-600/50 transition-all shadow-inner" placeholder="tu@negocio.com" />
                         </div>
                     </div>
 
-                    {/* RIGHT COLUMN - Register Form */}
-                    <div className="order-1 lg:order-2">
-                        {/* WhatsApp Help Button - Conversion Bottleneck Solution (Commented out for focus)
-                        <div className="mb-6 bg-white rounded-[2rem] p-6 shadow-lg border border-slate-100 relative overflow-hidden group">
-                           ... content ...
+                    <div className="space-y-1.5">
+                        <label className="text-[11px] font-bold text-slate-500 ml-1 uppercase tracking-wider">Contraseña</label>
+                        <div className="relative group/input">
+                            <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within/input:text-green-600 transition-colors" />
+                            <input type="password" required value={password} onChange={(e) => setPassword(e.target.value)} className="w-full pl-11 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-base text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-600/50 transition-all shadow-inner" placeholder="••••••••" />
                         </div>
-                        */}
+                    </div>
 
-                        <div className="bg-white rounded-[2rem] sm:rounded-[2.5rem] shadow-2xl border border-slate-100 p-6 sm:p-8 md:p-10 mx-auto w-full max-w-[480px] lg:max-w-none relative overflow-hidden group/form hover:border-green-500/30 transition-all duration-500">
-                            <div className="absolute top-0 right-0 w-32 h-32 bg-green-500/5 rounded-full blur-3xl -mr-10 -mt-10 pointer-events-none group-hover/form:bg-green-500/10 transition-all"></div>
-                            <h2 className="text-2xl sm:text-3xl font-black text-slate-900 mb-2 relative z-10">Crear cuenta <span className="text-green-600">gratis</span></h2>
-                            <p className="text-sm sm:text-base text-slate-500 mb-8 font-medium">Tu tienda estará lista en el siguiente paso</p>
+                    {error && <div className="p-3 bg-rose-50 border border-rose-100 rounded-xl text-xs font-bold text-rose-600 flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-rose-600" />{error}</div>}
 
+                    <div className="text-center py-1 mt-2">
+                        <p className="text-[9.5px] font-black uppercase text-slate-400 tracking-wider">Sin tarjeta · Cancelable · Acceso inmediato</p>
+                    </div>
 
-                            <form onSubmit={handleRegister} className="space-y-5">
-                                {/* Social Login - Disabled for now */}
-                                {/* <button
-                                    type="button"
-                                    onClick={() => signIn("google", { callbackUrl: "/dashboard" })}
-                                    className="w-full flex items-center justify-center gap-3 bg-white border border-slate-200 text-slate-700 font-bold py-3.5 rounded-2xl hover:bg-slate-50 hover:border-slate-300 transition-all shadow-sm"
-                                >
-                                    <Chrome className="w-5 h-5 text-slate-900" />
-                                    Continuar con Google
-                                </button>
+                    <button type="submit" disabled={loading} className="w-full bg-green-500 hover:bg-green-600 text-white text-sm font-black py-4 rounded-2xl transition-all shadow-xl shadow-green-200 active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2">
+                        {loading ? <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : <>¡Empezar ahora! <ArrowRight className="w-4 h-4" /></>}
+                    </button>
+                    
+                    <p className="text-center text-xs text-slate-500 mt-4 opacity-80">Al continuar, tu tienda se crea automáticamente</p>
+                </form>
 
-                                <div className="relative my-4">
-                                    <div className="absolute inset-0 flex items-center">
-                                        <div className="w-full border-t border-slate-100"></div>
-                                    </div>
-                                    <div className="relative flex justify-center text-xs">
-                                        <span className="px-2 bg-white text-slate-400 font-bold uppercase tracking-wider">O usa tu correo</span>
-                                    </div>
-                                </div> */}
-                                {/* Email Input */}
-                                <div>
-                                    <div>
-                                        <label htmlFor="email" className="block text-xs font-bold text-slate-500 mb-2 uppercase tracking-wider ml-1">
-                                            Correo Electrónico
-                                        </label>
-                                        <div className="relative group/input">
-                                            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                                                <Mail className="h-5 w-5 text-slate-400 group-focus-within/input:text-green-600 transition-colors" />
-                                            </div>
-                                            <input
-                                                id="email"
-                                                name="email"
-                                                type="email"
-                                                required
-                                                autoComplete="email"
-                                                className="block w-full pl-12 pr-4 py-4 bg-slate-50 border border-slate-200 rounded-2xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500/50 transition-all text-lg shadow-inner"
-                                                placeholder="tu@negocio.com"
-                                                value={email}
-                                                onChange={(e) => setEmail(e.target.value)}
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
+                <div className="relative my-10">
+                    <div className="absolute inset-0 flex items-center">
+                        <div className="w-full border-t border-slate-100"></div>
+                    </div>
+                    <div className="relative flex justify-center text-sm">
+                        <span className="px-4 bg-white text-slate-500 font-bold uppercase tracking-widest text-[10px]">¿Ya tienes cuenta?</span>
+                    </div>
+                </div>
 
-                                {/* Password Input */}
-                                <div>
-                                    <div>
-                                        <label htmlFor="password" className="block text-xs font-bold text-slate-500 mb-2 uppercase tracking-wider ml-1">
-                                            Contraseña
-                                        </label>
-                                        <div className="relative group/input">
-                                            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                                                <Lock className="h-5 w-5 text-slate-400 group-focus-within/input:text-green-600 transition-colors" />
-                                            </div>
-                                            <input
-                                                id="password"
-                                                name="password"
-                                                type="password"
-                                                required
-                                                autoComplete="new-password"
-                                                className="block w-full pl-12 pr-4 py-4 bg-slate-50 border border-slate-200 rounded-2xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500/50 transition-all text-lg shadow-inner"
-                                                placeholder="••••••••"
-                                                value={password}
-                                                onChange={(e) => setPassword(e.target.value)}
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
+                <Link href="/auth/login" className="block w-full text-center py-3.5 px-4 border border-slate-200 rounded-2xl font-black text-slate-700 hover:bg-slate-50 transition-all text-base mb-6 shadow-sm active:scale-95">
+                    Iniciar Sesión
+                </Link>
 
-                                {/* Error Message */}
-                                {error && (
-                                    <div className="bg-red-50 border-2 border-red-200 text-red-600 px-4 py-3 rounded-xl text-sm font-medium">
-                                        {error}
-                                    </div>
-                                )}
+                <p className="text-center text-slate-400 text-[10px] font-medium mt-auto">
+                    © {new Date().getFullYear()} Creatiendas. Todos los derechos reservados.
+                </p>
+            </div>
 
-                                {/* Submit Button */}
-                                <div className="text-center py-2 flex flex-col sm:block gap-1 max-w-full overflow-hidden">
-                                    <p className="text-[9px] sm:text-[10px] font-black uppercase text-slate-400 tracking-wider truncate whitespace-normal">
-                                        Sin tarjeta · Cancelable · Acceso inmediato
-                                    </p>
-                                </div>
-
-                                <button
-                                    type="submit"
-                                    disabled={loading}
-                                    className="w-full relative group/btn h-16 bg-green-500 rounded-2xl overflow-hidden transition-all hover:scale-[1.02] active:scale-[0.98] shadow-2xl shadow-green-200 disabled:opacity-70"
-                                >
-                                    <div className="absolute inset-0 bg-gradient-to-r from-green-600 to-emerald-600 transition-opacity group-hover/btn:opacity-100 opacity-0" />
-                                    <div className="relative flex items-center justify-center gap-3 text-white font-black text-lg">
-                                        {loading ? (
-                                            <div className="w-6 h-6 border-3 border-white/30 border-t-white rounded-full animate-spin"></div>
-                                        ) : (
-                                            <>
-                                                ¡Empezar ahora!
-                                                <ArrowRight className="w-5 h-5" />
-                                            </>
-                                        )}
-                                    </div>
-                                </button>
-                                <p className="text-center text-sm text-gray-500 mt-4">
-                                    Al continuar, tu tienda se crea automáticamente
-                                </p>
-                                <div className="flex items-center justify-center gap-2 text-xs font-medium text-slate-500 bg-slate-50 py-2 rounded-lg border border-slate-100/50">
-                                    <span className="relative flex h-2 w-2">
-                                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                                        <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
-                                    </span>
-                                    🔥 14 personas crearon su tienda en la última hora
-                                </div>
-                            </form>
-
-                            {/* Divider */}
-                            <div className="relative my-10">
-                                <div className="absolute inset-0 flex items-center">
-                                    <div className="w-full border-t border-slate-100"></div>
-                                </div>
-                                <div className="relative flex justify-center text-sm">
-                                    <span className="px-4 bg-white text-slate-500 font-bold uppercase tracking-widest">¿Ya tienes cuenta?</span>
-                                </div>
-                            </div>
-
-                            <Link
-                                href="/auth/login"
-                                className="block w-full text-center py-4 px-4 border border-slate-200 rounded-2xl font-black text-slate-700 hover:bg-slate-50 hover:border-slate-300 transition-all text-lg"
-                            >
-                                Iniciar Sesión
-                            </Link>
-                        </div>
-
-                        <p className="text-center text-slate-500 mt-6 font-medium">
-                            © {new Date().getFullYear()} Creatiendas. Todos los derechos reservados.
+            {/* --- DESKTOP LAYOUT --- */}
+            <div className="hidden lg:grid container mx-auto px-4 py-8 relative z-10 max-w-7xl grid-cols-2 gap-12 items-center">
+                <div className="space-y-10 lg:pr-12">
+                    <div className="space-y-4">
+                        <h1 className="text-4xl md:text-6xl font-black text-slate-900 leading-tight">
+                            Crea tu tienda online en <span className="text-green-600">menos de 2 minutos</span>
+                        </h1>
+                        <p className="text-xl text-slate-600 leading-relaxed">
+                            En el siguiente paso tu tienda ya estará lista para compartir por WhatsApp. <strong className="text-slate-900">No necesitas tarjeta.</strong>
                         </p>
                     </div>
+                    <ul className="space-y-4">
+                        <li className="flex items-start gap-3">
+                            <span className="text-2xl">⚡</span>
+                            <div>
+                                <strong className="text-slate-900 text-lg font-bold">Publica productos en minutos</strong>
+                                <p className="text-slate-600">Sin configuraciones complicadas</p>
+                            </div>
+                        </li>
+                        <li className="flex items-start gap-3">
+                            <span className="text-2xl">📲</span>
+                            <div>
+                                <strong className="text-slate-900 text-lg font-bold">Recibe pedidos por WhatsApp</strong>
+                                <p className="text-slate-600">Conecta directo con tus clientes</p>
+                            </div>
+                        </li>
+                        <li className="flex items-start gap-3">
+                            <span className="text-2xl">💰</span>
+                            <div>
+                                <strong className="text-slate-900 text-lg font-bold">0% comisiones</strong>
+                                <p className="text-slate-600">Todo el dinero es tuyo</p>
+                            </div>
+                        </li>
+                    </ul>
+                    <div className="pt-4 border-t border-slate-100">
+                        <SocialProofSection />
+                    </div>
+                    <div>
+                        <p className="text-sm font-bold text-slate-600 mb-3 uppercase tracking-widest flex items-center gap-2">
+                            <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse" /> Así de fácil
+                        </p>
+                        <div className="relative rounded-3xl overflow-hidden shadow-2xl border-4 border-slate-200 bg-slate-100" style={{ paddingBottom: '56.25%' }}>
+                            <iframe id="demoVideo" className="absolute top-0 left-0 w-full h-full" src="https://www.youtube.com/embed/XQQfQYZ0Phk?enablejsapi=1&autoplay=1&mute=1&controls=0&rel=0&modestbranding=1&loop=1&playlist=XQQfQYZ0Phk" frameBorder="0" allow="autoplay; encrypted-media" allowFullScreen />
+                        </div>
+                    </div>
+                </div>
 
+                <div className="flex justify-end">
+                    <div className="bg-white rounded-[2.5rem] shadow-2xl border border-slate-100 p-10 max-w-[480px] w-full relative overflow-hidden group">
+                        <div className="absolute top-0 right-0 w-32 h-32 bg-green-500/5 rounded-full blur-3xl -mr-10 -mt-10 pointer-events-none group-hover:bg-green-500/10 transition-all"></div>
+                        <h2 className="text-3xl font-black text-slate-900 mb-2 relative z-10">Crear cuenta <span className="text-green-600">gratis</span></h2>
+                        <p className="text-base text-slate-500 mb-8 font-medium">Tu tienda estará lista en el siguiente paso</p>
+
+                        <form onSubmit={handleRegister} className="space-y-4">
+                            <div className="space-y-1.5">
+                                <label className="text-xs font-bold text-slate-500 ml-1 uppercase tracking-wider">Correo Electrónico</label>
+                                <div className="relative group/input">
+                                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within/input:text-green-600 transition-colors" />
+                                    <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} className="w-full pl-11 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-base text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-600/50 transition-all shadow-inner" placeholder="tu@negocio.com" />
+                                </div>
+                            </div>
+                            <div className="space-y-1.5">
+                                <label className="text-xs font-bold text-slate-500 ml-1 uppercase tracking-wider">Contraseña</label>
+                                <div className="relative group/input">
+                                    <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within/input:text-green-600 transition-colors" />
+                                    <input type="password" required value={password} onChange={(e) => setPassword(e.target.value)} className="w-full pl-11 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-base text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-600/50 transition-all shadow-inner" placeholder="••••••••" />
+                                </div>
+                            </div>
+                            {error && <div className="p-3 bg-rose-50 border border-rose-100 rounded-xl text-xs font-bold text-rose-600 flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-rose-600" />{error}</div>}
+                            <div className="text-center py-2"><p className="text-[10px] font-black uppercase text-slate-400 tracking-wider">Sin tarjeta · Cancelable · Acceso inmediato</p></div>
+                            <button type="submit" disabled={loading} className="w-full bg-green-500 hover:bg-green-600 text-white text-sm font-black py-4 rounded-2xl transition-all shadow-xl shadow-green-200 active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2">
+                                {loading ? <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : <>¡Empezar ahora! <ArrowRight className="w-4 h-4" /></>}
+                            </button>
+                            <p className="text-center text-sm text-gray-500 mt-4">Al continuar, tu tienda se crea automáticamente</p>
+                        </form>
+
+                        <div className="relative my-10">
+                            <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-slate-100"></div></div>
+                            <div className="relative flex justify-center text-sm"><span className="px-4 bg-white text-slate-500 font-bold uppercase tracking-widest">¿Ya tienes cuenta?</span></div>
+                        </div>
+
+                        <Link href="/auth/login" className="block w-full text-center py-4 px-4 border border-slate-200 rounded-2xl font-black text-slate-700 hover:bg-slate-50 transition-all text-lg">
+                            Iniciar Sesión
+                        </Link>
+                    </div>
                 </div>
             </div>
-        </div >
+        </div>
     );
 }
