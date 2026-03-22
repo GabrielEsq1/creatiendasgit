@@ -773,7 +773,30 @@ export default function StorePreview({ data, products, viewMode = 'desktop', rea
             {selectedProduct && (
                 <div className="product-detail-overlay" onClick={() => setSelectedProduct(null)}>
                     <div className="product-detail-modal" onClick={(e) => e.stopPropagation()}>
-                        <button className="product-detail-close" onClick={() => setSelectedProduct(null)}>&times;</button>
+                        <button 
+                            className="product-detail-close" 
+                            onClick={() => setSelectedProduct(null)}
+                            style={{
+                                position: 'absolute',
+                                right: '12px',
+                                top: '12px',
+                                width: '40px',
+                                height: '40px',
+                                borderRadius: '50%',
+                                background: 'white',
+                                boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                fontSize: '24px',
+                                zIndex: 10,
+                                border: 'none',
+                                cursor: 'pointer',
+                                color: '#333'
+                            }}
+                        >
+                            &times;
+                        </button>
                         
                         <div className="product-detail-image-side">
                             {selectedProduct.image ? (
@@ -845,11 +868,24 @@ export default function StorePreview({ data, products, viewMode = 'desktop', rea
                                 >
                                     Agregar al carrito
                                 </button>
-                            </div>
-
-                            <div className="detail-nav">
-                                <button className="detail-nav-btn" onClick={handlePrevProduct}>&larr;</button>
-                                <button className="detail-nav-btn" onClick={handleNextProduct}>&rarr;</button>
+                                <button 
+                                    onClick={() => setSelectedProduct(null)}
+                                    style={{
+                                        backgroundColor: '#f3f4f6',
+                                        color: '#666',
+                                        border: 'none',
+                                        textAlign: 'center',
+                                        padding: '12px',
+                                        borderRadius: '12px',
+                                        fontWeight: '600',
+                                        cursor: 'pointer',
+                                        width: '100%',
+                                        marginTop: '12px',
+                                        fontSize: '0.9rem'
+                                    }}
+                                >
+                                    &larr; Volver al catálogo
+                                </button>
                             </div>
                         </div>
                     </div>
