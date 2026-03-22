@@ -483,7 +483,7 @@ export default function StorePreviewEN({ data, products, viewMode = 'desktop', r
             </div>
 
             <FloatingCartButton storeSlug={data.id || 'preview'} styleColor={data.color} />
-            <CartDrawer storeSlug={data.id || 'preview'} storeName={data.name || 'Store'} whatsapp={data.whatsapp || ''} styleColor={data.color} />
+            <CartDrawer lang="en" storeSlug={data.id || 'preview'} storeName={data.name || 'Store'} whatsapp={data.whatsapp || ''} styleColor={data.color} />
 
             {selectedProduct && (
                 <div className="product-detail-overlay" onClick={() => setSelectedProduct(null)}>

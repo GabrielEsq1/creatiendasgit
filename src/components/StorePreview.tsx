@@ -791,10 +791,9 @@ export default function StorePreview({ data, products, viewMode = 'desktop', rea
                 <StoreViralFooter />
             </div>
 
-            {/* Cart System */ }
+            {/* Cart System */}
             <FloatingCartButton storeSlug={data.id || 'preview'} styleColor={data.color} />
-            {isCartOpenState => <CartDrawer storeSlug={data.id || 'preview'} storeName={data.name || 'Tienda'} whatsapp={data.whatsapp || ''} styleColor={data.color} />}
-            <CartDrawer storeSlug={data.id || 'preview'} storeName={data.name || 'Tienda'} whatsapp={data.whatsapp || ''} styleColor={data.color} />
+            <CartDrawer lang="es" storeSlug={data.id || 'preview'} storeName={data.name || 'Tienda'} whatsapp={data.whatsapp || ''} styleColor={data.color} />
 
             {/* PRODUCT DETAIL MODAL */}
             {selectedProduct && (

@@ -11,9 +11,10 @@ interface Props {
     storeName: string;
     whatsapp: string;
     styleColor?: string;
+    lang?: 'es' | 'en';
 }
 
-export default function CartDrawer({ storeSlug, storeName, whatsapp, styleColor = '#25D366' }: Props) {
+export default function CartDrawer({ storeSlug, storeName, whatsapp, styleColor = '#25D366', lang = 'es' }: Props) {
     const { items, isCartOpen, setCartOpen, removeItem, updateQuantity } = useCartStore();
     const [mounted, setMounted] = useState(false);
     const { trackEvent } = useAnalytics();
@@ -28,7 +29,7 @@ export default function CartDrawer({ storeSlug, storeName, whatsapp, styleColor 
     if (!mounted || !isCartOpen) return null;
 
     const handleCheckout = () => {
-        const message = buildCartMessage(storeItems);
+        const message = buildCartMessage(storeItems, lang);
         const url = getWhatsAppUrl(whatsapp || '', message);
         
         trackEvent('whatsapp_checkout_clicked', {
@@ -38,6 +39,15 @@ export default function CartDrawer({ storeSlug, storeName, whatsapp, styleColor 
         });
 
         window.open(url, '_blank', 'noopener,noreferrer');
+    };
+
+    const t = {
+        title: lang === 'en' ? 'Your Order' : 'Tu Pedido',
+        empty: lang === 'en' ? 'Your cart is empty' : 'Tu carrito está vacío',
+        continue: lang === 'en' ? 'Keep shopping' : 'Seguir comprando',
+        remove: lang === 'en' ? 'Remove' : 'Quitar',
+        total: lang === 'en' ? 'Estimated Total' : 'Total Estimado',
+        checkout: lang === 'en' ? 'Complete order via WhatsApp' : 'Finalizar pedido por WhatsApp',
     };
 
     return (
@@ -52,7 +62,7 @@ export default function CartDrawer({ storeSlug, storeName, whatsapp, styleColor 
                 <div className="flex items-center justify-between p-4 border-b border-gray-100 bg-white">
                     <div className="flex items-center gap-2">
                         <ShoppingBag className="w-5 h-5" style={{ color: styleColor }} />
-                        <h2 className="text-lg font-bold text-gray-800">Tu Pedido</h2>
+                        <h2 className="text-lg font-bold text-gray-800">{t.title}</h2>
                     </div>
                     <button 
                         onClick={() => setCartOpen(false)}
@@ -67,13 +77,13 @@ export default function CartDrawer({ storeSlug, storeName, whatsapp, styleColor 
                     {storeItems.length === 0 ? (
                         <div className="flex flex-col items-center justify-center h-full text-center text-gray-500 opacity-60">
                             <ShoppingBag className="w-12 h-12 mb-3" />
-                            <p>Tu carrito está vacío</p>
+                            <p>{t.empty}</p>
                             <button 
                                 onClick={() => setCartOpen(false)}
                                 className="mt-4 text-sm font-semibold hover:underline"
                                 style={{ color: styleColor }}
                             >
-                                Seguir comprando
+                                {t.continue}
                             </button>
                         </div>
                     ) : (
@@ -94,7 +104,7 @@ export default function CartDrawer({ storeSlug, storeName, whatsapp, styleColor 
                                         <h3 className="font-semibold text-sm text-gray-800 line-clamp-2">{item.name}</h3>
                                     </div>
                                     <div className="text-sm font-bold text-gray-900 mt-1">
-                                        ${formatPriceConfig(item.price)}
+                                        {lang === 'es' && '$'}{formatPriceConfig(item.price, lang)}
                                     </div>
                                     
                                     <div className="flex justify-between items-center mt-3">
@@ -121,7 +131,7 @@ export default function CartDrawer({ storeSlug, storeName, whatsapp, styleColor 
                                             onClick={() => removeItem(item.id, storeSlug)}
                                             className="text-xs text-red-500 font-medium hover:text-red-600 px-2"
                                         >
-                                            Quitar
+                                            {t.remove}
                                         </button>
                                     </div>
                                 </div>
@@ -134,9 +144,9 @@ export default function CartDrawer({ storeSlug, storeName, whatsapp, styleColor 
                 {storeItems.length > 0 && (
                     <div className="border-t border-gray-100 bg-white p-4 pb-8 sm:pb-4 shadow-[0_-10px_30px_rgba(0,0,0,0.05)]">
                         <div className="flex justify-between items-end mb-4">
-                            <span className="text-gray-500 font-medium">Total Estimado</span>
+                            <span className="text-gray-500 font-medium">{t.total}</span>
                             <div className="text-2xl font-black text-gray-900 leading-none">
-                                ${formatPriceConfig(total)}
+                                {lang === 'es' && '$'}{formatPriceConfig(total, lang)}
                             </div>
                         </div>
                         
@@ -145,7 +155,7 @@ export default function CartDrawer({ storeSlug, storeName, whatsapp, styleColor 
                             className="w-full py-4 rounded-xl text-white font-bold text-lg flex items-center justify-center gap-2 transform active:scale-[0.98] transition-all shadow-lg hover:shadow-xl"
                             style={{ backgroundColor: '#25D366' }} // WhatsApp Green
                         >
-                            <span>📱</span> Finalizar pedido por WhatsApp
+                            <span>📱</span> {t.checkout}
                         </button>
                     </div>
                 )}
