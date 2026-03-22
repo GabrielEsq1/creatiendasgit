@@ -10,7 +10,7 @@ interface Props {
 }
 
 export default function FloatingCartButton({ storeSlug, styleColor = '#000000' }: Props) {
-    const { items, setCartOpen } = useCartStore();
+    const { items, setCartOpen, isCartOpen } = useCartStore();
     const [mounted, setMounted] = useState(false);
 
     useEffect(() => {
@@ -22,7 +22,7 @@ export default function FloatingCartButton({ storeSlug, styleColor = '#000000' }
     const storeItems = items.filter(item => item.storeSlug === storeSlug);
     const totalQuantity = storeItems.reduce((acc, item) => acc + item.quantity, 0);
 
-    if (totalQuantity === 0) return null;
+    if (isCartOpen || totalQuantity === 0) return null;
 
     return (
         <button
