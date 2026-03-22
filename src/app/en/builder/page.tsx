@@ -648,10 +648,11 @@ function BuilderContentEN() {
                                 👁️ Visit store →
                             </a>
                             <button 
-                                className="success-modal-close"
+                                className="btn btn-secondary"
                                 onClick={() => setPublicUrl(null)}
+                                style={{ background: '#f3f4f6', border: '1px solid #e5e7eb', color: '#4b5563' }}
                             >
-                                Keep editing
+                                ✏️ Keep editing
                             </button>
                         </div>
                     </div>
