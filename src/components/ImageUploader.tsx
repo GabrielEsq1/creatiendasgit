@@ -108,7 +108,7 @@ export default function ImageUploader({
                             className="w-full py-8 border-2 border-dashed border-gray-300 rounded-2xl flex flex-col items-center justify-center gap-2 cursor-pointer hover:border-blue-400 hover:bg-blue-50/30 transition-all group"
                         >
                             <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">
-                                \uD83D\uDCAF
+                                💯
                             </div>
                             <span className="text-gray-500 font-medium">{placeholderText}</span>
                         </div>
@@ -122,7 +122,7 @@ export default function ImageUploader({
                                         onClick={() => onRemoveImage?.(i)}
                                         className="absolute top-1 right-1 bg-red-500 text-white w-5 h-5 rounded-full flex items-center justify-center text-[10px] shadow-md hover:bg-red-600 transition-colors"
                                     >
-                                        \u2715
+                                        ✕
                                     </button>
                                 </div>
                             ))}
@@ -148,7 +148,7 @@ export default function ImageUploader({
                     </div>
                     {errorMsg && (
                         <div className="mt-1 text-xs text-red-500 font-bold animate-shake">
-                            \u26A0\uFE0F {errorMsg}
+                            ⚠️ {errorMsg}
                         </div>
                     )}
                 </div>

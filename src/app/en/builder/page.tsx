@@ -562,11 +562,11 @@ function BuilderContentEN() {
                         {products.map(p => (
                             <div key={p.id} className="product-item-mini">
                                 <div className="product-info-mini">
-                                    {prodForm.images && prodForm.images.length > 0 ? (
+                                    {p.images && p.images.length > 0 ? (
                                         <div className="product-thumb-stack">
-                                            <img src={prodForm.images[0]} className="product-thumb" alt={p.name} />
-                                            {prodForm.images.length > 1 && (
-                                                <span className="thumb-count">+{prodForm.images.length - 1}</span>
+                                            <img src={p.images[0]} className="product-thumb" alt={p.name} />
+                                            {p.images.length > 1 && (
+                                                <span className="thumb-count">+{p.images.length - 1}</span>
                                             )}
                                         </div>
                                     ) : p.image ? (
