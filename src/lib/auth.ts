@@ -39,8 +39,10 @@ export const authOptions: NextAuthOptions = {
                         return null;
                     }
 
-                    // Block login if email not verified yet
-                    if (!user.emailVerified) {
+                    // Block login ONLY if email not verified AND there's a pending token
+                    // (meaning: new user who hasn't confirmed their email yet).
+                    // Legacy users (emailVerified=null, verificationToken=null) are allowed through.
+                    if (!user.emailVerified && user.verificationToken) {
                         throw new Error("EMAIL_NOT_VERIFIED");
                     }
 
