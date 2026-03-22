@@ -7,6 +7,7 @@ import StorePreview from '@/components/en/StorePreviewEN';
 import StoreQRCode from '@/components/StoreQRCode';
 import { StoreData, Product } from '@/lib/store-service';
 import { compressImage } from '@/lib/image-utils';
+import ImageUploader from '@/components/ImageUploader';
 import { getStoreUrl } from '@/lib/utils';
 import '../../styles/builder.css'; // Path adjusted for /en/builder
 
@@ -154,7 +155,15 @@ function BuilderContentEN() {
         }
     }, [storeData, products, isLoading, isSaving]);
 
-    const [prodForm, setProdForm] = useState({ name: '', desc: '', category: '', price: '', image: null as string | null });
+    // Product form state
+    const [prodForm, setProdForm] = useState({ 
+        name: '', 
+        desc: '', 
+        category: '', 
+        price: '', 
+        tags: '', 
+        images: [] as string[] 
+    });
 
     const normalizeUrl = (url: string) => url.replace('https://https://', 'https://');
 
@@ -229,7 +238,16 @@ function BuilderContentEN() {
             // Edit Mode
             setProducts(products.map(p =>
                 p.id === editingProductId
-                    ? { ...p, name: prodForm.name, description: prodForm.desc, category: prodForm.category, price: prodForm.price, image: prodForm.image }
+                    ? { 
+                        ...p, 
+                        name: prodForm.name, 
+                        description: prodForm.desc, 
+                        category: prodForm.category, 
+                        price: prodForm.price, 
+                        tags: prodForm.tags ? (typeof prodForm.tags === 'string' ? prodForm.tags.split(',').map(t => t.trim()) : prodForm.tags) : [],
+                        images: prodForm.images,
+                        image: prodForm.images[0] || null // For backward compatibility
+                    }
                     : p
             ));
             setEditingProductId(null);
@@ -241,12 +259,14 @@ function BuilderContentEN() {
                 description: prodForm.desc,
                 category: prodForm.category,
                 price: prodForm.price,
-                image: prodForm.image
+                tags: prodForm.tags ? (typeof prodForm.tags === 'string' ? prodForm.tags.split(',').map(t => t.trim()) : prodForm.tags) : [],
+                images: prodForm.images,
+                image: prodForm.images[0] || null // For backward compatibility
             };
             setProducts([...products, newProduct]);
         }
 
-        setProdForm({ name: '', desc: '', category: '', price: '', image: null });
+        setProdForm({ name: '', desc: '', category: '', price: '', tags: '', images: [] });
     };
 
     const handleEditProduct = (product: Product) => {
@@ -255,13 +275,14 @@ function BuilderContentEN() {
             desc: product.description,
             category: product.category,
             price: product.price,
-            image: product.image
+            tags: Array.isArray(product.tags) ? product.tags.join(', ') : '',
+            images: product.images || (product.image ? [product.image] : [])
         });
         setEditingProductId(product.id);
     };
 
     const handleCancelEdit = () => {
-        setProdForm({ name: '', desc: '', category: '', price: '', image: null });
+        setProdForm({ name: '', desc: '', category: '', price: '', tags: '', images: [] });
         setEditingProductId(null);
     };
 
@@ -494,18 +515,40 @@ function BuilderContentEN() {
                     <div className="form-group"><label>Description *</label><textarea value={prodForm.desc} onChange={e => setProdForm({ ...prodForm, desc: e.target.value })} /></div>
                     <div className="form-group"><label>Category *</label><input value={prodForm.category} onChange={e => setProdForm({ ...prodForm, category: e.target.value })} /></div>
                     <div className="form-group"><label>Price *</label><input type="number" value={prodForm.price} onChange={e => setProdForm({ ...prodForm, price: e.target.value })} /></div>
-                    <div className="form-group"><label>Product Image</label><input type="file" accept="image/*" onChange={async e => {
-                        const file = e.target.files?.[0];
-                        if (file) {
-                            try {
-                                const base64 = await compressImage(file, 600, 0.6);
-                                setProdForm({ ...prodForm, image: base64 });
-                            } catch (err) {
-                                console.error('Error compressing product image:', err);
-                                alert('Error processing image');
-                            }
-                        }
-                    }} /></div>
+                    <div className="form-group">
+                        <ImageUploader
+                            label="Product Photos (Maximum 5)"
+                            currentImages={prodForm.images}
+                            multiple={true}
+                            maxImages={5}
+                            showPreview={true}
+                            placeholderText="Add photos of your product"
+                            onRemoveImage={(index) => {
+                                setProdForm(prev => ({
+                                    ...prev,
+                                    images: prev.images.filter((_, i) => i !== index)
+                                }));
+                            }}
+                            onImageSelected={async e => {
+                                const files = e.target.files;
+                                if (files) {
+                                    const processedImages: string[] = [];
+                                    for (let i = 0; i < files.length; i++) {
+                                        try {
+                                            const base64 = await compressImage(files[i], 800, 0.7);
+                                            processedImages.push(base64);
+                                        } catch (err) {
+                                            console.error('Error compressing product image:', err);
+                                        }
+                                    }
+                                    setProdForm(prev => ({ 
+                                        ...prev, 
+                                        images: [...prev.images, ...processedImages].slice(0, 5) 
+                                    }));
+                                }
+                            }}
+                        />
+                    </div>
                     <div style={{ display: 'flex', gap: '0.5rem' }}>
                         <button className="btn btn-secondary" onClick={handleSaveProduct}>
                             {editingProductId ? '💾 Update Product' : '➕ Add Product'}
@@ -519,7 +562,18 @@ function BuilderContentEN() {
                         {products.map(p => (
                             <div key={p.id} className="product-item-mini">
                                 <div className="product-info-mini">
-                                    {p.image ? (<img src={p.image} className="product-thumb" alt={p.name} />) : (<div className="product-thumb" style={{ background: '#ccc' }} />)}
+                                    {prodForm.images && prodForm.images.length > 0 ? (
+                                        <div className="product-thumb-stack">
+                                            <img src={prodForm.images[0]} className="product-thumb" alt={p.name} />
+                                            {prodForm.images.length > 1 && (
+                                                <span className="thumb-count">+{prodForm.images.length - 1}</span>
+                                            )}
+                                        </div>
+                                    ) : p.image ? (
+                                        <img src={p.image} className="product-thumb" alt={p.name} />
+                                    ) : (
+                                        <div className="product-thumb" style={{ background: '#ccc' }} />
+                                    )}
                                     <div>
                                         <strong>{p.name}</strong><br />
                                         <small>{p.category} · ${p.price}</small>

@@ -161,7 +161,14 @@ function BuilderContent() {
     }, [storeData, products, isLoading, isSaving]);
 
     // Product form state
-    const [prodForm, setProdForm] = useState({ name: '', desc: '', category: '', price: '', tags: '', image: null as string | null });
+    const [prodForm, setProdForm] = useState({ 
+        name: '', 
+        desc: '', 
+        category: '', 
+        price: '', 
+        tags: '', 
+        images: [] as string[] 
+    });
 
     const normalizeUrl = (url: string) => url.replace('https://https://', 'https://');
 
@@ -238,17 +245,26 @@ function BuilderContent() {
         if (!prodForm.name || !prodForm.price) return alert('Nombre y precio requeridos');
 
         if (editingProductId) {
-            // Modo edición
+            // Modo edici\u00f3n
             setProducts(products.map(p =>
                 p.id === editingProductId
-                    ? { ...p, name: prodForm.name, description: prodForm.desc, category: prodForm.category, price: prodForm.price, tags: prodForm.tags ? prodForm.tags.split(',').map(t => t.trim()) : [], image: prodForm.image }
+                    ? { 
+                        ...p, 
+                        name: prodForm.name, 
+                        description: prodForm.desc, 
+                        category: prodForm.category, 
+                        price: prodForm.price, 
+                        tags: prodForm.tags ? (typeof prodForm.tags === 'string' ? prodForm.tags.split(',').map(t => t.trim()) : prodForm.tags) : [], 
+                        images: prodForm.images,
+                        image: prodForm.images[0] || null // For backward compatibility
+                    }
                     : p
             ));
             setEditingProductId(null);
         } else {
-            // Límite máximo
+            // L\u00edmite m\u00e1ximo
             if (products.length >= PRODUCT_LIMIT) {
-                return alert(`Has alcanzado el límite de ${PRODUCT_LIMIT} productos por tienda.`);
+                return alert(`Has alcanzado el l\u00edmite de ${PRODUCT_LIMIT} productos por tienda.`);
             }
             const newProduct: Product = {
                 id: Date.now(),
@@ -256,13 +272,14 @@ function BuilderContent() {
                 description: prodForm.desc,
                 category: prodForm.category,
                 price: prodForm.price,
-                tags: prodForm.tags ? prodForm.tags.split(',').map(t => t.trim()) : [],
-                image: prodForm.image
+                tags: prodForm.tags ? (typeof prodForm.tags === 'string' ? prodForm.tags.split(',').map(t => t.trim()) : prodForm.tags) : [],
+                images: prodForm.images,
+                image: prodForm.images[0] || null // For backward compatibility
             };
             setProducts([...products, newProduct]);
         }
 
-        setProdForm({ name: '', desc: '', category: '', price: '', tags: '', image: null });
+        setProdForm({ name: '', desc: '', category: '', price: '', tags: '', images: [] });
     };
 
     const handleEditProduct = (product: Product) => {
@@ -271,14 +288,14 @@ function BuilderContent() {
             desc: product.description,
             category: product.category,
             price: product.price,
-            tags: product.tags ? product.tags.join(', ') : '',
-            image: product.image
+            tags: Array.isArray(product.tags) ? product.tags.join(', ') : '',
+            images: product.images || (product.image ? [product.image] : [])
         });
         setEditingProductId(product.id);
     };
 
     const handleCancelEdit = () => {
-        setProdForm({ name: '', desc: '', category: '', price: '', tags: '', image: null });
+        setProdForm({ name: '', desc: '', category: '', price: '', tags: '', images: [] });
         setEditingProductId(null);
     };
 
@@ -530,19 +547,33 @@ function BuilderContent() {
                     <div className="form-group"><label>Etiquetas (separadas por coma)</label><input value={prodForm.tags} onChange={e => setProdForm({ ...prodForm, tags: e.target.value })} placeholder="Ej: Running, Outdoor, Oferta" /></div>
                     <div className="form-group">
                         <ImageUploader
-                            label="Imagen del Producto"
-                            currentImage={prodForm.image}
+                            label="Fotos del Producto (M\u00e1ximo 5)"
+                            currentImages={prodForm.images}
+                            multiple={true}
+                            maxImages={5}
                             showPreview={true}
+                            onRemoveImage={(index) => {
+                                setProdForm(prev => ({
+                                    ...prev,
+                                    images: prev.images.filter((_, i) => i !== index)
+                                }));
+                            }}
                             onImageSelected={async e => {
-                                const file = e.target.files?.[0];
-                                if (file) {
-                                    try {
-                                        const base64 = await compressImage(file, 600, 0.6);
-                                        setProdForm(prev => ({ ...prev, image: base64 }));
-                                    } catch (err) {
-                                        console.error('Error compressing product image:', err);
-                                        alert('Error al procesar la imagen');
+                                const files = e.target.files;
+                                if (files) {
+                                    const processedImages: string[] = [];
+                                    for (let i = 0; i < files.length; i++) {
+                                        try {
+                                            const base64 = await compressImage(files[i], 800, 0.7);
+                                            processedImages.push(base64);
+                                        } catch (err) {
+                                            console.error('Error compressing product image:', err);
+                                        }
                                     }
+                                    setProdForm(prev => ({ 
+                                        ...prev, 
+                                        images: [...prev.images, ...processedImages].slice(0, 5) 
+                                    }));
                                 }
                             }}
                         />
@@ -565,7 +596,18 @@ function BuilderContent() {
                         {products.map(p => (
                             <div key={p.id} className="product-item-mini">
                                 <div className="product-info-mini">
-                                    {p.image ? (<img src={p.image} className="product-thumb" alt={p.name} />) : (<div className="product-thumb" style={{ background: '#ccc' }} />)}
+                                    {prodForm.images && prodForm.images.length > 0 ? (
+                                        <div className="product-thumb-stack">
+                                            <img src={prodForm.images[0]} className="product-thumb" alt={p.name} />
+                                            {prodForm.images.length > 1 && (
+                                                <span className="thumb-count">+{prodForm.images.length - 1}</span>
+                                            )}
+                                        </div>
+                                    ) : p.image ? (
+                                        <img src={p.image} className="product-thumb" alt={p.name} />
+                                    ) : (
+                                        <div className="product-thumb" style={{ background: '#ccc' }} />
+                                    )}
                                     <div>
                                         <strong>{p.name}</strong><br />
                                         <small>{p.category} ┬À ${p.price}</small>

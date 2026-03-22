@@ -819,11 +819,38 @@ export default function StorePreview({ data, products, viewMode = 'desktop', rea
                         </button>
                         
                         <div className="product-detail-image-side">
-                            {selectedProduct.image ? (
-                                <img src={selectedProduct.image} alt={selectedProduct.name} />
-                            ) : (
-                                <div style={{ color: '#ccc' }}>Sin Imagen</div>
-                            )}
+                            <div className="product-gallery-container flex flex-col gap-4">
+                                {selectedProduct.images && selectedProduct.images.length > 0 ? (
+                                    <>
+                                        <div className="main-image-wrapper relative aspect-square rounded-2xl overflow-hidden border border-gray-100 bg-gray-50">
+                                            <img src={(selectedProduct as any).activeImage || selectedProduct.images[0]} alt={selectedProduct.name} className="w-full h-full object-cover transition-all duration-300" />
+                                        </div>
+                                        {selectedProduct.images.length > 1 && (
+                                            <div className="thumbnails-grid grid grid-cols-5 gap-2">
+                                                {selectedProduct.images.map((img, i) => (
+                                                    <button 
+                                                        key={i} 
+                                                        onClick={() => setSelectedProduct({ ...selectedProduct, activeImage: img } as any)}
+                                                        className={`aspect-square rounded-lg overflow-hidden border-2 transition-all ${
+                                                            ((selectedProduct as any).activeImage || selectedProduct.images[0]) === img ? 'border-green-500 scale-95' : 'border-transparent hover:border-gray-300'
+                                                        }`}
+                                                    >
+                                                        <img src={img} alt={`${selectedProduct.name} ${i}`} className="w-full h-full object-cover" />
+                                                    </button>
+                                                ))}
+                                            </div>
+                                        )}
+                                    </>
+                                ) : (
+                                    <div className="main-image-wrapper relative aspect-square rounded-2xl overflow-hidden border border-gray-100 bg-gray-50 flex items-center justify-center">
+                                        {selectedProduct.image ? (
+                                            <img src={selectedProduct.image} alt={selectedProduct.name} className="w-full h-full object-cover" />
+                                        ) : (
+                                            <div style={{ color: '#ccc' }}>Sin Imagen</div>
+                                        )}
+                                    </div>
+                                )}
+                            </div>
                         </div>
                         
                         <div className="product-detail-info-side">
@@ -866,7 +893,7 @@ export default function StorePreview({ data, products, viewMode = 'desktop', rea
                                             id: String(selectedProduct.id),
                                             name: selectedProduct.name,
                                             price: Number(sanitizedPrice),
-                                            image: selectedProduct.image,
+                                            image: (selectedProduct as any).activeImage || (selectedProduct.images && selectedProduct.images[0]) || selectedProduct.image,
                                             quantity: 1,
                                             storeSlug: data.id ? String(data.id) : 'preview'
                                         });

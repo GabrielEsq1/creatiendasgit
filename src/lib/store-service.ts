@@ -7,7 +7,8 @@ export interface Product {
     description: string;
     category: string;
     price: string;
-    image: string | null;
+    image?: string | null; // Keep for backward compatibility
+    images?: string[];    // New field for multiple photos
     tags?: string[];
     attributes?: Record<string, string>;
     salesCount?: number;
