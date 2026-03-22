@@ -592,35 +592,15 @@ function BuilderContentEN() {
                     <button className="btn btn-primary" onClick={handleSave} disabled={isSaving || isLoading} style={{ marginBottom: '1rem' }}>
                         {isSaving ? 'Saving...' : (editSlug ? '🔄 Update Store' : '🔄 Validate / Create Store')}
                     </button>
-                    {editSlug && publicUrl && (
-                        <a href={publicUrl} target="_blank" rel="noopener noreferrer" className="btn btn-secondary" style={{ display: 'block', textAlign: 'center', marginBottom: '1rem', textDecoration: 'none' }}>
-                            👁️ View Store
+
+                    {editSlug && (
+                        <a
+                            href={`/builder/share?slug=${editSlug || ''}&storeName=${encodeURIComponent(storeData.name || 'My Store')}`}
+                            className="btn btn-primary"
+                            style={{ display: 'block', width: '100%', textAlign: 'center', marginBottom: '1rem', textDecoration: 'none', background: '#25D366', borderColor: '#25D366' }}
+                        >
+                            📤 Share / QR
                         </a>
-                    )}
-                    {publicUrl && (
-                        <div className="public-url-box" style={{ marginTop: '1rem', padding: '1.5rem', background: 'linear-gradient(135deg, #e8f5e9 0%, #f1f8e9 100%)', borderRadius: '16px', border: '2px solid #c8e6c9' }}>
-                            <p style={{ margin: '0 0 1rem 0', fontWeight: 'bold', color: '#2e7d32', fontSize: '1.1rem', textAlign: 'center' }}>✅ Your store is ready!</p>
-
-                            {/* URL Section */}
-                            <div style={{ marginBottom: '1.5rem' }}>
-                                <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem', fontWeight: '600', color: '#1b5e20' }}>Store Link:</label>
-                                <div style={{ display: 'flex', gap: '0.5rem' }}>
-                                    <input readOnly value={publicUrl} style={{ flex: 1, padding: '0.75rem', borderRadius: '8px', border: '1px solid #a5d6a7', background: 'white', fontSize: '0.9rem' }} />
-                                    <button className="btn btn-secondary" onClick={() => { navigator.clipboard.writeText(publicUrl); alert('✅ URL copied to clipboard!'); }} style={{ padding: '0.75rem 1.5rem', whiteSpace: 'nowrap' }}>
-                                        📋 Copy
-                                    </button>
-                                </div>
-                                <a href={publicUrl} target="_blank" rel="noopener noreferrer" style={{ display: 'inline-block', marginTop: '0.5rem', color: '#2e7d32', textDecoration: 'underline', fontSize: '0.9rem' }}>👁️ Visit store →</a>
-                            </div>
-
-                            {/* QR Code Section */}
-                            <div style={{ borderTop: '1px solid #c8e6c9', paddingTop: '1.5rem' }}>
-                                <p style={{ margin: '0 0 1rem 0', fontSize: '0.9rem', fontWeight: '600', color: '#1b5e20', textAlign: 'center' }}>QR Code to share:</p>
-                                <div style={{ display: 'flex', justifyContent: 'center' }}>
-                                    <StoreQRCode url={publicUrl} size={180} storeName={storeData.name} />
-                                </div>
-                            </div>
-                        </div>
                     )}
                 </section>
             </aside>
@@ -633,6 +613,50 @@ function BuilderContentEN() {
                 </div>
                 <StorePreview data={storeData} products={products} viewMode={viewMode} />
             </main>
+
+            {/* SUCCESS MODAL */}
+            {publicUrl && (
+                <div className="success-modal-overlay">
+                    <div className="success-modal-content">
+                        <div className="success-modal-icon">🎉</div>
+                        <h2 className="success-modal-title">Store Ready!</h2>
+                        <p className="success-modal-desc">
+                            Your store has been {editSlug ? 'updated' : 'created'} successfully and is now live.
+                        </p>
+                        
+                        <div className="url-copy-box">
+                            <input readOnly value={publicUrl} />
+                        </div>
+
+                        <div className="success-modal-actions">
+                            <button 
+                                className="btn btn-secondary"
+                                onClick={() => {
+                                    navigator.clipboard.writeText(publicUrl);
+                                    alert('Link copied! 📋');
+                                }}
+                            >
+                                📋 Copy link
+                            </button>
+                            <a 
+                                href={publicUrl} 
+                                target="_blank" 
+                                rel="noopener noreferrer" 
+                                className="btn btn-primary"
+                                style={{ textDecoration: 'none' }}
+                            >
+                                👁️ Visit store →
+                            </a>
+                            <button 
+                                className="success-modal-close"
+                                onClick={() => setPublicUrl(null)}
+                            >
+                                Keep editing
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

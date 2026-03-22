@@ -626,13 +626,6 @@ function BuilderContent() {
                     <button className="btn btn-primary" onClick={handleSave} disabled={isSaving || isLoading} style={{ marginBottom: '1rem' }}>
                         {isSaving ? 'Guardando...' : (editSlug ? '💾 Actualizar Tienda' : '🚀 Validar / Crear Tienda')}
                     </button>
-                    {editSlug && publicUrl && (
-                        <a href={publicUrl} target="_blank" rel="noopener noreferrer" className="btn btn-secondary" style={{ display: 'block', textAlign: 'center', marginBottom: '1rem', textDecoration: 'none' }}>
-                            👁️ Ver Tienda
-                        </a>
-                    )}
-
-                    {/* ALWAYS show Compartir/QR button in edit mode, even without publicUrl */}
                     {editSlug && (
                         <a
                             href={`/builder/share?slug=${editSlug || ''}&storeName=${encodeURIComponent(storeData.name || 'Mi Tienda')}`}
@@ -642,30 +635,61 @@ function BuilderContent() {
                             📤 Compartir / QR
                         </a>
                     )}
-
-                    {publicUrl && (
-                        <div className="public-url-box" style={{ marginTop: '1rem', padding: '1rem', background: '#e8f5e9', borderRadius: '8px', border: '1px solid #c8e6c9' }}>
-                            <p style={{ margin: '0 0 0.5rem 0', fontWeight: 'bold', color: '#2e7d32' }}>✅ ¡Tu tienda está {editSlug ? 'actualizada' : 'lista'}!</p>
-                            <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-                                <input readOnly value={publicUrl} style={{ flex: 1, padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc', minWidth: '150px' }} />
-                                <button className="btn btn-secondary" onClick={() => { navigator.clipboard.writeText(publicUrl); alert('URL copiada!'); }} style={{ padding: '0.5rem 1rem' }}>Copiar</button>
-                            </div>
-                            <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.5rem' }}>
-                                <a href={publicUrl} target="_blank" rel="noopener noreferrer" style={{ flex: 1, textAlign: 'center', color: '#2e7d32', textDecoration: 'underline', padding: '0.5rem', border: '1px solid #c8e6c9', borderRadius: '4px' }}>Visitar tienda →</a>
-                            </div>
-                        </div>
-                    )}
                 </section>
-            </aside>
+                </aside>
 
-            {/* RIGHT PANEL */}
-            <main className="preview-panel">
-                <div className="device-toggle">
-                    <button className={`device-btn ${viewMode === 'desktop' ? 'active' : ''}`} onClick={() => setViewMode('desktop')}>💻 Vista escritorio</button>
-                    <button className={`device-btn ${viewMode === 'mobile' ? 'active' : ''}`} onClick={() => setViewMode('mobile')}>📱 Vista móvil</button>
+                {/* RIGHT PANEL */}
+                <main className="preview-panel">
+                    <div className="device-toggle">
+                        <button className={`device-btn ${viewMode === 'desktop' ? 'active' : ''}`} onClick={() => setViewMode('desktop')}>💻 Vista escritorio</button>
+                        <button className={`device-btn ${viewMode === 'mobile' ? 'active' : ''}`} onClick={() => setViewMode('mobile')}>📱 Vista móvil</button>
+                    </div>
+                    <StorePreview data={storeData} products={products} viewMode={viewMode} />
+                </main>
+
+            {/* SUCCESS MODAL */}
+            {publicUrl && (
+                <div className="success-modal-overlay">
+                    <div className="success-modal-content">
+                        <div className="success-modal-icon">🎉</div>
+                        <h2 className="success-modal-title">¡Tienda lista!</h2>
+                        <p className="success-modal-desc">
+                            Tu tienda ha sido {editSlug ? 'actualizada' : 'creada'} con éxito y ya puedes compartirla.
+                        </p>
+                        
+                        <div className="url-copy-box">
+                            <input readOnly value={publicUrl} />
+                        </div>
+
+                        <div className="success-modal-actions">
+                            <button 
+                                className="btn btn-secondary"
+                                onClick={() => {
+                                    navigator.clipboard.writeText(publicUrl);
+                                    alert('¡Enlace copiado! 📋');
+                                }}
+                            >
+                                📋 Copiar enlace
+                            </button>
+                            <a 
+                                href={publicUrl} 
+                                target="_blank" 
+                                rel="noopener noreferrer" 
+                                className="btn btn-primary"
+                                style={{ textDecoration: 'none' }}
+                            >
+                                👁️ Visitar tienda →
+                            </a>
+                            <button 
+                                className="success-modal-close"
+                                onClick={() => setPublicUrl(null)}
+                            >
+                                Seguir editando
+                            </button>
+                        </div>
+                    </div>
                 </div>
-                <StorePreview data={storeData} products={products} viewMode={viewMode} />
-            </main>
+            )}
         </div>
     );
 }
