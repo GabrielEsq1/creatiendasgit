@@ -8,6 +8,11 @@ export interface Product {
     category: string;
     price: string;
     image: string | null;
+    tags?: string[];
+    attributes?: Record<string, string>;
+    salesCount?: number;
+    views?: number;
+    conversionRate?: number;
 }
 
 export interface StoreData {

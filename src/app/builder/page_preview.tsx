@@ -11,18 +11,26 @@ import StorePreview from '@/components/StorePreview';
 interface StoreData {
     name: string;
     description: string;
+    desc?: string; // fallback for StorePreview
     whatsapp: string;
     color: string;
-    logo?: string;
+    logo: string | null;
     banner?: string;
+    title?: string;
+    font?: string;
+    socials?: any;
+    about?: any;
+    careers?: any;
+    id?: string;
 }
 
 interface Product {
-    id: string; // Puede ser temp-id para nuevos
+    id: number;
     name: string;
-    price: number;
-    image?: string;
-    description?: string;
+    price: string;
+    image: string | null;
+    description: string;
+    category: string;
 }
 
 const DEFAULT_STORE: StoreData = {
@@ -30,6 +38,7 @@ const DEFAULT_STORE: StoreData = {
     description: 'Descripción breve de tu negocio...',
     whatsapp: '',
     color: '#10B981', // Verde default
+    logo: null,
 };
 
 function BuilderContent() {
@@ -295,7 +304,7 @@ function BuilderContent() {
 
                         {/* El componente StorePreview seguro de usar */}
                         <div className="w-full h-full overflow-y-auto scrollbar-hide">
-                            <StorePreview data={storeData} products={products} />
+                            <StorePreview data={storeData as any} products={products as any} />
                         </div>
                     </div>
                 </div>

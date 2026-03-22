@@ -7,6 +7,7 @@ import { useAnalytics } from '@/components/Analytics';
 import FloatingCartButton from '@/components/store/FloatingCartButton';
 import CartDrawer from '@/components/store/CartDrawer';
 import { useCartStore } from '@/store/cartStore';
+import { searchProducts, SearchResult } from '@/lib/search-engine';
 
 interface StorePreviewProps {
     data: StoreData;
@@ -80,25 +81,25 @@ export default function StorePreview({ data, products, viewMode = 'desktop', rea
         )
         : [];
 
-    // Combined filter: category + intelligent multi-term search query
-    const filteredProducts = Array.isArray(products)
-        ? products
-            .filter(p => {
-                if (!activeCategory) return true;
+    // Advanced search results
+    const searchResults = React.useMemo(() => {
+        if (!Array.isArray(products)) return [];
+
+        const categoryFiltered = !activeCategory 
+            ? products 
+            : products.filter(p => {
                 const pCat = p.category?.trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
                 return pCat === activeCategory;
-            })
-            .filter(p => {
-                const query = searchQuery.trim().toLowerCase();
-                if (!query) return true;
+            });
 
-                // Split query into individual terms
-                const terms = query.split(/\s+/);
-                const searchStr = `${p.name || ''} ${p.description || ''} ${p.category || ''}`.toLowerCase();
+        return searchProducts(categoryFiltered, searchQuery, {
+            boostBySales: true,
+            boostByViews: true
+        });
+    }, [products, searchQuery, activeCategory]);
 
-                return terms.every(term => searchStr.includes(term));
-            })
-        : [];
+    const filteredProducts = searchResults.map(r => r.product);
+
 
     const handleNextProduct = useCallback(() => {
         if (!selectedProduct) return;
@@ -131,6 +132,35 @@ export default function StorePreview({ data, products, viewMode = 'desktop', rea
             </React.Fragment>
         ));
     };
+
+    // Helper for keyword highlighting
+    const HighlightMatch = ({ text, keywords }: { text: string; keywords: string[] }) => {
+        if (!text || !keywords || keywords.length === 0) return <span>{text}</span>;
+
+        // Create regex for all keywords
+        const pattern = keywords
+            .map(kw => kw.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')) // escape regex chars
+            .join('|');
+        if (!pattern) return <span>{text}</span>;
+
+        const regex = new RegExp(`(${pattern})`, 'gi');
+        const parts = text.split(regex);
+
+        return (
+            <span>
+                {parts.map((part, i) => (
+                    regex.test(part) ? (
+                        <mark key={i} style={{ background: `${data.color}22`, color: data.color, fontWeight: 700, padding: '0 2px', borderRadius: '2px' }}>
+                            {part}
+                        </mark>
+                    ) : part
+                ))}
+            </span>
+        );
+    };
+
+    // Helper to handle line breaks in textareas
+    // ... rest of the file
 
     // Helper for lists
     const renderList = (items: string[], iconClass: string) => {
@@ -325,41 +355,35 @@ export default function StorePreview({ data, products, viewMode = 'desktop', rea
                                 {/* Suggestions Dropdown (Store-wide search) */}
                                 {searchQuery.trim().length > 1 && searchQuery.length < 50 && (
                                     <div className="search-suggestions">
-                                        {products
-                                            .filter(p => {
-                                                const q = searchQuery.toLowerCase().trim();
-                                                const name = (p.name || '').toLowerCase();
-                                                const desc = (p.description || '').toLowerCase();
-                                                const cat = (p.category || '').toLowerCase();
-                                                return name.includes(q) || desc.includes(q) || cat.includes(q);
-                                            })
-                                            .slice(0, 6)
-                                            .map(p => (
+                                        {searchProducts(products, searchQuery, { limit: 6, threshold: 10 })
+                                            .map(({ product, matchedKeywords }) => (
                                                 <button
-                                                    key={p.id}
+                                                    key={product.id}
                                                     className="suggestion-item"
                                                     onClick={() => {
-                                                        setSearchQuery(p.name || '');
+                                                        setSearchQuery(product.name || '');
                                                         // Normalize for comparison
-                                                        const pCatKey = (p.category || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+                                                        const pCatKey = (product.category || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
                                                         if (activeCategory && pCatKey !== activeCategory) {
                                                             setActiveCategory(null);
                                                         }
-                                                        trackEvent('click', { action: 'autocomplete_select', item: p.name });
+                                                        trackEvent('click', { action: 'autocomplete_select', item: product.name });
                                                     }}
                                                 >
                                                     <div className="suggestion-img-wrap">
-                                                        {p.image ? (
-                                                            <img src={p.image} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                                        {product.image ? (
+                                                            <img src={product.image} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                                                         ) : (
                                                             <div className="suggestion-img-placeholder">🔍</div>
                                                         )}
                                                     </div>
                                                     <div className="suggestion-content">
-                                                        <span className="suggestion-text">{p.name || 'Producto'}</span>
-                                                        <span className="suggestion-price">${formatPrice(p.price)}</span>
+                                                        <span className="suggestion-text">
+                                                            <HighlightMatch text={product.name} keywords={matchedKeywords} />
+                                                        </span>
+                                                        <span className="suggestion-price">${formatPrice(product.price)}</span>
                                                     </div>
-                                                    <span className="suggestion-cat-tag">{p.category || 'Varios'}</span>
+                                                    <span className="suggestion-cat-tag">{product.category || 'Varios'}</span>
                                                 </button>
                                             ))
                                         }
@@ -381,9 +405,9 @@ export default function StorePreview({ data, products, viewMode = 'desktop', rea
                                 </div>
                             ) : (
                                 <>
-                                    {filteredProducts
+                                    {searchResults
                                         .slice((currentPage - 1) * productsPerPage, currentPage * productsPerPage)
-                                        .map((product, index) => (
+                                        .map(({ product, matchedKeywords }, index) => (
                                             <div key={product.id} className="product-card">
                                                 <div
                                                     className="product-image"
@@ -409,9 +433,11 @@ export default function StorePreview({ data, products, viewMode = 'desktop', rea
                                                         style={{ cursor: 'pointer' }}
                                                         onClick={() => setSelectedProduct(product)}
                                                     >
-                                                        {product.name}
+                                                        <HighlightMatch text={product.name} keywords={matchedKeywords} />
                                                     </div>
-                                                    <div className="product-desc">{product.description}</div>
+                                                    <div className="product-desc">
+                                                        <HighlightMatch text={product.description} keywords={matchedKeywords} />
+                                                    </div>
                                                     <div className="product-price" suppressHydrationWarning>${formatPrice(product.price)}</div>
 
                                                     <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '16px' }}>

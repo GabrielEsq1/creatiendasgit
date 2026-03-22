@@ -161,7 +161,7 @@ function BuilderContent() {
     }, [storeData, products, isLoading, isSaving]);
 
     // Product form state
-    const [prodForm, setProdForm] = useState({ name: '', desc: '', category: '', price: '', image: null as string | null });
+    const [prodForm, setProdForm] = useState({ name: '', desc: '', category: '', price: '', tags: '', image: null as string | null });
 
     const normalizeUrl = (url: string) => url.replace('https://https://', 'https://');
 
@@ -241,7 +241,7 @@ function BuilderContent() {
             // Modo edición
             setProducts(products.map(p =>
                 p.id === editingProductId
-                    ? { ...p, name: prodForm.name, description: prodForm.desc, category: prodForm.category, price: prodForm.price, image: prodForm.image }
+                    ? { ...p, name: prodForm.name, description: prodForm.desc, category: prodForm.category, price: prodForm.price, tags: prodForm.tags ? prodForm.tags.split(',').map(t => t.trim()) : [], image: prodForm.image }
                     : p
             ));
             setEditingProductId(null);
@@ -256,12 +256,13 @@ function BuilderContent() {
                 description: prodForm.desc,
                 category: prodForm.category,
                 price: prodForm.price,
+                tags: prodForm.tags ? prodForm.tags.split(',').map(t => t.trim()) : [],
                 image: prodForm.image
             };
             setProducts([...products, newProduct]);
         }
 
-        setProdForm({ name: '', desc: '', category: '', price: '', image: null });
+        setProdForm({ name: '', desc: '', category: '', price: '', tags: '', image: null });
     };
 
     const handleEditProduct = (product: Product) => {
@@ -270,13 +271,14 @@ function BuilderContent() {
             desc: product.description,
             category: product.category,
             price: product.price,
+            tags: product.tags ? product.tags.join(', ') : '',
             image: product.image
         });
         setEditingProductId(product.id);
     };
 
     const handleCancelEdit = () => {
-        setProdForm({ name: '', desc: '', category: '', price: '', image: null });
+        setProdForm({ name: '', desc: '', category: '', price: '', tags: '', image: null });
         setEditingProductId(null);
     };
 
@@ -518,6 +520,7 @@ function BuilderContent() {
                     <div className="form-group"><label>Descripción *</label><textarea value={prodForm.desc} onChange={e => setProdForm({ ...prodForm, desc: e.target.value })} /></div>
                     <div className="form-group"><label>Categoría *</label><input value={prodForm.category} onChange={e => setProdForm({ ...prodForm, category: e.target.value })} /></div>
                     <div className="form-group"><label>Precio *</label><input type="number" value={prodForm.price} onChange={e => setProdForm({ ...prodForm, price: e.target.value })} /></div>
+                    <div className="form-group"><label>Etiquetas (separadas por coma)</label><input value={prodForm.tags} onChange={e => setProdForm({ ...prodForm, tags: e.target.value })} placeholder="Ej: Running, Outdoor, Oferta" /></div>
                     <div className="form-group">
                         <ImageUploader
                             label="Imagen del Producto"

@@ -1,7 +1,8 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { StoreData, Product } from '@/lib/store-service';
+import { searchProducts } from '@/lib/search-engine';
 
 interface StorePreviewProps {
     data: StoreData;
@@ -23,6 +24,8 @@ const formatPrice = (value: string | number) => {
 export default function StorePreviewEN({ data, products, viewMode = 'desktop', readOnly = false }: StorePreviewProps) {
     const [activeView, setActiveView] = useState<'catalogo' | 'about' | 'careers'>('catalogo');
     const [lightboxImage, setLightboxImage] = useState<string | null>(null);
+    const [searchQuery, setSearchQuery] = useState('');
+    const [activeCategory, setActiveCategory] = useState<string | null>(null);
 
     const containerClass = `store-preview-container ${viewMode === 'mobile' ? 'device-mobile' : ''}`;
 
@@ -49,7 +52,35 @@ export default function StorePreviewEN({ data, products, viewMode = 'desktop', r
         );
     };
 
+    // Helper for keyword highlighting
+    const HighlightMatch = ({ text, keywords }: { text: string; keywords: string[] }) => {
+        if (!text || !keywords || keywords.length === 0) return <span>{text}</span>;
+        const pattern = keywords.map(kw => kw.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|');
+        if (!pattern) return <span>{text}</span>;
+        const regex = new RegExp(`(${pattern})`, 'gi');
+        const parts = text.split(regex);
+        return (
+            <span>
+                {parts.map((part, i) => (
+                    regex.test(part) ? (
+                        <mark key={i} style={{ background: `${data.color}22`, color: data.color, fontWeight: 700, padding: '0 2px', borderRadius: '2px' }}>
+                            {part}
+                        </mark>
+                    ) : part
+                ))}
+            </span>
+        );
+    };
+
     const uniqueCategories = Array.from(new Set(products.map(p => p.category).filter(Boolean)));
+
+    const searchResults = useMemo(() => {
+        if (!Array.isArray(products)) return [];
+        const categoryFiltered = !activeCategory 
+            ? products 
+            : products.filter(p => p.category === activeCategory);
+        return searchProducts(categoryFiltered, searchQuery, { boostBySales: true, boostByViews: true });
+    }, [products, searchQuery, activeCategory]);
 
     const cleanPhone = (phone: string) => phone.replace(/\D/g, '');
 
@@ -123,20 +154,84 @@ export default function StorePreviewEN({ data, products, viewMode = 'desktop', r
                         {/* CATEGORIES */}
                         {uniqueCategories.length > 0 && (
                             <div className="store-categories">
+                                <button 
+                                    className={`category-pill ${!activeCategory ? 'active' : ''}`}
+                                    onClick={() => setActiveCategory(null)}
+                                    style={!activeCategory ? { borderColor: data.color, background: `${data.color}11` } : {}}
+                                >
+                                    All
+                                </button>
                                 {uniqueCategories.map(cat => (
-                                    <div key={cat} className="category-pill">
-                                        <div className="category-icon">
-                                            <span>{cat[0].toUpperCase()}</span>
-                                        </div>
+                                    <button 
+                                        key={cat} 
+                                        className={`category-pill ${activeCategory === cat ? 'active' : ''}`}
+                                        onClick={() => setActiveCategory(cat === activeCategory ? null : cat)}
+                                        style={activeCategory === cat ? { borderColor: data.color, background: `${data.color}11` } : {}}
+                                    >
                                         <div className="category-label">{cat}</div>
-                                    </div>
+                                    </button>
                                 ))}
                             </div>
                         )}
 
+                        {/* SEARCH BAR */}
+                        <div className="store-search-wrapper" style={{ margin: '1rem 0' }}>
+                            <div className="store-search-inner" style={{ position: 'relative' }}>
+                                <input
+                                    type="text"
+                                    className="store-search-input"
+                                    placeholder="Search products..."
+                                    value={searchQuery}
+                                    onChange={e => setSearchQuery(e.target.value)}
+                                    style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: data.borderRadius || '8px', border: '1px solid #ccc' }}
+                                />
+                                {searchQuery && (
+                                    <button 
+                                        onClick={() => setSearchQuery('')}
+                                        style={{ position: 'absolute', right: '1rem', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', fontSize: '1.2rem' }}
+                                    >
+                                        &times;
+                                    </button>
+                                )}
+                                
+                                {/* Suggestions Dropdown */}
+                                {searchQuery.trim().length > 1 && searchQuery.length < 50 && (
+                                    <div className="search-suggestions" style={{ position: 'absolute', top: '100%', left: 0, right: 0, background: 'white', borderRadius: '8px', boxShadow: '0 4px 12px rgba(0,0,0,0.1)', zIndex: 1000, padding: '0.5rem' }}>
+                                        {searchProducts(products, searchQuery, { limit: 6, threshold: 10 })
+                                            .map(({ product, matchedKeywords }) => (
+                                                <button
+                                                    key={product.id}
+                                                    onClick={() => {
+                                                        setSearchQuery(product.name || '');
+                                                        if (activeCategory && product.category !== activeCategory) {
+                                                            setActiveCategory(null);
+                                                        }
+                                                    }}
+                                                    style={{ display: 'flex', width: '100%', padding: '0.5rem', alignItems: 'center', gap: '0.75rem', border: 'none', background: 'none', borderBottom: '1px solid #eee', cursor: 'pointer', textAlign: 'left' }}
+                                                >
+                                                    <div style={{ width: '40px', height: '40px', background: '#eee', borderRadius: '4px', overflow: 'hidden' }}>
+                                                        {product.image && <img src={product.image} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />}
+                                                    </div>
+                                                    <div style={{ flex: 1 }}>
+                                                        <div style={{ fontWeight: 600, fontSize: '0.9rem' }}>
+                                                            <HighlightMatch text={product.name} keywords={matchedKeywords} />
+                                                        </div>
+                                                        <div style={{ fontSize: '0.8rem', color: '#666' }}>{product.category}</div>
+                                                    </div>
+                                                    <div style={{ fontSize: '0.9rem', color: data.color }}>{product.price}</div>
+                                                </button>
+                                            ))
+                                        }
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+
                         {/* PRODUCTS */}
                         <div className="store-products">
-                            {products.map(product => (
+                            {searchResults.length === 0 ? (
+                                <div style={{ textAlign: 'center', padding: '2rem' }}>No products found matching your search.</div>
+                            ) : searchResults.map(({ product, matchedKeywords }) => (
                                 <div key={product.id} className="product-card">
                                     <div className="product-image">
                                         {product.image ? (
@@ -147,8 +242,12 @@ export default function StorePreviewEN({ data, products, viewMode = 'desktop', r
                                     </div>
                                     <div className="product-details">
                                         <div className="product-category">{product.category}</div>
-                                        <div className="product-name">{product.name}</div>
-                                        <div className="product-desc">{product.description}</div>
+                                        <div className="product-name">
+                                            <HighlightMatch text={product.name} keywords={matchedKeywords} />
+                                        </div>
+                                        <div className="product-desc">
+                                            <HighlightMatch text={product.description} keywords={matchedKeywords} />
+                                        </div>
                                         <div className="product-price" suppressHydrationWarning>{product.price}</div>
 
                                         <a
