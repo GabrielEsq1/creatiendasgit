@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { StoreData, Product } from '@/lib/store-service';
 import { searchProducts } from '@/lib/search-engine';
 
@@ -26,6 +26,19 @@ export default function StorePreviewEN({ data, products, viewMode = 'desktop', r
     const [lightboxImage, setLightboxImage] = useState<string | null>(null);
     const [searchQuery, setSearchQuery] = useState('');
     const [showSuggestions, setShowSuggestions] = useState(false);
+    const searchRef = React.useRef<HTMLDivElement>(null);
+
+    // Handle clicks outside search area
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
+                setShowSuggestions(false);
+            }
+        };
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, []);
+
     const [activeCategory, setActiveCategory] = useState<string | null>(null);
     const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
@@ -177,7 +190,7 @@ export default function StorePreviewEN({ data, products, viewMode = 'desktop', r
                         )}
 
                         {/* SEARCH BAR */}
-                        <div className="store-search-wrapper" style={{ margin: '1rem 0' }}>
+                        <div className="store-search-wrapper" style={{ margin: '1rem 0' }} ref={searchRef}>
                             <div className="store-search-inner" style={{ position: 'relative' }}>
                                 <input
                                     type="text"
@@ -189,6 +202,13 @@ export default function StorePreviewEN({ data, products, viewMode = 'desktop', r
                                         setShowSuggestions(true);
                                     }}
                                     onFocus={() => setShowSuggestions(true)}
+                                    onKeyDown={(e) => {
+                                        if (e.key === 'Enter') {
+                                            e.preventDefault();
+                                            setShowSuggestions(false);
+                                            (e.target as HTMLInputElement).blur();
+                                        }
+                                    }}
                                     style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: data.borderRadius || '8px', border: '1px solid #ccc' }}
                                 />
                                 {searchQuery && (

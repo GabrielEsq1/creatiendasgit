@@ -30,6 +30,19 @@ export default function StorePreview({ data, products, viewMode = 'desktop', rea
     const [activeCategory, setActiveCategory] = useState<string | null>(null);
     const [searchQuery, setSearchQuery] = useState('');
     const [showSuggestions, setShowSuggestions] = useState(false);
+    const searchRef = React.useRef<HTMLDivElement>(null);
+
+    // Handle clicks outside search area
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
+                setShowSuggestions(false);
+            }
+        };
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, []);
+
     const [currentPage, setCurrentPage] = useState(1);
     const productsPerPage = 24;
     const { trackEvent } = useAnalytics();
@@ -329,12 +342,10 @@ export default function StorePreview({ data, products, viewMode = 'desktop', rea
                         )}
 
                         {/* SEARCH BAR with Suggestions */}
-                        <div className="store-search-wrapper" style={{ position: 'relative', zIndex: 10 }}>
+                        <div className="store-filters-search" ref={searchRef}>
+                        <div className="store-search-wrapper">
                             <div className="store-search-inner">
-                                <svg className="store-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                                    <circle cx="11" cy="11" r="8" />
-                                    <path d="m21 21-4.35-4.35" />
-                                </svg>
+                                <span className="search-icon">🔍</span>
                                 <input
                                     type="text"
                                     className="store-search-input"
@@ -346,6 +357,13 @@ export default function StorePreview({ data, products, viewMode = 'desktop', rea
                                         setCurrentPage(1);
                                     }}
                                     onFocus={() => setShowSuggestions(true)}
+                                    onKeyDown={(e) => {
+                                        if (e.key === 'Enter') {
+                                            e.preventDefault();
+                                            setShowSuggestions(false);
+                                            (e.target as HTMLInputElement).blur();
+                                        }
+                                    }}
                                     autoComplete="off"
                                 />
                                 {searchQuery && (
@@ -404,6 +422,7 @@ export default function StorePreview({ data, products, viewMode = 'desktop', rea
                                 )}
                             </div>
                         </div>
+                    </div>
 
                         {/* PRODUCTS GRID */}
                         <div className="store-products">
