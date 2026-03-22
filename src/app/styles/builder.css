@@ -1103,46 +1103,47 @@ body {
 
 @media (max-width: 900px) {
     .app-container {
-        flex-direction: row;
+        flex-direction: column-reverse; /* Preview on top, Builder at bottom */
         height: calc(100vh - 64px);
     }
 
     .builder-panel {
-        width: 50%;
+        width: 100%;
+        height: 60%; /* More space for fields */
         min-width: 0;
-        /* Allow shrinking */
-        border-right: 1px solid #ddd;
-        border-bottom: none;
+        border-right: none;
+        border-top: 2px solid #ddd;
         padding: 1rem;
         overflow-y: auto;
     }
 
     .preview-panel {
-        width: 50%;
+        width: 100%;
+        height: 40%; /* Fixed height for preview on mobile */
         min-width: 0;
-        border-left: none;
         background: #eef2f6;
-        padding: 0.5rem;
-        overflow-y: hidden;
-        /* Hide scroll to keep layout clean, preview container handles scale */
+        padding: 0;
+        overflow-y: auto; /* ENABLE SCROLL as requested */
         display: flex;
         flex-direction: column;
         align-items: center;
+        border-bottom: 2px solid #ddd;
+        position: relative;
+        z-index: 5;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
     }
 
-    /* Scale the preview to fit in the 50% width */
+    /* Scale the preview to fit in the full width on mobile */
     .store-preview-container {
-        transform: scale(0.5);
+        transform: scale(0.7); /* Slightly larger scale for better visibility */
         transform-origin: top center;
-        width: 190%;
-        /* Compensate for scale */
-        margin-bottom: -90%;
-        margin-top: 1rem;
+        width: 143%; /* Compensate for 0.7 scale (1/0.7) */
+        margin-top: 0.5rem;
+        margin-bottom: 2rem; /* Buffer for scaling scroll */
     }
 
     .device-toggle {
         display: none;
-        /* Hide device toggle on mobile to save space */
     }
 }
 
