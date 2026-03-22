@@ -127,20 +127,6 @@ export default function StorePreviewEN({ data, products, viewMode = 'desktop', r
 
     const filteredProducts = searchResults.map(r => r.product);
 
-    const handleNextProduct = useCallback(() => {
-        if (!selectedProduct) return;
-        const currentIndex = filteredProducts.findIndex(p => p.id === selectedProduct.id);
-        const nextIndex = (currentIndex + 1) % filteredProducts.length;
-        setSelectedProduct(filteredProducts[nextIndex]);
-    }, [selectedProduct, filteredProducts]);
-
-    const handlePrevProduct = useCallback(() => {
-        if (!selectedProduct) return;
-        const currentIndex = filteredProducts.findIndex(p => p.id === selectedProduct.id);
-        const prevIndex = (currentIndex - 1 + filteredProducts.length) % filteredProducts.length;
-        setSelectedProduct(filteredProducts[prevIndex]);
-    }, [selectedProduct, filteredProducts]);
-
     const containerClass = readOnly
         ? 'store-live'
         : `store-preview-container ${viewMode === 'mobile' ? 'device-mobile' : ''}`;
@@ -499,8 +485,6 @@ export default function StorePreviewEN({ data, products, viewMode = 'desktop', r
                         <button className="product-detail-close" onClick={() => setSelectedProduct(null)}>×</button>
                         <div className="product-detail-image-side">
                             {selectedProduct.image ? <img src={selectedProduct.image} alt={selectedProduct.name} /> : <div style={{ color: '#ccc' }}>No Image</div>}
-                            <button className="nav-arrow prev-arrow" onClick={handlePrevProduct}>&larr;</button>
-                            <button className="nav-arrow next-arrow" onClick={handleNextProduct}>&rarr;</button>
                         </div>
                         <div className="product-detail-info-side">
                             <div className="detail-category">{selectedProduct.category}</div>

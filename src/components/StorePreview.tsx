@@ -125,21 +125,6 @@ export default function StorePreview({ data, products, viewMode = 'desktop', rea
 
     const filteredProducts = searchResults.map(r => r.product);
 
-
-    const handleNextProduct = useCallback(() => {
-        if (!selectedProduct) return;
-        const currentIndex = filteredProducts.findIndex(p => p.id === selectedProduct.id);
-        const nextIndex = (currentIndex + 1) % filteredProducts.length;
-        setSelectedProduct(filteredProducts[nextIndex]);
-    }, [selectedProduct, filteredProducts]);
-
-    const handlePrevProduct = useCallback(() => {
-        if (!selectedProduct) return;
-        const currentIndex = filteredProducts.findIndex(p => p.id === selectedProduct.id);
-        const prevIndex = (currentIndex - 1 + filteredProducts.length) % filteredProducts.length;
-        setSelectedProduct(filteredProducts[prevIndex]);
-    }, [selectedProduct, filteredProducts]);
-
     // When readOnly=true (live public store), use 'store-live' class - completely unconstrained.
     // When in builder preview, use 'store-preview-container' with its card/frame visuals.
     const containerClass = readOnly
@@ -922,7 +907,7 @@ export default function StorePreview({ data, products, viewMode = 'desktop', rea
                                         fontSize: '0.9rem'
                                     }}
                                 >
-                                    &larr; Volver al catálogo
+                                    Volver al catálogo
                                 </button>
                             </div>
                         </div>
