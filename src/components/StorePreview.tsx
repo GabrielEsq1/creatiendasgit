@@ -29,6 +29,7 @@ export default function StorePreview({ data, products, viewMode = 'desktop', rea
     const [lightboxImage, setLightboxImage] = useState<string | null>(null);
     const [activeCategory, setActiveCategory] = useState<string | null>(null);
     const [searchQuery, setSearchQuery] = useState('');
+    const [showSuggestions, setShowSuggestions] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
     const productsPerPage = 24;
     const { trackEvent } = useAnalytics();
@@ -337,15 +338,23 @@ export default function StorePreview({ data, products, viewMode = 'desktop', rea
                                 <input
                                     type="text"
                                     className="store-search-input"
-                                    placeholder="¿Qué estás buscando hoy?"
+                                    placeholder="Busca en el catálogo..."
                                     value={searchQuery}
-                                    onChange={e => setSearchQuery(e.target.value)}
+                                    onChange={(e) => {
+                                        setSearchQuery(e.target.value);
+                                        setShowSuggestions(true);
+                                        setCurrentPage(1);
+                                    }}
+                                    onFocus={() => setShowSuggestions(true)}
                                     autoComplete="off"
                                 />
                                 {searchQuery && (
                                     <button
                                         className="store-search-clear"
-                                        onClick={() => setSearchQuery('')}
+                                        onClick={() => {
+                                            setSearchQuery('');
+                                            setShowSuggestions(false);
+                                        }}
                                         aria-label="Limpiar búsqueda"
                                     >
                                         ×
@@ -353,7 +362,7 @@ export default function StorePreview({ data, products, viewMode = 'desktop', rea
                                 )}
 
                                 {/* Suggestions Dropdown (Store-wide search) */}
-                                {searchQuery.trim().length > 1 && searchQuery.length < 50 && (
+                                {showSuggestions && searchQuery.trim().length > 1 && searchQuery.length < 50 && (
                                     <div className="search-suggestions">
                                         {searchProducts(products, searchQuery, { limit: 6, threshold: 10 })
                                             .map(({ product, matchedKeywords }) => (
@@ -362,11 +371,13 @@ export default function StorePreview({ data, products, viewMode = 'desktop', rea
                                                     className="suggestion-item"
                                                     onClick={() => {
                                                         setSearchQuery(product.name || '');
+                                                        setShowSuggestions(false);
                                                         // Normalize for comparison
                                                         const pCatKey = (product.category || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
                                                         if (activeCategory && pCatKey !== activeCategory) {
                                                             setActiveCategory(null);
                                                         }
+                                                        setSelectedProduct(product);
                                                         trackEvent('click', { action: 'autocomplete_select', item: product.name });
                                                     }}
                                                 >

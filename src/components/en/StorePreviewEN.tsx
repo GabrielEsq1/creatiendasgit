@@ -25,7 +25,9 @@ export default function StorePreviewEN({ data, products, viewMode = 'desktop', r
     const [activeView, setActiveView] = useState<'catalogo' | 'about' | 'careers'>('catalogo');
     const [lightboxImage, setLightboxImage] = useState<string | null>(null);
     const [searchQuery, setSearchQuery] = useState('');
+    const [showSuggestions, setShowSuggestions] = useState(false);
     const [activeCategory, setActiveCategory] = useState<string | null>(null);
+    const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
     const containerClass = `store-preview-container ${viewMode === 'mobile' ? 'device-mobile' : ''}`;
 
@@ -182,12 +184,19 @@ export default function StorePreviewEN({ data, products, viewMode = 'desktop', r
                                     className="store-search-input"
                                     placeholder="Search products..."
                                     value={searchQuery}
-                                    onChange={e => setSearchQuery(e.target.value)}
+                                    onChange={e => {
+                                        setSearchQuery(e.target.value);
+                                        setShowSuggestions(true);
+                                    }}
+                                    onFocus={() => setShowSuggestions(true)}
                                     style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: data.borderRadius || '8px', border: '1px solid #ccc' }}
                                 />
                                 {searchQuery && (
                                     <button 
-                                        onClick={() => setSearchQuery('')}
+                                        onClick={() => {
+                                            setSearchQuery('');
+                                            setShowSuggestions(false);
+                                        }}
                                         style={{ position: 'absolute', right: '1rem', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', fontSize: '1.2rem' }}
                                     >
                                         &times;
@@ -195,7 +204,7 @@ export default function StorePreviewEN({ data, products, viewMode = 'desktop', r
                                 )}
                                 
                                 {/* Suggestions Dropdown */}
-                                {searchQuery.trim().length > 1 && searchQuery.length < 50 && (
+                                {showSuggestions && searchQuery.trim().length > 1 && searchQuery.length < 50 && (
                                     <div className="search-suggestions" style={{ position: 'absolute', top: '100%', left: 0, right: 0, background: 'white', borderRadius: '8px', boxShadow: '0 4px 12px rgba(0,0,0,0.1)', zIndex: 1000, padding: '0.5rem' }}>
                                         {searchProducts(products, searchQuery, { limit: 6, threshold: 10 })
                                             .map(({ product, matchedKeywords }) => (
@@ -203,9 +212,11 @@ export default function StorePreviewEN({ data, products, viewMode = 'desktop', r
                                                     key={product.id}
                                                     onClick={() => {
                                                         setSearchQuery(product.name || '');
+                                                        setShowSuggestions(false);
                                                         if (activeCategory && product.category !== activeCategory) {
                                                             setActiveCategory(null);
                                                         }
+                                                        setSelectedProduct(product);
                                                     }}
                                                     style={{ display: 'flex', width: '100%', padding: '0.5rem', alignItems: 'center', gap: '0.75rem', border: 'none', background: 'none', borderBottom: '1px solid #eee', cursor: 'pointer', textAlign: 'left' }}
                                                 >
