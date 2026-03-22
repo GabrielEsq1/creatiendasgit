@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation';
 import { useSession, signOut } from 'next-auth/react';
 import { useState, useEffect } from 'react';
 import { useAnalytics } from '@/components/Analytics';
+import { getTranslatedPath } from '@/lib/routeMapping';
 
 export default function Navbar() {
     const pathname = usePathname();
@@ -99,30 +100,11 @@ export default function Navbar() {
                         <button
                             onClick={() => {
                                 const isEn = pathname?.startsWith('/en');
-                                
-                                // Route dictionary for special translated slugs
-                                const routeMappings: Record<string, string> = {
-                                    '/crear-tienda': '/create-store',
-                                    '/crear-tienda-online-gratis': '/create-online-store-free',
-                                    '/vender-por-whatsapp': '/sell-on-whatsapp'
-                                };
-
-                                const currentBase = isEn ? pathname?.replace(/^\/en/, '') || '/' : pathname || '/';
-                                
-                                let targetBase = currentBase;
-                                if (isEn) {
-                                    // EN -> ES (Reverse mapping)
-                                    const reverseEntry = Object.entries(routeMappings).find(([, en]) => en === currentBase);
-                                    targetBase = reverseEntry ? reverseEntry[0] : currentBase;
-                                } else {
-                                    // ES -> EN
-                                    targetBase = routeMappings[currentBase] || currentBase;
-                                }
-
-                                const targetPath = isEn ? targetBase : `/en${targetBase === '/' ? '' : targetBase}`;
+                                const targetLang = isEn ? 'es' : 'en';
+                                const targetPath = getTranslatedPath(pathname || '/', targetLang);
 
                                 // Save preference
-                                localStorage.setItem('ct_lang', isEn ? 'es' : 'en');
+                                localStorage.setItem('ct_lang', targetLang);
                                 window.location.href = targetPath;
                             }}
                             className="group relative w-24 h-10 bg-slate-50 rounded-full p-1 cursor-pointer border border-slate-200 shadow-inner overflow-hidden transition-all hover:border-green-500/30 mr-2 lg:mr-0"

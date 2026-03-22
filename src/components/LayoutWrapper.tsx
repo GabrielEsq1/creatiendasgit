@@ -3,8 +3,8 @@
 import { useEffect } from "react";
 import { usePathname } from "next/navigation";
 import Navbar from "./Navbar";
-
 import InstallPrompt from "./InstallPrompt";
+import { getTranslatedPath } from "@/lib/routeMapping";
 
 export default function LayoutWrapper({ children }: { children: React.ReactNode }) {
     const pathname = usePathname();
@@ -21,12 +21,12 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
         const isEnRoute = pathname?.startsWith('/en');
 
         if (preferredLang === 'en' && !isEnRoute) {
-            // Redirect to English version if on Spanish route
-            const targetPath = `/en${pathname === '/' ? '' : pathname}`;
+            // Redirect to English version using smart mapping
+            const targetPath = getTranslatedPath(pathname || '/', 'en');
             window.location.href = targetPath;
         } else if (preferredLang === 'es' && isEnRoute) {
-            // Redirect to Spanish version if on English route
-            const targetPath = pathname?.replace(/^\/en/, '') || '/';
+            // Redirect to Spanish version using smart mapping
+            const targetPath = getTranslatedPath(pathname || '/', 'es');
             window.location.href = targetPath;
         }
     }, [pathname]);
