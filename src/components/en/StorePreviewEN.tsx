@@ -189,9 +189,13 @@ export default function StorePreviewEN({ data, products, viewMode = 'desktop', r
                             </div>
                         )}
 
-                        {/* SEARCH BAR */}
-                        <div className="store-search-wrapper" style={{ margin: '1rem 0' }} ref={searchRef}>
-                            <div className="store-search-inner" style={{ position: 'relative' }}>
+                        <div className="store-filters-search" style={{ margin: '1rem 0' }} ref={searchRef}>
+                        <div className="store-search-wrapper">
+                            <div className="store-search-inner">
+                                <svg className="store-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                                    <circle cx="11" cy="11" r="8" />
+                                    <path d="m21 21-4.35-4.35" />
+                                </svg>
                                 <input
                                     type="text"
                                     className="store-search-input"
@@ -209,17 +213,19 @@ export default function StorePreviewEN({ data, products, viewMode = 'desktop', r
                                             (e.target as HTMLInputElement).blur();
                                         }
                                     }}
-                                    style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: data.borderRadius || '8px', border: '1px solid #ccc' }}
+                                    autoComplete="off"
                                 />
                                 {searchQuery && (
                                     <button 
+                                        className="store-search-clear"
                                         onClick={() => {
                                             setSearchQuery('');
                                             setShowSuggestions(false);
                                         }}
-                                        style={{ position: 'absolute', right: '1rem', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', fontSize: '1.2rem' }}
+                                        aria-label="Clear search"
+                                        style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
                                     >
-                                        &times;
+                                        ×
                                     </button>
                                 )}
                                 
@@ -256,6 +262,7 @@ export default function StorePreviewEN({ data, products, viewMode = 'desktop', r
                                 )}
                             </div>
                         </div>
+                    </div>
 
                         {/* PRODUCTS */}
                         <div className="store-products">
