@@ -16,13 +16,19 @@ interface StorePreviewProps {
     readOnly?: boolean;
 }
 
-const formatPrice = (value: string | number) => {
+const formatPrice = (value: string | number, storeCurrency: 'COP' | 'USD' = 'COP') => {
     if (typeof value === 'undefined' || value === null) return '0';
-    // Remove dots (common thousand separators in ES) to ensure proper number parsing
+    // Remove dots/commas to ensure proper number parsing
     const sanitized = typeof value === 'string' 
         ? value.replace(/\./g, '').replace(/,/g, '') 
         : value;
-    const num = Number(sanitized || 0);
+    let num = Number(sanitized || 0);
+
+    // If the base currency is USD, we convert it to COP for the Spanish version
+    if (storeCurrency === 'USD') {
+        num = num * 4000;
+    }
+
     return num.toLocaleString("es-CO", {
         minimumFractionDigits: 0,
         maximumFractionDigits: 0,
@@ -418,7 +424,7 @@ export default function StorePreview({ data, products, viewMode = 'desktop', rea
                                                         <span className="suggestion-text">
                                                             <HighlightMatch text={product.name} keywords={matchedKeywords} />
                                                         </span>
-                                                        <span className="suggestion-price">${formatPrice(product.price)}</span>
+                                                        <span className="suggestion-price">{formatPrice(product.price, data.currency)}</span>
                                                     </div>
                                                     <span className="suggestion-cat-tag">{product.category || 'Varios'}</span>
                                                 </button>
@@ -476,11 +482,11 @@ export default function StorePreview({ data, products, viewMode = 'desktop', rea
                                                     <div className="product-desc">
                                                         <HighlightMatch text={product.description} keywords={matchedKeywords} />
                                                     </div>
-                                                    <div className="product-price" suppressHydrationWarning>${formatPrice(product.price)}</div>
+                                                    <div className="product-price" suppressHydrationWarning>{formatPrice(product.price, data.currency)}</div>
 
                                                     <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '16px' }}>
                                                         <a
-                                                            href={`https://wa.me/${cleanPhone(data.whatsapp)}?text=${encodeURIComponent(`Hola, quiero este producto:\n\n🛍️ *${product.name}*\nPrecio: $${formatPrice(product.price)}\n\nTalla / Color (si aplica): \n\nMi nombre es:\nDirección:\nMétodo de pago:`)}`}
+                                                            href={`https://wa.me/${cleanPhone(data.whatsapp)}?text=${encodeURIComponent(`Hola, quiero este producto:\n\n🛍️ *${product.name}*\nPrecio: ${formatPrice(product.price, data.currency)}\n\nTalla / Color (si aplica): \n\nMi nombre es:\nDirección:\nMétodo de pago:`)}`}
                                                             target="_blank"
                                                             rel="noopener noreferrer"
                                                             className="btn-whatsapp"
@@ -796,7 +802,7 @@ export default function StorePreview({ data, products, viewMode = 'desktop', rea
 
             {/* Cart System */}
             <FloatingCartButton storeSlug={data.id || 'preview'} styleColor={data.color} />
-            <CartDrawer lang="es" storeSlug={data.id || 'preview'} storeName={data.name || 'Tienda'} whatsapp={data.whatsapp || ''} styleColor={data.color} />
+            <CartDrawer lang="es" storeCurrency={data.currency} storeSlug={data.id || 'preview'} storeName={data.name || 'Tienda'} whatsapp={data.whatsapp || ''} styleColor={data.color} />
 
             {/* PRODUCT DETAIL MODAL */}
             {selectedProduct && (
@@ -838,12 +844,12 @@ export default function StorePreview({ data, products, viewMode = 'desktop', rea
                         <div className="product-detail-info-side">
                             <span className="detail-category" style={{ color: data.color }}>{selectedProduct.category}</span>
                             <h2 className="detail-name">{selectedProduct.name}</h2>
-                            <div className="detail-price" style={{ color: data.color }}>${formatPrice(selectedProduct.price)}</div>
+                            <div className="detail-price" style={{ color: data.color }}>{formatPrice(selectedProduct.price, data.currency)}</div>
                             <p className="detail-desc">{selectedProduct.description}</p>
                             
                             <div className="detail-actions">
                                 <a
-                                    href={`https://wa.me/${cleanPhone(data.whatsapp)}?text=${encodeURIComponent(`Hola, quiero este producto:\n\n🛍️ *${selectedProduct.name}*\nPrecio: $${formatPrice(selectedProduct.price)}\n\nTalla / Color (si aplica): \n\nMi nombre es:\nDirección:\nMétodo de pago:`)}`}
+                                    href={`https://wa.me/${cleanPhone(data.whatsapp)}?text=${encodeURIComponent(`Hola, quiero este producto:\n\n🛍️ *${selectedProduct.name}*\nPrecio: ${formatPrice(selectedProduct.price, data.currency)}\n\nTalla / Color (si aplica): \n\nMi nombre es:\nDirección:\nMétodo de pago:`)}`}
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     style={{ 

@@ -24,6 +24,7 @@ export interface StoreData {
     color: string;
     font?: string;
     borderRadius?: string;
+    currency?: 'COP' | 'USD';
     logo: string | null;
     heroBg: string | null;
     slug: string;

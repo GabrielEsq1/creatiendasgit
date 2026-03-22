@@ -21,6 +21,7 @@ const INITIAL_DATA: StoreData = {
     color: '#ff0000',
     font: 'Inter',
     borderRadius: '16px',
+    currency: 'USD',
     logo: null,
     heroBg: null,
     slug: '',
@@ -431,6 +432,13 @@ function BuilderContentEN() {
                             <option value="16px">Modern (16px)</option>
                             <option value="24px">Very Rounded (24px)</option>
                             <option value="30px">Curved (30px)</option>
+                        </select>
+                    </div>
+                    <div className="form-group">
+                        <label>Base Currency</label>
+                        <select value={storeData.currency || 'USD'} onChange={e => handleInputChange(null, 'currency', e.target.value)} className="w-full p-2 border rounded">
+                            <option value="USD">Dollars (USD)</option>
+                            <option value="COP">Colombian Pesos (COP)</option>
                         </select>
                     </div>
                     <div className="form-group">

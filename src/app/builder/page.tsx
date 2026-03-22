@@ -461,6 +461,13 @@ function BuilderContent() {
                         </select>
                     </div>
                     <div className="form-group">
+                        <label>Moneda Base</label>
+                        <select value={storeData.currency || 'COP'} onChange={e => handleInputChange(null, 'currency', e.target.value)} className="w-full p-2 border rounded">
+                            <option value="COP">Pesos Colombianos (COP)</option>
+                            <option value="USD">Dólares (USD)</option>
+                        </select>
+                    </div>
+                    <div className="form-group">
                         <ImageUploader label="Logo" onImageSelected={e => handleImageUpload('logo', e)} currentImage={storeData.logo} showPreview={true} />
                     </div>
                     <div className="form-group">

@@ -2,17 +2,28 @@ import { CartItem } from "@/store/cartStore";
 
 const COP_USD_RATE = 4000;
 
-export const formatPriceConfig = (value: number | string, lang: 'es' | 'en' = 'es') => {
-    const num = Number(value || 0);
+export const formatPriceConfig = (value: number | string, lang: 'es' | 'en' = 'es', storeCurrency: 'COP' | 'USD' = 'COP') => {
+    const sanitized = typeof value === 'string' 
+        ? value.replace(/\./g, '').replace(/,/g, '') 
+        : value;
+    let num = Number(sanitized || 0);
 
     if (lang === 'en') {
-        const usdValue = num / COP_USD_RATE;
-        return usdValue.toLocaleString("en-US", {
+        // Only convert if the store base is COP
+        if (storeCurrency === 'COP') {
+            num = num / COP_USD_RATE;
+        }
+        return num.toLocaleString("en-US", {
             style: 'currency',
             currency: 'USD',
             minimumFractionDigits: 0,
             maximumFractionDigits: 0,
         });
+    }
+
+    // In Spanish version: if store is USD, convert to COP for display
+    if (storeCurrency === 'USD') {
+        num = num * COP_USD_RATE;
     }
 
     return num.toLocaleString("es-CO", {
@@ -21,12 +32,12 @@ export const formatPriceConfig = (value: number | string, lang: 'es' | 'en' = 'e
     });
 };
 
-export const buildSingleProductMessage = (productName: string, price: number | string, lang: 'es' | 'en' = 'es'): string => {
+export const buildSingleProductMessage = (productName: string, price: number | string, lang: 'es' | 'en' = 'es', storeCurrency: 'COP' | 'USD' = 'COP'): string => {
     if (lang === 'en') {
         return `Hello, I want to order this product:
 
 🛍️ *${productName}*
-Price: ${formatPriceConfig(price, 'en')}
+Price: ${formatPriceConfig(price, 'en', storeCurrency)}
 
 Size / Color (if applicable): 
 
@@ -38,7 +49,7 @@ Payment method: `;
     return `Hola, quiero este producto:
 
 🛍️ *${productName}*
-Precio: $${formatPriceConfig(price, 'es')}
+Precio: ${formatPriceConfig(price, 'es', storeCurrency)}
 
 Talla / Color (si aplica): 
 
@@ -47,7 +58,7 @@ Dirección:
 Método de pago: `;
 };
 
-export const buildCartMessage = (items: CartItem[], lang: 'es' | 'en' = 'es'): string => {
+export const buildCartMessage = (items: CartItem[], lang: 'es' | 'en' = 'es', storeCurrency: 'COP' | 'USD' = 'COP'): string => {
     const total = items.reduce((acc, item) => acc + (Number(item.price) * item.quantity), 0);
     
     let message = lang === 'en' 
@@ -57,15 +68,15 @@ export const buildCartMessage = (items: CartItem[], lang: 'es' | 'en' = 'es'): s
     items.forEach(item => {
         const itemPrice = Number(item.price) * item.quantity;
         const prefix = lang === 'en' ? '' : '$';
-        message += `• ${item.name} (x${item.quantity}) - ${prefix}${formatPriceConfig(itemPrice, lang)}\n`;
+        message += `• ${item.name} (x${item.quantity}) - ${prefix}${formatPriceConfig(itemPrice, lang, storeCurrency)}\n`;
     });
     
     if (lang === 'en') {
         message += `\nSize / Color (if applicable): \n`;
-        message += `\n*Total: ${formatPriceConfig(total, 'en')}*\n\nMy name is: \nAddress: \nPayment method: `;
+        message += `\n*Total: ${formatPriceConfig(total, 'en', storeCurrency)}*\n\nMy name is: \nAddress: \nPayment method: `;
     } else {
         message += `\nTalla / Color (si aplica): \n`;
-        message += `\n*Total: $${formatPriceConfig(total, 'es')}*\n\nMi nombre es: \nDirección: \nMétodo de pago: `;
+        message += `\n*Total: ${formatPriceConfig(total, 'es', storeCurrency)}*\n\nMi nombre es: \nDirección: \nMétodo de pago: `;
     }
     
     return message;

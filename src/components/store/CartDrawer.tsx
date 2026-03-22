@@ -12,9 +12,10 @@ interface Props {
     whatsapp: string;
     styleColor?: string;
     lang?: 'es' | 'en';
+    storeCurrency?: 'COP' | 'USD';
 }
 
-export default function CartDrawer({ storeSlug, storeName, whatsapp, styleColor = '#25D366', lang = 'es' }: Props) {
+export default function CartDrawer({ storeSlug, storeName, whatsapp, styleColor = '#25D366', lang = 'es', storeCurrency = 'COP' }: Props) {
     const { items, isCartOpen, setCartOpen, removeItem, updateQuantity } = useCartStore();
     const [mounted, setMounted] = useState(false);
     const { trackEvent } = useAnalytics();
@@ -29,7 +30,7 @@ export default function CartDrawer({ storeSlug, storeName, whatsapp, styleColor 
     if (!mounted || !isCartOpen) return null;
 
     const handleCheckout = () => {
-        const message = buildCartMessage(storeItems, lang);
+        const message = buildCartMessage(storeItems, lang, storeCurrency);
         const url = getWhatsAppUrl(whatsapp || '', message);
         
         trackEvent('whatsapp_checkout_clicked', {
@@ -104,7 +105,7 @@ export default function CartDrawer({ storeSlug, storeName, whatsapp, styleColor 
                                         <h3 className="font-semibold text-sm text-gray-800 line-clamp-2">{item.name}</h3>
                                     </div>
                                     <div className="text-sm font-bold text-gray-900 mt-1">
-                                        {lang === 'es' && '$'}{formatPriceConfig(item.price, lang)}
+                                        {lang === 'es' && '$'}{formatPriceConfig(item.price, lang, storeCurrency)}
                                     </div>
                                     
                                     <div className="flex justify-between items-center mt-3">
@@ -146,7 +147,7 @@ export default function CartDrawer({ storeSlug, storeName, whatsapp, styleColor 
                         <div className="flex justify-between items-end mb-4">
                             <span className="text-gray-500 font-medium">{t.total}</span>
                             <div className="text-2xl font-black text-gray-900 leading-none">
-                                {lang === 'es' && '$'}{formatPriceConfig(total, lang)}
+                                {lang === 'es' && '$'}{formatPriceConfig(total, lang, storeCurrency)}
                             </div>
                         </div>
                         

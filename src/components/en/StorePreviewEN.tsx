@@ -16,19 +16,22 @@ interface StorePreviewProps {
     readOnly?: boolean;
 }
 
-// Fixed conversion rate COP -> USD
 const COP_USD_RATE = 4000;
 
-const formatPrice = (value: string | number) => {
+const formatPrice = (value: string | number, storeCurrency: 'COP' | 'USD' = 'COP') => {
     if (typeof value === 'undefined' || value === null) return '$0';
     // Remove dots/commas to ensure proper number parsing (common separators)
     const sanitized = typeof value === 'string' 
         ? value.replace(/\./g, '').replace(/,/g, '') 
         : value;
-    const num = Number(sanitized || 0);
-    // Automatic conversion for English version (COP to USD)
-    const usdValue = num / COP_USD_RATE;
-    return usdValue.toLocaleString("en-US", {
+    let num = Number(sanitized || 0);
+
+    // If the base currency is COP, we convert to USD for this English view
+    if (storeCurrency === 'COP' || !storeCurrency) {
+        num = num / COP_USD_RATE;
+    }
+
+    return num.toLocaleString("en-US", {
         style: 'currency',
         currency: 'USD',
         minimumFractionDigits: 0,
@@ -333,7 +336,7 @@ export default function StorePreviewEN({ data, products, viewMode = 'desktop', r
                                                         </div>
                                                         <div className="suggestion-content">
                                                             <span className="suggestion-text"><HighlightMatch text={product.name} keywords={matchedKeywords} /></span>
-                                                            <span className="suggestion-price">{formatPrice(product.price)}</span>
+                                                            <span className="suggestion-price">{formatPrice(product.price, data.currency)}</span>
                                                         </div>
                                                         <span className="suggestion-cat-tag">{product.category || 'Various'}</span>
                                                     </button>
@@ -362,7 +365,7 @@ export default function StorePreviewEN({ data, products, viewMode = 'desktop', r
                                                     <div className="product-category">{product.category}</div>
                                                     <div className="product-name" style={{ cursor: 'pointer' }} onClick={() => setSelectedProduct(product)}><HighlightMatch text={product.name} keywords={matchedKeywords} /></div>
                                                     <div className="product-desc"><HighlightMatch text={product.description} keywords={matchedKeywords} /></div>
-                                                    <div className="product-price" suppressHydrationWarning>{formatPrice(product.price)}</div>
+                                                    <div className="product-price" suppressHydrationWarning>{formatPrice(product.price, data.currency)}</div>
                                                     <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '16px' }}>
                                                         <a
                                                             href={`https://wa.me/${cleanPhone(data.whatsapp)}?text=${encodeURIComponent(`Hello, I want to order this product:\n\n🛍️ *${product.name}*\nPrice: ${formatPrice(product.price)}\n\nSize / Color (if applicable): \n\nMy name is:\nAddress:\nPayment method:`)}`}
@@ -488,7 +491,7 @@ export default function StorePreviewEN({ data, products, viewMode = 'desktop', r
             </div>
 
             <FloatingCartButton storeSlug={data.id || 'preview'} styleColor={data.color} />
-            <CartDrawer lang="en" storeSlug={data.id || 'preview'} storeName={data.name || 'Store'} whatsapp={data.whatsapp || ''} styleColor={data.color} />
+            <CartDrawer lang="en" storeCurrency={data.currency} storeSlug={data.id || 'preview'} storeName={data.name || 'Store'} whatsapp={data.whatsapp || ''} styleColor={data.color} />
 
             {selectedProduct && (
                 <div className="product-detail-overlay" onClick={() => setSelectedProduct(null)}>
@@ -502,7 +505,7 @@ export default function StorePreviewEN({ data, products, viewMode = 'desktop', r
                         <div className="product-detail-info-side">
                             <div className="detail-category">{selectedProduct.category}</div>
                             <h2 className="detail-name">{selectedProduct.name}</h2>
-                            <div className="detail-price">{formatPrice(selectedProduct.price)}</div>
+                            <div className="detail-price">{formatPrice(selectedProduct.price, data.currency)}</div>
                             <div className="detail-desc">{renderMultiline(selectedProduct.description || '')}</div>
                             <div className="detail-actions">
                                 <a href={`https://wa.me/${cleanPhone(data.whatsapp)}?text=${encodeURIComponent(`Hello, I want to order this product:\n\n🛍️ *${selectedProduct.name}*\nPrice: ${formatPrice(selectedProduct.price)}\n\nSize / Color (if applicable): \n\nMy name is:\nAddress:\nPayment method:`)}`} target="_blank" rel="noopener noreferrer" className="btn-detail-cart" style={{ backgroundColor: data.color }}>
