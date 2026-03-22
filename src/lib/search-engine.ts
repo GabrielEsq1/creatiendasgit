@@ -28,6 +28,11 @@ const SYNONYMS: Record<string, string[]> = {
     'zapatos': ['calzado', 'shoes', 'botas'],
 };
 
+const STOPWORDS = new Set([
+    'el', 'la', 'los', 'las', 'un', 'una', 'unos', 'unas', 'de', 'del', 'y', 'o', 'a', 'para', 'en', 'con', 'por', 'su', 'sus', 'que', 'como', 'mas', 'pero', 'si', 'no',
+    'the', 'a', 'an', 'and', 'or', 'in', 'on', 'at', 'for', 'with', 'by', 'from', 'to', 'of'
+]);
+
 /**
  * Normalizes text for comparison (lowercase, remove accents, etc.)
  */
@@ -43,8 +48,12 @@ export function normalizeText(text: string): string {
  * Gets all relevant versions of a keyword including synonyms
  */
 function getQueryKeywords(query: string): string[] {
-    const primaryKeywords = normalizeText(query).split(/\s+/).filter(k => k.length > 1);
-    const allKeywords = [...primaryKeywords];
+    const rawKeywords = normalizeText(query).split(/\s+/).filter(k => k.length > 1);
+    const primaryKeywords = rawKeywords.filter(k => !STOPWORDS.has(k));
+    
+    // Fallback: If ALL words are stopwords (unlikely), keep them all
+    const baseKeywords = primaryKeywords.length > 0 ? primaryKeywords : rawKeywords;
+    const allKeywords = [...baseKeywords];
 
     primaryKeywords.forEach(kw => {
         if (SYNONYMS[kw]) {
