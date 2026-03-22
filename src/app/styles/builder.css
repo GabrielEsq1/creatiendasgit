@@ -1641,20 +1641,21 @@ body {
 @media (max-width: 768px) {
     .product-detail-modal {
         flex-direction: column;
-        height: 100vh;
+        height: 100%;
         width: 100%;
         border-radius: 0;
     }
     
     .product-detail-image-side {
-        height: 40vh;
+        height: 40%;
         flex: none;
     }
     
     .product-detail-info-side {
-        height: 60vh;
+        height: 60%;
         padding: 30px 20px;
         padding-bottom: 80px;
+        overflow-y: auto; /* ENABLE SCROLLING */
     }
     
     .detail-name {
