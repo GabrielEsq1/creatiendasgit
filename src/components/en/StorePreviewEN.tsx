@@ -370,7 +370,12 @@ export default function StorePreviewEN({ data, products, viewMode = 'desktop', r
                                                             <span>📱</span> Buy now
                                                         </a>
                                                         <button
-                                                            onClick={() => { addItem({ id: String(product.id), name: product.name, price: Number(product.price), image: product.image, quantity: 1, storeSlug: data.id ? String(data.id) : 'preview' }); trackEvent('add_to_cart', { product_name: product.name, price: product.price }); alert('Product added to cart 🛒'); }}
+                                                            onClick={() => { 
+                                                                const sanitizedPrice = typeof product.price === 'string' 
+                                                                    ? product.price.replace(/\./g, '').replace(/,/g, '') 
+                                                                    : product.price;
+                                                                addItem({ id: String(product.id), name: product.name, price: Number(sanitizedPrice), image: product.image, quantity: 1, storeSlug: data.id ? String(data.id) : 'preview' }); trackEvent('add_to_cart', { product_name: product.name, price: product.price }); alert('Product added to cart 🛒'); 
+                                                            }}
                                                             style={{ backgroundColor: 'transparent', color: data.color || '#333', border: `1.5px solid ${data.color || '#ccc'}`, textAlign: 'center', padding: '10px', borderRadius: '8px', fontWeight: 'bold', cursor: 'pointer' }}>
                                                             Add to cart
                                                         </button>
@@ -503,7 +508,12 @@ export default function StorePreviewEN({ data, products, viewMode = 'desktop', r
                                 <a href={`https://wa.me/${cleanPhone(data.whatsapp)}?text=${encodeURIComponent(`Hello, I want to order this product:\n\n🛍️ *${selectedProduct.name}*\nPrice: ${formatPrice(selectedProduct.price)}\n\nSize / Color (if applicable): \n\nMy name is:\nAddress:\nPayment method:`)}`} target="_blank" rel="noopener noreferrer" className="btn-detail-cart" style={{ backgroundColor: data.color }}>
                                     <span>📱</span> Order on WhatsApp
                                 </a>
-                                <button className="btn-detail-cart" style={{ background: 'transparent', color: data.color, border: `2px solid ${data.color}` }} onClick={() => { addItem({ id: String(selectedProduct.id), name: selectedProduct.name, price: Number(selectedProduct.price), image: selectedProduct.image, quantity: 1, storeSlug: data.id ? String(data.id) : 'preview' }); alert('Added to cart 🛒'); }}>
+                                <button className="btn-detail-cart" style={{ background: 'transparent', color: data.color, border: `2px solid ${data.color}` }} onClick={() => { 
+                                    const sanitizedPrice = typeof selectedProduct.price === 'string' 
+                                        ? selectedProduct.price.replace(/\./g, '').replace(/,/g, '') 
+                                        : selectedProduct.price;
+                                    addItem({ id: String(selectedProduct.id), name: selectedProduct.name, price: Number(sanitizedPrice), image: selectedProduct.image, quantity: 1, storeSlug: data.id ? String(data.id) : 'preview' }); alert('Added to cart 🛒'); 
+                                }}>
                                     Add to cart
                                 </button>
                                 <button className="btn-detail-close-mobile" onClick={() => setSelectedProduct(null)}>Back to catalog</button>

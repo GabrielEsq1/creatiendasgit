@@ -497,10 +497,13 @@ export default function StorePreview({ data, products, viewMode = 'desktop', rea
                                                         </a>
                                                         <button
                                                             onClick={() => {
+                                                                const sanitizedPrice = typeof product.price === 'string' 
+                                                                    ? product.price.replace(/\./g, '').replace(/,/g, '') 
+                                                                    : product.price;
                                                                 addItem({
                                                                     id: String(product.id),
                                                                     name: product.name,
-                                                                    price: Number(product.price),
+                                                                    price: Number(sanitizedPrice),
                                                                     image: product.image,
                                                                     quantity: 1,
                                                                     storeSlug: data.id ? String(data.id) : 'preview'
@@ -865,10 +868,13 @@ export default function StorePreview({ data, products, viewMode = 'desktop', rea
                                 </a>
                                 <button 
                                     onClick={() => {
+                                        const sanitizedPrice = typeof selectedProduct.price === 'string' 
+                                            ? selectedProduct.price.replace(/\./g, '').replace(/,/g, '') 
+                                            : selectedProduct.price;
                                         addItem({
                                             id: String(selectedProduct.id),
                                             name: selectedProduct.name,
-                                            price: Number(selectedProduct.price),
+                                            price: Number(sanitizedPrice),
                                             image: selectedProduct.image,
                                             quantity: 1,
                                             storeSlug: data.id ? String(data.id) : 'preview'
