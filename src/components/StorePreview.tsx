@@ -345,7 +345,6 @@ export default function StorePreview({ data, products, viewMode = 'desktop', rea
                         <div className="store-filters-search" ref={searchRef}>
                         <div className="store-search-wrapper">
                             <div className="store-search-inner">
-                                <span className="search-icon">🔍</span>
                                 <input
                                     type="text"
                                     className="store-search-input"
