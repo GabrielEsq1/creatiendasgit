@@ -45,26 +45,35 @@ export async function sendPasswordResetEmail(email: string, resetLink: string) {
       <style>
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: #f9fafb; margin: 0; padding: 0; }
         .container { max-width: 600px; margin: 40px auto; background: #ffffff; border-radius: 24px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); border: 1px solid #f1f5f9; }
-        .header { background: #22c55e; padding: 40px 20px; text-align: center; }
+        .header { background: #ffffff; padding: 40px 20px; text-align: center; border-bottom: 1px solid #f1f5f9; }
         .content { padding: 40px; text-align: center; }
-        .footer { padding: 20px; text-align: center; color: #64748b; font-size: 12px; border-top: 1px solid #f1f5f9; }
-        .logo { font-size: 28px; font-weight: 900; color: #ffffff; letter-spacing: -1px; }
+        .footer { padding: 24px; text-align: center; color: #64748b; font-size: 12px; border-top: 1px solid #f1f5f9; background: #f8fafc; }
+        .logo-img { height: 40px; }
         h1 { color: #0f172a; font-size: 24px; font-weight: 800; margin-bottom: 16px; letter-spacing: -0.5px; }
         p { color: #475569; font-size: 16px; line-height: 1.6; margin-bottom: 24px; }
         .button { display: inline-block; background-color: #22c55e; color: #ffffff !important; padding: 16px 32px; text-decoration: none; border-radius: 9999px; font-weight: 800; font-size: 16px; box-shadow: 0 10px 15px -3px rgba(34, 197, 94, 0.2); transition: transform 0.2s; }
         .help-text { color: #94a3b8; font-size: 13px; margin-top: 32px; }
+        .wa-box { background: #f0fdf4; border: 1px dashed #22c55e; border-radius: 16px; padding: 16px; margin-top: 24px; color: #166534; font-size: 14px; font-weight: 600; }
+        .wa-link { color: #22c55e; text-decoration: none; font-weight: 800; }
       </style>
     </head>
     <body>
       <div class="container">
         <div class="header">
-          <div class="logo">🛒 Creatiendas</div>
+          <img src="https://creatiendas.co/logo.png" alt="Creatiendas" class="logo-img">
         </div>
         <div class="content">
           <h1>Recupera tu contraseña</h1>
           <p>Has solicitado restablecer tu acceso a Creatiendas. Haz clic en el siguiente botón para elegir una nueva contraseña:</p>
           <a href="${resetLink}" class="button">Restablecer Contraseña</a>
-          <p class="help-text">Si no solicitaste este cambio, puedes ignorar este correo sin problemas. El enlace expirará en 1 hora.</p>
+          
+          <div class="wa-box">
+             ⚠️ Este correo es automático (No-Reply). <br>
+             Si necesitas ayuda, contáctanos exclusivamente por WhatsApp:<br>
+             <a href="https://wa.me/573026687991" class="wa-link">+57 302 668 7991</a>
+          </div>
+          
+          <p class="help-text">Si no solicitaste este cambio, puedes ignorar este correo. El enlace expirará en 1 hora.</p>
         </div>
         <div class="footer">
           &copy; ${new Date().getFullYear()} Creatiendas. Todos los derechos reservados.<br>
@@ -111,32 +120,36 @@ export async function sendVerificationEmail(email: string, token: string) {
         .header { background: #ffffff; padding: 48px 20px; text-align: center; border-bottom: 1px solid #f1f5f9; }
         .content { padding: 48px 40px; text-align: center; }
         .footer { padding: 32px; text-align: center; color: #94a3b8; font-size: 12px; background: #f8fafc; }
-        .logo-box { width: 64px; height: 64px; background: #22c55e; border-radius: 18px; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 16px; color: white; font-size: 32px; line-height: 64px; text-align:center; }
-        h1 { color: #0f172a; font-size: 28px; font-weight: 900; margin-bottom: 16px; letter-spacing: -1px; }
+        .logo-img { height: 50px; }
+        h1 { color: #0f172a; font-size: 28px; font-weight: 900; margin-bottom: 24px; letter-spacing: -1px; }
         p { color: #475569; font-size: 16px; line-height: 1.6; margin-bottom: 32px; }
-        .button { display: inline-block; background-color: #22c55e; color: #ffffff !important; padding: 18px 40px; text-decoration: none; border-radius: 20px; font-weight: 900; font-size: 16px; shadow: 0 10px 15px -3px rgba(34, 197, 94, 0.2); }
+        .button { display: inline-block; background-color: #22c55e; color: #ffffff !important; padding: 18px 48px; text-decoration: none; border-radius: 20px; font-weight: 900; font-size: 16px; box-shadow: 0 10px 15px -3px rgba(34, 197, 94, 0.3); }
         .divider { height: 1px; background: #f1f5f9; margin: 40px 0; }
-        .wa-link { color: #22c55e; font-weight: 700; text-decoration: none; }
+        .wa-support { background: #f0fdf4; border-radius: 20px; padding: 24px; color: #166534; font-size: 14px; text-align: center; }
+        .wa-link { color: #22c55e; font-weight: 900; text-decoration: none; font-size: 18px; display: block; margin-top: 8px; }
       </style>
     </head>
     <body>
       <div class="container">
         <div class="header">
-          <div class="logo-box">🛒</div>
-          <div style="font-size: 20px; font-weight: 900; color: #0f172a;">Creatiendas</div>
+          <img src="https://creatiendas.co/logo.png" alt="Creatiendas Logo" class="logo-img">
         </div>
         <div class="content">
-          <h1>¡Bienvenido a la familia!</h1>
-          <p>Estamos emocionados de tenerte aquí. Para comenzar a vender por WhatsApp y activar todas las funciones de tu tienda, solo necesitas confirmar tu correo haciendo clic abajo:</p>
-          <a href="${verifyLink}" class="button">Verificar mi Cuenta ahora</a>
+          <h1>¡Bienvenido a la comunidad!</h1>
+          <p>Es un gusto tenerte con nosotros. Para activar tu cuenta y comenzar a vender por WhatsApp, confirma tu correo presionando este botón:</p>
+          <a href="${verifyLink}" class="button">Activar mi Cuenta</a>
           
           <div class="divider"></div>
           
-          <p style="font-size: 14px; margin-bottom: 0;">¿Tienes dudas? Responde a este correo o escríbenos a nuestro <a href="https://wa.me/573026687991" class="wa-link">WhatsApp de soporte</a>.</p>
+          <div class="wa-support">
+            <strong>¿Tienes dudas o necesitas ayuda?</strong><br>
+            Como este correo es automático y no lo leemos, contáctanos directamente por nuestro WhatsApp oficial de soporte:<br>
+            <a href="https://wa.me/573026687991" class="wa-link">📱 +57 302 668 7991</a>
+          </div>
         </div>
         <div class="footer">
           &copy; ${new Date().getFullYear()} Creatiendas S.A.S<br>
-          Has recibido este correo porque te registraste en creatiendas.co
+          Este correo fue enviado a ${email} porque te registraste en Creatiendas.
         </div>
       </div>
     </body>
@@ -161,4 +174,5 @@ export async function sendVerificationEmail(email: string, token: string) {
     return false;
   }
 }
+
 
