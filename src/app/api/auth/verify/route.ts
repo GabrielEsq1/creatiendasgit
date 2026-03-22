@@ -6,7 +6,8 @@ export async function GET(request: Request) {
     const token = searchParams.get('token');
 
     if (!token) {
-        return NextResponse.json({ error: 'Token missing' }, { status: 400 });
+        const url = new URL('/auth/login?error=token_missing', request.url);
+        return NextResponse.redirect(url);
     }
 
     // Find user with this verification token
@@ -15,7 +16,15 @@ export async function GET(request: Request) {
     });
 
     if (!user) {
-        return NextResponse.json({ error: 'Invalid token' }, { status: 400 });
+        // Token not found — maybe already used or invalid
+        const url = new URL('/auth/login?error=invalid_token', request.url);
+        return NextResponse.redirect(url);
+    }
+
+    if (user.emailVerified) {
+        // Already verified — just redirect to login
+        const url = new URL('/auth/login?verified=already', request.url);
+        return NextResponse.redirect(url);
     }
 
     // Mark email as verified and clear token
@@ -27,7 +36,7 @@ export async function GET(request: Request) {
         },
     });
 
-    // Redirect to login page (or dashboard) after verification
-    const redirectUrl = new URL('/auth/login', request.url);
-    return NextResponse.redirect(redirectUrl);
+    // Redirect to login with success flag
+    const url = new URL('/auth/login?verified=true', request.url);
+    return NextResponse.redirect(url);
 }

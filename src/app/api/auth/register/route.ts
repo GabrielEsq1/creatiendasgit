@@ -3,11 +3,23 @@ import { prisma } from "@/lib/prisma";
 import bcrypt from "bcryptjs";
 import { alertNewUser } from "@/lib/alerts";
 import { sendVerificationEmail } from "@/lib/email";
+import dns from "dns/promises";
 
 // Helper to generate a token that is virtually guaranteed to be unique
 function generateVerificationToken(): string {
-    // timestamp (base36) + random part (base36)
     return Date.now().toString(36) + Math.random().toString(36).substring(2);
+}
+
+// Check that the email domain actually has MX records (can receive email)
+async function hasValidMxRecords(email: string): Promise<boolean> {
+    try {
+        const domain = email.split("@")[1];
+        if (!domain) return false;
+        const records = await dns.resolveMx(domain);
+        return records && records.length > 0;
+    } catch {
+        return false; // ENOTFOUND, SERVFAIL, etc. — domain doesn't exist
+    }
 }
 
 export async function POST(req: Request) {
@@ -26,6 +38,24 @@ export async function POST(req: Request) {
         if (!email || !password) {
             return NextResponse.json(
                 { message: "Faltan datos requeridos" },
+                { status: 400 }
+            );
+        }
+
+        // Basic email format check
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            return NextResponse.json(
+                { message: "El formato del correo electrónico no es válido" },
+                { status: 400 }
+            );
+        }
+
+        // MX record check — rejects fake/non-existent domains
+        const mxValid = await hasValidMxRecords(email);
+        if (!mxValid) {
+            return NextResponse.json(
+                { message: "El dominio del correo no parece válido. Usa un correo real (Gmail, Hotmail, etc.)" },
                 { status: 400 }
             );
         }
@@ -57,7 +87,7 @@ export async function POST(req: Request) {
                     email,
                     passwordHash,
                     verificationToken,
-                    emailVerified: new Date(), // Auto-verify as per user request
+                    // emailVerified is intentionally null — user must verify their email
                 },
             });
             console.log(`[Register] User created with ID: ${user.id}`);
@@ -72,7 +102,7 @@ export async function POST(req: Request) {
                         email,
                         passwordHash,
                         verificationToken,
-                        emailVerified: new Date(),
+                        // emailVerified is intentionally null
                     },
                 });
             } else {
@@ -96,6 +126,15 @@ export async function POST(req: Request) {
             // The wallet can be created lazily at login (auth options handles this).
         }
 
+        // Send verification email (required to activate account)
+        try {
+            await sendVerificationEmail(email, verificationToken);
+            console.log(`[Register] Verification email sent to: ${email}`);
+        } catch (emailError) {
+            console.error(`[Register] Failed to send verification email:`, emailError);
+            // Don't fail the registration — user can request resend later
+        }
+
         // Send alerts (fire and forget)
         try {
             alertNewUser({ email, name, plan: "FREE" }).catch((e) => console.error("Alert error:", e));
@@ -104,7 +143,11 @@ export async function POST(req: Request) {
         }
 
         return NextResponse.json(
-            { message: "Cuenta creada exitosamente. Ya puedes iniciar sesión.", userId: user.id },
+            { 
+                message: "¡Cuenta creada! Revisa tu correo para verificar tu cuenta antes de iniciar sesión.",
+                requiresVerification: true,
+                userId: user.id 
+            },
             { status: 201 }
         );
     } catch (error: any) {

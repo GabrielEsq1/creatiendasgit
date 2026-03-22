@@ -19,8 +19,21 @@ function LoginForm() {
     const callbackUrl = searchParams?.get("callbackUrl") || "/dashboard";
 
     useEffect(() => {
-        if (searchParams?.get("registered") === "true") {
+        const verified = searchParams?.get("verified");
+        const errorParam = searchParams?.get("error");
+
+        if (verified === "true") {
+            setSuccessMessage("¡Correo verificado! Ya puedes iniciar sesión.");
+        } else if (verified === "already") {
+            setSuccessMessage("Tu correo ya estaba verificado. Inicia sesión.");
+        } else if (searchParams?.get("registered") === "true") {
             setSuccessMessage("Cuenta creada exitosamente. Ya puedes iniciar sesión.");
+        }
+
+        if (errorParam === "invalid_token") {
+            setError("El enlace de verificación no es válido o ya fue usado.");
+        } else if (errorParam === "token_missing") {
+            setError("El enlace de verificación es incorrecto.");
         }
     }, [searchParams]);
 
@@ -37,7 +50,11 @@ function LoginForm() {
             });
 
             if (result?.error) {
-                setError("Credenciales inválidas");
+                if (result.error === "EMAIL_NOT_VERIFIED") {
+                    setError("¡Primero verifica tu correo! Revisa tu bandeja de entrada y haz clic en el enlace que te enviamos.");
+                } else {
+                    setError("Credenciales inválidas");
+                }
             } else {
                 const session = await getSession();
                 if (session?.user?.role === 'ADMIN') {

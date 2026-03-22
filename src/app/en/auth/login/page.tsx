@@ -19,8 +19,21 @@ function LoginFormEN() {
     const callbackUrl = searchParams?.get("callbackUrl") || "/dashboard";
 
     useEffect(() => {
-        if (searchParams?.get("registered") === "true") {
+        const verified = searchParams?.get("verified");
+        const errorParam = searchParams?.get("error");
+
+        if (verified === "true") {
+            setSuccessMessage("Email verified! You can now log in.");
+        } else if (verified === "already") {
+            setSuccessMessage("Your email was already verified. Log in below.");
+        } else if (searchParams?.get("registered") === "true") {
             setSuccessMessage("Account created successfully. You can now log in.");
+        }
+
+        if (errorParam === "invalid_token") {
+            setError("The verification link is invalid or has already been used.");
+        } else if (errorParam === "token_missing") {
+            setError("The verification link appears to be incorrect.");
         }
     }, [searchParams]);
 
@@ -37,7 +50,11 @@ function LoginFormEN() {
             });
 
             if (result?.error) {
-                setError("Invalid credentials");
+                if (result.error === "EMAIL_NOT_VERIFIED") {
+                    setError("Please verify your email first! Check your inbox and click the link we sent you.");
+                } else {
+                    setError("Invalid credentials");
+                }
             } else {
                 const session = await getSession();
                 if (session?.user?.role === 'ADMIN') {

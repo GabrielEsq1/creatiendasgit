@@ -15,6 +15,8 @@ export default function RegisterPage() {
     const [password, setPassword] = useState("");
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
+    const [emailSent, setEmailSent] = useState(false);
+    const [registeredEmail, setRegisteredEmail] = useState("");
     const router = useRouter();
     const { trackEvent } = useAnalytics();
     const playerRef = useRef<any>(null);
@@ -68,7 +70,6 @@ export default function RegisterPage() {
         }
     };
 
-    // Original handler - NO CHANGES
     const handleRegister = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
@@ -82,8 +83,14 @@ export default function RegisterPage() {
             });
 
             if (res.ok) {
+                const data = await res.json();
                 trackEvent('signup', { method: 'email' });
-                router.push("/auth/login?registered=true");
+                if (data.requiresVerification) {
+                    setRegisteredEmail(email);
+                    setEmailSent(true);
+                } else {
+                    router.push("/auth/login?registered=true");
+                }
             } else {
                 const contentType = res.headers.get("content-type");
                 let errorMessage = "Error al registrarse";
@@ -105,6 +112,40 @@ export default function RegisterPage() {
             setLoading(false);
         }
     };
+
+    // --- EMAIL SENT SCREEN ---
+    if (emailSent) {
+        return (
+            <div className="min-h-screen bg-white flex flex-col items-center justify-center px-6 pt-20 pb-12">
+                <div className="w-full max-w-[400px] text-center">
+                    <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <svg className="w-10 h-10 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                        </svg>
+                    </div>
+                    <h1 className="text-2xl font-black text-slate-900 mb-3">¡Revisa tu correo!</h1>
+                    <p className="text-slate-500 text-sm mb-2">
+                        Enviamos un enlace de verificación a:
+                    </p>
+                    <p className="font-bold text-slate-900 text-base mb-6 break-all">{registeredEmail}</p>
+                    <p className="text-slate-400 text-xs mb-8">
+                        Haz clic en el enlace del correo para activar tu cuenta.<br />
+                        Si no lo ves, revisa tu carpeta de spam.
+                    </p>
+                    <Link href="/auth/login" className="block w-full text-center py-3.5 px-4 border border-slate-200 rounded-2xl font-black text-slate-700 hover:bg-slate-50 transition-all text-sm shadow-sm">
+                        Volver al Login
+                    </Link>
+                    <a
+                        href={`https://wa.me/573026687991?text=No%20recib%C3%AD%20el%20correo%20de%20verificaci%C3%B3n%20en%20${encodeURIComponent(registeredEmail)}`}
+                        target="_blank"
+                        className="block mt-4 text-xs text-green-600 font-bold hover:underline"
+                    >
+                        ¿No recibiste el correo? Escríbenos
+                    </a>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="min-h-screen bg-white md:bg-slate-50 text-slate-900 selection:bg-green-500/30 overflow-x-hidden pt-20 flex flex-col items-center">

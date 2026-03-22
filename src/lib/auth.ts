@@ -39,10 +39,10 @@ export const authOptions: NextAuthOptions = {
                         return null;
                     }
 
-                    // Email verification check removed as per user request for simple login
-                    // if (!user.emailVerified) {
-                    //    throw new Error("Email not verified");
-                    // }
+                    // Block login if email not verified yet
+                    if (!user.emailVerified) {
+                        throw new Error("EMAIL_NOT_VERIFIED");
+                    }
 
                     // Verify password
                     const isValid = await bcrypt.compare(credentials.password, user.passwordHash);
@@ -57,7 +57,8 @@ export const authOptions: NextAuthOptions = {
                         email: user.email,
                         name: user.name ?? ""
                     };
-                } catch (e) {
+                } catch (e: any) {
+                    if (e.message === "EMAIL_NOT_VERIFIED") throw e;
                     console.error("Authentication error:", e);
                     return null;
                 }
