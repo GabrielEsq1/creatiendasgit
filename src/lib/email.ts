@@ -34,51 +34,62 @@ async function getTransporter() {
 }
 
 export async function sendPasswordResetEmail(email: string, resetLink: string) {
-  const from = process.env.EMAIL_FROM || 'onboarding@resend.dev'; // Resend default for testing
-  const subject = 'Recuperación de Contraseña - Creatiendas';
+  const from = process.env.EMAIL_FROM || 'onboarding@resend.dev';
+  const subject = 'Recupera tu acceso - Creatiendas';
+  
   const html = `
-    <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
-      <h2>Recupera tu contraseña</h2>
-      <p>Has solicitado restablecer tu contraseña en Creatiendas.</p>
-      <p>Haz clic en el siguiente botón para crear una nueva contraseña:</p>
-      <a href="${resetLink}" style="display: inline-block; background-color: #2563eb; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; margin-top: 10px;">
-        Restablecer Contraseña
-      </a>
-      <p style="margin-top: 20px; font-size: 12px; color: #666;">
-        Si no solicitaste este cambio, puedes ignorar este correo.
-        El enlace expirará en 1 hora.
-      </p>
-    </div>
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="utf-8">
+      <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: #f9fafb; margin: 0; padding: 0; }
+        .container { max-width: 600px; margin: 40px auto; background: #ffffff; border-radius: 24px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); border: 1px solid #f1f5f9; }
+        .header { background: #22c55e; padding: 40px 20px; text-align: center; }
+        .content { padding: 40px; text-align: center; }
+        .footer { padding: 20px; text-align: center; color: #64748b; font-size: 12px; border-top: 1px solid #f1f5f9; }
+        .logo { font-size: 28px; font-weight: 900; color: #ffffff; letter-spacing: -1px; }
+        h1 { color: #0f172a; font-size: 24px; font-weight: 800; margin-bottom: 16px; letter-spacing: -0.5px; }
+        p { color: #475569; font-size: 16px; line-height: 1.6; margin-bottom: 24px; }
+        .button { display: inline-block; background-color: #22c55e; color: #ffffff !important; padding: 16px 32px; text-decoration: none; border-radius: 9999px; font-weight: 800; font-size: 16px; box-shadow: 0 10px 15px -3px rgba(34, 197, 94, 0.2); transition: transform 0.2s; }
+        .help-text { color: #94a3b8; font-size: 13px; margin-top: 32px; }
+      </style>
+    </head>
+    <body>
+      <div class="container">
+        <div class="header">
+          <div class="logo">🛒 Creatiendas</div>
+        </div>
+        <div class="content">
+          <h1>Recupera tu contraseña</h1>
+          <p>Has solicitado restablecer tu acceso a Creatiendas. Haz clic en el siguiente botón para elegir una nueva contraseña:</p>
+          <a href="${resetLink}" class="button">Restablecer Contraseña</a>
+          <p class="help-text">Si no solicitaste este cambio, puedes ignorar este correo sin problemas. El enlace expirará en 1 hora.</p>
+        </div>
+        <div class="footer">
+          &copy; ${new Date().getFullYear()} Creatiendas. Todos los derechos reservados.<br>
+          Hecho con ❤️ para emprendedores.
+        </div>
+      </div>
+    </body>
+    </html>
   `;
 
   try {
-    // Try Resend API first (faster and more reliable on Vercel)
     if (resend) {
-      const data = await resend.emails.send({
-        from,
-        to: email,
-        subject,
-        html,
-      });
-      console.log('Password reset email sent (Resend):', data);
+      await resend.emails.send({ from, to: email, subject, html });
       return true;
     }
-
-    // Fallback to SMTP
     const transporter = await getTransporter();
-    const info = await transporter.sendMail({
+    await transporter.sendMail({
       from: process.env.EMAIL_FROM || '"Soporte" <no-reply@creatiendas.com>',
       to: email,
       subject,
       html,
     });
-    console.log('Password reset email sent (SMTP): %s', info.messageId);
-    if (nodemailer.getTestMessageUrl) {
-      console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
-    }
     return true;
   } catch (error) {
-    console.error('Error enviando correo de restablecimiento:', error);
+    console.error('Error enviando correo de reset:', error);
     return false;
   }
 }
@@ -86,49 +97,68 @@ export async function sendPasswordResetEmail(email: string, resetLink: string) {
 export async function sendVerificationEmail(email: string, token: string) {
   const baseUrl = process.env.NEXTAUTH_URL || 'https://creatiendas.co';
   const verifyLink = `${baseUrl}/api/auth/verify?token=${token}`;
-  const from = process.env.EMAIL_FROM || 'onboarding@resend.dev'; // Resend default
+  const from = process.env.EMAIL_FROM || 'onboarding@resend.dev';
   const subject = 'Verifica tu cuenta - Creatiendas';
+
   const html = `
-    <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
-      <h2>Bienvenido a Creatiendas</h2>
-      <p>Para activar tu cuenta y comenzar a crear tu tienda, por favor verifica tu correo electrónico.</p>
-      <a href="${verifyLink}" style="display: inline-block; background-color: #2563eb; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; margin-top: 10px;">
-        Verificar mi Correo
-      </a>
-      <p style="margin-top: 20px; font-size: 12px; color: #666;">
-        Si no creaste esta cuenta, puedes ignorar este correo.
-      </p>
-    </div>
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="utf-8">
+      <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: #f8fafc; margin: 0; padding: 20px 0; }
+        .container { max-width: 600px; margin: 0 auto; background: #ffffff; border-radius: 32px; overflow: hidden; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05); border: 1px solid #e2e8f0; }
+        .header { background: #ffffff; padding: 48px 20px; text-align: center; border-bottom: 1px solid #f1f5f9; }
+        .content { padding: 48px 40px; text-align: center; }
+        .footer { padding: 32px; text-align: center; color: #94a3b8; font-size: 12px; background: #f8fafc; }
+        .logo-box { width: 64px; height: 64px; background: #22c55e; border-radius: 18px; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 16px; color: white; font-size: 32px; line-height: 64px; text-align:center; }
+        h1 { color: #0f172a; font-size: 28px; font-weight: 900; margin-bottom: 16px; letter-spacing: -1px; }
+        p { color: #475569; font-size: 16px; line-height: 1.6; margin-bottom: 32px; }
+        .button { display: inline-block; background-color: #22c55e; color: #ffffff !important; padding: 18px 40px; text-decoration: none; border-radius: 20px; font-weight: 900; font-size: 16px; shadow: 0 10px 15px -3px rgba(34, 197, 94, 0.2); }
+        .divider { height: 1px; background: #f1f5f9; margin: 40px 0; }
+        .wa-link { color: #22c55e; font-weight: 700; text-decoration: none; }
+      </style>
+    </head>
+    <body>
+      <div class="container">
+        <div class="header">
+          <div class="logo-box">🛒</div>
+          <div style="font-size: 20px; font-weight: 900; color: #0f172a;">Creatiendas</div>
+        </div>
+        <div class="content">
+          <h1>¡Bienvenido a la familia!</h1>
+          <p>Estamos emocionados de tenerte aquí. Para comenzar a vender por WhatsApp y activar todas las funciones de tu tienda, solo necesitas confirmar tu correo haciendo clic abajo:</p>
+          <a href="${verifyLink}" class="button">Verificar mi Cuenta ahora</a>
+          
+          <div class="divider"></div>
+          
+          <p style="font-size: 14px; margin-bottom: 0;">¿Tienes dudas? Responde a este correo o escríbenos a nuestro <a href="https://wa.me/573026687991" class="wa-link">WhatsApp de soporte</a>.</p>
+        </div>
+        <div class="footer">
+          &copy; ${new Date().getFullYear()} Creatiendas S.A.S<br>
+          Has recibido este correo porque te registraste en creatiendas.co
+        </div>
+      </div>
+    </body>
+    </html>
   `;
 
   try {
-    // Try Resend API first
     if (resend) {
-      const data = await resend.emails.send({
-        from,
-        to: email,
-        subject,
-        html,
-      });
-      console.log('Verification email sent (Resend):', data);
+      await resend.emails.send({ from, to: email, subject, html });
       return true;
     }
-
-    // Fallback to SMTP
     const transporter = await getTransporter();
-    const info = await transporter.sendMail({
+    await transporter.sendMail({
       from: process.env.EMAIL_FROM || '"Soporte" <no-reply@creatiendas.com>',
       to: email,
       subject,
       html,
     });
-    console.log('Verification email sent (SMTP): %s', info.messageId);
-    if (nodemailer.getTestMessageUrl) {
-      console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
-    }
     return true;
   } catch (error) {
     console.error('Error enviando correo de verificación:', error);
     return false;
   }
 }
+
