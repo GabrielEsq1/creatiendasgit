@@ -17,7 +17,12 @@ interface StorePreviewProps {
 }
 
 const formatPrice = (value: string | number) => {
-    const num = Number(value || 0);
+    if (typeof value === 'undefined' || value === null) return '0';
+    // Remove dots (common thousand separators in ES) to ensure proper number parsing
+    const sanitized = typeof value === 'string' 
+        ? value.replace(/\./g, '').replace(/,/g, '') 
+        : value;
+    const num = Number(sanitized || 0);
     return num.toLocaleString("es-CO", {
         minimumFractionDigits: 0,
         maximumFractionDigits: 0,
