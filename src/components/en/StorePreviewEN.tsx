@@ -216,7 +216,6 @@ export default function StorePreviewEN({ data, products, viewMode = 'desktop', r
                                                         if (activeCategory && product.category !== activeCategory) {
                                                             setActiveCategory(null);
                                                         }
-                                                        setSelectedProduct(product);
                                                     }}
                                                     style={{ display: 'flex', width: '100%', padding: '0.5rem', alignItems: 'center', gap: '0.75rem', border: 'none', background: 'none', borderBottom: '1px solid #eee', cursor: 'pointer', textAlign: 'left' }}
                                                 >

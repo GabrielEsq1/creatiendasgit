@@ -377,7 +377,6 @@ export default function StorePreview({ data, products, viewMode = 'desktop', rea
                                                         if (activeCategory && pCatKey !== activeCategory) {
                                                             setActiveCategory(null);
                                                         }
-                                                        setSelectedProduct(product);
                                                         trackEvent('click', { action: 'autocomplete_select', item: product.name });
                                                     }}
                                                 >
