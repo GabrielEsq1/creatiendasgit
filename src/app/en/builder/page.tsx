@@ -92,7 +92,6 @@ function BuilderContentEN() {
     useEffect(() => {
         if (typeof window !== 'undefined' && window.innerWidth <= 900) {
             setIsMobileDevice(true);
-            setForceDesktopViewport(true);
             setShowMobileWarning(true);
         }
     }, []);
@@ -713,39 +712,16 @@ function BuilderContentEN() {
                         </p>
                         <button 
                             className="btn btn-primary" 
-                            onClick={() => setShowMobileWarning(false)}
+                            onClick={() => {
+                                setShowMobileWarning(false);
+                                setForceDesktopViewport(true);
+                            }}
                             style={{ width: '100%', padding: '14px', borderRadius: '12px', fontSize: '1rem', fontWeight: 'bold' }}
                         >
                             Got it!
                         </button>
                     </div>
                 </div>
-            )}
-
-            {/* FLOATING VIEWPORT TOGGLE */}
-            {isMobileDevice && (
-                <button
-                    onClick={() => setForceDesktopViewport(!forceDesktopViewport)}
-                    style={{
-                        position: 'fixed',
-                        bottom: '20px',
-                        left: '20px',
-                        zIndex: 9999,
-                        background: forceDesktopViewport ? '#333' : '#1877F2',
-                        color: 'white',
-                        border: '1px solid rgba(255,255,255,0.2)',
-                        padding: '10px 16px',
-                        borderRadius: '24px',
-                        boxShadow: '0 4px 16px rgba(0,0,0,0.25)',
-                        fontWeight: 'bold',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '8px',
-                        fontSize: '0.9rem'
-                    }}
-                >
-                    {forceDesktopViewport ? '📱 Switch to Mobile' : '🖥️ Switch to PC (Recommended)'}
-                </button>
             )}
         </div>
     );
