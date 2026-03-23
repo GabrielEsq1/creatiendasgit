@@ -84,6 +84,14 @@ function BuilderContentEN() {
     const [publicUrl, setPublicUrl] = useState<string | null>(null);
     const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
     const [editingProductId, setEditingProductId] = useState<number | null>(null);
+    const [showMobileWarning, setShowMobileWarning] = useState(false);
+
+    // Show warning if user enters on mobile
+    useEffect(() => {
+        if (typeof window !== 'undefined' && window.innerWidth <= 900) {
+            setShowMobileWarning(true);
+        }
+    }, []);
 
     // Load existing store data when editing
     useEffect(() => {
@@ -655,6 +663,32 @@ function BuilderContentEN() {
                                 ✏️ Keep editing
                             </button>
                         </div>
+                    </div>
+                </div>
+            )}
+
+            {/* MOBILE WARNING MODAL */}
+            {showMobileWarning && (
+                <div className="success-modal-overlay" style={{ zIndex: 100000 }}>
+                    <div className="success-modal-content" style={{ padding: '30px 20px' }}>
+                        <div className="success-modal-icon" style={{ fontSize: '3.5rem', marginBottom: '15px' }}>
+                            💻📱
+                        </div>
+                        <h2 className="success-modal-title" style={{ color: '#111', fontSize: '1.4rem' }}>
+                            Better Experience on PC!
+                        </h2>
+                        <p className="success-modal-desc" style={{ marginBottom: '25px', color: '#555', fontSize: '0.95rem' }}>
+                            For the <strong>best editing experience</strong>, please create or modify your store from a computer.
+                            <br/><br/>
+                            Your store will be <strong>perfectly optimized for mobile</strong> when you share it with customers, but while building it, a PC offers many more advantages.
+                        </p>
+                        <button 
+                            className="btn btn-primary" 
+                            onClick={() => setShowMobileWarning(false)}
+                            style={{ width: '100%', padding: '14px', borderRadius: '12px', fontSize: '1rem', fontWeight: 'bold' }}
+                        >
+                            Got it!
+                        </button>
                     </div>
                 </div>
             )}
