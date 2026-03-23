@@ -125,9 +125,9 @@ export default function StorePreview({ data, products, viewMode = 'desktop', rea
 
     const filteredProducts = searchResults.map(r => r.product);
 
-    // When readOnly=true (live public store), use 'store-live' class - completely unconstrained.
-    // When in builder preview, use 'store-preview-container' with its card/frame visuals.
-    const containerClass = `store-preview-container flex flex-col ${viewMode === 'mobile' ? 'device-mobile' : 'device-desktop'} ${readOnly ? 'store-live' : ''}`;
+    const containerClass = readOnly
+        ? `store-live min-h-screen flex flex-col`
+        : `store-preview-container flex flex-col ${viewMode === 'mobile' ? 'device-mobile' : 'device-desktop'}`;
 
     // Helper to handle line breaks in textareas
     const renderMultiline = (text: string) => {
