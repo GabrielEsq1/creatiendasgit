@@ -127,9 +127,7 @@ export default function StorePreviewEN({ data, products, viewMode = 'desktop', r
 
     const filteredProducts = searchResults.map(r => r.product);
 
-    const containerClass = readOnly
-        ? 'store-live'
-        : `store-preview-container ${viewMode === 'mobile' ? 'device-mobile' : ''}`;
+    const containerClass = `store-preview-container flex flex-col ${viewMode === 'mobile' ? 'device-mobile' : 'device-desktop'} ${readOnly ? 'store-live' : ''}`;
 
     const renderMultiline = (text: string) => {
         if (!text) return null;

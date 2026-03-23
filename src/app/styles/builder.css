@@ -183,12 +183,14 @@ body {
 .preview-panel {
     flex: 1;
     padding: 2rem;
-    overflow-y: auto;
+    overflow: hidden; /* DOESN'T SCROLL */
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 0.75rem;
     height: 100%;
+    position: relative;
+    z-index: 50; /* BEATS STICKY TABS */
 }
 
 .device-toggle {
@@ -233,6 +235,8 @@ body {
 /* Builder-only: show the floating card preview */
 .preview-panel .store-preview-container {
     max-width: 1100px;
+    height: 100%; /* Fill panel height */
+    overflow-y: auto; /* SCROLL HERE NOW */
     box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08);
     border-radius: 24px;
     transition: max-width 0.2s ease;
@@ -1123,13 +1127,13 @@ body {
         min-width: 0;
         background: #eef2f6;
         padding: 0;
-        overflow-y: auto; /* ENABLE SCROLL as requested */
+        overflow: hidden; /* DOESN'T SCROLL ANYMORE */
         display: flex;
         flex-direction: column;
         align-items: center;
         border-bottom: 2px solid #ddd;
         position: relative;
-        z-index: 5;
+        z-index: 50; /* BEATS BUILDER PANEL'S Z-INDEX */
         box-shadow: 0 4px 10px rgba(0,0,0,0.1);
     }
 
@@ -1138,8 +1142,10 @@ body {
         transform: scale(0.7); /* Slightly larger scale for better visibility */
         transform-origin: top center;
         width: 143%; /* Compensate for 0.7 scale (1/0.7) */
+        height: 143%; /* Fill transformed space vertically */
         margin-top: 0.5rem;
-        margin-bottom: 2rem; /* Buffer for scaling scroll */
+        margin-bottom: 0px; 
+        overflow-y: auto; /* SCROLL HERE NOW */
     }
 
     .device-toggle {
@@ -1460,6 +1466,14 @@ body {
     justify-content: center;
     align-items: center;
     animation: fadeIn 0.3s ease;
+}
+
+/* Inside the builder, restrict the modal from taking over the window */
+.preview-panel .product-detail-overlay {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 0;
 }
 
 @keyframes fadeIn {
