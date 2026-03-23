@@ -1459,8 +1459,8 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(255, 255, 255, 0.85);
-    backdrop-filter: blur(8px);
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
     z-index: 1000;
     display: flex;
     justify-content: center;
@@ -1653,19 +1653,25 @@ body {
 }
 
 @media (max-width: 768px) {
+    .product-detail-overlay {
+        align-items: flex-end; /* Align modal to bottom like an app bottom sheet */
+    }
+
     .product-detail-modal {
         flex-direction: column;
         height: auto;
-        max-height: 92vh;
-        width: 92%;
-        margin: auto;
-        border-radius: 20px;
+        max-height: 85vh;
+        width: 100%;
+        margin: 0;
+        border-radius: 24px 24px 0 0; /* Only top rounded corners */
+        animation: slideUpModal 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     }
     
     .product-detail-image-side {
         height: auto;
+        max-height: 48vh; /* Prevent image from hiding text below */
         flex: none;
-        padding: 15px;
+        padding: 20px;
         padding-bottom: 0;
     }
     
@@ -1674,6 +1680,7 @@ body {
         flex: 1;
         min-height: 0;
         padding: 24px 20px;
+        padding-bottom: 30px;
         overflow-y: auto;
     }
     
@@ -1682,12 +1689,19 @@ body {
     }
     
     .product-detail-close {
-        top: 20px;
-        right: 20px;
+        top: 15px;
+        right: 15px;
         width: 36px;
         height: 36px;
         font-size: 20px;
+        background: #f1f1f1;
+        border: none;
     }
+}
+
+@keyframes slideUpModal {
+    from { transform: translateY(100%); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
 }
 
 /* Product Multi-Image Builder UI */
