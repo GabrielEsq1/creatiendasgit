@@ -1655,21 +1655,26 @@ body {
 @media (max-width: 768px) {
     .product-detail-modal {
         flex-direction: column;
-        height: 100%;
-        width: 100%;
-        border-radius: 0;
+        height: auto;
+        max-height: 92vh;
+        width: 92%;
+        margin: auto;
+        border-radius: 20px;
     }
     
     .product-detail-image-side {
-        height: 40%;
+        height: auto;
         flex: none;
+        padding: 15px;
+        padding-bottom: 0;
     }
     
     .product-detail-info-side {
-        height: 60%;
-        padding: 30px 20px;
-        padding-bottom: 80px;
-        overflow-y: auto; /* ENABLE SCROLLING */
+        height: auto;
+        flex: 1;
+        min-height: 0;
+        padding: 24px 20px;
+        overflow-y: auto;
     }
     
     .detail-name {
