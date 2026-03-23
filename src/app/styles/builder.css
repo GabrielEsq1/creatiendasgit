@@ -1123,7 +1123,7 @@ body {
 
     .preview-panel {
         width: 100%;
-        height: 40%; /* Fixed height for preview on mobile */
+        height: 48%; /* Increased height to give the preview more room */
         min-width: 0;
         background: #eef2f6;
         padding: 0;
@@ -1139,11 +1139,11 @@ body {
 
     /* Scale the preview to fit in the full width on mobile */
     .store-preview-container {
-        transform: scale(0.7); /* Slightly larger scale for better visibility */
+        transform: scale(0.88); /* Increased from 0.7 to 0.88 to fill out unused side padding */
         transform-origin: top center;
-        width: 143%; /* Compensate for 0.7 scale (1/0.7) */
-        height: 143%; /* Fill transformed space vertically */
-        margin-top: 0.5rem;
+        width: 113.6%; /* Compensate for 0.88 scale (1/0.88) */
+        height: 113.6%; /* Fill transformed space vertically */
+        margin-top: 0; /* Flush to the top to eliminate visual gap */
         margin-bottom: 0px; 
         overflow-y: auto; /* SCROLL HERE NOW */
     }
