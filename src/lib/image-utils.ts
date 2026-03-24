@@ -5,7 +5,7 @@
  * @param quality The quality of the output image (0 to 1, default: 0.7).
  * @returns A promise that resolves to the compressed base64 string.
  */
-export const compressImage = (file: File, maxWidth = 800, quality = 0.7): Promise<string> => {
+export const compressImage = (file: File, maxWidth = 720, quality = 0.6): Promise<string> => {
     return new Promise((resolve, reject) => {
         const reader = new FileReader();
         reader.readAsDataURL(file);

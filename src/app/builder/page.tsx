@@ -245,7 +245,8 @@ function BuilderContent() {
         const file = e.target.files?.[0];
         if (file) {
             try {
-                const base64 = await compressImage(file, 600, 0.6);
+                // More aggressive compression for logo/hero to save space
+                const base64 = await compressImage(file, 500, 0.5);
                 setStoreData(prev => ({ ...prev, [field]: base64 }));
             } catch (err) {
                 console.error('Error compressing image:', err);
@@ -260,7 +261,8 @@ function BuilderContent() {
             const newImages: string[] = [];
             for (let i = 0; i < files.length; i++) {
                 try {
-                    const base64 = await compressImage(files[i], 600, 0.6);
+                    // More aggressive compression for gallery to save space
+                    const base64 = await compressImage(files[i], 500, 0.5);
                     newImages.push(base64);
                 } catch (err) {
                     console.error('Error compressing gallery image:', err);
@@ -360,10 +362,20 @@ function BuilderContent() {
             const endpoint = isUpdate ? `/api/stores/${editSlug || storeData.id}` : '/api/stores';
             const method = isUpdate ? 'PUT' : 'POST';
 
+            const payload = JSON.stringify({ name: storeData.name, slug, data: storeData, products, id: storeData.id });
+            
+            // PAYLOAD SIZE CHECK (Vercel limit is 4.5MB, we use 4MB as safety margin)
+            const payloadSizeMB = payload.length / (1024 * 1024);
+            if (payloadSizeMB > 4.2) {
+                setIsSaving(false);
+                alert(`⚠️ LA TIENDA ES DEMASIADO GRANDE (${payloadSizeMB.toFixed(2)}MB)\n\nHas superado el límite de datos permitidos. \nPara guardar, por favor:\n1. Elimina fotos de productos que ya no necesites.\n2. No uses fotos excesivamente grandes (intenta que no pesen más de 2MB al subirlas).\n3. Reduce las fotos de la galería de "Sobre Nosotros".`);
+                return;
+            }
+
             const res = await fetch(endpoint, {
                 method,
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ name: storeData.name, slug, data: storeData, products, id: storeData.id })
+                body: payload
             });
 
             if (!res.ok) {
@@ -598,7 +610,8 @@ function BuilderContent() {
                                     const processedImages: string[] = [];
                                     for (let i = 0; i < files.length; i++) {
                                         try {
-                                            const base64 = await compressImage(files[i], 800, 0.7);
+                                            // Optimized for mobile-heavy consumption
+                                            const base64 = await compressImage(files[i], 640, 0.6);
                                             processedImages.push(base64);
                                         } catch (err) {
                                             console.error('Error compressing product image:', err);
