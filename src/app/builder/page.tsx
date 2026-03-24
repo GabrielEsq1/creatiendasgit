@@ -241,16 +241,50 @@ function BuilderContent() {
     // fileToBase64 removed in favor of compressImage utility
 
 
+    // Helper to upload a file and get its URL
+    const uploadImageToServer = async (base64OrFile: string | File): Promise<string> => {
+        let file: File;
+        
+        if (typeof base64OrFile === 'string') {
+            // Convert base64 to file
+            const res = await fetch(base64OrFile);
+            const blob = await res.blob();
+            file = new File([blob], "image.jpg", { type: "image/jpeg" });
+        } else {
+            file = base64OrFile;
+        }
+
+        const formData = new FormData();
+        formData.append('file', file);
+
+        const res = await fetch('/api/upload', {
+            method: 'POST',
+            body: formData,
+        });
+
+        if (!res.ok) {
+            throw new Error('No se pudo subir la imagen al servidor');
+        }
+
+        const data = await res.json();
+        return data.url;
+    };
+
     const handleImageUpload = async (field: string, e: ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
+            setIsLoading(true); // Show loading while uploading
             try {
-                // More aggressive compression for logo/hero to save space
-                const base64 = await compressImage(file, 500, 0.5);
-                setStoreData(prev => ({ ...prev, [field]: base64 }));
+                // 1. Compress
+                const base64 = await compressImage(file, 800, 0.7);
+                // 2. Upload to get a URL instead of storage-heavy base64
+                const url = await uploadImageToServer(base64);
+                setStoreData(prev => ({ ...prev, [field]: url }));
             } catch (err) {
-                console.error('Error compressing image:', err);
-                alert('Error al procesar la imagen. Intenta con una más pequeña.');
+                console.error('Error uploading image:', err);
+                alert('Error al subir la imagen. Intenta de nuevo.');
+            } finally {
+                setIsLoading(false);
             }
         }
     };
@@ -258,20 +292,22 @@ function BuilderContent() {
     const handleGalleryUpload = async (e: ChangeEvent<HTMLInputElement>) => {
         const files = e.target.files;
         if (files) {
-            const newImages: string[] = [];
+            setIsLoading(true);
+            const newUrls: string[] = [];
             for (let i = 0; i < files.length; i++) {
                 try {
-                    // More aggressive compression for gallery to save space
-                    const base64 = await compressImage(files[i], 500, 0.5);
-                    newImages.push(base64);
+                    const base64 = await compressImage(files[i], 800, 0.7);
+                    const url = await uploadImageToServer(base64);
+                    newUrls.push(url);
                 } catch (err) {
-                    console.error('Error compressing gallery image:', err);
+                    console.error('Error uploading gallery image:', err);
                 }
             }
             setStoreData(prev => ({
                 ...prev,
-                about: { ...prev.about, gallery: [...prev.about.gallery, ...newImages] }
+                about: { ...prev.about, gallery: [...prev.about.gallery, ...newUrls] }
             }));
+            setIsLoading(false);
         }
     };
 
@@ -339,17 +375,79 @@ function BuilderContent() {
         if (isSaving) return;
         setIsSaving(true);
         setPublicUrl(null);
+        
         try {
+            // STEP 1: ENTERPRISE PROTECTION - MIGRATE BASE64 TO URLS
+            // This is critical for stores like Magis Store with 1000 products.
+            // We scan everything for Base64 and upload to server before saving metadata.
+            
+            const migrationProducts = [...products];
+            let migrationStoreData = { ...storeData };
+            let migratedCount = 0;
+
+            // 1a. Migrate Products
+            for (let i = 0; i < migrationProducts.length; i++) {
+                const p = migrationProducts[i];
+                // Check multiple images
+                if (p.images && p.images.length > 0) {
+                    const newImages = [...p.images];
+                    let changed = false;
+                    for (let j = 0; j < newImages.length; j++) {
+                        if (newImages[j]?.startsWith('data:image/')) {
+                            newImages[j] = await uploadImageToServer(newImages[j]);
+                            changed = true;
+                            migratedCount++;
+                        }
+                    }
+                    if (changed) {
+                        migrationProducts[i] = { ...p, images: newImages, image: newImages[0] };
+                    }
+                } else if (p.image?.startsWith('data:image/')) {
+                    // Check legacy single image
+                    const url = await uploadImageToServer(p.image);
+                    migrationProducts[i] = { ...p, image: url, images: [url] };
+                    migratedCount++;
+                }
+            }
+
+            // 1b. Migrate Store Identity
+            if (migrationStoreData.logo?.startsWith('data:image/')) {
+                migrationStoreData.logo = await uploadImageToServer(migrationStoreData.logo);
+                migratedCount++;
+            }
+            if (migrationStoreData.heroBg?.startsWith('data:image/')) {
+                migrationStoreData.heroBg = await uploadImageToServer(migrationStoreData.heroBg);
+                migratedCount++;
+            }
+            if (migrationStoreData.about?.gallery?.length > 0) {
+                const newGallery = [...migrationStoreData.about.gallery];
+                let changed = false;
+                for (let i = 0; i < newGallery.length; i++) {
+                    if (newGallery[i]?.startsWith('data:image/')) {
+                        newGallery[i] = await uploadImageToServer(newGallery[i]);
+                        changed = true;
+                        migratedCount++;
+                    }
+                }
+                if (changed) {
+                    migrationStoreData.about = { ...migrationStoreData.about, gallery: newGallery };
+                }
+            }
+
+            if (migratedCount > 0) {
+                console.log(`✅ Migrated ${migratedCount} images to server URLs`);
+                setProducts(migrationProducts);
+                setStoreData(migrationStoreData);
+            }
+
             // Determine if this is an update (existing store) or create (new store)
             const isUpdate = !!editSlug || !!storeData.id;
 
             // Only generate new slug for NEW stores, not for updates
             let slug: string;
             if (isUpdate) {
-                // Use existing slug for updates
                 slug = editSlug || storeData.slug || '';
             } else {
-                // Generate new slug only for new stores
                 slug = storeData.name.toLowerCase()
                     .normalize('NFD')
                     .replace(/[\u0300-\u036f]/g, '')
@@ -358,17 +456,23 @@ function BuilderContent() {
                     .replace(/-+/g, '-') + '-' + Date.now().toString(36);
             }
 
-            // Use PUT for updates, POST for new stores
             const endpoint = isUpdate ? `/api/stores/${editSlug || storeData.id}` : '/api/stores';
             const method = isUpdate ? 'PUT' : 'POST';
 
-            const payload = JSON.stringify({ name: storeData.name, slug, data: storeData, products, id: storeData.id });
+            const payload = JSON.stringify({ 
+                name: migrationStoreData.name, 
+                slug, 
+                data: migrationStoreData, 
+                products: migrationProducts, 
+                id: migrationStoreData.id 
+            });
             
             // PAYLOAD SIZE CHECK (Vercel limit is 4.5MB, we use 4MB as safety margin)
+            // After migration to URLs, this should NEVER be hit even with 1000 products.
             const payloadSizeMB = payload.length / (1024 * 1024);
             if (payloadSizeMB > 4.2) {
                 setIsSaving(false);
-                alert(`⚠️ LA TIENDA ES DEMASIADO GRANDE (${payloadSizeMB.toFixed(2)}MB)\n\nHas superado el límite de datos permitidos. \nPara guardar, por favor:\n1. Elimina fotos de productos que ya no necesites.\n2. No uses fotos excesivamente grandes (intenta que no pesen más de 2MB al subirlas).\n3. Reduce las fotos de la galería de "Sobre Nosotros".`);
+                alert(`⚠️ LA TIENDA ES DEMASIADO GRANDE (${payloadSizeMB.toFixed(2)}MB)\n\nIncluso tras optimizar, hay demasiados datos de texto. Intenta:\n1. Reducir el número de productos (máximo 1000).\n2. Acortar las descripciones muy largas.`);
                 return;
             }
 
@@ -380,7 +484,7 @@ function BuilderContent() {
 
             if (!res.ok) {
                 if (res.status === 413) {
-                    throw new Error('La tienda contiene demasiados datos o imágenes muy pesadas. Por favor, intenta reducir el tamaño de las imágenes o eliminar algunas.');
+                    throw new Error('La tienda contiene demasiados datos. Por favor, intenta reducir el número de productos o descripciones.');
                 }
 
                 const contentType = res.headers.get("content-type");
@@ -392,22 +496,17 @@ function BuilderContent() {
                         return;
                     }
                     if (res.status === 403) {
-                        // Store limit reached - show detailed error
                         const limitMessage = json.message || 'Has alcanzado el límite de tiendas.';
                         const detailedMessage = `${limitMessage}\n\nPlan actual: ${json.plan || 'FREE'}\nTiendas actuales: ${json.currentStores || 0}\nLímite: ${json.limit || 1}`;
-
                         alert(detailedMessage);
-
-                        // Redirect to WhatsApp for upgrade
                         if (confirm('¿Deseas hablar con un asesor para actualizar tu plan?')) {
-                            const whatsappMessage = "Hola, quiero actualizar mi plan para crear más tiendas.";
-                            window.open(`https://wa.me/573026687991?text=${encodeURIComponent(whatsappMessage)}`, '_blank');
+                            window.open(`https://wa.me/573026687991?text=${encodeURIComponent("Hola, quiero actualizar mi plan.")}`, '_blank');
                         }
                         return;
                     }
-                    throw new Error(json.message || json.error || 'Error desconocido en el servidor');
+                    throw new Error(json.message || json.error || 'Error desconocido');
                 } else {
-                    throw new Error(`Error del servidor: ${res.status} ${res.statusText}. Es posible que el contenido sea demasiado grande.`);
+                    throw new Error(`Error del servidor: ${res.status}. El contenido es demasiado grande.`);
                 }
             }
 
@@ -416,44 +515,24 @@ function BuilderContent() {
                 const rawUrl = json.url || json.publicUrl;
                 const finalUrl = normalizeUrl(rawUrl);
                 setPublicUrl(finalUrl);
-                setHasUnsavedChanges(false); // Mark as saved
-                // Store the returned id for future updates
-                // Store the returned id for future updates
+                setHasUnsavedChanges(false);
                 if (json.id) {
                     setStoreData(prev => ({ ...prev, id: json.id }));
                 }
 
                 if (!editSlug) {
-                    // NEW STORE: Redirect to Success Page immediately
-                    setHasUnsavedChanges(false); // Ensure no popup on redirect
-                    alert('¡Tienda creada con éxito! Vamos a compartirla.');
-                    // Use local slug if server doesn't return it to ensure we never get "undefined"
+                    setHasUnsavedChanges(false);
                     let finalSlug = json.slug || slug || storeData.slug;
-
-                    // CRITICAL SAFETY CHECK
-                    if (!finalSlug || finalSlug === 'undefined' || finalSlug === 'null') {
-                        console.error('CRITICAL: Slug missing in redirect', { jsonSlug: json.slug, localSlug: slug, stateSlug: storeData.slug });
-                        // Emergency fallback: use name
-                        if (storeData.name) {
-                            finalSlug = storeData.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
-                        } else {
-                            alert('Error crítico: No se pudo generar el enlace de la tienda. Por favor contacta a soporte.');
-                            return;
-                        }
-                    }
-
-                    console.log('Redirecting to share page with slug:', finalSlug);
                     window.location.href = `/builder/share?slug=${finalSlug}&storeName=${encodeURIComponent(storeData.name)}`;
                 } else {
-                    // EDITING: Stay on page but notify
-                    alert(`¡Cambios guardados con éxito!\n\nTu tienda está actualizada.`);
+                    alert(`¡Cambios guardados con éxito!\n\nTu tienda está actualizada y optimizada en el servidor.`);
                 }
             } else {
                 throw new Error(json.message || 'Error inesperado');
             }
         } catch (e: any) {
             console.error('Save error:', e);
-            alert(`No se pudo guardar la tienda.\n${e.message || 'Error de conexión. Intenta reducir el tamaño de las imágenes.'}`);
+            alert(`No se pudo guardar la tienda.\n${e.message || 'Error de conexión.'}`);
         } finally {
             setIsSaving(false);
         }
@@ -607,20 +686,22 @@ function BuilderContent() {
                             onImageSelected={async e => {
                                 const files = e.target.files;
                                 if (files) {
-                                    const processedImages: string[] = [];
+                                    const processedUrls: string[] = [];
+                                    setIsLoading(true);
                                     for (let i = 0; i < files.length; i++) {
                                         try {
-                                            // Optimized for mobile-heavy consumption
-                                            const base64 = await compressImage(files[i], 640, 0.6);
-                                            processedImages.push(base64);
+                                            const base64 = await compressImage(files[i], 800, 0.7);
+                                            const url = await uploadImageToServer(base64);
+                                            processedUrls.push(url);
                                         } catch (err) {
-                                            console.error('Error compressing product image:', err);
+                                            console.error('Error uploading product image:', err);
                                         }
                                     }
                                     setProdForm(prev => ({ 
                                         ...prev, 
-                                        images: [...prev.images, ...processedImages].slice(0, 5) 
+                                        images: [...prev.images, ...processedUrls].slice(0, 5) 
                                     }));
+                                    setIsLoading(false);
                                 }
                             }}
                         />

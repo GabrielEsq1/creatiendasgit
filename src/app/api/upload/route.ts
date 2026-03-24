@@ -50,13 +50,18 @@ export async function POST(req: NextRequest) {
         const timestamp = Date.now();
         const extension = file.name.split(".").pop();
         const filename = `${session.user.id}_${timestamp}.${extension}`;
-        const filepath = path.join(process.cwd(), "public", "uploads", "campaigns", filename);
+        
+        // Use a generic uploads folder for stores
+        const uploadsDir = path.join(process.cwd(), "public", "uploads", "stores");
+        
+        // Ensure directory exists (basic check, writeFile will fail if not)
+        const filepath = path.join(uploadsDir, filename);
 
         // Save file
         await writeFile(filepath, buffer);
 
         // Return public URL
-        const url = `/uploads/campaigns/${filename}`;
+        const url = `/uploads/stores/${filename}`;
 
         return NextResponse.json({
             success: true,
