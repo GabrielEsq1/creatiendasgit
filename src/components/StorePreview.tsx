@@ -8,7 +8,6 @@ import FloatingCartButton from '@/components/store/FloatingCartButton';
 import CartDrawer from '@/components/store/CartDrawer';
 import { useCartStore } from '@/store/cartStore';
 import { searchProducts, SearchResult } from '@/lib/search-engine';
-import Image from 'next/image';
 
 interface StorePreviewProps {
     data: StoreData;
@@ -59,14 +58,12 @@ const ProductImageCarousel = ({ images, name, onClick, index }: { images: string
     if (!images || images.length === 0) return <div style={{ color: '#ccc' }}>Sin Imagen</div>;
     if (images.length === 1) {
         return (
-            <Image
+            <img
                 src={images[0]}
                 alt={name}
-                fill
-                className="object-contain"
-                priority={index < 4}
+                className="w-full h-full object-contain"
+                loading={index < 4 ? "eager" : "lazy"}
                 onClick={onClick}
-                sizes="(max-width: 768px) 50vw, 25vw"
             />
         );
     }
@@ -74,16 +71,14 @@ const ProductImageCarousel = ({ images, name, onClick, index }: { images: string
     return (
         <div className="relative w-full h-full overflow-hidden group" onClick={onClick}>
             {images.map((img, idx) => (
-                <Image
+                <img
                     key={idx}
                     src={img}
                     alt={`${name} - ${idx + 1}`}
-                    fill
-                    className={`object-contain transition-opacity duration-1000 ease-in-out ${
+                    className={`absolute inset-0 w-full h-full object-contain transition-opacity duration-1000 ease-in-out ${
                         idx === currentIndex ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
                     }`}
-                    priority={index < 2 && idx === 0}
-                    sizes="(max-width: 768px) 50vw, 25vw"
+                    loading={index < 4 ? "eager" : "lazy"}
                 />
             ))}
             {/* Subtle pagination dots */}
@@ -306,9 +301,9 @@ export default function StorePreview({ data, products, viewMode = 'desktop', rea
                 <div className="store-topbar">
                     <div className="store-topbar-inner">
                         <div className="topbar-left">
-                            <div className="topbar-logo-small" style={{ borderColor: data.color, color: data.color, position: 'relative' }}>
+                            <div className="topbar-logo-small" style={{ borderColor: data.color, color: data.color }}>
                                 {data.logo ? (
-                                    <Image src={data.logo} alt="Logo" fill className="object-cover rounded-full" />
+                                    <img src={data.logo} alt="Logo" loading="lazy" width={36} height={36} />
                                 ) : (
                                     data.name ? data.name.substring(0, 1).toUpperCase() : 'T'
                                 )}
@@ -349,11 +344,7 @@ export default function StorePreview({ data, products, viewMode = 'desktop', rea
                     }}
                 >
                     <div className="store-header-inner">
-                        {data.logo && (
-                            <div className="store-logo-wrapper relative w-[86px] h-[86px] mx-auto mb-4">
-                                <Image src={data.logo} alt="Logo" fill className="store-logo rounded-full border-4 border-white object-cover bg-white" priority />
-                            </div>
-                        )}
+                        {data.logo && <img src={data.logo} alt="Logo" className="store-logo" />}
                         <div className="store-title">{data.title}</div>
                         <h1 className="store-name">{data.name}</h1>
                         <p className="store-desc">{data.desc}</p>
@@ -473,9 +464,9 @@ export default function StorePreview({ data, products, viewMode = 'desktop', rea
                                                         trackEvent('click', { action: 'autocomplete_select', item: product.name });
                                                     }}
                                                 >
-                                                    <div className="suggestion-img-wrap relative">
+                                                    <div className="suggestion-img-wrap">
                                                         {product.image ? (
-                                                            <Image src={product.image} alt="" fill className="object-cover" />
+                                                            <img src={product.image} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                                                         ) : (
                                                             <div className="suggestion-img-placeholder">🔍</div>
                                                         )}
@@ -808,8 +799,8 @@ export default function StorePreview({ data, products, viewMode = 'desktop', rea
                         <div className="footer-column footer-brand">
                             <div className="footer-logo-circle" style={{ borderColor: data.color, color: data.color }}>
                                 {data.logo ? (
-                                    <div className="footer-logo-img-wrap relative w-[60px] h-[60px]">
-                                        <Image src={data.logo} alt="Logo" fill className="object-cover rounded-full" />
+                                    <div className="footer-logo-img-wrap">
+                                        <img src={data.logo} alt="Logo" loading="lazy" />
                                     </div>
                                 ) : (
                                     data.name ? data.name.substring(0, 1).toUpperCase() : 'T'
@@ -885,13 +876,7 @@ export default function StorePreview({ data, products, viewMode = 'desktop', rea
                                 {selectedProduct.images && selectedProduct.images.length > 0 ? (
                                     <>
                                         <div className="main-image-wrapper relative aspect-square rounded-2xl overflow-hidden border border-gray-100 bg-gray-50">
-                                            <Image 
-                                                src={(selectedProduct as any).activeImage || (selectedProduct.images && selectedProduct.images[0]) || selectedProduct.image || ''} 
-                                                alt={selectedProduct.name} 
-                                                fill 
-                                                className="object-cover transition-all duration-300" 
-                                                priority
-                                            />
+                                            <img src={(selectedProduct as any).activeImage || (selectedProduct.images && selectedProduct.images[0]) || selectedProduct.image} alt={selectedProduct.name} className="w-full h-full object-cover transition-all duration-300" />
                                         </div>
                                         {selectedProduct.images.length > 1 && (
                                             <div className="thumbnails-grid grid grid-cols-5 gap-2">
@@ -899,11 +884,11 @@ export default function StorePreview({ data, products, viewMode = 'desktop', rea
                                                     <button 
                                                         key={i} 
                                                         onClick={() => setSelectedProduct({ ...selectedProduct, activeImage: img } as any)}
-                                                        className={`relative aspect-square rounded-lg overflow-hidden border-2 transition-all ${
-                                                            ((selectedProduct as any).activeImage || (selectedProduct.images && selectedProduct.images[0]) || selectedProduct.image) === img ? 'border-green-500 scale-95' : 'border-transparent hover:border-gray-300'
+                                                        className={`aspect-square rounded-lg overflow-hidden border-2 transition-all ${
+                                                            ((selectedProduct as any).activeImage || (selectedProduct.images && (selectedProduct.images[0])) || selectedProduct.image) === img ? 'border-green-500 scale-95' : 'border-transparent hover:border-gray-300'
                                                         }`}
                                                     >
-                                                        <Image src={img} alt={`${selectedProduct.name} ${i}`} fill className="object-cover" />
+                                                        <img src={img} alt={`${selectedProduct.name} ${i}`} className="w-full h-full object-cover" />
                                                     </button>
                                                 ))}
                                             </div>
@@ -912,7 +897,7 @@ export default function StorePreview({ data, products, viewMode = 'desktop', rea
                                 ) : (
                                     <div className="main-image-wrapper relative aspect-square rounded-2xl overflow-hidden border border-gray-100 bg-gray-50 flex items-center justify-center">
                                         {selectedProduct.image ? (
-                                            <Image src={selectedProduct.image} alt={selectedProduct.name} fill className="object-cover" priority />
+                                            <img src={selectedProduct.image} alt={selectedProduct.name} className="w-full h-full object-cover" />
                                         ) : (
                                             <div style={{ color: '#ccc' }}>Sin Imagen</div>
                                         )}
@@ -1014,8 +999,8 @@ export default function StorePreview({ data, products, viewMode = 'desktop', rea
             {lightboxImage && (
                 <div id="galleryPopup" style={{ display: 'flex' }} onClick={() => setLightboxImage(null)}>
                     <span id="closePopup">&times;</span>
-                    <div id="popupImageContainer" className="relative w-full h-[80vh]">
-                        <Image id="popupImage" src={lightboxImage} alt="Vista ampliada" fill className="object-contain" onClick={(e) => e.stopPropagation()} quality={90} />
+                    <div id="popupImageContainer">
+                        <img id="popupImage" src={lightboxImage} alt="Vista ampliada" onClick={(e) => e.stopPropagation()} />
                     </div>
                 </div>
             )}
