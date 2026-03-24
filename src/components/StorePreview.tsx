@@ -824,14 +824,7 @@ export default function StorePreview({ data, products, viewMode = 'desktop', rea
                                 <li><button onClick={() => setActiveView('careers')} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'inherit', padding: 0, fontSize: 'inherit' }}>Trabaja con nosotros</button></li>
                             </ul>
                         </div>
-                        <div className="footer-column">
-                            <h4>Promociones</h4>
-                            <ul>
-                                <li><a href="#">Promociones</a></li>
-                                <li><a href="#">Novedades</a></li>
-                                <li><a href="#">Tienda online</a></li>
-                            </ul>
-                        </div>
+
                         <div className="footer-column">
                             <h4>Contacto</h4>
                             <div className="store-contact">
