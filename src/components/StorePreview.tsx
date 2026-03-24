@@ -35,6 +35,75 @@ const formatPrice = (value: string | number, storeCurrency: 'COP' | 'USD' = 'COP
     });
 };
 
+const ProductImageCarousel = ({ images, name, onClick, index }: { images: string[], name: string, onClick?: () => void, index: number }) => {
+    const [currentIndex, setCurrentIndex] = useState(0);
+
+    useEffect(() => {
+        if (!images || images.length <= 1) return;
+        
+        // Add a slight delay based on index to avoid all carousels changing at the exact same millisecond
+        const delay = (index % 5) * 400;
+        
+        const timer = setTimeout(() => {
+            const interval = setInterval(() => {
+                setCurrentIndex((prev) => (prev + 1) % images.length);
+            }, 4000); // Slowly cycle every 4s
+            
+            return () => clearInterval(interval);
+        }, delay);
+
+        return () => clearTimeout(timer);
+    }, [images, index]);
+
+    if (!images || images.length === 0) return <div style={{ color: '#ccc' }}>Sin Imagen</div>;
+    if (images.length === 1) {
+        return (
+            <img
+                src={images[0]}
+                alt={name}
+                className="w-full h-full object-contain"
+                loading={index < 4 ? "eager" : "lazy"}
+                onClick={onClick}
+            />
+        );
+    }
+
+    return (
+        <div className="relative w-full h-full overflow-hidden group" onClick={onClick}>
+            {images.map((img, idx) => (
+                <img
+                    key={idx}
+                    src={img}
+                    alt={`${name} - ${idx + 1}`}
+                    className={`absolute inset-0 w-full h-full object-contain transition-opacity duration-1000 ease-in-out ${
+                        idx === currentIndex ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
+                    }`}
+                    loading={index < 4 ? "eager" : "lazy"}
+                />
+            ))}
+            {/* Subtle pagination dots */}
+            <div className="absolute bottom-2 left-0 right-0 flex justify-center gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                {images.map((_, idx) => (
+                    <div 
+                        key={idx} 
+                        className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${
+                            idx === currentIndex ? 'bg-white shadow-sm scale-110' : 'bg-white/40'
+                        }`}
+                    />
+                ))}
+            </div>
+            {/* Multiphoto indicator */}
+            <div className="absolute top-2 right-2 bg-black/20 backdrop-blur-sm text-[10px] text-white px-1.5 py-0.5 rounded-md font-bold flex items-center gap-1">
+                <svg className="w-2.5 h-2.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                    <path d="M7 11l4 4 6-6"/>
+                </svg>
+                {images.length}
+            </div>
+        </div>
+    );
+};
+
 export default function StorePreview({ data, products, viewMode = 'desktop', readOnly = false }: StorePreviewProps) {
     const [activeView, setActiveView] = useState<'catalogo' | 'about' | 'careers'>('catalogo');
     const [lightboxImage, setLightboxImage] = useState<string | null>(null);
@@ -438,19 +507,13 @@ export default function StorePreview({ data, products, viewMode = 'desktop', rea
                                                 <div
                                                     className="product-image"
                                                     style={{ position: 'relative', overflow: 'hidden', cursor: 'pointer' }}
-                                                    onClick={() => setSelectedProduct(product)}
                                                 >
-                                                    {product.image ? (
-                                                        <img
-                                                            src={product.image}
-                                                            alt={product.name}
-                                                            style={{ width: '100%', height: '100%', objectFit: 'contain' }}
-                                                            loading={index < 4 ? "eager" : "lazy"}
-                                                            decoding="async"
-                                                        />
-                                                    ) : (
-                                                        <div style={{ color: '#ccc' }}>Sin Imagen</div>
-                                                    )}
+                                                    <ProductImageCarousel 
+                                                        images={product.images && product.images.length > 0 ? product.images : (product.image ? [product.image] : [])} 
+                                                        name={product.name} 
+                                                        index={index}
+                                                        onClick={() => setSelectedProduct(product)}
+                                                    />
                                                 </div>
                                                 <div className="product-details">
                                                     <div className="product-category">{product.category}</div>
