@@ -27,7 +27,7 @@ export default function FloatingCartButton({ storeSlug, styleColor = '#000000' }
     return (
         <button
             onClick={() => setCartOpen(true)}
-            className="fixed bottom-6 right-6 z-[1010] flex items-center justify-center p-4 rounded-full shadow-2xl hover:scale-105 active:scale-95 transition-all animate-in slide-in-from-bottom hover:shadow-[0_8px_30px_rgb(0,0,0,0.12)]"
+            className="fixed bottom-6 right-6 z-[20000] flex items-center justify-center p-4 rounded-full shadow-2xl hover:scale-105 active:scale-95 transition-all animate-in slide-in-from-bottom hover:shadow-[0_8px_30px_rgb(0,0,0,0.12)]"
             style={{ backgroundColor: styleColor, color: '#fff' }}
         >
             <div className="relative">

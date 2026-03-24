@@ -54,10 +54,10 @@ export default function CartDrawer({ storeSlug, storeName, whatsapp, styleColor 
     return (
         <>
             <div 
-                className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[100] transition-opacity"
+                className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[20001] transition-opacity"
                 onClick={() => setCartOpen(false)}
             />
-            <div className="fixed top-0 right-0 h-full w-full sm:w-[400px] bg-white z-[101] shadow-2xl flex flex-col animate-in slide-in-from-right duration-300">
+            <div className="fixed top-0 right-0 h-full w-full sm:w-[400px] bg-white z-[20002] shadow-2xl flex flex-col animate-in slide-in-from-right duration-300">
                 
                 {/* Header */}
                 <div className="flex items-center justify-between p-4 border-b border-gray-100 bg-white">
