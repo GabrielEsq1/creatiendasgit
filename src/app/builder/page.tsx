@@ -313,32 +313,31 @@ function BuilderContent() {
 
     const PRODUCT_LIMIT = 1000;
 
-    const handleSaveProduct = () => {
+    const handleSaveProduct = async () => {
         if (!prodForm.name || !prodForm.price) return alert('Nombre y precio requeridos');
 
+        let updatedProduct: Product;
+        let newProductsList: Product[];
+
         if (editingProductId) {
-            // Modo edici\u00f3n
-            setProducts(products.map(p =>
-                p.id === editingProductId
-                    ? { 
-                        ...p, 
-                        name: prodForm.name, 
-                        description: prodForm.desc, 
-                        category: prodForm.category, 
-                        price: prodForm.price, 
-                        tags: prodForm.tags ? (typeof prodForm.tags === 'string' ? prodForm.tags.split(',').map(t => t.trim()) : prodForm.tags) : [], 
-                        images: prodForm.images,
-                        image: prodForm.images[0] || null // For backward compatibility
-                    }
-                    : p
-            ));
-            setEditingProductId(null);
+            // Edit existing product in state
+            updatedProduct = {
+                id: editingProductId,
+                name: prodForm.name,
+                description: prodForm.desc,
+                category: prodForm.category,
+                price: prodForm.price,
+                tags: prodForm.tags ? (typeof prodForm.tags === 'string' ? prodForm.tags.split(',').map(t => t.trim()) : prodForm.tags) : [],
+                images: prodForm.images,
+                image: prodForm.images[0] || null
+            };
+            newProductsList = products.map(p => p.id === editingProductId ? updatedProduct : p);
         } else {
-            // L\u00edmite m\u00e1ximo
+            // Max limit check
             if (products.length >= PRODUCT_LIMIT) {
-                return alert(`Has alcanzado el l\u00edmite de ${PRODUCT_LIMIT} productos por tienda.`);
+                return alert(`Has alcanzado el límite de ${PRODUCT_LIMIT} productos por tienda.`);
             }
-            const newProduct: Product = {
+            updatedProduct = {
                 id: Date.now(),
                 name: prodForm.name,
                 description: prodForm.desc,
@@ -346,12 +345,56 @@ function BuilderContent() {
                 price: prodForm.price,
                 tags: prodForm.tags ? (typeof prodForm.tags === 'string' ? prodForm.tags.split(',').map(t => t.trim()) : prodForm.tags) : [],
                 images: prodForm.images,
-                image: prodForm.images[0] || null // For backward compatibility
+                image: prodForm.images[0] || null
             };
-            setProducts([...products, newProduct]);
+            newProductsList = [...products, updatedProduct];
         }
 
+        // UPDATE LOCAL STATE FIRST
+        setProducts(newProductsList);
         setProdForm({ name: '', desc: '', category: '', price: '', tags: '', images: [] });
+        setEditingProductId(null);
+
+        // INCREMENTAL SAVE TO DATABASE
+        // If the store already exists (we have an ID or are in edit mode), save this product immediately
+        const storeIdToUse = storeData.id || editSlug;
+        if (storeIdToUse) {
+            try {
+                const res = await fetch(`/api/stores/${storeIdToUse}/products`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ product: updatedProduct })
+                });
+                
+                if (!res.ok) {
+                    console.error('Failed to save product incrementally');
+                } else {
+                    console.log('✅ Product saved incrementally to DB');
+                }
+            } catch (err) {
+                console.error('Network error during incremental product save:', err);
+            }
+        }
+    };
+
+    const handleDeleteProduct = async (productId: number) => {
+        if (!confirm('¿Estás seguro de eliminar este producto?')) return;
+
+        // 1. Update local state
+        setProducts(products.filter(p => p.id !== productId));
+
+        // 2. Incremental delete from DB
+        const storeIdToUse = storeData.id || editSlug;
+        if (storeIdToUse) {
+            try {
+                await fetch(`/api/stores/${storeIdToUse}/products?id=${productId}`, {
+                    method: 'DELETE'
+                });
+                console.log('✅ Product deleted incrementally from DB');
+            } catch (err) {
+                console.error('Failed to delete product from DB:', err);
+            }
+        }
     };
 
     const handleEditProduct = (product: Product) => {
@@ -743,7 +786,7 @@ function BuilderContent() {
                                 </div>
                                 <div style={{ display: 'flex', gap: '0.35rem' }}>
                                     <button className="btn btn-secondary" onClick={() => handleEditProduct(p)} title="Editar producto">✏️</button>
-                                    <button className="btn btn-danger" onClick={() => setProducts(products.filter(x => x.id !== p.id))} title="Eliminar producto">🗑️</button>
+                                    <button className="btn btn-danger" onClick={() => handleDeleteProduct(p.id)} title="Eliminar producto">🗑️</button>
                                 </div>
                             </div>
                         ))}
