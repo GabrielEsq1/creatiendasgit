@@ -1660,28 +1660,29 @@ body {
     .product-detail-modal {
         flex-direction: column;
         height: auto;
-        max-height: 85vh;
+        max-height: 92vh;
         width: 100%;
         margin: 0;
-        border-radius: 24px 24px 0 0; /* Only top rounded corners */
+        border-radius: 24px 24px 0 0;
         animation: slideUpModal 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        overflow-y: auto; /* ENTIRE MODAL SCROLLS */
+        -webkit-overflow-scrolling: touch;
     }
     
     .product-detail-image-side {
         height: auto;
-        max-height: 48vh; /* Prevent image from hiding text below */
         flex: none;
         padding: 20px;
         padding-bottom: 0;
+        max-height: none; /* Let it be part of the flow */
     }
     
     .product-detail-info-side {
         height: auto;
-        flex: 1;
-        min-height: 0;
+        flex: none;
         padding: 24px 20px;
-        padding-bottom: 30px;
-        overflow-y: auto;
+        padding-bottom: 40px;
+        overflow-y: visible; /* DON'T SCROLL INDEPENDENTLY */
     }
     
     .detail-name {
