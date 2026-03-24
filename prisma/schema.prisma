@@ -160,6 +160,18 @@ model Store {
   products  Json?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  
+  images    StoredImage[]
+}
+
+model StoredImage {
+  id        String   @id @default(cuid())
+  storeId   String
+  store     Store    @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  type      String   // "logo", "hero", "product", "gallery"
+  mimeType  String   // "image/jpeg", etc.
+  content   String   @db.Text // The Base64 content
+  createdAt DateTime @default(now())
 }
 
 // ============================================

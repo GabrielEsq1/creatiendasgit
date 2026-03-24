@@ -241,29 +241,43 @@ function BuilderContent() {
     // fileToBase64 removed in favor of compressImage utility
 
 
-    // Helper to upload a file and get its URL
+    // Helper to upload a file to the DATABASE (Works on Vercel!)
     const uploadImageToServer = async (base64OrFile: string | File): Promise<string> => {
-        let file: File;
+        let base64: string;
+        let mimeType = "image/jpeg";
         
         if (typeof base64OrFile === 'string') {
-            // Convert base64 to file
-            const res = await fetch(base64OrFile);
-            const blob = await res.blob();
-            file = new File([blob], "image.jpg", { type: "image/jpeg" });
+            base64 = base64OrFile;
+            if (base64.startsWith('data:')) {
+                const match = base64.match(/^data:([^;]+);base64,/);
+                if (match) mimeType = match[1];
+            }
         } else {
-            file = base64OrFile;
+            // Convert file to base64
+            const reader = new FileReader();
+            base64 = await new Promise((resolve) => {
+                reader.onload = (e) => resolve(e.target?.result as string);
+                reader.readAsDataURL(base64OrFile);
+            });
+            mimeType = base64OrFile.type;
         }
 
-        const formData = new FormData();
-        formData.append('file', file);
+        const currentStoreId = storeData.id || editSlug || "new-store";
 
-        const res = await fetch('/api/upload', {
+        const res = await fetch('/api/image/uploaddb', {
             method: 'POST',
-            body: formData,
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+                storeId: currentStoreId,
+                content: base64,
+                mimeType: mimeType,
+                type: 'generic'
+             }),
         });
 
         if (!res.ok) {
-            throw new Error('No se pudo subir la imagen al servidor');
+            const error = await res.json();
+            throw new Error(error.error || 'No se pudo subir la imagen al servidor');
         }
 
         const data = await res.json();
