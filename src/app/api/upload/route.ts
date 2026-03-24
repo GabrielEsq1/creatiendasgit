@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
-import { writeFile } from "fs/promises";
+import { writeFile, mkdir } from "fs/promises";
 import path from "path";
+import { existsSync } from "fs";
 
 export async function POST(req: NextRequest) {
     try {
@@ -54,7 +55,11 @@ export async function POST(req: NextRequest) {
         // Use a generic uploads folder for stores
         const uploadsDir = path.join(process.cwd(), "public", "uploads", "stores");
         
-        // Ensure directory exists (basic check, writeFile will fail if not)
+        // Ensure directory exists recursively
+        if (!existsSync(uploadsDir)) {
+            await mkdir(uploadsDir, { recursive: true });
+        }
+        
         const filepath = path.join(uploadsDir, filename);
 
         // Save file
