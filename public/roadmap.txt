@@ -1,0 +1,13 @@
+CREATIENDAS ROADMAP - ENTERPRISE SCALING (MAGIS STORE FIXES)
+==========================================================
+
+| Problema Actual | Nuestra Solución de Ingeniería | Impacto Inmediato |
+| :--- | :--- | :--- |
+| Búsqueda lenta en JSON (Filtros en el navegador) | Migración Full-SQL: Moveremos los productos del campo JSON a una tabla llamada Product indexada por storeId. | Búsqueda instantánea, paginación real y posibilidad de tener 10,000+ productos sin lag. |
+| Carga pesada de fotos (Sin miniaturas) | Servicio de Crop Dinámico: Crearemos una tabla de Thumbnails (200px) al momento de subir la foto a la base de datos. | La tienda cargará 5 veces más rápido en celulares con poco internet. |
+| Límite de caracteres WhatsApp (Pedidos largos) | Snapshots de Pedido: Guardaremos el carrito en una tabla Order y enviaremos a WhatsApp un Link corto único tipo c.co/o/ABC123. | Soporte para ventas mayoristas de 100+ artículos sin que falle el mensaje. |
+| Pérdida de cambios (Ediciones simultáneas) | Control de Versiones (ETag): Guardaremos un version en la tienda. Si alguien intenta guardar una versión vieja sobre una nueva, daremos aviso. | Se acabaron las sobreescrituras accidentales en cuentas con varios empleados. |
+| Bloqueo por tráfico (Conteo de visitas) | Buffer de Analíticas: Usaremos un proceso en segundo plano para sumar visitas por baches, no de a una. | Mantendremos la estabilidad incluso si una tienda se vuelve viral (1M+ visitas). |
+
+Roadmap de Ingeniería - Creatiendas 2026.
+========================================
