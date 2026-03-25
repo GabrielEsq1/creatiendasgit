@@ -195,13 +195,13 @@ function BuilderContent() {
     }, [storeData, products, isLoading, isSaving]);
 
     // Product form state
-    const [prodForm, setProdForm] = useState({ 
-        name: '', 
-        desc: '', 
-        category: '', 
-        price: '', 
-        tags: '', 
-        images: [] as string[] 
+    const [prodForm, setProdForm] = useState({
+        name: '',
+        desc: '',
+        category: '',
+        price: '',
+        tags: '',
+        images: [] as string[]
     });
 
     const normalizeUrl = (url: string) => url.replace('https://https://', 'https://');
@@ -245,7 +245,7 @@ function BuilderContent() {
     const uploadImageToServer = async (base64OrFile: string | File): Promise<string> => {
         let base64: string;
         let mimeType = "image/jpeg";
-        
+
         if (typeof base64OrFile === 'string') {
             base64 = base64OrFile;
             if (base64.startsWith('data:')) {
@@ -267,12 +267,12 @@ function BuilderContent() {
         const res = await fetch('/api/image/uploaddb', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ 
+            body: JSON.stringify({
                 storeId: currentStoreId,
                 content: base64,
                 mimeType: mimeType,
                 type: 'generic'
-             }),
+            }),
         });
 
         if (!res.ok) {
@@ -379,7 +379,7 @@ function BuilderContent() {
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ product: updatedProduct })
                 });
-                
+
                 if (!res.ok) {
                     console.error('Failed to save product incrementally');
                 } else {
@@ -432,12 +432,12 @@ function BuilderContent() {
         if (isSaving) return;
         setIsSaving(true);
         setPublicUrl(null);
-        
+
         try {
             // STEP 1: ENTERPRISE PROTECTION - MIGRATE BASE64 TO URLS
             // This is critical for stores like Magis Store with 1000 products.
             // We scan everything for Base64 and upload to server before saving metadata.
-            
+
             const migrationProducts = [...products];
             let migrationStoreData = { ...storeData };
             let migratedCount = 0;
@@ -516,14 +516,14 @@ function BuilderContent() {
             const endpoint = isUpdate ? `/api/stores/${editSlug || storeData.id}` : '/api/stores';
             const method = isUpdate ? 'PUT' : 'POST';
 
-            const payload = JSON.stringify({ 
-                name: migrationStoreData.name, 
-                slug, 
-                data: migrationStoreData, 
-                products: migrationProducts, 
-                id: migrationStoreData.id 
+            const payload = JSON.stringify({
+                name: migrationStoreData.name,
+                slug,
+                data: migrationStoreData,
+                products: migrationProducts,
+                id: migrationStoreData.id
             });
-            
+
             // PAYLOAD SIZE CHECK (Vercel limit is 4.5MB, we use 4MB as safety margin)
             // After migration to URLs, this should NEVER be hit even with 1000 products.
             const payloadSizeMB = payload.length / (1024 * 1024);
@@ -714,11 +714,10 @@ function BuilderContent() {
                 <section className="form-section">
                     <h3>
                         5. Agregar / Editar Productos
-                        <span className={`product-count-badge ${
-                            products.length >= 1000 ? 'product-count-badge--max' :
-                            products.length >= 800  ? 'product-count-badge--warn' :
-                                                     'product-count-badge--ok'
-                        }`}>
+                        <span className={`product-count-badge ${products.length >= 1000 ? 'product-count-badge--max' :
+                                products.length >= 800 ? 'product-count-badge--warn' :
+                                    'product-count-badge--ok'
+                            }`}>
                             {products.length} / 1000
                         </span>
                     </h3>
@@ -754,9 +753,9 @@ function BuilderContent() {
                                             console.error('Error uploading product image:', err);
                                         }
                                     }
-                                    setProdForm(prev => ({ 
-                                        ...prev, 
-                                        images: [...prev.images, ...processedUrls].slice(0, 5) 
+                                    setProdForm(prev => ({
+                                        ...prev,
+                                        images: [...prev.images, ...processedUrls].slice(0, 5)
                                     }));
                                     setIsLoading(false);
                                 }
@@ -821,16 +820,16 @@ function BuilderContent() {
                         </a>
                     )}
                 </section>
-                </aside>
+            </aside>
 
-                {/* RIGHT PANEL */}
-                <main className="preview-panel">
-                    <div className="device-toggle">
-                        <button className={`device-btn ${viewMode === 'desktop' ? 'active' : ''}`} onClick={() => setViewMode('desktop')}>💻 Vista escritorio</button>
-                        <button className={`device-btn ${viewMode === 'mobile' ? 'active' : ''}`} onClick={() => setViewMode('mobile')}>📱 Vista móvil</button>
-                    </div>
-                    <StorePreview data={storeData} products={products} viewMode={viewMode} />
-                </main>
+            {/* RIGHT PANEL */}
+            <main className="preview-panel">
+                <div className="device-toggle">
+                    <button className={`device-btn ${viewMode === 'desktop' ? 'active' : ''}`} onClick={() => setViewMode('desktop')}>💻 Vista escritorio</button>
+                    <button className={`device-btn ${viewMode === 'mobile' ? 'active' : ''}`} onClick={() => setViewMode('mobile')}>📱 Vista móvil</button>
+                </div>
+                <StorePreview data={storeData} products={products} viewMode={viewMode} />
+            </main>
 
             {/* SUCCESS MODAL */}
             {publicUrl && (
@@ -841,13 +840,13 @@ function BuilderContent() {
                         <p className="success-modal-desc">
                             Tu tienda ha sido {editSlug ? 'actualizada' : 'creada'} con éxito y ya puedes compartirla.
                         </p>
-                        
+
                         <div className="url-copy-box">
                             <input readOnly value={publicUrl} />
                         </div>
 
                         <div className="success-modal-actions">
-                            <button 
+                            <button
                                 className="btn btn-secondary"
                                 onClick={() => {
                                     navigator.clipboard.writeText(publicUrl);
@@ -856,16 +855,16 @@ function BuilderContent() {
                             >
                                 📋 Copiar enlace
                             </button>
-                            <a 
-                                href={publicUrl} 
-                                target="_blank" 
-                                rel="noopener noreferrer" 
+                            <a
+                                href={publicUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
                                 className="btn btn-primary"
                                 style={{ textDecoration: 'none' }}
                             >
                                 👁️ Visitar tienda →
                             </a>
-                            <button 
+                            <button
                                 className="btn btn-secondary"
                                 onClick={() => setPublicUrl(null)}
                                 style={{ background: '#f3f4f6', border: '1px solid #e5e7eb', color: '#4b5563' }}
@@ -889,11 +888,11 @@ function BuilderContent() {
                         </h2>
                         <p className="success-modal-desc" style={{ marginBottom: '25px', color: '#555', fontSize: '0.95rem' }}>
                             Para una <strong>mejor experiencia de edición</strong>, crea o modifica tu tienda desde un computador.
-                            <br/><br/>
+                            <br /><br />
                             Tu tienda se verá <strong>perfectamente optimizada en celulares</strong> cuando la compartas con tus clientes, pero a la hora de construirla, tendrás muchas más ventajas en PC.
                         </p>
-                        <button 
-                            className="btn btn-primary" 
+                        <button
+                            className="btn btn-primary"
                             onClick={() => {
                                 setShowMobileWarning(false);
                                 setForceDesktopViewport(true);
