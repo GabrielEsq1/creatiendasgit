@@ -5,7 +5,7 @@ import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import StorePreview from '@/components/StorePreview';
 import { StoreData, Product } from '@/lib/store-service';
-import { compressImage } from '@/lib/image-utils';
+import { compressImage, base64ToFile } from '@/lib/image-utils';
 import ImageUploader from '@/components/ImageUploader';
 import '../styles/builder.css';
 
@@ -241,38 +241,20 @@ function BuilderContent() {
     // fileToBase64 removed in favor of compressImage utility
 
 
-    // Helper to upload a file to the DATABASE (Works on Vercel!)
+    // Helper to upload a file (using Vercel Blob service)
     const uploadImageToServer = async (base64OrFile: string | File): Promise<string> => {
-        let base64: string;
-        let mimeType = "image/jpeg";
-
+        const formData = new FormData();
+        
         if (typeof base64OrFile === 'string') {
-            base64 = base64OrFile;
-            if (base64.startsWith('data:')) {
-                const match = base64.match(/^data:([^;]+);base64,/);
-                if (match) mimeType = match[1];
-            }
+            const file = base64ToFile(base64OrFile, 'upload.jpg');
+            formData.append('file', file);
         } else {
-            // Convert file to base64
-            const reader = new FileReader();
-            base64 = await new Promise((resolve) => {
-                reader.onload = (e) => resolve(e.target?.result as string);
-                reader.readAsDataURL(base64OrFile);
-            });
-            mimeType = base64OrFile.type;
+            formData.append('file', base64OrFile);
         }
 
-        const currentStoreId = storeData.id || editSlug || "new-store";
-
-        const res = await fetch('/api/image/uploaddb', {
+        const res = await fetch('/api/upload', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                storeId: currentStoreId,
-                content: base64,
-                mimeType: mimeType,
-                type: 'generic'
-            }),
+            body: formData,
         });
 
         if (!res.ok) {
@@ -294,9 +276,9 @@ function BuilderContent() {
                 // 2. Upload to get a URL instead of storage-heavy base64
                 const url = await uploadImageToServer(base64);
                 setStoreData(prev => ({ ...prev, [field]: url }));
-            } catch (err) {
+            } catch (err: any) {
                 console.error('Error uploading image:', err);
-                alert('Error al subir la imagen. Intenta de nuevo.');
+                alert(`Error al subir la imagen: ${err.message || 'Intenta de nuevo.'}`);
             } finally {
                 setIsLoading(false);
             }
@@ -313,8 +295,9 @@ function BuilderContent() {
                     const base64 = await compressImage(files[i], 800, 0.7);
                     const url = await uploadImageToServer(base64);
                     newUrls.push(url);
-                } catch (err) {
+                } catch (err: any) {
                     console.error('Error uploading gallery image:', err);
+                    alert(`Error en galería: ${err.message || 'Error al subir una de las imágenes.'}`);
                 }
             }
             setStoreData(prev => ({
@@ -749,8 +732,9 @@ function BuilderContent() {
                                             const base64 = await compressImage(files[i], 800, 0.7);
                                             const url = await uploadImageToServer(base64);
                                             processedUrls.push(url);
-                                        } catch (err) {
+                                        } catch (err: any) {
                                             console.error('Error uploading product image:', err);
+                                            alert(`Error en producto: ${err.message || 'No se pudo subir la imagen.'}`);
                                         }
                                     }
                                     setProdForm(prev => ({

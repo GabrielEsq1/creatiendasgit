@@ -3,7 +3,6 @@
 import { useEffect } from "react";
 import { usePathname } from "next/navigation";
 import Navbar from "./Navbar";
-import InstallPrompt from "./InstallPrompt";
 import { getTranslatedPath } from "@/lib/routeMapping";
 
 export default function LayoutWrapper({ children }: { children: React.ReactNode }) {
@@ -34,7 +33,6 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
     return (
         <>
             <Navbar />
-            <InstallPrompt />
             <main className={hidePadding ? "" : "pt-16"}>
                 {children}
             </main>
