@@ -5,7 +5,6 @@ import { useState, useEffect } from 'react';
 import VideoModal from './VideoModal';
 import { useAnalytics } from './Analytics';
 import { useSession } from 'next-auth/react';
-import InstallAppButton from './InstallAppButton';
 
 export default function Hero() {
     const { data: session } = useSession();
@@ -66,10 +65,6 @@ export default function Hero() {
                     </button>
                 </div>
 
-                {/* PWA Install Button - Creates app shortcut with logo */}
-                <div className="flex justify-center mb-12">
-                    <InstallAppButton />
-                </div>
 
                 {/* 4. Comparison Table */}
                 <div className="max-w-4xl mx-auto mb-20">
@@ -94,7 +89,7 @@ export default function Hero() {
                                         <tr className="group hover:bg-slate-50 transition-colors">
                                             <td className="p-3 sm:p-4 md:p-6 lg:p-8 font-bold text-xs sm:text-sm md:text-base text-slate-700">Precio mensual</td>
                                             <td className="p-3 sm:p-4 md:p-6 lg:p-8 text-center text-rose-500 font-extrabold text-xs sm:text-sm md:text-base">$29+ USD</td>
-                                            <td className="p-3 sm:p-4 md:p-6 lg:p-8 text-center text-green-600 font-black bg-green-50 text-xs sm:text-sm md:text-base sticky right-0 z-20 shadow-[-5px_0_10px_-5px_rgba(0,0,0,0.1)] sm:shadow-none">¡GRATIS!</td>
+                                            <td className="p-3 sm:p-4 md:p-6 lg:p-8 text-center text-green-600 font-black bg-green-50 text-xs sm:text-sm md:text-base sticky right-0 z-20 shadow-[-5px_0_10px_-5px_rgba(0,0,0,0.1)] sm:shadow-none">$60.000 COP (1er mes GRATIS)</td>
                                         </tr>
                                         <tr className="group hover:bg-slate-50 transition-colors">
                                             <td className="p-3 sm:p-4 md:p-6 lg:p-8 font-bold text-xs sm:text-sm md:text-base text-slate-700">Tiempo de setup</td>

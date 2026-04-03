@@ -2,7 +2,6 @@
 
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
-import InstallAppButton from '@/components/InstallAppButton';
 import VideoModal from '../VideoModal';
 
 export default function HeroEN() {
@@ -67,10 +66,6 @@ export default function HeroEN() {
                     </button>
                 </div>
 
-                {/* PWA Install Button - Creates app shortcut with logo */}
-                <div className="flex justify-center mb-12">
-                    <InstallAppButton />
-                </div>
 
                 {/* Comparison Table */}
                 <div className="max-w-4xl mx-auto mb-20">
@@ -93,7 +88,7 @@ export default function HeroEN() {
                                         <tr className="group hover:bg-slate-50 transition-colors">
                                             <td className="p-3 sm:p-4 md:p-6 lg:p-8 font-bold text-xs sm:text-sm md:text-base text-slate-700">Monthly Price</td>
                                             <td className="p-3 sm:p-4 md:p-6 lg:p-8 text-center text-rose-500 font-extrabold text-xs sm:text-sm md:text-base">$29+ USD</td>
-                                            <td className="p-3 sm:p-4 md:p-6 lg:p-8 text-center text-green-600 font-black bg-green-50/5 text-xs sm:text-sm md:text-base">FREE!</td>
+                                            <td className="p-3 sm:p-4 md:p-6 lg:p-8 text-center text-green-600 font-black bg-green-50/5 text-xs sm:text-sm md:text-base">$60,000 (1st month FREE)</td>
                                         </tr>
                                         <tr className="group hover:bg-slate-50 transition-colors">
                                             <td className="p-3 sm:p-4 md:p-6 lg:p-8 font-bold text-xs sm:text-sm md:text-base text-slate-700">Setup Time</td>
