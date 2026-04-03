@@ -413,6 +413,19 @@ function BuilderContent() {
 
     const handleSave = async () => {
         if (isSaving) return;
+
+        // MANDATORY FIELDS VALIDATION
+        if (!storeData.name || !storeData.name.trim()) {
+            alert('❌ El Nombre de la Tienda es obligatorio.');
+            // Scroll to the input if possible or just stop
+            return;
+        }
+
+        if (!storeData.whatsapp || !storeData.whatsapp.trim()) {
+            alert('❌ El Número de WhatsApp es obligatorio para que el sistema funcione.');
+            return;
+        }
+
         setIsSaving(true);
         setPublicUrl(null);
 
@@ -598,7 +611,11 @@ function BuilderContent() {
                     </div>
                     <div className="form-group">
                         <label>Nombre de la Tienda *</label>
-                        <input value={storeData.name} onChange={e => handleInputChange(null, 'name', e.target.value)} />
+                        <input 
+                            value={storeData.name} 
+                            onChange={e => handleInputChange(null, 'name', e.target.value)} 
+                            required
+                        />
                     </div>
                     <div className="form-group">
                         <label>Descripción corta</label>
@@ -606,7 +623,12 @@ function BuilderContent() {
                     </div>
                     <div className="form-group">
                         <label>Número de WhatsApp *</label>
-                        <input value={storeData.whatsapp} onChange={e => handleInputChange(null, 'whatsapp', e.target.value)} />
+                        <input 
+                            value={storeData.whatsapp} 
+                            onChange={e => handleInputChange(null, 'whatsapp', e.target.value)} 
+                            placeholder="Ej: 573001234567"
+                            required
+                        />
                     </div>
                     <div className="form-group">
                         <label>Color Principal</label>

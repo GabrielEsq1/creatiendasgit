@@ -324,6 +324,18 @@ function BuilderContentEN() {
 
     const handleSave = async () => {
         if (isSaving) return;
+
+        // MANDATORY FIELDS VALIDATION
+        if (!storeData.name || !storeData.name.trim()) {
+            alert('❌ The Store Name is required.');
+            return;
+        }
+
+        if (!storeData.whatsapp || !storeData.whatsapp.trim()) {
+            alert('❌ A WhatsApp Number is mandatory for the system to work.');
+            return;
+        }
+
         setIsSaving(true);
         setPublicUrl(null);
         try {
@@ -447,7 +459,11 @@ function BuilderContentEN() {
                     </div>
                     <div className="form-group">
                         <label>Store Name *</label>
-                        <input value={storeData.name} onChange={e => handleInputChange(null, 'name', e.target.value)} />
+                        <input 
+                            value={storeData.name} 
+                            onChange={e => handleInputChange(null, 'name', e.target.value)} 
+                            required
+                        />
                     </div>
                     <div className="form-group">
                         <label>Short Description</label>
@@ -455,7 +471,12 @@ function BuilderContentEN() {
                     </div>
                     <div className="form-group">
                         <label>WhatsApp Number *</label>
-                        <input value={storeData.whatsapp} onChange={e => handleInputChange(null, 'whatsapp', e.target.value)} />
+                        <input 
+                            value={storeData.whatsapp} 
+                            onChange={e => handleInputChange(null, 'whatsapp', e.target.value)} 
+                            placeholder="e.g. 1234567890"
+                            required
+                        />
                     </div>
                     <div className="form-group">
                         <label>Main Color</label>
