@@ -33,11 +33,11 @@ export default function Hero() {
                     <h1 className="text-5xl md:text-7xl lg:text-8xl font-black tracking-tight mb-8 leading-[1.1] text-slate-900">
                         Tu Tienda Online en <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-600 to-emerald-600">WhatsApp</span>
                         <br />
-                        <span className="text-slate-900">Gratis y en <span className="text-green-600 underline decoration-green-600/30 decoration-8 underline-offset-8">3 Minutos</span></span>
+                        <span className="text-slate-900">Inicia Gratis y en <span className="text-green-600 underline decoration-green-600/30 decoration-8 underline-offset-8">3 Minutos</span></span>
                     </h1>
                     <p className="text-xl md:text-2xl text-slate-600 max-w-3xl mx-auto leading-relaxed font-medium">
                         Sin comisiones · Sin tarjeta de crédito · Todo automático. <br className="hidden md:block" />
-                        Únete a miles de emprendedores y empieza a recibir pedidos hoy.
+                        El primer mes corre por nuestra cuenta. Únete a miles de emprendedores hoy.
                     </p>
                 </div>
 

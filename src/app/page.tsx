@@ -2,8 +2,8 @@ import React, { Suspense } from 'react';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-    title: "Crea tu Tienda Online por WhatsApp Gratis en Minutos",
-    description: "La plataforma líder en LATAM para vender por WhatsApp. Crea tu catálogo digital sin comisiones y empieza a recibir pedidos hoy mismo.",
+    title: "Inicia tu Tienda Online por WhatsApp Gratis hoy | Creatiendas",
+    description: "Crea tu catálogo digital en 3 minutos. Sin comisiones, sin tarjeta de crédito y con el primer mes gratis. ¡Únete ya!",
     alternates: {
         canonical: 'https://creatiendas.co',
     },
