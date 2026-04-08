@@ -20,7 +20,7 @@ export default function ForgotPasswordPage() {
             if (typeof window !== 'undefined' && (window as any).turnstile && turnstileContainerRef.current && !widgetIdRef.current) {
                 try {
                     widgetIdRef.current = (window as any).turnstile.render(turnstileContainerRef.current, {
-                        sitekey: process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || "1x00000000000000000000AA",
+                        sitekey: process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || "0x4AAAAAAC2WsMUGbzyb_NSX",
                         callback: (token: string) => {
                             setTurnstileToken(token);
                             setError("");

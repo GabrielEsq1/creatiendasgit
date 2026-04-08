@@ -27,8 +27,9 @@ export async function POST(req: Request) {
         data: { token, expiresAt, userId: user.id },
     });
 
-    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || process.env.NEXTAUTH_URL || 'http://localhost:3000';
-    const resetLink = `${baseUrl}/reset-password?token=${token}`;
+    const origin = req.headers.get('origin') || 'https://creatiendas.co';
+    const baseUrl = process.env.NODE_ENV === 'production' ? 'https://creatiendas.co' : origin;
+    const resetLink = `${baseUrl}/auth/reset-password?token=${token}`;
 
     const emailSent = await sendPasswordResetEmail(email, resetLink);
 

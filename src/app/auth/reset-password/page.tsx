@@ -60,14 +60,14 @@ function ResetPasswordForm() {
 
     if (!token) {
         return (
-            <div className="text-center p-6 bg-rose-50 rounded-2xl border border-rose-100">
-                <div className="w-12 h-12 bg-rose-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                    <span className="text-2xl">⚠️</span>
+            <div className="text-center p-8 bg-rose-50 rounded-[2rem] border border-rose-100 animate-in fade-in zoom-in-95">
+                <div className="w-16 h-16 bg-rose-100 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-inner text-2xl">
+                    ⚠️
                 </div>
-                <h3 className="text-lg font-semibold text-rose-800 mb-1">Enlace inválido</h3>
-                <p className="text-sm text-rose-600 mb-4">El enlace de recuperación es inválido o ha expirado.</p>
-                <Link href="/auth/forgot-password" className="text-sm font-medium text-rose-700 hover:text-rose-900 underline">
-                    Solicitar nuevo enlace
+                <h3 className="text-xl font-black text-rose-800 mb-2">Enlace Inválido</h3>
+                <p className="text-sm text-rose-600 mb-6 leading-relaxed">El enlace de recuperación ha expirado o ya fue utilizado anteriormente.</p>
+                <Link href="/auth/forgot-password" className="inline-flex items-center gap-2 text-rose-700 font-bold hover:gap-3 transition-all">
+                    Solicitar nuevo enlace <ArrowRight className="w-4 h-4" />
                 </Link>
             </div>
         );
@@ -75,54 +75,54 @@ function ResetPasswordForm() {
 
     if (status === "success") {
         return (
-            <div className="text-center p-8">
-                <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4 animate-in zoom-in spin-in-12">
-                    <CheckCircle2 className="w-8 h-8 text-emerald-600" />
+            <div className="text-center p-10 animate-in fade-in zoom-in-95">
+                <div className="w-20 h-20 bg-emerald-50 rounded-full flex items-center justify-center mx-auto mb-6 shadow-inner">
+                    <CheckCircle2 className="w-10 h-10 text-emerald-500" />
                 </div>
-                <h3 className="text-xl font-bold text-slate-800 mb-2">¡Contraseña Actualizada!</h3>
-                <p className="text-slate-500 mb-6">Tu contraseña ha sido cambiada correctamente.</p>
-                <div className="animate-pulse text-sm text-blue-600 font-medium">
-                    Redirigiendo al login...
+                <h3 className="text-2xl font-black text-slate-800 mb-2">¡Listo!</h3>
+                <p className="text-slate-500 mb-8 font-medium">Tu contraseña ha sido actualizada correctamente.</p>
+                <div className="inline-flex items-center gap-3 text-emerald-600 font-black uppercase tracking-[0.2em] text-[10px] animate-pulse">
+                    Accediendo al sistema...
                 </div>
             </div>
         );
     }
 
     return (
-        <form className="space-y-4" onSubmit={handleSubmit}>
-            <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-slate-500 ml-1">Nueva Contraseña</label>
-                <div className="relative group">
-                    <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-blue-500 transition-colors" />
+        <form className="space-y-6" onSubmit={handleSubmit}>
+            <div className="space-y-2">
+                <label className="text-[11px] font-bold text-slate-400 ml-1 uppercase tracking-widest">Nueva Contraseña</label>
+                <div className="relative group/input">
+                    <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within/input:text-green-600 transition-colors" />
                     <input
                         type="password"
                         required
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
-                        className="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
-                        placeholder="Mínimo 8 caracteres"
+                        className="w-full pl-11 pr-4 py-4 bg-slate-50 border border-slate-200 rounded-2xl text-base text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-4 focus:ring-green-500/5 focus:border-green-600/30 transition-all shadow-inner"
+                        placeholder="••••••••"
                     />
                 </div>
             </div>
 
-            <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-slate-500 ml-1">Confirmar Contraseña</label>
-                <div className="relative group">
-                    <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-blue-500 transition-colors" />
+            <div className="space-y-2">
+                <label className="text-[11px] font-bold text-slate-400 ml-1 uppercase tracking-widest">Confirmar Contraseña</label>
+                <div className="relative group/input">
+                    <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within/input:text-green-600 transition-colors" />
                     <input
                         type="password"
                         required
                         value={confirmPassword}
                         onChange={(e) => setConfirmPassword(e.target.value)}
-                        className="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
-                        placeholder="Repite la contraseña"
+                        className="w-full pl-11 pr-4 py-4 bg-slate-50 border border-slate-200 rounded-2xl text-base text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-4 focus:ring-green-500/5 focus:border-green-600/30 transition-all shadow-inner"
+                        placeholder="••••••••"
                     />
                 </div>
             </div>
 
             {message && status === "error" && (
-                <div className="p-3 bg-rose-50 border border-rose-100 rounded-lg text-xs font-medium text-rose-600 flex items-center gap-2 animate-in fade-in slide-in-from-top-2">
-                    <div className="w-1.5 h-1.5 rounded-full bg-rose-500" />
+                <div className="p-4 bg-rose-50 border border-rose-100 rounded-2xl text-xs font-bold text-rose-600 flex items-center gap-3 animate-in fade-in slide-in-from-top-2">
+                    <div className="w-1.5 h-1.5 rounded-full bg-rose-600 shrink-0" />
                     {message}
                 </div>
             )}
@@ -130,13 +130,14 @@ function ResetPasswordForm() {
             <button
                 type="submit"
                 disabled={status === "loading"}
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold py-3.5 rounded-xl transition-all shadow-lg shadow-blue-600/25 hover:shadow-blue-600/40 active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2 mt-4"
+                className="w-full bg-green-500 hover:bg-green-600 text-white text-sm font-black py-4 rounded-2xl transition-all shadow-xl shadow-green-500/20 active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2 group/btn"
             >
                 {status === "loading" ? (
-                    <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    <div className="w-5 h-5 border-3 border-white/30 border-t-white rounded-full animate-spin" />
                 ) : (
                     <>
-                        Actualizar Contraseña <ArrowRight className="w-4 h-4" />
+                        Restablecer Contraseña 
+                        <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                     </>
                 )}
             </button>
@@ -146,30 +147,31 @@ function ResetPasswordForm() {
 
 export default function ResetPasswordPage() {
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 flex items-center justify-center p-4">
-            <div className="w-full max-w-[420px] bg-white/80 backdrop-blur-xl rounded-[2rem] shadow-2xl border border-white/50 p-8 sm:p-10 relative overflow-hidden">
+        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-green-50/30 flex items-center justify-center p-6 selection:bg-green-500/30 font-sans">
+            <div className="w-full max-w-[440px] bg-white rounded-[2.5rem] shadow-2xl border border-white/50 p-8 md:p-12 relative overflow-hidden">
                 {/* Decoration blob */}
-                <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 rounded-full blur-3xl -mr-10 -mt-10 pointer-events-none"></div>
+                <div className="absolute top-0 right-0 w-32 h-32 bg-green-500/5 rounded-full blur-3xl -mr-10 -mt-10 pointer-events-none"></div>
 
                 {/* Header */}
-                <div className="text-center mb-8 relative z-10">
-                    <div className="inline-flex items-center justify-center w-14 h-14 bg-blue-100 rounded-2xl mb-4 shadow-inner text-2xl">
-                        🔐
+                <div className="mb-10 text-center">
+                    <div className="inline-flex items-center justify-center w-16 h-16 bg-green-50 rounded-2xl mb-6 shadow-inner text-3xl">
+                        🛡️
                     </div>
-                    <h2 className="text-2xl font-bold text-slate-800 mb-2">Nueva Contraseña</h2>
-                    <p className="text-slate-500 text-sm">
-                        Ingresa tu nueva contraseña segura a continuación.
+                    <h1 className="text-3xl font-black text-slate-900 mb-2 leading-tight">Nueva Contraseña</h1>
+                    <p className="text-slate-500 text-sm leading-relaxed">
+                        Crea una nueva contraseña segura para recuperar el acceso a tu tienda.
                     </p>
                 </div>
 
-                <Suspense fallback={<div className="grid place-items-center h-48"><div className="w-8 h-8 border-4 border-blue-500/30 border-t-blue-500 rounded-full animate-spin" /></div>}>
+                <Suspense fallback={<div className="grid place-items-center h-48"><div className="w-8 h-8 border-4 border-green-500/20 border-t-green-500 rounded-full animate-spin" /></div>}>
                     <ResetPasswordForm />
                 </Suspense>
 
-                <div className="text-center mt-6 relative z-10">
-                    <Link href="/auth/login" className="text-sm font-medium text-slate-500 hover:text-blue-600 transition-colors">
-                        Cancelar y volver al login
-                    </Link>
+                <div className="mt-12 pt-8 border-t border-slate-100 text-center">
+                    <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest leading-loose">
+                        ¿Recordaste tu contraseña?<br/>
+                        <Link href="/auth/login" className="text-green-600 underline text-[11px]">Volver al inicio de sesión</Link>
+                    </p>
                 </div>
             </div>
         </div>

@@ -22,6 +22,41 @@ export default function RegisterPage() {
     const router = useRouter();
     const { trackEvent } = useAnalytics();
     const playerRef = useRef<any>(null);
+    const turnstileContainerRef = useRef<HTMLDivElement>(null);
+    const widgetIdRef = useRef<string | null>(null);
+
+    // Explicitly render Turnstile for better reliability in Next.js
+    useEffect(() => {
+        const renderTurnstile = () => {
+            if (typeof window !== 'undefined' && (window as any).turnstile && turnstileContainerRef.current && !widgetIdRef.current) {
+                try {
+                    widgetIdRef.current = (window as any).turnstile.render(turnstileContainerRef.current, {
+                        sitekey: process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || "0x4AAAAAAC2WsMUGbzyb_NSX",
+                        callback: (token: string) => {
+                            setTurnstileToken(token);
+                            setError("");
+                        },
+                        theme: 'light',
+                    });
+                } catch (e) {
+                    console.error("Turnstile render error:", e);
+                }
+            }
+        };
+
+        // Try to render if script is already there
+        renderTurnstile();
+
+        // Also set up a listener just in case it loads later
+        (window as any).onTurnstileLoad = renderTurnstile;
+
+        return () => {
+            if (widgetIdRef.current && (window as any).turnstile) {
+                (window as any).turnstile.remove(widgetIdRef.current);
+                widgetIdRef.current = null;
+            }
+        };
+    }, []);
 
     // Auto-populate name from email (hidden field for backend compatibility)
     useEffect(() => {
@@ -186,12 +221,7 @@ export default function RegisterPage() {
 
                     {/* Cloudflare Turnstile */}
                     <div className="flex justify-center my-4 overflow-hidden min-h-[65px]">
-                        <div 
-                            className="cf-turnstile" 
-                            data-sitekey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || "1x00000000000000000000AA"}
-                            data-callback="onTurnstileSuccess"
-                            data-theme="light"
-                        ></div>
+                        <div ref={turnstileContainerRef}></div>
                     </div>
 
                     <div className="text-center py-1 mt-2">
@@ -295,12 +325,7 @@ export default function RegisterPage() {
                             
                             {/* Cloudflare Turnstile */}
                             <div className="flex justify-center my-4 min-h-[65px]">
-                                <div 
-                                    className="cf-turnstile" 
-                                    data-sitekey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || "1x00000000000000000000AA"}
-                                    data-callback="onTurnstileSuccess"
-                                    data-theme="light"
-                                ></div>
+                                <div ref={turnstileContainerRef}></div>
                             </div>
 
                             <div className="text-center py-2"><p className="text-[10px] font-black uppercase text-slate-400 tracking-wider">Sin tarjeta · Cancelable · Acceso inmediato</p></div>
@@ -323,13 +348,8 @@ export default function RegisterPage() {
             </div>
 
             <Script 
-                src="https://challenges.cloudflare.com/turnstile/v0/api.js" 
-                strategy="lazyOnload"
-                onLoad={() => {
-                    (window as any).onTurnstileSuccess = (token: string) => {
-                        setTurnstileToken(token);
-                    };
-                }}
+                src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onTurnstileLoad" 
+                strategy="afterInteractive"
             />
         </div>
     );
