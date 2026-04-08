@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Script from "next/script";
 import { Mail, ArrowRight, ArrowLeft, CheckCircle2 } from "lucide-react";
@@ -11,12 +11,39 @@ export default function ForgotPasswordPage() {
     const [error, setError] = useState("");
     const [emailSent, setEmailSent] = useState(false);
     const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
+    const turnstileContainerRef = useRef<HTMLDivElement>(null);
+    const widgetIdRef = useRef<string | null>(null);
 
-    // Ensure the callback is globally available
+    // Explicitly render Turnstile for better reliability in Next.js
     useEffect(() => {
-        (window as any).onTurnstileSuccess = (token: string) => {
-            setTurnstileToken(token);
-            setError("");
+        const renderTurnstile = () => {
+            if (typeof window !== 'undefined' && (window as any).turnstile && turnstileContainerRef.current && !widgetIdRef.current) {
+                try {
+                    widgetIdRef.current = (window as any).turnstile.render(turnstileContainerRef.current, {
+                        sitekey: process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || "1x00000000000000000000AA",
+                        callback: (token: string) => {
+                            setTurnstileToken(token);
+                            setError("");
+                        },
+                        theme: 'light',
+                    });
+                } catch (e) {
+                    console.error("Turnstile render error:", e);
+                }
+            }
+        };
+
+        // Try to render if script is already there
+        renderTurnstile();
+
+        // Also set up a listener just in case it loads later
+        (window as any).onTurnstileLoad = renderTurnstile;
+
+        return () => {
+            if (widgetIdRef.current && (window as any).turnstile) {
+                (window as any).turnstile.remove(widgetIdRef.current);
+                widgetIdRef.current = null;
+            }
         };
     }, []);
 
@@ -25,10 +52,6 @@ export default function ForgotPasswordPage() {
         
         if (!turnstileToken) {
             setError("Por favor, completa la verificación anti-spam.");
-            // Re-render Turnstile if it disappeared
-            if (typeof window !== 'undefined' && (window as any).turnstile) {
-                (window as any).turnstile.render('.cf-turnstile');
-            }
             return;
         }
 
@@ -48,8 +71,8 @@ export default function ForgotPasswordPage() {
                 setEmailSent(true);
             } else {
                 setError(data.error || "Error al solicitar la recuperación");
-                if (typeof window !== 'undefined' && (window as any).turnstile) {
-                    (window as any).turnstile.reset();
+                if (widgetIdRef.current && (window as any).turnstile) {
+                    (window as any).turnstile.reset(widgetIdRef.current);
                     setTurnstileToken(null);
                 }
             }
@@ -123,13 +146,9 @@ export default function ForgotPasswordPage() {
                         </div>
                     )}
 
-                    {/* Cloudflare Turnstile */}
+                    {/* Cloudflare Turnstile Container */}
                     <div className="flex justify-center my-2 min-h-[65px]">
-                        <div 
-                            className="cf-turnstile" 
-                            data-sitekey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || "1x00000000000000000000AA"}
-                            data-callback="onTurnstileSuccess"
-                        ></div>
+                        <div ref={turnstileContainerRef}></div>
                     </div>
 
                     <button 
@@ -150,13 +169,13 @@ export default function ForgotPasswordPage() {
 
                 <div className="mt-12 pt-8 border-t border-slate-100 text-center">
                     <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest leading-loose">
-                        ¿No recibes el correo?<br/>Revisa spam o <a href="https://wa.me/573026687991" className="text-green-600 underline">WhatsApp soporte</a>
+                        ¿No recibes el correo?<br/>Revisa spam o <a href="https://wa.me/573026687991" className="text-green-600 underline text-[11px]">WhatsApp soporte</a>
                     </p>
                 </div>
             </div>
 
             <Script 
-                src="https://challenges.cloudflare.com/turnstile/v0/api.js" 
+                src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onTurnstileLoad" 
                 strategy="afterInteractive"
             />
         </div>
