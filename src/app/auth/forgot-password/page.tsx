@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import Script from "next/script";
 import { Mail, ArrowRight, ArrowLeft, CheckCircle2 } from "lucide-react";
@@ -12,11 +12,23 @@ export default function ForgotPasswordPage() {
     const [emailSent, setEmailSent] = useState(false);
     const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
 
+    // Ensure the callback is globally available
+    useEffect(() => {
+        (window as any).onTurnstileSuccess = (token: string) => {
+            setTurnstileToken(token);
+            setError("");
+        };
+    }, []);
+
     const handleRequest = async (e: React.FormEvent) => {
         e.preventDefault();
         
         if (!turnstileToken) {
             setError("Por favor, completa la verificación anti-spam.");
+            // Re-render Turnstile if it disappeared
+            if (typeof window !== 'undefined' && (window as any).turnstile) {
+                (window as any).turnstile.render('.cf-turnstile');
+            }
             return;
         }
 
@@ -36,7 +48,6 @@ export default function ForgotPasswordPage() {
                 setEmailSent(true);
             } else {
                 setError(data.error || "Error al solicitar la recuperación");
-                // Reset Turnstile on error to allow retry
                 if (typeof window !== 'undefined' && (window as any).turnstile) {
                     (window as any).turnstile.reset();
                     setTurnstileToken(null);
@@ -51,7 +62,7 @@ export default function ForgotPasswordPage() {
 
     if (emailSent) {
         return (
-            <div className="min-h-screen bg-slate-50 flex items-center justify-center p-6 selection:bg-green-500/30">
+            <div className="min-h-screen bg-slate-50 flex items-center justify-center p-6 selection:bg-green-500/30 font-sans">
                 <div className="w-full max-w-[440px] bg-white rounded-[2.5rem] shadow-2xl border border-slate-100 p-8 md:p-12 text-center space-y-6 animate-in fade-in zoom-in-95 duration-500">
                     <div className="w-20 h-20 bg-emerald-50 rounded-full flex items-center justify-center mx-auto shadow-inner">
                         <CheckCircle2 className="w-10 h-10 text-emerald-500" />
@@ -73,8 +84,8 @@ export default function ForgotPasswordPage() {
     }
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-green-50/30 flex items-center justify-center p-6 selection:bg-green-500/30">
-            <div className="w-full max-w-[440px] bg-white/80 backdrop-blur-xl rounded-[2.5rem] shadow-2xl border border-white/50 p-8 md:p-12 relative overflow-hidden">
+        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-green-50/30 flex items-center justify-center p-6 selection:bg-green-500/30 font-sans">
+            <div className="w-full max-w-[440px] bg-white rounded-[2.5rem] shadow-2xl border border-white/50 p-8 md:p-12 relative overflow-hidden">
                 <div className="absolute top-0 right-0 w-32 h-32 bg-green-500/5 rounded-full blur-3xl -mr-10 -mt-10 pointer-events-none"></div>
                 
                 <div className="mb-10 text-center sm:text-left">
@@ -113,19 +124,18 @@ export default function ForgotPasswordPage() {
                     )}
 
                     {/* Cloudflare Turnstile */}
-                    <div className="flex justify-center my-6">
+                    <div className="flex justify-center my-2 min-h-[65px]">
                         <div 
                             className="cf-turnstile" 
                             data-sitekey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || "1x00000000000000000000AA"}
                             data-callback="onTurnstileSuccess"
-                            data-theme="light"
                         ></div>
                     </div>
 
                     <button 
                         type="submit" 
                         disabled={loading} 
-                        className="w-full bg-green-500 hover:bg-green-600 text-white text-sm font-black py-4.5 rounded-2xl transition-all shadow-xl shadow-green-500/20 active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2 group/btn"
+                        className="w-full bg-green-500 hover:bg-green-600 text-white text-sm font-black py-4 rounded-2xl transition-all shadow-xl shadow-green-500/20 active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2 group/btn"
                     >
                         {loading ? (
                             <div className="w-5 h-5 border-3 border-white/30 border-t-white rounded-full animate-spin" />
@@ -139,7 +149,7 @@ export default function ForgotPasswordPage() {
                 </form>
 
                 <div className="mt-12 pt-8 border-t border-slate-100 text-center">
-                    <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest leading-loose">
+                    <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest leading-loose">
                         ¿No recibes el correo?<br/>Revisa spam o <a href="https://wa.me/573026687991" className="text-green-600 underline">WhatsApp soporte</a>
                     </p>
                 </div>
@@ -147,13 +157,7 @@ export default function ForgotPasswordPage() {
 
             <Script 
                 src="https://challenges.cloudflare.com/turnstile/v0/api.js" 
-                strategy="lazyOnload"
-                onLoad={() => {
-                    (window as any).onTurnstileSuccess = (token: string) => {
-                        setTurnstileToken(token);
-                        setError(""); // Clear error when verification succeeds
-                    };
-                }}
+                strategy="afterInteractive"
             />
         </div>
     );
