@@ -4,6 +4,15 @@ import bcrypt from "bcryptjs";
 import { alertNewUser } from "@/lib/alerts";
 import { sendVerificationEmail } from "@/lib/email";
 import dns from "dns/promises";
+import { z } from "zod";
+import { verifyTurnstileToken } from "@/lib/turnstile";
+
+const registerSchema = z.object({
+    name: z.string().min(2, "El nombre debe tener al menos 2 caracteres"),
+    email: z.string().email("Formato de correo inválido"),
+    password: z.string().min(8, "La contraseña debe tener al menos 8 caracteres"),
+    turnstileToken: z.string().optional(), // Optional for now to not break dev, but should be required in prod
+});
 
 // Helper to generate a token that is virtually guaranteed to be unique
 function generateVerificationToken(): string {
@@ -33,22 +42,26 @@ export async function POST(req: Request) {
             );
         }
 
-        const { name, email, password } = body;
-
-        if (!email || !password) {
+        // Validate with Zod
+        const validation = registerSchema.safeParse(body);
+        if (!validation.success) {
             return NextResponse.json(
-                { message: "Faltan datos requeridos" },
+                { message: validation.error.issues[0].message },
                 { status: 400 }
             );
         }
 
-        // Basic email format check
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(email)) {
-            return NextResponse.json(
-                { message: "El formato del correo electrónico no es válido" },
-                { status: 400 }
-            );
+        const { name, email, password, turnstileToken } = validation.data;
+
+        // Verify Turnstile (Spam Protection)
+        if (process.env.NODE_ENV === 'production' || process.env.TURNSTILE_SECRET_KEY) {
+            const isHuman = await verifyTurnstileToken(turnstileToken || '');
+            if (!isHuman) {
+                return NextResponse.json(
+                    { message: "Verificación de seguridad fallida. Por favor, intenta de nuevo." },
+                    { status: 400 }
+                );
+            }
         }
 
         // MX record check — rejects fake/non-existent domains

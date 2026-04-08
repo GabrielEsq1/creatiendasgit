@@ -151,29 +151,48 @@ export function validatePassword(password: string): { valid: boolean; message: s
     return { valid: true, message: 'Contraseña válida' };
 }
 
+import { kv } from '@vercel/kv';
+
 /**
- * Rate limiting store (in-memory)
- * For production, use Redis or similar
+ * Rate limiting store (in-memory fallback)
  */
 const rateLimitStore = new Map<string, { count: number; resetTime: number }>();
 
 /**
  * Check rate limit for an identifier (IP, user ID, etc.)
+ * Uses @vercel/kv (Redis) if available, otherwise falls back to in-memory
+ * 
  * @param identifier - Unique identifier
  * @param maxRequests - Maximum requests allowed
  * @param windowMs - Time window in milliseconds
  * @returns true if rate limit exceeded
  */
-export function isRateLimited(
+export async function isRateLimited(
     identifier: string,
     maxRequests: number = 5,
     windowMs: number = 60000 // 1 minute
-): boolean {
+): Promise<boolean> {
+    // Try using Vercel KV (Redis)
+    if (process.env.KV_REST_API_URL) {
+        try {
+            const key = `ratelimit:${identifier}`;
+            const currentCount = await kv.incr(key);
+            
+            if (currentCount === 1) {
+                await kv.expire(key, Math.ceil(windowMs / 1000));
+            }
+            
+            return currentCount > maxRequests;
+        } catch (error) {
+            console.warn('⚠️ Vercel KV error, falling back to in-memory rate limit:', error);
+        }
+    }
+
+    // Fallback to in-memory store
     const now = Date.now();
     const record = rateLimitStore.get(identifier);
 
     if (!record || now > record.resetTime) {
-        // Create new record
         rateLimitStore.set(identifier, {
             count: 1,
             resetTime: now + windowMs
@@ -182,24 +201,23 @@ export function isRateLimited(
     }
 
     if (record.count >= maxRequests) {
-        return true; // Rate limit exceeded
+        return true;
     }
 
-    // Increment count
     record.count++;
     return false;
 }
 
 /**
- * Clean up expired rate limit records
+ * Clean up expired rate limit records (for in-memory store)
  */
 export function cleanupRateLimits(): void {
     const now = Date.now();
-    for (const [key, record] of rateLimitStore.entries()) {
+    rateLimitStore.forEach((record, key) => {
         if (now > record.resetTime) {
             rateLimitStore.delete(key);
         }
-    }
+    });
 }
 
 // Clean up every 5 minutes

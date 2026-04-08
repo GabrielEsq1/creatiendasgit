@@ -68,7 +68,7 @@ function getRateLimitConfig(pathname: string): RateLimitConfig {
 /**
  * Rate limit middleware
  */
-export function rateLimitMiddleware(request: NextRequest): NextResponse | null {
+export async function rateLimitMiddleware(request: NextRequest): Promise<NextResponse | null> {
     const pathname = request.nextUrl.pathname;
 
     // Only apply to API routes
@@ -82,7 +82,9 @@ export function rateLimitMiddleware(request: NextRequest): NextResponse | null {
     // Create unique key for this endpoint + identifier
     const key = `${pathname}:${identifier}`;
 
-    if (isRateLimited(key, config.maxRequests, config.windowMs)) {
+    const isLimited = await isRateLimited(key, config.maxRequests, config.windowMs);
+
+    if (isLimited) {
         return NextResponse.json(
             {
                 error: 'Demasiadas solicitudes. Por favor, intenta de nuevo más tarde.',

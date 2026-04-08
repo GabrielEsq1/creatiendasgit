@@ -3,12 +3,21 @@ import { prisma } from '@/lib/prisma';
 import crypto from 'crypto';
 import { sendPasswordResetEmail } from '@/lib/email';
 
+import { verifyTurnstileToken } from '@/lib/turnstile';
+
 export async function POST(req: Request) {
-    const { email } = await req.json();
+    const { email, turnstileToken } = await req.json();
+
+    // Verify Turnstile
+    const isHuman = await verifyTurnstileToken(turnstileToken);
+    if (!isHuman) {
+        return NextResponse.json({ error: 'Fallo en la verificación anti-spam' }, { status: 400 });
+    }
+
     const user = await prisma.user.findUnique({ where: { email } });
     if (!user) {
-        // No revelamos si el email existe
-        return NextResponse.json({ message: 'Si el correo está registrado, recibirás un email' });
+        // No revelamos si el email existe por seguridad
+        return NextResponse.json({ message: 'Si el correo está registrado, recibirás un email con las instrucciones.' });
     }
 
     const token = crypto.randomBytes(32).toString('hex');
@@ -18,8 +27,8 @@ export async function POST(req: Request) {
         data: { token, expiresAt, userId: user.id },
     });
 
-    // En producción aquí se enviaría el email.
-    const resetLink = `${process.env.NEXTAUTH_URL}/reset-password?token=${token}`;
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || process.env.NEXTAUTH_URL || 'http://localhost:3000';
+    const resetLink = `${baseUrl}/reset-password?token=${token}`;
 
     const emailSent = await sendPasswordResetEmail(email, resetLink);
 

@@ -4,13 +4,11 @@ import { getToken } from 'next-auth/jwt';
 import { rateLimitMiddleware } from '@/lib/rate-limit';
 
 export async function middleware(request: NextRequest) {
-    /* 
     // Apply rate limiting first
-    const rateLimitResponse = rateLimitMiddleware(request);
+    const rateLimitResponse = await rateLimitMiddleware(request);
     if (rateLimitResponse) {
         return rateLimitResponse;
     }
-    */
 
     const hostname = request.headers.get('host') || '';
     const url = request.nextUrl;
@@ -58,16 +56,17 @@ export async function middleware(request: NextRequest) {
     const response = NextResponse.next();
 
     // Security headers (Relaxed for debugging)
-    response.headers.set('X-Frame-Options', 'SAMEORIGIN');
+    // Security headers
+    response.headers.set('X-Frame-Options', 'DENY');
     response.headers.set('X-Content-Type-Options', 'nosniff');
     response.headers.set('X-XSS-Protection', '1; mode=block');
     response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
 
-    // Content Security Policy (Temporary relaxed)
-    // response.headers.set(
-    //     'Content-Security-Policy',
-    //     "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://js.stripe.com https://www.googletagmanager.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https://api.stripe.com https://api.whatsapp.com;"
-    // );
+    // Content Security Policy
+    response.headers.set(
+        'Content-Security-Policy',
+        "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://js.stripe.com https://www.googletagmanager.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https://api.stripe.com https://api.whatsapp.com;"
+    );
 
     return response;
 }

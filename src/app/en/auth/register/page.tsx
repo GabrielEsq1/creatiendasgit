@@ -5,6 +5,7 @@ import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { Mail, Lock, ArrowRight } from "lucide-react";
 import Link from "next/link";
+import Script from "next/script";
 import { useAnalytics } from "@/components/Analytics";
 import { SocialProofSection } from "@/components/SocialProofSection";
 
@@ -16,6 +17,7 @@ export default function RegisterPageEN() {
     const [error, setError] = useState("");
     const [emailSent, setEmailSent] = useState(false);
     const [registeredEmail, setRegisteredEmail] = useState("");
+    const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
     const router = useRouter();
     const { trackEvent } = useAnalytics();
     const playerRef = useRef<any>(null);
@@ -75,7 +77,7 @@ export default function RegisterPageEN() {
             const res = await fetch("/api/auth/register", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ name, email, password }),
+                body: JSON.stringify({ name, email, password, turnstileToken }),
             });
 
             if (res.ok) {
@@ -160,6 +162,15 @@ export default function RegisterPageEN() {
                     </div>
 
                     {error && <div className="p-3 bg-rose-50 border border-rose-100 rounded-xl text-xs font-bold text-rose-600 flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-rose-600" />{error}</div>}
+
+                    {/* Cloudflare Turnstile */}
+                    <div className="flex justify-center my-4">
+                        <div 
+                            className="cf-turnstile" 
+                            data-sitekey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || "1x00000000000000000000AA"}
+                            data-callback="onTurnstileSuccess"
+                        ></div>
+                    </div>
 
                     <div className="text-center py-1 mt-2">
                         <p className="text-[9.5px] font-black uppercase text-slate-400 tracking-wider">No card · Cancelable · Instant access</p>
@@ -259,6 +270,16 @@ export default function RegisterPageEN() {
                                 </div>
                             </div>
                             {error && <div className="p-3 bg-rose-50 border border-rose-100 rounded-xl text-xs font-bold text-rose-600 flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-rose-600" />{error}</div>}
+                            
+                            {/* Cloudflare Turnstile */}
+                            <div className="flex justify-center my-4">
+                                <div 
+                                    className="cf-turnstile" 
+                                    data-sitekey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || "1x00000000000000000000AA"}
+                                    data-callback="onTurnstileSuccess"
+                                ></div>
+                            </div>
+
                             <div className="text-center py-2"><p className="text-[10px] font-black uppercase text-slate-400 tracking-wider">No card · Cancelable · Instant access</p></div>
                             <button type="submit" disabled={loading} className="w-full bg-green-500 hover:bg-green-600 text-white text-sm font-black py-4 rounded-2xl transition-all shadow-xl shadow-green-200 active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2">
                                 {loading ? <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : <>Get Started Now <ArrowRight className="w-4 h-4" /></>}
@@ -277,6 +298,16 @@ export default function RegisterPageEN() {
                     </div>
                 </div>
             </div>
+
+            <Script 
+                src="https://challenges.cloudflare.com/turnstile/v0/api.js" 
+                strategy="lazyOnload"
+                onLoad={() => {
+                    (window as any).onTurnstileSuccess = (token: string) => {
+                        setTurnstileToken(token);
+                    };
+                }}
+            />
         </div>
     );
 }

@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
-import { db } from '@/lib/db-pg';
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
+import { prisma } from "@/lib/prisma";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: '2023-10-16' as any, // Use a recent version or match package.json
@@ -8,11 +10,15 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
 
 export async function POST(req: Request) {
   try {
-    const userId = req.headers.get('x-user-id');
-    if (!userId) return NextResponse.json({ error: 'missing x-user-id header' }, { status: 401 });
+    const authSession = await getServerSession(authOptions);
+    if (!authSession?.user) {
+      return NextResponse.json({ error: 'No autenticado' }, { status: 401 });
+    }
 
-    const userRes = await db.query('SELECT * FROM users WHERE id=$1', [userId]);
-    const user = userRes.rows[0];
+    const userId = (authSession.user as any).id;
+    const user = await prisma.user.findUnique({
+      where: { id: userId }
+    });
     if (!user) return NextResponse.json({ error: 'user not found' }, { status: 404 });
 
     const { amount_cents } = await req.json();
