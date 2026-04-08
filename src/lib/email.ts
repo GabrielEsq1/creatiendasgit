@@ -104,7 +104,7 @@ export async function sendPasswordResetEmail(email: string, resetLink: string) {
 }
 
 export async function sendVerificationEmail(email: string, token: string) {
-  const baseUrl = process.env.NEXTAUTH_URL || 'https://creatiendas.co';
+  const baseUrl = process.env.NODE_ENV === 'production' ? 'https://creatiendas.co' : (process.env.NEXTAUTH_URL || 'http://localhost:3000');
   const verifyLink = `${baseUrl}/api/auth/verify?token=${token}`;
   const from = process.env.EMAIL_FROM || 'onboarding@resend.dev';
   const subject = 'Verifica tu cuenta - Creatiendas';
