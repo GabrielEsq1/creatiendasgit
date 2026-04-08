@@ -31,16 +31,15 @@ export default function HeroEN() {
                 </div>
 
                 {/* Main Headline */}
-                <div className="relative mb-8">
+                <div className="relative mb-16">
                     <h1 className="text-5xl md:text-7xl lg:text-8xl font-black tracking-tight mb-8 leading-[1.1] text-slate-900">
-                        Your <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-600 to-emerald-600">Online Store</span>
+                        Your Online Store on <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-600 to-emerald-600">WhatsApp</span>
                         <br />
-                        <span className="text-slate-900">via <span className="text-green-600 underline decoration-green-500/30 decoration-8 underline-offset-8">WhatsApp</span> 2026</span>
+                        <span className="text-slate-900">Start Free and in <span className="text-green-600 underline decoration-green-500/30 decoration-8 underline-offset-8">3 Minutes</span></span>
                     </h1>
                     <p className="text-xl md:text-2xl text-slate-600 max-w-3xl mx-auto leading-relaxed font-medium">
-                        Scale your business this year with Creatiendas.
-                        Your clients order via WhatsApp without friction. <br className="hidden md:block" />
-                        <span className="text-green-600 font-extrabold bg-green-500/10 border border-green-500/20 px-3 py-1 rounded-lg">0% COMMISSIONS. THE MOMENT IS NOW.</span>
+                        0% commissions · No credit card · All automatic. <br className="hidden md:block" />
+                        The first month is on us. Join thousands of entrepreneurs today.
                     </p>
                 </div>
 

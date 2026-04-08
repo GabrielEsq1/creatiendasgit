@@ -1,207 +1,202 @@
 "use client";
 
-import { Check } from "lucide-react";
+import { Check, ArrowLeft, ShieldCheck, Zap } from "lucide-react";
 import Link from "next/link";
 
 export default function BillingPage() {
     const plans = [
         {
-            id: "trimestral",
-            name: "Trimestral",
+            id: "emprendedor",
+            name: "Emprendedor",
             price: "$60.000",
-            duration: "3 Meses",
-            permanency: 3,
+            description: "Para pequeños negocios que están empezando.",
+            duration: "Mes",
             features: [
-                "Tiendas ilimitadas",
-                "Productos ilimitados",
-                "Soporte prioritario",
-                "Dominio personalizado",
+                "1 Tienda Online",
+                "Hasta 100 productos",
+                "Pedidos ilimitados por WhatsApp",
+                "Buscador y filtros",
+                "Soporte básico",
             ],
             recommended: false,
+            color: "slate",
         },
         {
-            id: "semestral",
-            name: "Semestral",
-            price: "$60.000",
-            duration: "6 Meses",
-            permanency: 6,
+            id: "negocio",
+            name: "Negocio",
+            price: "$99.000",
+            description: "La mejor opción para marcas en crecimiento.",
+            duration: "Mes",
             features: [
-                "Tiendas ilimitadas",
-                "Productos ilimitados",
+                "Hasta 3 Tiendas",
+                "Hasta 1.000 productos",
+                "Pedidos ilimitados",
+                "Secciones Sobre Nosotros/Trabajo",
                 "Soporte prioritario",
-                "Dominio personalizado",
-                "Análisis de ventas",
-            ],
-            recommended: false,
-        },
-        {
-            id: "anual",
-            name: "Anual",
-            price: "$60.000",
-            duration: "1 Año",
-            permanency: 12,
-            features: [
-                "Tiendas ilimitadas",
-                "Productos ilimitados",
-                "Soporte VIP 24/7",
-                "Dominio personalizado",
-                "Análisis avanzado",
-                "Sin marca de agua",
             ],
             recommended: true,
+            color: "green",
+        },
+        {
+            id: "pro",
+            name: "Pro",
+            price: "$180.000",
+            description: "Diseñado para agencias o grandes inventarios.",
+            duration: "Mes",
+            features: [
+                "Hasta 10 Tiendas",
+                "Hasta 5.000 productos",
+                "Todo el Plan Negocio",
+                "Actualizaciones anticipadas",
+                "Soporte 24/7 dedicado",
+            ],
+            recommended: false,
+            color: "slate",
         },
     ];
 
     const handleNequiPayment = (planName: string) => {
-        const message = `Hola, quiero pagar mi plan por Nequi. Mi plan es: ${planName}`;
-        const whatsappUrl = `https://wa.me/573026687991?text=${encodeURIComponent(message)}`;
-        window.open(whatsappUrl, '_blank');
-    };
-
-    const handlePayPalReport = (planName: string) => {
-        const message = `Hola, ya realicé el pago de mi plan ${planName} con PayPal. Solicito la activación.`;
+        const message = `Hola, quiero activar mi plan ${planName} en Creatiendas. ¿Me pueden dar los datos para el pago?`;
         const whatsappUrl = `https://wa.me/573026687991?text=${encodeURIComponent(message)}`;
         window.open(whatsappUrl, '_blank');
     };
 
     return (
-        <>
-            <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 py-12 px-4 sm:px-6 lg:px-8">
-                <div className="max-w-7xl mx-auto">
-                    {/* Back to Dashboard */}
-                    <div className="mb-8">
-                        <Link
-                            href="/dashboard"
-                            className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-700 font-medium transition-colors"
+        <div className="min-h-screen bg-slate-50/50 pb-20 selection:bg-green-500/30">
+            {/* Header / Sub Nav */}
+            <div className="bg-white border-b border-slate-100 sticky top-16 z-30">
+                <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
+                    <Link
+                        href="/dashboard"
+                        className="inline-flex items-center gap-2 text-slate-500 hover:text-slate-900 font-bold text-xs uppercase tracking-widest transition-all group"
+                    >
+                        <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
+                        Dashboard
+                    </Link>
+                    <div className="flex items-center gap-2">
+                        <ShieldCheck className="w-4 h-4 text-green-500" />
+                        <span className="text-[10px] font-black uppercase text-slate-400 tracking-widest">Pago Seguro via WhatsApp</span>
+                    </div>
+                </div>
+            </div>
+
+            <div className="max-w-7xl mx-auto px-4 py-16">
+                <div className="text-center mb-16 space-y-4">
+                    <span className="inline-flex items-center gap-2 bg-green-100 text-green-700 text-[10px] font-black uppercase tracking-[0.2em] px-4 py-2 rounded-full">
+                        Actualiza tu Plan
+                    </span>
+                    <h1 className="text-4xl sm:text-5xl font-black text-slate-900 tracking-tight leading-tight">
+                        Elige el plan ideal para tu{" "}
+                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-600 to-emerald-600">
+                            crecimiento
+                        </span>
+                    </h1>
+                    <p className="text-lg text-slate-500 max-w-2xl mx-auto font-medium">
+                        Escala tu negocio de WhatsApp con herramientas potentes y soporte dedicado.
+                    </p>
+                </div>
+
+                {/* Pricing Grid */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    {plans.map((plan) => (
+                        <div
+                            key={plan.id}
+                            className={`relative bg-white rounded-[2.5rem] p-8 sm:p-10 border transition-all duration-300 hover:shadow-2xl flex flex-col ${
+                                plan.recommended 
+                                ? 'border-green-500 shadow-xl lg:scale-105 z-10' 
+                                : 'border-slate-100 shadow-lg'
+                            }`}
                         >
-                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-                            </svg>
-                            Volver al Dashboard
-                        </Link>
-                    </div>
+                            {plan.recommended && (
+                                <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-green-500 text-white text-[10px] font-black uppercase tracking-widest px-4 py-2 rounded-full shadow-lg flex items-center gap-2 whitespace-nowrap">
+                                    <Zap className="w-3 h-3" fill="currentColor" />
+                                    La mejor opción
+                                </div>
+                            )}
 
-                    <div className="text-center mb-12">
-                        <h2 className="text-4xl font-extrabold text-gray-900 sm:text-5xl mb-4">
-                            Planes de Suscripción
-                        </h2>
-                        <p className="mt-4 text-xl text-gray-600 max-w-2xl mx-auto">
-                            Desbloquea todo el potencial de Creatiendas. Tiendas ilimitadas, productos ilimitados y más.
-                        </p>
-                    </div>
+                            <div className="mb-8">
+                                <h3 className="text-xl font-black text-slate-900 mb-2">{plan.name}</h3>
+                                <p className="text-sm text-slate-500 font-medium">{plan.description}</p>
+                            </div>
 
-                    <div className="mt-16 space-y-6 sm:space-y-0 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:max-w-7xl lg:mx-auto">
-                        {plans.map((plan) => (
-                            <div
-                                key={plan.id}
-                                className={`rounded-2xl shadow-xl bg-white flex flex-col overflow-hidden transition-all duration-300 hover:shadow-2xl ${plan.recommended
-                                    ? "ring-2 ring-blue-500 transform lg:scale-105"
-                                    : "ring-1 ring-gray-200"
-                                    }`}
+                            <div className="mb-8">
+                                <div className="flex items-baseline gap-1">
+                                    <span className="text-5xl font-black text-slate-900">{plan.price}</span>
+                                    <span className="text-slate-400 text-xs font-bold uppercase tracking-wider">COP</span>
+                                </div>
+                                <p className="text-slate-400 text-[10px] font-bold uppercase tracking-widest mt-2">por {plan.duration} / tienda</p>
+                            </div>
+
+                            <ul className="space-y-4 mb-10 flex-1">
+                                {plan.features.map((feat, j) => (
+                                    <li key={j} className="flex items-center gap-3">
+                                        <div className="shrink-0 w-5 h-5 bg-green-50 rounded-full flex items-center justify-center">
+                                            <Check className="w-3 h-3 text-green-600" strokeWidth={4} />
+                                        </div>
+                                        <span className="text-sm font-bold text-slate-600">{feat}</span>
+                                    </li>
+                                ))}
+                            </ul>
+
+                            <button
+                                onClick={() => handleNequiPayment(plan.name)}
+                                className={`block w-full py-5 rounded-2xl text-center font-black text-sm tracking-tight transition-all active:scale-[0.98] ${
+                                    plan.recommended 
+                                    ? 'bg-green-500 text-white hover:bg-green-600 shadow-xl shadow-green-500/30' 
+                                    : 'bg-slate-900 text-white hover:bg-slate-800 shadow-xl'
+                                }`}
                             >
-                                {plan.recommended && (
-                                    <div className="bg-gradient-to-r from-blue-500 to-blue-600 px-4 py-2">
-                                        <span className="block text-center text-sm font-semibold text-white uppercase tracking-wide">
-                                            ⭐ Mejor Valor
-                                        </span>
-                                    </div>
-                                )}
+                                Activar Plan Ahora
+                            </button>
+                            <p className="text-center text-slate-400 text-[10px] font-black uppercase tracking-tighter mt-4 flex items-center justify-center gap-2">
+                                <ShieldCheck className="w-3 h-3" /> Activación Inmediata
+                            </p>
+                        </div>
+                    ))}
+                </div>
 
-                                <div className="p-8 flex-1">
-                                    <h3 className="text-2xl font-bold text-gray-900 mb-2">
-                                        {plan.name}
-                                    </h3>
-                                    <div className="mt-4 flex items-baseline text-gray-900">
-                                        <span className="text-5xl font-extrabold tracking-tight">
-                                            {plan.price}
-                                        </span>
-                                        <span className="ml-2 text-xl font-medium text-gray-500">
-                                            COP
-                                        </span>
-                                    </div>
-                                    <p className="mt-1 text-sm text-gray-500">por {plan.duration}</p>
-
-                                    <ul className="mt-8 space-y-4">
-                                        {plan.features.map((feature) => (
-                                            <li key={feature} className="flex items-start">
-                                                <Check className="flex-shrink-0 w-5 h-5 text-green-500 mt-0.5" />
-                                                <span className="ml-3 text-base text-gray-700">{feature}</span>
-                                            </li>
-                                        ))}
-                                    </ul>
-                                </div>
-
-                                <div className="px-8 pb-8 space-y-4">
-
-
-
-
-                                    {/* WhatsApp Payment Option */}
-                                    <button
-                                        className="w-full flex items-center justify-center px-6 py-3 border-2 border-green-600 text-base font-semibold rounded-lg text-green-700 bg-white hover:bg-green-50 transition-all duration-200 shadow-sm hover:shadow-md"
-                                        onClick={() => handleNequiPayment(plan.name)}
-                                    >
-                                        <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
-                                            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z" />
-                                        </svg>
-                                        Solicitar Plan por WhatsApp
-                                    </button>
-
-                                    <p className="text-xs text-center text-gray-500 pt-2">
-                                        Permanencia mínima de {plan.permanency} meses
-                                    </p>
-                                </div>
+                {/* Info Card */}
+                <div className="mt-20 bg-white rounded-[3rem] p-10 sm:p-16 shadow-xl border border-slate-100 max-w-5xl mx-auto relative overflow-hidden group">
+                    <div className="absolute top-0 right-0 w-64 h-64 bg-green-500/5 rounded-full blur-3xl -mr-20 -mt-20 pointer-events-none group-hover:bg-green-500/10 transition-all"></div>
+                    
+                    <div className="grid md:grid-cols-2 gap-12 items-center relative z-10">
+                        <div className="space-y-6">
+                            <h2 className="text-3xl font-black text-slate-900 tracking-tight leading-tight">
+                                Transparencia <span className="text-green-600">Total</span>
+                            </h2>
+                            <p className="text-slate-600 font-medium leading-relaxed">
+                                No cobramos comisiones por tus ventas. Todo el dinero que recibes por tus tiendas es 100% tuyo. Nuestro modelo es simple: pagas por la herramienta, no por tu éxito.
+                            </p>
+                            <ul className="space-y-3">
+                                <li className="flex items-center gap-3 text-sm font-bold text-slate-700">
+                                    <Check className="w-4 h-4 text-green-500" /> Sin cargos ocultos
+                                </li>
+                                <li className="flex items-center gap-3 text-sm font-bold text-slate-700">
+                                    <Check className="w-4 h-4 text-green-500" /> Cancela en cualquier momento
+                                </li>
+                                <li className="flex items-center gap-3 text-sm font-bold text-slate-700">
+                                    <Check className="w-4 h-4 text-green-500" /> Soporte humano en español
+                                </li>
+                            </ul>
+                        </div>
+                        
+                        <div className="bg-slate-50 rounded-[2rem] p-8 border border-slate-100 flex flex-col items-center text-center space-y-4">
+                            <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center shadow-lg text-3xl">
+                                💬
                             </div>
-                        ))}
-                    </div>
-
-                    {/* Information Section */}
-                    <div className="mt-20 max-w-4xl mx-auto">
-                        <div className="bg-white rounded-2xl shadow-lg p-8 border border-gray-100">
-                            <div className="flex items-center gap-3 mb-6">
-                                <div className="flex-shrink-0 w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
-                                    <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                    </svg>
-                                </div>
-                                <h3 className="text-2xl font-bold text-gray-900">
-                                    Métodos de Pago
-                                </h3>
-                            </div>
-
-                            <div className="grid md:grid-cols-2 gap-6">
-
-
-                                <div className="bg-green-50 rounded-lg p-6">
-                                    <div className="flex items-center gap-2 mb-3">
-                                        <svg className="w-5 h-5 text-green-600" fill="currentColor" viewBox="0 0 24 24">
-                                            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z" />
-                                        </svg>
-                                        <h4 className="font-semibold text-gray-900">Atención Personalizada</h4>
-                                    </div>
-                                    <p className="text-sm text-gray-700">
-                                        Pago manual coordinado por WhatsApp. Nuestro equipo te guiará en el proceso y activará tu plan inmediatamente.
-                                    </p>
-                                </div>
-                            </div>
-
-                            <div className="mt-6 pt-6 border-t border-gray-200 text-center">
-                                <p className="text-sm text-gray-600">
-                                    ¿Tienes preguntas? Contáctanos por{" "}
-                                    <a
-                                        href="https://wa.me/573026687991"
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="text-blue-600 hover:text-blue-700 font-medium underline"
-                                    >
-                                        WhatsApp: +57 302 668 7991
-                                    </a>
-                                </p>
-                            </div>
+                            <h3 className="text-xl font-black text-slate-900">¿Necesitas ayuda?</h3>
+                            <p className="text-sm text-slate-500 font-medium">Estamos en WhatsApp para guiarte en la configuración o resolver tus dudas antes de pagar.</p>
+                            <a 
+                                href="https://wa.me/573026687991" 
+                                target="_blank"
+                                className="inline-flex items-center gap-2 text-green-600 font-black hover:underline"
+                            >
+                                Hablar con un asesor <ArrowLeft className="w-4 h-4 rotate-180" />
+                            </a>
                         </div>
                     </div>
                 </div>
             </div>
-        </>
+        </div>
     );
 }

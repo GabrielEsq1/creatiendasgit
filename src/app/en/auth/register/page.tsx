@@ -70,6 +70,12 @@ export default function RegisterPageEN() {
 
     const handleRegister = async (e: React.FormEvent) => {
         e.preventDefault();
+
+        if (!turnstileToken) {
+            setError("Please complete the anti-spam verification.");
+            return;
+        }
+
         setLoading(true);
         setError("");
 
@@ -164,11 +170,12 @@ export default function RegisterPageEN() {
                     {error && <div className="p-3 bg-rose-50 border border-rose-100 rounded-xl text-xs font-bold text-rose-600 flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-rose-600" />{error}</div>}
 
                     {/* Cloudflare Turnstile */}
-                    <div className="flex justify-center my-4">
+                    <div className="flex justify-center my-4 min-h-[65px]">
                         <div 
                             className="cf-turnstile" 
                             data-sitekey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || "1x00000000000000000000AA"}
                             data-callback="onTurnstileSuccess"
+                            data-theme="light"
                         ></div>
                     </div>
 
@@ -272,11 +279,12 @@ export default function RegisterPageEN() {
                             {error && <div className="p-3 bg-rose-50 border border-rose-100 rounded-xl text-xs font-bold text-rose-600 flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-rose-600" />{error}</div>}
                             
                             {/* Cloudflare Turnstile */}
-                            <div className="flex justify-center my-4">
+                            <div className="flex justify-center my-4 min-h-[65px]">
                                 <div 
                                     className="cf-turnstile" 
                                     data-sitekey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || "1x00000000000000000000AA"}
                                     data-callback="onTurnstileSuccess"
+                                    data-theme="light"
                                 ></div>
                             </div>
 
