@@ -22,24 +22,47 @@ export default function RegisterPage() {
     const router = useRouter();
     const { trackEvent } = useAnalytics();
     const playerRef = useRef<any>(null);
-    const turnstileContainerRef = useRef<HTMLDivElement>(null);
-    const widgetIdRef = useRef<string | null>(null);
+    
+    // Separate refs and widgets for mobile/desktop
+    const turnstileMobileRef = useRef<HTMLDivElement>(null);
+    const turnstileDesktopRef = useRef<HTMLDivElement>(null);
+    const widgetMobileIdRef = useRef<string | null>(null);
+    const widgetDesktopIdRef = useRef<string | null>(null);
 
     // Explicitly render Turnstile for better reliability in Next.js
     useEffect(() => {
         const renderTurnstile = () => {
-            if (typeof window !== 'undefined' && (window as any).turnstile && turnstileContainerRef.current && !widgetIdRef.current) {
-                try {
-                    widgetIdRef.current = (window as any).turnstile.render(turnstileContainerRef.current, {
-                        sitekey: process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || "0x4AAAAAAC2WsMUGbzyb_NSX",
-                        callback: (token: string) => {
-                            setTurnstileToken(token);
-                            setError("");
-                        },
-                        theme: 'light',
-                    });
-                } catch (e) {
-                    console.error("Turnstile render error:", e);
+            if (typeof window !== 'undefined' && (window as any).turnstile) {
+                const isDesktopVisible = window.innerWidth >= 1024;
+
+                if (!isDesktopVisible && turnstileMobileRef.current && !widgetMobileIdRef.current) {
+                    try {
+                        widgetMobileIdRef.current = (window as any).turnstile.render(turnstileMobileRef.current, {
+                            sitekey: process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || "0x4AAAAAAC2WsMUGbzyb_NSX",
+                            callback: (token: string) => {
+                                setTurnstileToken(token);
+                                setError("");
+                            },
+                            theme: 'light',
+                        });
+                    } catch (e) {
+                        console.error("Turnstile mobile render error Register:", e);
+                    }
+                }
+                
+                if (isDesktopVisible && turnstileDesktopRef.current && !widgetDesktopIdRef.current) {
+                    try {
+                        widgetDesktopIdRef.current = (window as any).turnstile.render(turnstileDesktopRef.current, {
+                            sitekey: process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || "0x4AAAAAAC2WsMUGbzyb_NSX",
+                            callback: (token: string) => {
+                                setTurnstileToken(token);
+                                setError("");
+                            },
+                            theme: 'light',
+                        });
+                    } catch (e) {
+                        console.error("Turnstile desktop render error Register:", e);
+                    }
                 }
             }
         };
@@ -50,10 +73,20 @@ export default function RegisterPage() {
         // Also set up a listener just in case it loads later
         (window as any).onTurnstileLoad = renderTurnstile;
 
+        // Handle resize events to render the appropriate widget if crossing breakpoints
+        window.addEventListener('resize', renderTurnstile);
+
         return () => {
-            if (widgetIdRef.current && (window as any).turnstile) {
-                (window as any).turnstile.remove(widgetIdRef.current);
-                widgetIdRef.current = null;
+            window.removeEventListener('resize', renderTurnstile);
+            if ((window as any).turnstile) {
+                if (widgetMobileIdRef.current) {
+                    (window as any).turnstile.remove(widgetMobileIdRef.current);
+                    widgetMobileIdRef.current = null;
+                }
+                if (widgetDesktopIdRef.current) {
+                    (window as any).turnstile.remove(widgetDesktopIdRef.current);
+                    widgetDesktopIdRef.current = null;
+                }
             }
         };
     }, []);
@@ -148,9 +181,21 @@ export default function RegisterPage() {
                 }
 
                 setError(errorMessage);
+                // Reset Turnstile on error so they can try again if it failed
+                if ((window as any).turnstile) {
+                    if (widgetMobileIdRef.current) (window as any).turnstile.reset(widgetMobileIdRef.current);
+                    if (widgetDesktopIdRef.current) (window as any).turnstile.reset(widgetDesktopIdRef.current);
+                    setTurnstileToken(null);
+                }
             }
         } catch (err) {
             setError("Ocurrió un error al registrarse.");
+            // Reset Turnstile on error
+            if ((window as any).turnstile) {
+                if (widgetMobileIdRef.current) (window as any).turnstile.reset(widgetMobileIdRef.current);
+                if (widgetDesktopIdRef.current) (window as any).turnstile.reset(widgetDesktopIdRef.current);
+                setTurnstileToken(null);
+            }
         } finally {
             setLoading(false);
         }
@@ -219,9 +264,9 @@ export default function RegisterPage() {
 
                     {error && <div className="p-3 bg-rose-50 border border-rose-100 rounded-xl text-xs font-bold text-rose-600 flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-rose-600" />{error}</div>}
 
-                    {/* Cloudflare Turnstile */}
+                    {/* Cloudflare Turnstile (Mobile) */}
                     <div className="flex justify-center my-4 overflow-hidden min-h-[65px]">
-                        <div ref={turnstileContainerRef}></div>
+                        <div ref={turnstileMobileRef}></div>
                     </div>
 
                     <div className="text-center py-1 mt-2">
@@ -323,9 +368,9 @@ export default function RegisterPage() {
                             </div>
                             {error && <div className="p-3 bg-rose-50 border border-rose-100 rounded-xl text-xs font-bold text-rose-600 flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-rose-600" />{error}</div>}
                             
-                            {/* Cloudflare Turnstile */}
+                            {/* Cloudflare Turnstile (Desktop) */}
                             <div className="flex justify-center my-4 min-h-[65px]">
-                                <div ref={turnstileContainerRef}></div>
+                                <div ref={turnstileDesktopRef}></div>
                             </div>
 
                             <div className="text-center py-2"><p className="text-[10px] font-black uppercase text-slate-400 tracking-wider">Sin tarjeta · Cancelable · Acceso inmediato</p></div>

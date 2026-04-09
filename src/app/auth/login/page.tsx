@@ -16,8 +16,10 @@ function LoginForm() {
     const [error, setError] = useState("");
     const [successMessage, setSuccessMessage] = useState("");
     const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
-    const turnstileContainerRef = useRef<HTMLDivElement>(null);
-    const widgetIdRef = useRef<string | null>(null);
+    const turnstileMobileRef = useRef<HTMLDivElement>(null);
+    const turnstileDesktopRef = useRef<HTMLDivElement>(null);
+    const widgetMobileIdRef = useRef<string | null>(null);
+    const widgetDesktopIdRef = useRef<string | null>(null);
     const router = useRouter();
     const searchParams = useSearchParams();
     const callbackUrl = searchParams?.get("callbackUrl") || "/dashboard";
@@ -25,18 +27,37 @@ function LoginForm() {
     // Explicitly render Turnstile for better reliability in Next.js
     useEffect(() => {
         const renderTurnstile = () => {
-            if (typeof window !== 'undefined' && (window as any).turnstile && turnstileContainerRef.current && !widgetIdRef.current) {
-                try {
-                    widgetIdRef.current = (window as any).turnstile.render(turnstileContainerRef.current, {
-                        sitekey: process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || "0x4AAAAAAC2WsMUGbzyb_NSX",
-                        callback: (token: string) => {
-                            setTurnstileToken(token);
-                            setError("");
-                        },
-                        theme: 'light',
-                    });
-                } catch (e) {
-                    console.error("Turnstile render error Login:", e);
+            if (typeof window !== 'undefined' && (window as any).turnstile) {
+                const isDesktopVisible = window.innerWidth >= 1024;
+
+                if (!isDesktopVisible && turnstileMobileRef.current && !widgetMobileIdRef.current) {
+                    try {
+                        widgetMobileIdRef.current = (window as any).turnstile.render(turnstileMobileRef.current, {
+                            sitekey: process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || "0x4AAAAAAC2WsMUGbzyb_NSX",
+                            callback: (token: string) => {
+                                setTurnstileToken(token);
+                                setError("");
+                            },
+                            theme: 'light',
+                        });
+                    } catch (e) {
+                        console.error("Turnstile mobile render error:", e);
+                    }
+                }
+                
+                if (isDesktopVisible && turnstileDesktopRef.current && !widgetDesktopIdRef.current) {
+                    try {
+                        widgetDesktopIdRef.current = (window as any).turnstile.render(turnstileDesktopRef.current, {
+                            sitekey: process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || "0x4AAAAAAC2WsMUGbzyb_NSX",
+                            callback: (token: string) => {
+                                setTurnstileToken(token);
+                                setError("");
+                            },
+                            theme: 'light',
+                        });
+                    } catch (e) {
+                        console.error("Turnstile desktop render error:", e);
+                    }
                 }
             }
         };
@@ -44,10 +65,19 @@ function LoginForm() {
         renderTurnstile();
         (window as any).onTurnstileLoad = renderTurnstile;
 
+        window.addEventListener('resize', renderTurnstile);
+
         return () => {
-            if (widgetIdRef.current && (window as any).turnstile) {
-                (window as any).turnstile.remove(widgetIdRef.current);
-                widgetIdRef.current = null;
+            window.removeEventListener('resize', renderTurnstile);
+            if ((window as any).turnstile) {
+                if (widgetMobileIdRef.current) {
+                    (window as any).turnstile.remove(widgetMobileIdRef.current);
+                    widgetMobileIdRef.current = null;
+                }
+                if (widgetDesktopIdRef.current) {
+                    (window as any).turnstile.remove(widgetDesktopIdRef.current);
+                    widgetDesktopIdRef.current = null;
+                }
             }
         };
     }, []);
@@ -100,8 +130,9 @@ function LoginForm() {
                     setError("Credenciales inválidas");
                 }
                 // Reset Turnstile on error
-                if (widgetIdRef.current && (window as any).turnstile) {
-                    (window as any).turnstile.reset(widgetIdRef.current);
+                if ((window as any).turnstile) {
+                    if (widgetMobileIdRef.current) (window as any).turnstile.reset(widgetMobileIdRef.current);
+                    if (widgetDesktopIdRef.current) (window as any).turnstile.reset(widgetDesktopIdRef.current);
                     setTurnstileToken(null);
                 }
             } else {
@@ -155,7 +186,7 @@ function LoginForm() {
 
                     {/* Turnstile Container (Mobile) */}
                     <div className="flex justify-center my-4 min-h-[65px]">
-                        <div ref={turnstileContainerRef}></div>
+                        <div ref={turnstileMobileRef}></div>
                     </div>
 
                     <button type="submit" disabled={loading} className="w-full bg-green-500 hover:bg-green-600 text-white text-sm font-black py-4 rounded-2xl transition-all shadow-xl shadow-green-200 active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2 group/btn">
@@ -218,7 +249,7 @@ function LoginForm() {
                             
                             {/* Turnstile Container (Desktop) */}
                             <div className="flex justify-center my-4 min-h-[65px]">
-                                <div ref={turnstileContainerRef}></div>
+                                <div ref={turnstileDesktopRef}></div>
                             </div>
 
                             <button type="submit" disabled={loading} className="w-full bg-green-500 hover:bg-green-600 text-white text-sm font-black py-4 rounded-2xl transition-all shadow-xl shadow-green-200 hover:shadow-green-500/40 active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2 group/btn">

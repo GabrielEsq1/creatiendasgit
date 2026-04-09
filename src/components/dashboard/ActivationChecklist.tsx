@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect } from 'react';
-import { CheckCircle2, Circle, Store, Package, Image, MessageSquare } from 'lucide-react';
+import { CheckCircle2, Circle, Store, Package, MessageSquare } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useAnalytics } from '../Analytics';
 
@@ -27,29 +27,21 @@ export default function ActivationChecklist({ stores }: ActivationChecklistProps
     const firstStore = safeStores[0];
     const hasProducts = firstStore?.productCount > 0;
 
-    // We assume 'data' contains styling/branding info. 
-    // This is a naive check; in reality we'd inspect store.data explicitly.
-    // For now, if they have a store, we'll assume they loosely "configured" it, 
-    // or we could check if they have a description/logo if data was passed down.
-    // Let's assume creating the store satisfies "Configuration" for MVP simplicity,
-    // or better: check if they upgraded or edited it. 
-    // Let's stick to concrete metrics we have: products.
-
     const steps: Step[] = [
         {
             id: 'create_store',
             label: 'Crea tu primera tienda',
             description: 'Define el nombre y la dirección web de tu negocio.',
-            icon: <Store className="w-5 h-5 text-purple-600" />,
+            icon: <Store className="w-5 h-5 text-green-600" />,
             isCompleted: hasStore,
             actionLabel: 'Crear Tienda',
-            actionUrl: '/builder' // managed by parent usually
+            actionUrl: '/builder'
         },
         {
             id: 'add_products',
             label: 'Sube tu primer producto',
             description: 'Agrega fotos y precios para que tus clientes compren.',
-            icon: <Package className="w-5 h-5 text-blue-600" />,
+            icon: <Package className="w-5 h-5 text-emerald-600" />,
             isCompleted: hasProducts,
             actionLabel: 'Agregar Producto',
             actionUrl: hasStore ? `/builder?edit=${firstStore.slug}` : undefined
@@ -58,8 +50,8 @@ export default function ActivationChecklist({ stores }: ActivationChecklistProps
             id: 'share_whatsapp',
             label: 'Configura tu WhatsApp',
             description: 'Ingresa tu número para generar el botón de pedido automático.',
-            icon: <MessageSquare className="w-5 h-5 text-green-600" />,
-            isCompleted: hasStore, // Assuming basic builder sets this up. In future, check specific field.
+            icon: <MessageSquare className="w-5 h-5 text-teal-600" />,
+            isCompleted: hasStore, 
             actionLabel: 'Configurar',
             actionUrl: hasStore ? `/builder?edit=${firstStore.slug}` : undefined
         }
@@ -82,60 +74,61 @@ export default function ActivationChecklist({ stores }: ActivationChecklistProps
     }, [completedCount, steps.length, trackEvent, firstStore]);
 
     return (
-        <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm mb-8 animate-in fade-in slide-in-from-top-4">
-            <div className="flex items-center justify-between mb-4">
+        <div className="bg-white rounded-[2rem] p-8 border border-slate-100 shadow-xl mb-8 animate-in fade-in slide-in-from-top-4 relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-green-50 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none" />
+            
+            <div className="flex items-center justify-between mb-6 relative z-10">
                 <div>
-                    <h2 className="text-xl font-bold text-slate-800 flex items-center gap-2">
+                    <h2 className="text-xl font-black text-slate-900 flex items-center gap-2">
                         Comienza tu viaje
-                        <span className="text-sm font-normal text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">
-                            {completedCount}/{steps.length} completado
+                        <span className="text-[10px] font-black uppercase tracking-widest text-green-700 bg-green-100 px-3 py-1 rounded-full">
+                            {completedCount}/{steps.length} listo
                         </span>
                     </h2>
-                    <p className="text-slate-500 text-sm mt-1">Sigue estos pasos para activar tu tienda al 100%</p>
+                    <p className="text-slate-500 text-sm mt-1 font-medium">Sigue estos pasos para activar tu tienda al 100%</p>
                 </div>
                 {/* Progress Bar */}
-                <div className="hidden sm:block w-32 h-2 bg-slate-100 rounded-full overflow-hidden">
+                <div className="hidden sm:block w-32 h-2.5 bg-slate-100 rounded-full overflow-hidden border border-slate-50">
                     <div
-                        className="h-full bg-gradient-to-r from-purple-500 to-blue-500 transition-all duration-1000 ease-out"
+                        className="h-full bg-gradient-to-r from-green-500 to-emerald-500 transition-all duration-1000 ease-out"
                         style={{ width: `${progress}%` }}
                     />
                 </div>
             </div>
 
-            <div className="space-y-3">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 relative z-10">
                 {steps.map((step, idx) => (
                     <div
                         key={step.id}
-                        className={`flex items-center justify-between p-3 rounded-xl border transition-all ${step.isCompleted
+                        className={`group p-5 rounded-2xl border transition-all ${step.isCompleted
                             ? 'bg-slate-50 border-slate-100 opacity-70'
-                            : 'bg-white border-slate-200 hover:border-purple-200 hover:shadow-md'
+                            : 'bg-white border-slate-200 hover:border-green-200 hover:shadow-lg'
                             }`}
                     >
-                        <div className="flex items-center gap-4">
-                            <div className={`w-8 h-8 rounded-full flex items-center justify-center ${step.isCompleted ? 'bg-green-100' : 'bg-slate-100'
+                        <div className="flex items-center justify-between mb-4">
+                            <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${step.isCompleted ? 'bg-green-100' : 'bg-slate-50 group-hover:bg-green-50'
                                 }`}>
                                 {step.isCompleted ? (
-                                    <CheckCircle2 className="w-5 h-5 text-green-600" />
+                                    <CheckCircle2 className="w-6 h-6 text-green-600" />
                                 ) : (
-                                    <Circle className="w-5 h-5 text-slate-400" />
+                                    step.icon
                                 )}
                             </div>
-                            <div>
-                                <h4 className={`font-semibold ${step.isCompleted ? 'text-slate-500 line-through' : 'text-slate-800'}`}>
-                                    {step.label}
-                                </h4>
-                                <p className="text-xs text-slate-500 hidden sm:block">{step.description}</p>
-                            </div>
+                            {!step.isCompleted && step.actionLabel && (
+                                <button
+                                    onClick={() => step.actionUrl && router.push(step.actionUrl)}
+                                    className="text-[10px] font-black uppercase tracking-widest text-green-600 hover:text-green-700 bg-green-50 hover:bg-green-100 px-3 py-1.5 rounded-lg transition-all"
+                                >
+                                    {step.actionLabel}
+                                </button>
+                            )}
                         </div>
-
-                        {!step.isCompleted && step.actionLabel && (
-                            <button
-                                onClick={() => step.actionUrl && router.push(step.actionUrl)}
-                                className="text-sm font-medium text-purple-600 hover:text-purple-700 hover:bg-purple-50 px-3 py-1.5 rounded-lg transition-colors"
-                            >
-                                {step.actionLabel}
-                            </button>
-                        )}
+                        <div>
+                            <h4 className={`font-black text-sm mb-1 ${step.isCompleted ? 'text-slate-400 line-through' : 'text-slate-900'}`}>
+                                {step.label}
+                            </h4>
+                            <p className="text-[11px] text-slate-500 font-medium leading-relaxed">{step.description}</p>
+                        </div>
                     </div>
                 ))}
             </div>

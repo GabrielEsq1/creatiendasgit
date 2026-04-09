@@ -3,10 +3,11 @@
 import React, { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import { Store, Plus, Settings, Eye, Trash2, Edit, Package, QrCode, MessageCircle } from 'lucide-react';
+import { Store, Plus, Settings, Eye, Trash2, Edit, Package, QrCode, MessageCircle, ArrowRight } from 'lucide-react';
 import { getStoreUrl } from '@/lib/utils';
 import ActivationChecklistEN from '../en/ActivationChecklistEN';
-
+import PricingCards from '../PricingCards';
+import Link from 'next/link';
 
 interface StoreData {
     id: string;
@@ -24,11 +25,11 @@ const AdvisorModalEN = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => v
         <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-300">
             <div className="bg-white rounded-[2.5rem] p-8 md:p-12 max-w-lg w-full shadow-2xl animate-in zoom-in-95 duration-300 relative overflow-hidden">
                 {/* Decoration */}
-                <div className="absolute top-0 right-0 w-32 h-32 bg-purple-50 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
+                <div className="absolute top-0 right-0 w-32 h-32 bg-green-50 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
 
                 <div className="relative z-10 text-center">
-                    <div className="w-20 h-20 bg-purple-100 rounded-3xl flex items-center justify-center mx-auto mb-8 animate-bounce">
-                        <Store className="w-10 h-10 text-purple-600" />
+                    <div className="w-20 h-20 bg-green-100 rounded-3xl flex items-center justify-center mx-auto mb-8 animate-bounce">
+                        <Store className="w-10 h-10 text-green-600" />
                     </div>
 
                     <h2 className="text-3xl font-black text-slate-900 mb-4 tracking-tight">
@@ -36,7 +37,7 @@ const AdvisorModalEN = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => v
                     </h2>
 
                     <p className="text-slate-600 text-lg mb-10 leading-relaxed font-medium">
-                        You have reached the limit of your current plan. To create more stores and scale your business, you need personalized advice.
+                        You have reached the limit of your current plan. To create more stores and scale your business, choose a higher plan or request advice.
                     </p>
 
                     <div className="flex flex-col gap-3">
@@ -46,9 +47,7 @@ const AdvisorModalEN = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => v
                             rel="noopener noreferrer"
                             className="bg-green-500 hover:bg-green-600 text-white py-4 px-8 rounded-2xl font-black text-lg shadow-xl shadow-green-200 transition-all hover:-translate-y-1 flex items-center justify-center gap-3"
                         >
-                            <svg className="w-6 h-6 fill-current" viewBox="0 0 24 24">
-                                <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.246 2.248 3.484 5.232 3.483 8.413-.003 6.557-5.338 11.892-11.893 11.892-1.997-.001-3.951-.5-5.688-1.448l-6.308 1.654zm6.733-14.453c-.166-.37-.341-.377-.499-.384-.129-.006-.277-.006-.425-.006-.148 0-.388.055-.591.273-.204.218-.777.759-.777 1.85s.796 2.144.906 2.293c.111.148 1.568 2.395 3.8 3.357.518.222.921.356 1.236.456.52.165.993.142 1.367.086.417-.062 1.284-.524 1.465-1.031.181-.506.181-.941.127-1.031-.054-.09-.199-.145-.421-.255s-1.31-.647-1.513-.721-.351-.11-.5.11c-.15.22-.578.721-.708.87-.13.15-.258.168-.48.058s-.937-.344-1.786-1.1c-.66-.588-1.107-1.314-1.237-1.535-.13-.22-.014-.34.097-.449.099-.099.221-.255.333-.384.111-.128.148-.22.222-.369.074-.148.037-.278-.019-.387z" />
-                            </svg>
+                            <MessageCircle className="w-6 h-6" />
                             Talk to an Advisor
                         </a>
                         <button
@@ -71,6 +70,8 @@ export default function CreatiendasDashboardEN() {
     const [stores, setStores] = useState<StoreData[]>([]);
     const [loading, setLoading] = useState(true);
     const [isLimitModalOpen, setIsLimitModalOpen] = useState(false);
+
+    const userPlan = (session?.user as any)?.plan || 'FREE';
 
     // Fetch user's stores
     useEffect(() => {
@@ -96,8 +97,7 @@ export default function CreatiendasDashboardEN() {
     };
 
     const handleCreateStore = () => {
-        const plan = (session?.user as any)?.plan || 'FREE';
-        const limit = plan === 'PRO' ? 10 : 1; // Limit 1 for FREE, 10 for PRO
+        const limit = userPlan === 'PRO' ? 10 : 1; 
 
         if (stores.length >= limit) {
             setIsLimitModalOpen(true);
@@ -116,7 +116,6 @@ export default function CreatiendasDashboardEN() {
             });
 
             if (response.ok) {
-                // Optimistic update
                 setStores(prev => prev.filter(s => s.id !== storeId));
             } else {
                 const error = await response.json();
@@ -132,131 +131,134 @@ export default function CreatiendasDashboardEN() {
         return (
             <div className="flex items-center justify-center h-full">
                 <div className="text-center">
-                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto mb-4"></div>
-                    <p className="text-slate-600">Loading stores...</p>
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto mb-4"></div>
+                    <p className="text-slate-600 font-medium">Loading your stores...</p>
                 </div>
             </div>
         );
     }
 
     return (
-        <div className="h-full overflow-y-auto bg-slate-50 p-6">
+        <div className="h-full overflow-y-auto bg-slate-50 p-6 font-sans">
             <div className="max-w-6xl mx-auto">
                 {/* Header */}
                 <div className="flex items-center justify-between mb-8">
                     <div>
-                        <h1 className="text-3xl font-bold text-slate-800 flex items-center gap-3">
-                            <Store className="w-8 h-8 text-purple-600" />
+                        <h1 className="text-3xl font-black text-slate-900 flex items-center gap-3">
+                            <Store className="w-8 h-8 text-green-600" />
                             My Stores
                         </h1>
-                        <p className="text-slate-600 mt-2">
+                        <p className="text-slate-500 font-medium mt-1">
                             {session?.user?.name ? `Hello, ${session.user.name}` : 'Manage your online stores'}
                         </p>
                     </div>
-                    <a
-                        href="/en/builder"
-                        onClick={(e) => {
-                            const plan = (session?.user as any)?.plan || 'FREE';
-                            const limit = plan === 'PRO' ? 10 : 1;
-                            if (stores.length >= limit) {
-                                e.preventDefault();
-                                setIsLimitModalOpen(true);
-                            }
-                        }}
-                        className="flex items-center gap-2 bg-purple-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-purple-700 transition-all shadow-lg hover:shadow-xl no-underline"
+                    <button
+                        onClick={handleCreateStore}
+                        className="flex items-center gap-2 bg-green-500 text-white px-6 py-3.5 rounded-2xl font-black shadow-lg shadow-green-200 hover:shadow-xl hover:bg-green-600 transition-all active:scale-[0.98]"
                     >
                         <Plus className="w-5 h-5" />
                         New Store
-                    </a>
+                    </button>
                 </div>
 
                 {/* Activation Checklist (Gamification) */}
-                <ActivationChecklistEN stores={stores} />
+                <div className="mb-12">
+                    <ActivationChecklistEN stores={stores} />
+                </div>
 
                 {/* Stores Grid */}
                 {stores.length === 0 ? (
-                    <div className="bg-white rounded-2xl p-12 text-center border border-slate-200">
-                        <Store className="w-16 h-16 text-slate-300 mx-auto mb-4" />
-                        <h3 className="text-xl font-bold text-slate-800 mb-2">No stores yet</h3>
-                        <p className="text-slate-600 mb-6">
-                            Create your first online store in minutes
+                    <div className="bg-white rounded-[2.5rem] p-16 text-center border border-slate-100 shadow-xl relative overflow-hidden">
+                        <div className="absolute top-0 right-0 w-32 h-32 bg-green-50 rounded-full blur-3xl -mr-16 -mt-16" />
+                        <Store className="w-20 h-20 text-slate-200 mx-auto mb-6" />
+                        <h3 className="text-2xl font-black text-slate-900 mb-2">No stores yet</h3>
+                        <p className="text-slate-500 mb-8 font-medium max-w-sm mx-auto">
+                            Create your first online store in minutes and start selling on WhatsApp.
                         </p>
                         <button
                             onClick={handleCreateStore}
-                            className="inline-flex items-center gap-2 bg-purple-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-purple-700 transition-all"
+                            className="inline-flex items-center gap-2 bg-green-500 text-white px-8 py-4 rounded-2xl font-black shadow-xl shadow-green-200 hover:bg-green-600 transition-all hover:-translate-y-1"
                         >
-                            <Plus className="w-5 h-5" />
+                            <Plus className="w-6 h-6" />
                             Create First Store
                         </button>
                     </div>
                 ) : (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                         {stores.map((store) => (
                             <div
                                 key={store.id}
-                                className="bg-white rounded-2xl p-6 border border-slate-200 hover:shadow-lg transition-all group"
+                                className="bg-white rounded-[2rem] p-8 border border-slate-100 hover:shadow-2xl transition-all group relative overflow-hidden"
                             >
-                                <div className="flex items-start justify-between mb-4">
-                                    <div className="w-12 h-12 rounded-xl bg-purple-100 flex items-center justify-center group-hover:scale-110 transition-transform">
-                                        <Store className="w-6 h-6 text-purple-600" />
+                                <div className="absolute top-0 right-0 w-24 h-24 bg-green-50 rounded-full blur-2xl -mr-12 -mt-12 opacity-0 group-hover:opacity-100 transition-opacity" />
+                                
+                                <div className="flex items-start justify-between mb-6">
+                                    <div className="w-14 h-14 rounded-2xl bg-green-50 flex items-center justify-center group-hover:scale-110 group-hover:bg-green-100 transition-all">
+                                        <Store className="w-7 h-7 text-green-600" />
                                     </div>
-                                    <div className="flex gap-2">
+                                    <div className="flex gap-1">
                                         <a
                                             href={`https://wa.me/?text=${encodeURIComponent(`Hi! Check out my new online store: ${getStoreUrl(store.slug)}`)}`}
                                             target="_blank"
                                             rel="noopener noreferrer"
-                                            className="p-2 hover:bg-green-50 rounded-lg transition-colors inline-flex items-center justify-center"
+                                            className="p-2.5 hover:bg-green-50 text-slate-400 hover:text-green-600 rounded-xl transition-all"
                                             title="Share on WhatsApp"
                                         >
-                                            <MessageCircle className="w-4 h-4 text-green-600" />
+                                            <MessageCircle className="w-5 h-5" />
                                         </a>
-                                        <a
+                                        <Link
                                             href={`/en/builder?edit=${store.slug}`}
-                                            className="p-2 hover:bg-blue-50 rounded-lg transition-colors inline-flex items-center justify-center"
+                                            className="p-2.5 hover:bg-emerald-50 text-slate-400 hover:text-emerald-600 rounded-xl transition-all"
                                             title="Edit store"
                                         >
-                                            <Edit className="w-4 h-4 text-blue-600" />
-                                        </a>
-                                        <a
-                                            href={getStoreUrl(store.slug)}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="p-2 hover:bg-slate-100 rounded-lg transition-colors inline-flex items-center justify-center"
-                                            title="View store"
-                                        >
-                                            <Eye className="w-4 h-4 text-slate-600" />
-                                        </a>
+                                            <Edit className="w-5 h-5" />
+                                        </Link>
                                         <button
                                             onClick={() => deleteStore(store.id)}
-                                            className="p-2 hover:bg-red-50 rounded-lg transition-colors"
+                                            className="p-2.5 hover:bg-rose-50 text-slate-400 hover:text-rose-600 rounded-xl transition-all"
                                             title="Delete"
                                         >
-                                            <Trash2 className="w-4 h-4 text-red-600" />
+                                            <Trash2 className="w-5 h-5" />
                                         </button>
                                     </div>
                                 </div>
-                                <h3 className="text-lg font-bold text-slate-800 mb-2">{store.name}</h3>
-                                <p className="text-sm text-slate-500 mb-4">/{store.slug}</p>
-                                <div className="flex items-center justify-between text-sm">
-                                    <span className="text-slate-600">
-                                        {store.views} views
-                                    </span>
-                                    <span className="text-slate-600 flex items-center gap-1">
-                                        <Package className="w-4 h-4" />
-                                        {store.productCount}
-                                    </span>
-                                    <span className="text-slate-400">
-                                        {store.createdAt ? new Date(store.createdAt).toLocaleDateString() : ''}
-                                    </span>
+
+                                <div className="mb-6">
+                                    <h3 className="text-xl font-black text-slate-900 mb-1 group-hover:text-green-600 transition-colors">{store.name}</h3>
+                                    <p className="text-sm text-slate-400 font-bold uppercase tracking-widest">/{store.slug}</p>
                                 </div>
 
-                                <a
-                                    href={`/builder/share?slug=${encodeURIComponent(store.slug || '')}&storeName=${encodeURIComponent(store.name)}`}
-                                    className="w-full mt-6 py-3 bg-purple-50 hover:bg-purple-100 text-purple-700 font-bold rounded-xl border border-purple-100 transition-all flex items-center justify-center gap-2 group-hover:scale-[1.02] no-underline"
-                                >
-                                    <QrCode className="w-4 h-4" />
-                                    Manage QR and Share
-                                </a>
+                                <div className="grid grid-cols-3 gap-2 mb-8">
+                                    <div className="bg-slate-50 p-3 rounded-2xl text-center">
+                                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-tighter mb-1">Views</p>
+                                        <p className="text-base font-black text-slate-900">{store.views}</p>
+                                    </div>
+                                    <div className="bg-slate-50 p-3 rounded-2xl text-center">
+                                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-tighter mb-1">Prod.</p>
+                                        <p className="text-base font-black text-slate-900">{store.productCount}</p>
+                                    </div>
+                                    <div className="bg-slate-50 p-3 rounded-2xl text-center">
+                                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-tighter mb-1">QR</p>
+                                        <QrCode className="w-4 h-4 mx-auto text-slate-900" />
+                                    </div>
+                                </div>
+
+                                <div className="flex gap-3">
+                                    <a
+                                        href={getStoreUrl(store.slug)}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="flex-1 py-3.5 bg-slate-900 text-white text-xs font-black uppercase tracking-widest rounded-xl hover:bg-slate-800 transition-all text-center flex items-center justify-center gap-2"
+                                    >
+                                        <Eye className="w-4 h-4" /> View Web
+                                    </a>
+                                    <Link
+                                        href={`/builder/share?slug=${encodeURIComponent(store.slug)}&storeName=${encodeURIComponent(store.name)}`}
+                                        className="flex-1 py-3.5 bg-green-50 text-green-700 text-xs font-black uppercase tracking-widest rounded-xl hover:bg-green-100 transition-all text-center flex items-center justify-center gap-2"
+                                    >
+                                        Share <ArrowRight className="w-4 h-4" />
+                                    </Link>
+                                </div>
                             </div>
                         ))}
                     </div>
@@ -264,59 +266,40 @@ export default function CreatiendasDashboardEN() {
 
                 {/* Quick Stats */}
                 {stores.length > 0 && (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-8">
-                        <div className="bg-white rounded-2xl p-6 border border-slate-200">
-                            <div className="flex items-center gap-4">
-                                <div className="w-12 h-12 rounded-xl bg-blue-100 flex items-center justify-center">
-                                    <Store className="w-6 h-6 text-blue-600" />
-                                </div>
-                                <div>
-                                    <p className="text-sm text-slate-600">Total Stores</p>
-                                    <p className="text-2xl font-bold text-slate-800">{stores.length}</p>
-                                </div>
+                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-8">
+                        <div className="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm">
+                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2">Total Stores</p>
+                            <p className="text-3xl font-black text-slate-900">{stores.length}<span className="text-slate-300 text-base font-medium ml-1">/ {userPlan === 'PRO' ? '10' : '1'}</span></p>
+                        </div>
+                        <div className="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm">
+                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2">Total Traffic</p>
+                            <p className="text-3xl font-black text-slate-900">{stores.reduce((sum, store) => sum + store.views, 0)}</p>
+                        </div>
+                        <div className="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm">
+                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2">Active Plan</p>
+                            <div className="flex items-center gap-2">
+                                <p className="text-2xl font-black text-green-600">{userPlan}</p>
+                                {userPlan === 'FREE' && <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />}
                             </div>
                         </div>
-                        <div className="bg-white rounded-2xl p-6 border border-slate-200">
-                            <div className="flex items-center gap-4">
-                                <div className="w-12 h-12 rounded-xl bg-green-100 flex items-center justify-center">
-                                    <Eye className="w-6 h-6 text-green-600" />
-                                </div>
-                                <div>
-                                    <p className="text-sm text-slate-600">Total Views</p>
-                                    <p className="text-2xl font-bold text-slate-800">
-                                        {stores.reduce((sum, store) => sum + store.views, 0)}
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="bg-white rounded-2xl p-6 border border-slate-200">
-                            <div className="flex items-center gap-4">
-                                <div className="w-12 h-12 rounded-xl bg-purple-100 flex items-center justify-center">
-                                    <Settings className="w-6 h-6 text-purple-600" />
-                                </div>
-                                <div>
-                                    <p className="text-sm text-slate-600">Current Plan</p>
-                                    <p className="text-2xl font-bold text-slate-800">
-                                        {(session?.user as any)?.plan || 'FREE'}
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="bg-white rounded-2xl p-6 border border-slate-200">
-                            <div className="flex items-center gap-4">
-                                <div className="w-12 h-12 rounded-xl bg-orange-100 flex items-center justify-center">
-                                    <Package className="w-6 h-6 text-orange-600" />
-                                </div>
-                                <div>
-                                    <p className="text-sm text-slate-600">Total Products</p>
-                                    <p className="text-2xl font-bold text-slate-800">
-                                        {stores.reduce((sum, store) => sum + (store.productCount || 0), 0)}
-                                    </p>
-                                </div>
-                            </div>
+                        <div className="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm">
+                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2">Products</p>
+                            <p className="text-3xl font-black text-slate-900">{stores.reduce((sum, store) => sum + (store.productCount || 0), 0)}</p>
                         </div>
                     </div>
                 )}
+
+                {/* Pricing Section for upgrades */}
+                <div className="mt-24 mb-20">
+                    <div className="text-center mb-16">
+                        <span className="inline-flex items-center gap-2 bg-green-100 text-green-700 text-[10px] font-black uppercase tracking-[0.2em] px-4 py-2 rounded-full mb-4">
+                            Next Level
+                        </span>
+                        <h2 className="text-3xl font-black text-slate-900 mb-4">Scale your WhatsApp business</h2>
+                        <p className="text-slate-500 font-medium max-w-2xl mx-auto">Select a plan to unlock more stores, products and advanced features.</p>
+                    </div>
+                    <PricingCards lang="en" />
+                </div>
             </div>
             <AdvisorModalEN
                 isOpen={isLimitModalOpen}
