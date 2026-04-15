@@ -319,7 +319,17 @@ export default function StorePreview({ data, products, viewMode = 'desktop', rea
                                                         <HighlightMatch text={product.name} keywords={matchedKeywords} />
                                                     </div>
                                                     <div className="product-desc">
-                                                        <HighlightMatch text={product.description} keywords={matchedKeywords} />
+                                                        <div style={{ display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden', fontSize: '0.875rem', color: '#4b5563' }}>
+                                                            <HighlightMatch text={product.description} keywords={matchedKeywords} />
+                                                        </div>
+                                                        {product.description && product.description.length > 100 && (
+                                                            <button
+                                                                onClick={(e) => { e.stopPropagation(); setSelectedProduct(product); }}
+                                                                style={{ color: data.color || '#333', fontSize: '0.8rem', fontWeight: 700, marginTop: '4px', background: 'transparent', border: 'none', cursor: 'pointer', padding: 0, textDecoration: 'underline' }}
+                                                            >
+                                                                Ver más
+                                                            </button>
+                                                        )}
                                                     </div>
                                                     <div className="product-price" suppressHydrationWarning>{formatPrice(product.price, data.currency)}</div>
                                                     <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '16px' }}>

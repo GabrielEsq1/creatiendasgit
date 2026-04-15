@@ -16,7 +16,40 @@ interface StoreData {
     views: number;
     createdAt: string;
     productCount: number;
+    isPaid?: boolean;
 }
+
+const BlockedStoreModal = ({ isOpen }: { isOpen: boolean }) => {
+    if (!isOpen) return null;
+    return (
+        <div className="fixed inset-0 z-[300] flex items-center justify-center p-4 bg-slate-900/90 backdrop-blur-md animate-in fade-in duration-300">
+            <div className="bg-white rounded-[2.5rem] p-8 md:p-12 max-w-lg w-full shadow-2xl relative overflow-hidden text-center">
+                <div className="w-20 h-20 bg-red-100 rounded-3xl flex items-center justify-center mx-auto mb-8 animate-pulse">
+                    <Store className="w-10 h-10 text-red-600" />
+                </div>
+                <h2 className="text-3xl font-black text-slate-900 mb-4 tracking-tight">
+                    Tiempo de Prueba Terminado
+                </h2>
+                <p className="text-slate-600 text-lg mb-10 leading-relaxed font-medium">
+                    El período de prueba de 30 días ha concluido. Para continuar usando tu tienda y tener acceso al panel de control, por favor realiza el pago de la suscripción.
+                </p>
+                <div className="flex flex-col gap-3">
+                    <a
+                        href="https://wa.me/573026687991?text=Hola,%20mi%20período%20de%20prueba%20terminó%20y%20me%20gustaría%20realizar%20el%20pago%20de%20mi%20tienda."
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="bg-green-500 hover:bg-green-600 text-white py-4 px-8 rounded-2xl font-black text-lg shadow-xl shadow-green-200 transition-all hover:-translate-y-1 flex items-center justify-center gap-3"
+                    >
+                        <svg className="w-6 h-6 fill-current" viewBox="0 0 24 24">
+                            <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.246 2.248 3.484 5.232 3.483 8.413-.003 6.557-5.338 11.892-11.893 11.892-1.997-.001-3.951-.5-5.688-1.448l-6.308 1.654zm6.733-14.453c-.166-.37-.341-.377-.499-.384-.129-.006-.277-.006-.425-.006-.148 0-.388.055-.591.273-.204.218-.777.759-.777 1.85s.796 2.144.906 2.293c.111.148 1.568 2.395 3.8 3.357.518.222.921.356 1.236.456.52.165.993.142 1.367.086.417-.062 1.284-.524 1.465-1.031.181-.506.181-.941.127-1.031-.054-.09-.199-.145-.421-.255s-1.31-.647-1.513-.721-.351-.11-.5.11c-.15.22-.578.721-.708.87-.13.15-.258.168-.48.058s-.937-.344-1.786-1.1c-.66-.588-1.107-1.314-1.237-1.535-.13-.22-.014-.34.097-.449.099-.099.221-.255.333-.384.111-.128.148-.22.222-.369.074-.148.037-.278-.019-.387z" />
+                        </svg>
+                        Pagar Suscripción
+                    </a>
+                </div>
+            </div>
+        </div>
+    );
+};
 
 
 const AdvisorModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) => {
@@ -72,6 +105,7 @@ export default function CreatiendasDashboard() {
     const [stores, setStores] = useState<StoreData[]>([]);
     const [loading, setLoading] = useState(true);
     const [isLimitModalOpen, setIsLimitModalOpen] = useState(false);
+    const [isBlocked, setIsBlocked] = useState(false);
 
     // Fetch user's stores
     useEffect(() => {
@@ -89,6 +123,19 @@ export default function CreatiendasDashboard() {
                         productCount: Array.isArray(store.products) ? store.products.length : 0
                     }));
                     setStores(storesWithCount);
+
+                    // Verifica si hay alguna tienda bloqueada
+                    const hasBlockedStore = storesWithCount.some((store: any) => {
+                        if (store.isPaid) return false;
+                        if (!store.createdAt) return false;
+                        const createdDate = new Date(store.createdAt);
+                        const daysDiff = (Date.now() - createdDate.getTime()) / (1000 * 60 * 60 * 24);
+                        return daysDiff > 30;
+                    });
+                    
+                    if (hasBlockedStore) {
+                        setIsBlocked(true);
+                    }
                 } else {
                     setStores([]);
                 }
@@ -327,6 +374,7 @@ export default function CreatiendasDashboard() {
                 isOpen={isLimitModalOpen}
                 onClose={() => setIsLimitModalOpen(false)}
             />
+            <BlockedStoreModal isOpen={isBlocked} />
         </div>
     );
 }

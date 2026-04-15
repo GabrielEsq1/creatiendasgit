@@ -73,6 +73,7 @@ export interface Store {
     data: StoreData;
     products: Product[];
     createdAt: string;
+    isPaid: boolean;
 }
 
 export const StoreService = {
@@ -96,6 +97,7 @@ export const StoreService = {
             data: store.data as unknown as StoreData,
             products: store.products as unknown as Product[],
             createdAt: store.createdAt.toISOString(),
+            isPaid: store.isPaid,
         };
     },
 

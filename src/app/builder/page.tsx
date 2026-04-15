@@ -81,6 +81,7 @@ function BuilderContent() {
     const [viewMode, setViewMode] = useState<'desktop' | 'mobile'>('desktop');
     const [isSaving, setIsSaving] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+    const [isBlocked, setIsBlocked] = useState(false);
     const [publicUrl, setPublicUrl] = useState<string | null>(null);
     const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
     const [editingProductId, setEditingProductId] = useState<number | null>(null);
@@ -145,6 +146,15 @@ function BuilderContent() {
                             careers: { ...INITIAL_DATA.careers, ...(loadedData.careers || {}) }
                         });
                         if (data.store.products) setProducts(data.store.products);
+
+                        // Check block status
+                        if (!data.store.isPaid && data.store.createdAt) {
+                            const createdDate = new Date(data.store.createdAt);
+                            const daysDiff = (Date.now() - createdDate.getTime()) / (1000 * 60 * 60 * 24);
+                            if (daysDiff > 30) {
+                                setIsBlocked(true);
+                            }
+                        }
                     } else if (data && data.data) {
                         // Fallback for legacy API
                         const loadedData = data.data || {};
@@ -593,6 +603,31 @@ function BuilderContent() {
 
     return (
         <div className="app-container">
+            {isBlocked && (
+                <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4 bg-slate-900/95 backdrop-blur-md">
+                    <div className="bg-white rounded-[2.5rem] p-8 md:p-12 max-w-lg w-full shadow-2xl relative overflow-hidden text-center">
+                        <div className="w-20 h-20 bg-red-100 rounded-3xl flex items-center justify-center mx-auto mb-8 animate-pulse">
+                            <span className="text-4xl">🔒</span>
+                        </div>
+                        <h2 className="text-3xl font-black text-slate-900 mb-4">
+                            Tiempo de Prueba Terminado
+                        </h2>
+                        <p className="text-slate-600 text-lg mb-10 font-medium">
+                            El período de prueba de 30 días para esta tienda ha concluido. Para editarla y mantenerla visible, por favor realiza el pago de la suscripción.
+                        </p>
+                        <a
+                            href="https://wa.me/573026687991?text=Hola,%20mi%20período%20de%20prueba%20terminó%20y%20me%20gustaría%20realizar%20el%20pago%20de%20mi%20tienda."
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="bg-green-500 hover:bg-green-600 text-white py-4 px-8 rounded-2xl font-black text-lg shadow-xl shadow-green-200 transition-all flex items-center justify-center gap-3 no-underline"
+                        >
+                            Pagar Suscripción
+                        </a>
+                        <a href="/dashboard" className="mt-4 inline-block text-slate-500 font-bold no-underline hover:text-slate-700">Volver a mis tiendas</a>
+                    </div>
+                </div>
+            )}
+            
             {/* LEFT PANEL */}
             <aside className="builder-panel">
                 <div className="panel-header">

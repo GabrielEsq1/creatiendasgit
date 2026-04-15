@@ -10,11 +10,12 @@ export default function AdminDashboard() {
     const router = useRouter();
     const [users, setUsers] = useState<any[]>([]);
     const [campaigns, setCampaigns] = useState<any[]>([]);
+    const [stores, setStores] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         // Solo admin puede acceder
-        if (session?.user?.email !== "admin@b2bchat.com") {
+        if (!session?.user || (session.user as any).role !== 'ADMIN') {
             router.push('/dashboard');
             return;
         }
@@ -23,16 +24,19 @@ export default function AdminDashboard() {
 
     const loadData = async () => {
         try {
-            const [usersRes, campaignsRes] = await Promise.all([
+            const [usersRes, campaignsRes, storesRes] = await Promise.all([
                 fetch('/api/admin/users'),
-                fetch('/api/campaigns')
+                fetch('/api/campaigns'),
+                fetch('/api/admin/stores') // Added to fetch stores
             ]);
 
             const usersData = await usersRes.json();
             const campaignsData = await campaignsRes.json();
+            const storesData = await storesRes.json();
 
             setUsers(usersData.users || []);
             setCampaigns(campaignsData.campaigns || []);
+            setStores(storesData.stores || []);
         } catch (error) {
             console.error('Error loading admin data:', error);
         } finally {
@@ -54,6 +58,22 @@ export default function AdminDashboard() {
             }
         } catch (error) {
             console.error('Error toggling campaign:', error);
+        }
+    };
+
+    const toggleStorePaid = async (storeId: string, currentPaid: boolean) => {
+        try {
+            const res = await fetch(`/api/admin/stores/${storeId}`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ isPaid: !currentPaid }),
+            });
+
+            if (res.ok) {
+                loadData(); // Reload
+            }
+        } catch (error) {
+            console.error('Error toggling store paid status:', error);
         }
     };
 
@@ -228,6 +248,72 @@ export default function AdminDashboard() {
                                         <td className="px-6 py-4 text-sm text-gray-600">{user.company?.name || 'N/A'}</td>
                                     </tr>
                                 ))}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                {/* Stores List */}
+                <div className="bg-white rounded-2xl shadow-xl overflow-hidden mt-8">
+                    <div className="p-6 border-b border-gray-200 bg-gradient-to-r from-orange-50 to-orange-100">
+                        <h2 className="text-xl font-bold text-gray-900">Gestión de Tiendas</h2>
+                        <p className="text-sm text-gray-600 mt-1">Habilita suscripciones pagas para las tiendas (límite 30 días)</p>
+                    </div>
+
+                    <div className="overflow-x-auto">
+                        <table className="w-full">
+                            <thead className="bg-gray-50">
+                                <tr>
+                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Tienda</th>
+                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Propietario</th>
+                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Creación</th>
+                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Estado Bloqueo</th>
+                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Suscripción</th>
+                                </tr>
+                            </thead>
+                            <tbody className="divide-y divide-gray-200">
+                                {stores.map((store) => {
+                                    const createdDate = new Date(store.createdAt);
+                                    const daysDiff = (Date.now() - createdDate.getTime()) / (1000 * 60 * 60 * 24);
+                                    const isBlocked = !store.isPaid && daysDiff > 30;
+
+                                    return (
+                                        <tr key={store.id} className="hover:bg-gray-50">
+                                            <td className="px-6 py-4">
+                                                <div className="text-sm font-medium text-gray-900">{store.name}</div>
+                                                <div className="text-xs text-gray-500">Slug: {store.slug}</div>
+                                            </td>
+                                            <td className="px-6 py-4 text-sm text-gray-600">
+                                                {store.owner?.name || 'N/A'} <br />
+                                                <span className="text-xs text-gray-400">{store.owner?.email}</span>
+                                            </td>
+                                            <td className="px-6 py-4 text-sm text-gray-600">
+                                                {createdDate.toLocaleDateString()}
+                                                <div className="text-xs text-gray-400">Hace {Math.floor(daysDiff)} días</div>
+                                            </td>
+                                            <td className="px-6 py-4">
+                                                {isBlocked ? (
+                                                    <span className="px-3 py-1 bg-red-100 text-red-700 rounded-full text-xs font-medium">Bloqueada (30d)</span>
+                                                ) : store.isPaid ? (
+                                                    <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-medium">Permanente</span>
+                                                ) : (
+                                                    <span className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-medium">En prueba</span>
+                                                )}
+                                            </td>
+                                            <td className="px-6 py-4">
+                                                <button
+                                                    onClick={() => toggleStorePaid(store.id, store.isPaid)}
+                                                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${store.isPaid
+                                                        ? 'bg-yellow-100 text-yellow-700 hover:bg-yellow-200'
+                                                        : 'bg-green-100 text-green-700 hover:bg-green-200'
+                                                        }`}
+                                                >
+                                                    {store.isPaid ? 'Quitar Pago (No Pagó)' : 'Marcar Pagada'}
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    );
+                                })}
                             </tbody>
                         </table>
                     </div>

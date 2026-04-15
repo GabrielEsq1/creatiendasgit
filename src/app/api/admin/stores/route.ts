@@ -21,6 +21,7 @@ export async function GET(req: NextRequest) {
                 slug: true,
                 views: true,
                 createdAt: true,
+                isPaid: true,
                 owner: {
                     select: {
                         id: true,

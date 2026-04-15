@@ -16,18 +16,16 @@ export async function PATCH(
         }
 
         const body = await request.json();
-        const { active } = body;
+        const { isPaid } = body;
 
-        // Note: We don't have an 'active' field in the schema yet
-        // For now, we can use this to update store name or other fields
-        // If you want active/inactive, we need to add it to the schema
+        let dataToUpdate: any = {};
+        if (isPaid !== undefined) {
+            dataToUpdate.isPaid = isPaid;
+        }
 
         const updated = await prisma.store.update({
             where: { id: params.id },
-            data: {
-                // Add fields to update here
-                // For now, just return success
-            },
+            data: dataToUpdate,
         });
 
         return NextResponse.json({

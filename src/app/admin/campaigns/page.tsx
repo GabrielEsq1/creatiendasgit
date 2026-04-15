@@ -87,7 +87,7 @@ export default function AdminCampaignsPage() {
     const [expandedCampaign, setExpandedCampaign] = useState<string | null>(null);
 
     useEffect(() => {
-        if (session?.user?.email !== "admin@b2bchat.com") {
+        if (!session?.user || (session.user as any).role !== 'ADMIN') {
             router.push('/dashboard');
             return;
         }

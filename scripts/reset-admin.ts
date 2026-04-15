@@ -3,53 +3,32 @@ import bcrypt from 'bcryptjs';
 
 const prisma = new PrismaClient();
 
-async function resetAdmin() {
-    console.log('Resetting admin password...');
-
-    const email = 'admin@example.com';
-    const phone = '+573009999999';
-    const password = 'admin123';
-    const passwordHash = await bcrypt.hash(password, 10);
-
-    // Find existing user by email or phone
-    const existingUser = await prisma.user.findFirst({
-        where: {
-            OR: [
-                { email },
-                { phone }
-            ]
-        }
+async function main() {
+    let adminUser = await prisma.user.findUnique({
+        where: { email: 'admin@b2bchat.com' }
     });
 
-    if (existingUser) {
-        console.log(`Found user: ${existingUser.email} / ${existingUser.phone}`);
-        await prisma.user.update({
-            where: { id: existingUser.id },
+    if (!adminUser) {
+        console.log("Admin user does not exist. Creating it...");
+        const passwordHash = await bcrypt.hash('admin1234', 10);
+        adminUser = await prisma.user.create({
             data: {
-                passwordHash,
-                role: 'SUPERADMIN',
-                email: email, // Ensure email is set
+                email: 'admin@b2bchat.com',
+                name: 'System Admin',
+                passwordHash: passwordHash,
+                role: 'ADMIN'
             }
         });
-        console.log(`✓ Updated user ${existingUser.id} password and role`);
+        console.log("Created admin user with password: admin1234");
     } else {
-        console.log('User not found, creating...');
-        await prisma.user.create({
-            data: {
-                name: 'Admin Empresa',
-                email,
-                phone,
-                passwordHash,
-                role: 'SUPERADMIN',
-            },
+        console.log("Admin user already exists. Overwriting password to admin1234...");
+        const passwordHash = await bcrypt.hash('admin1234', 10);
+        await prisma.user.update({
+            where: { email: 'admin@b2bchat.com' },
+            data: { passwordHash: passwordHash, role: 'ADMIN' }
         });
-        console.log(`✓ Created admin user`);
+        console.log("Updated admin password to: admin1234");
     }
-
-    await prisma.$disconnect();
 }
 
-resetAdmin().catch((error) => {
-    console.error('Error resetting admin:', error);
-    process.exit(1);
-});
+main().catch(console.error).finally(() => prisma.$disconnect());

@@ -160,6 +160,7 @@ model Store {
   products  Json?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  isPaid    Boolean  @default(false)
   
   images    StoredImage[]
 }

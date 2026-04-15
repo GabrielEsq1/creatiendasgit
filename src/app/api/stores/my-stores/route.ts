@@ -32,6 +32,7 @@ export async function GET() {
                 views: true,
                 createdAt: true,
                 products: true,
+                isPaid: true,
             }
         });
 
