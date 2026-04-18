@@ -66,6 +66,7 @@ export default function ActivationChecklist({ stores }: ActivationChecklistProps
     ];
 
     const completedCount = steps.filter(s => s.isCompleted).length;
+    const allCompleted = completedCount === steps.length;
     const progress = (completedCount / steps.length) * 100;
 
     useEffect(() => {
@@ -80,6 +81,9 @@ export default function ActivationChecklist({ stores }: ActivationChecklistProps
             }
         }
     }, [completedCount, steps.length, trackEvent, firstStore]);
+
+    // Hide checklist completely once all steps are done
+    if (allCompleted) return null;
 
     return (
         <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm mb-8 animate-in fade-in slide-in-from-top-4">
