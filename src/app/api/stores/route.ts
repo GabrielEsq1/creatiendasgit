@@ -41,7 +41,12 @@ export async function POST(request: Request) {
         // Determine store limit based on plan and role
         const isAdmin = user.role === 'ADMIN' || user.role === 'SUPERADMIN';
         const isPro = user.plan === 'PRO';
-        const storeLimit = isAdmin ? 999 : (isPro ? 5 : 1);
+        const isNegocio = user.plan === 'NEGOCIO';
+        
+        let storeLimit = 1; // Default for FREE / Emprendedor
+        if (isNegocio) storeLimit = 3;
+        if (isPro) storeLimit = 10;
+        if (isAdmin) storeLimit = 1000;
 
         // STRICTOR RULE: "Solo se permite 1 tienda de prueba"
         // Even if the user is PRO, they can't have multiple unpaid stores at once.
@@ -59,9 +64,9 @@ export async function POST(request: Request) {
         }
 
         if (user.stores.length >= storeLimit) {
-            const planMessage = isPro
-                ? `Has alcanzado el límite de ${storeLimit} tiendas de tu plan PRO. Contacta con soporte para más información.`
-                : `Tu plan gratuito permite solo ${storeLimit} tienda. Actualiza a PRO para crear hasta 5 tiendas.`;
+            const planMessage = isAdmin 
+                ? 'Límite de administrador alcanzado.'
+                : `Has alcanzado el límite de ${storeLimit} tiendas de tu plan ${user.plan || 'FREE'}. Contacta con soporte para ampliar tu plan.`;
 
             return NextResponse.json(
                 {

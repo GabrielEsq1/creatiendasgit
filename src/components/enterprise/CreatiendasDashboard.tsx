@@ -243,8 +243,14 @@ export default function CreatiendasDashboard() {
 
     const handleCreateStore = () => {
         const plan = (session?.user as any)?.plan || 'FREE';
-        const limit = plan === 'PRO' ? 5 : 1; // Sync with API: PRO = 5, FREE = 1
         const isAdmin = (session?.user as any)?.role === 'ADMIN' || (session?.user as any)?.role === 'SUPERADMIN';
+        
+        // Match marketing plan limits
+        let limit = 1; // Default for FREE / Emprendedor
+        if (plan === 'NEGOCIO') limit = 3;
+        if (plan === 'PRO') limit = 10;
+        
+        if (isAdmin) limit = 1000;
 
         // Check if user has any unpaid store. "Only 1 trial store allowed"
         const hasUnpaidStore = stores.some(s => !s.isPaid);
@@ -312,8 +318,13 @@ export default function CreatiendasDashboard() {
                         href="/builder"
                         onClick={(e) => {
                             const plan = (session?.user as any)?.plan || 'FREE';
-                            const limit = plan === 'PRO' ? 5 : 1;
+                            let limit = 1;
+                            if (plan === 'NEGOCIO') limit = 3;
+                            if (plan === 'PRO') limit = 10;
+                            
                             const isAdmin = (session?.user as any)?.role === 'ADMIN' || (session?.user as any)?.role === 'SUPERADMIN';
+                            if (isAdmin) limit = 1000;
+                            
                             const hasUnpaidStore = stores.some(s => !s.isPaid);
 
                             if (!isAdmin && (hasUnpaidStore || stores.length >= limit)) {
