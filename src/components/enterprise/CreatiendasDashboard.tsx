@@ -55,20 +55,22 @@ function TrialBanner({ stores }: { stores: StoreData[] }) {
         : 'text-blue-700';
 
     const title = expired
-        ? '🔒 Tu período de prueba ha terminado'
+        ? '🔒 Tu periodo de prueba ha terminado'
         : isUrgent
         ? `⚠️ ¡Solo quedan ${daysLeft} día${daysLeft === 1 ? '' : 's'} de prueba!`
         : `🕐 Versión de prueba gratuita`;
 
     const subtitle = expired
         ? 'Tu tienda está desactivada públicamente. Activa tu plan para volver a estar visible.'
-        : `Tu tienda estará activa y visible por ${Math.max(0, daysLeft)} días más. Activa tu plan para no perder clientes.`;
+        : `Tu tienda estará activa y visible por ${Math.max(0, daysLeft)} días más. Activa tu plan para que tus clientes puedan seguir comprando.`;
+
+    const store = freeStores[0]; // Logic simplified: only 1 trial store allowed
 
     return (
         <div className={`w-full rounded-2xl border ${borderColor} ${bgColor} p-5 mb-6`}>
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div className="flex-1 min-w-0">
-                    <p className={`font-black text-base ${labelColor}`}>{title}</p>
+                    <p className={`font-black text-base ${labelColor}`}>{title} <span className="opacity-60 text-xs font-medium ml-2">({store.name})</span></p>
                     <p className="text-sm text-slate-500 mt-0.5 leading-snug">{subtitle}</p>
 
                     {/* Progress bar */}
@@ -241,9 +243,18 @@ export default function CreatiendasDashboard() {
 
     const handleCreateStore = () => {
         const plan = (session?.user as any)?.plan || 'FREE';
-        const limit = plan === 'PRO' ? 10 : 1; // Limit 1 for FREE, 10 for PRO
+        const limit = plan === 'PRO' ? 5 : 1; // Sync with API: PRO = 5, FREE = 1
+        const isAdmin = (session?.user as any)?.role === 'ADMIN' || (session?.user as any)?.role === 'SUPERADMIN';
 
-        if (stores.length >= limit) {
+        // Check if user has any unpaid store. "Only 1 trial store allowed"
+        const hasUnpaidStore = stores.some(s => !s.isPaid);
+
+        if (!isAdmin && hasUnpaidStore) {
+            alert('⚠️ Ya tienes una tienda en periodo de prueba. Debes activar tu tienda actual antes de crear una nueva.');
+            return;
+        }
+
+        if (!isAdmin && stores.length >= limit) {
             setIsLimitModalOpen(true);
             return;
         }
@@ -301,10 +312,13 @@ export default function CreatiendasDashboard() {
                         href="/builder"
                         onClick={(e) => {
                             const plan = (session?.user as any)?.plan || 'FREE';
-                            const limit = plan === 'PRO' ? 10 : 1;
-                            if (stores.length >= limit) {
+                            const limit = plan === 'PRO' ? 5 : 1;
+                            const isAdmin = (session?.user as any)?.role === 'ADMIN' || (session?.user as any)?.role === 'SUPERADMIN';
+                            const hasUnpaidStore = stores.some(s => !s.isPaid);
+
+                            if (!isAdmin && (hasUnpaidStore || stores.length >= limit)) {
                                 e.preventDefault();
-                                setIsLimitModalOpen(true);
+                                handleCreateStore();
                             }
                         }}
                         className="flex items-center gap-2 bg-purple-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-purple-700 transition-all shadow-lg hover:shadow-xl no-underline"

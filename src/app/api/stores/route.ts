@@ -41,7 +41,22 @@ export async function POST(request: Request) {
         // Determine store limit based on plan and role
         const isAdmin = user.role === 'ADMIN' || user.role === 'SUPERADMIN';
         const isPro = user.plan === 'PRO';
-        const storeLimit = isAdmin ? 999 : (isPro ? 5 : 1); // FREE = 1 store, PRO = 5 stores, ADMIN = unlimited
+        const storeLimit = isAdmin ? 999 : (isPro ? 5 : 1);
+
+        // STRICTOR RULE: "Solo se permite 1 tienda de prueba"
+        // Even if the user is PRO, they can't have multiple unpaid stores at once.
+        if (!isAdmin) {
+            const hasUnpaidStore = user.stores.some(s => !s.isPaid);
+            if (hasUnpaidStore) {
+                return NextResponse.json(
+                    { 
+                        error: 'Prueba activa', 
+                        message: 'Ya tienes una tienda en periodo de prueba. Debes activar tu tienda actual antes de crear una nueva.' 
+                    },
+                    { status: 403 }
+                );
+            }
+        }
 
         if (user.stores.length >= storeLimit) {
             const planMessage = isPro
