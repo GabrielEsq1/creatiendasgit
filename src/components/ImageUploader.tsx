@@ -4,6 +4,7 @@ import CameraCaptureModal from './CameraCaptureModal';
 interface ImageUploaderProps {
     onImageSelected: (e: ChangeEvent<HTMLInputElement>) => void;
     onRemoveImage?: (index: number) => void;
+    onRemoveSingle?: () => void;
     label?: string;
     showPreview?: boolean;
     currentImage?: string | null;
@@ -16,6 +17,7 @@ interface ImageUploaderProps {
 export default function ImageUploader({
     onImageSelected,
     onRemoveImage,
+    onRemoveSingle,
     label,
     showPreview = false,
     currentImage,
@@ -182,11 +184,22 @@ export default function ImageUploader({
             )}
 
             {!multiple && !isProcessing && showPreview && currentImage && (
-                <div className="mt-2 w-full h-32 bg-gray-100 rounded-xl overflow-hidden border border-gray-200 flex items-center justify-center relative group">
-                    <img src={currentImage} alt="Preview" className="h-full w-full object-cover" />
-                    <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                        <span className="text-white text-xs font-black uppercase tracking-widest">Cambiar</span>
+                <div className="mt-2 w-full rounded-xl overflow-hidden border border-gray-200 relative group">
+                    <div className="relative h-32 bg-gray-100 flex items-center justify-center">
+                        <img src={currentImage} alt="Preview" className="h-full w-full object-cover" />
+                        <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                            <span className="text-white text-xs font-black uppercase tracking-widest">Cambiar</span>
+                        </div>
                     </div>
+                    {onRemoveSingle && (
+                        <button
+                            type="button"
+                            onClick={onRemoveSingle}
+                            className="w-full py-1.5 bg-red-50 hover:bg-red-100 text-red-600 text-xs font-bold flex items-center justify-center gap-1 transition-colors border-t border-red-100"
+                        >
+                            🗑️ Quitar foto
+                        </button>
+                    )}
                 </div>
             )}
 

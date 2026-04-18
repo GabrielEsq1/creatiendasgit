@@ -707,10 +707,10 @@ function BuilderContent() {
                         </select>
                     </div>
                     <div className="form-group">
-                        <ImageUploader label="Logo" onImageSelected={e => handleImageUpload('logo', e)} currentImage={storeData.logo} showPreview={true} />
+                        <ImageUploader label="Logo" onImageSelected={e => handleImageUpload('logo', e)} currentImage={storeData.logo} showPreview={true} onRemoveSingle={() => setStoreData(prev => ({ ...prev, logo: null }))} />
                     </div>
                     <div className="form-group">
-                        <ImageUploader label="Imagen de fondo del encabezado (opcional)" onImageSelected={e => handleImageUpload('heroBg', e)} currentImage={storeData.heroBg} showPreview={true} />
+                        <ImageUploader label="Imagen de fondo del encabezado (opcional)" onImageSelected={e => handleImageUpload('heroBg', e)} currentImage={storeData.heroBg} showPreview={true} onRemoveSingle={() => setStoreData(prev => ({ ...prev, heroBg: null }))} />
                     </div>
                 </section>
 
@@ -737,7 +737,17 @@ function BuilderContent() {
                     <div className="form-group"><label>Equipo o cultura</label><textarea value={storeData.about.team} onChange={e => handleInputChange('about', 'team', e.target.value)} /></div>
                     <div className="form-group"><label>Call to Action (texto del botón)</label><input value={storeData.about.ctaText} onChange={e => handleInputChange('about', 'ctaText', e.target.value)} /></div>
                     <div className="form-group"><label>Galería de imágenes de la empresa</label><input type="file" accept="image/*" multiple onChange={handleGalleryUpload} />
-                        <div className="about-gallery-mini">{storeData.about.gallery.map((img, i) => (<img key={i} src={img} alt="Gallery" />))}</div>
+                        <div className="about-gallery-mini">{storeData.about.gallery.map((img, i) => (
+                            <div key={i} style={{ position: 'relative', display: 'inline-block' }}>
+                                <img src={img} alt="Gallery" />
+                                <button
+                                    type="button"
+                                    onClick={() => setStoreData(prev => ({ ...prev, about: { ...prev.about, gallery: prev.about.gallery.filter((_, gi) => gi !== i) } }))}
+                                    style={{ position: 'absolute', top: '2px', right: '2px', background: '#ef4444', color: '#fff', border: 'none', borderRadius: '50%', width: '20px', height: '20px', cursor: 'pointer', fontSize: '11px', display: 'flex', alignItems: 'center', justifyContent: 'center', lineHeight: 1 }}
+                                    title="Quitar foto"
+                                >✕</button>
+                            </div>
+                        ))}</div>
                     </div>
                 </section>
 
