@@ -4,9 +4,80 @@ import React, { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { Store, Plus, Settings, Eye, Trash2, Edit, Package, MessageCircle, QrCode } from 'lucide-react';
+import { Store, Plus, Settings, Eye, Trash2, Edit, Package, MessageCircle, QrCode, Clock } from 'lucide-react';
 import { getStoreUrl } from '@/lib/utils';
 import ActivationChecklist from '../dashboard/ActivationChecklist';
+
+/** Returns days remaining in the 30-day free trial. Negative = expired. */
+function getTrialDaysRemaining(createdAt: string): number {
+    const created = new Date(createdAt).getTime();
+    const elapsed = (Date.now() - created) / (1000 * 60 * 60 * 24);
+    return Math.ceil(30 - elapsed);
+}
+
+function TrialBadge({ store }: { store: StoreData }) {
+    if (store.isPaid) {
+        return (
+            <span className="inline-flex items-center gap-1 text-xs font-bold px-2 py-1 rounded-full bg-green-100 text-green-700">
+                ✅ Activa
+            </span>
+        );
+    }
+    if (!store.createdAt) return null;
+
+    const daysLeft = getTrialDaysRemaining(store.createdAt);
+
+    if (daysLeft <= 0) {
+        return (
+            <span className="inline-flex items-center gap-1 text-xs font-bold px-2 py-1 rounded-full bg-red-100 text-red-700">
+                🔒 Prueba expirada
+            </span>
+        );
+    }
+
+    const isUrgent = daysLeft <= 7;
+    const isWarning = daysLeft <= 15;
+
+    const colorClass = isUrgent
+        ? 'bg-red-100 text-red-700'
+        : isWarning
+        ? 'bg-amber-100 text-amber-700'
+        : 'bg-blue-100 text-blue-700';
+
+    return (
+        <span className={`inline-flex items-center gap-1 text-xs font-bold px-2 py-1 rounded-full ${colorClass}`}>
+            <Clock className="w-3 h-3" />
+            {daysLeft}d prueba
+        </span>
+    );
+}
+
+function TrialWarningStrip({ store }: { store: StoreData }) {
+    if (store.isPaid || !store.createdAt) return null;
+    const daysLeft = getTrialDaysRemaining(store.createdAt);
+    if (daysLeft > 7) return null;
+
+    const expired = daysLeft <= 0;
+    const bg = expired ? 'bg-red-50 border-red-200' : 'bg-amber-50 border-amber-200';
+    const text = expired ? 'text-red-700' : 'text-amber-700';
+    const msg = expired
+        ? '⚠️ Tu tienda está desactivada públicamente.'
+        : `⚠️ Solo quedan ${daysLeft} día${daysLeft === 1 ? '' : 's'} de prueba.`;
+
+    return (
+        <div className={`mt-3 px-3 py-2 rounded-xl border ${bg} flex items-center justify-between gap-2`}>
+            <span className={`text-xs font-semibold ${text}`}>{msg}</span>
+            <a
+                href="https://wa.me/573026687991?text=Hola%2C%20quiero%20activar%20mi%20tienda%20y%20realizar%20el%20pago."
+                target="_blank"
+                rel="noopener noreferrer"
+                className="shrink-0 text-xs font-black bg-green-500 hover:bg-green-600 text-white px-3 py-1.5 rounded-lg transition-colors no-underline"
+            >
+                Activar →
+            </a>
+        </div>
+    );
+}
 
 
 interface StoreData {
@@ -287,7 +358,10 @@ export default function CreatiendasDashboard() {
                                         </button>
                                     </div>
                                 </div>
-                                <h3 className="text-lg font-bold text-slate-800 mb-2">{store.name}</h3>
+                                <div className="flex items-center justify-between mb-1">
+                                    <h3 className="text-lg font-bold text-slate-800">{store.name}</h3>
+                                    <TrialBadge store={store} />
+                                </div>
                                 <p className="text-sm text-slate-500 mb-4">/{store.slug}</p>
                                 <div className="flex items-center justify-between text-sm">
                                     <span className="text-slate-600">
@@ -301,6 +375,7 @@ export default function CreatiendasDashboard() {
                                         {store.createdAt ? new Date(store.createdAt).toLocaleDateString() : ''}
                                     </span>
                                 </div>
+                                <TrialWarningStrip store={store} />
 
                                 <a
                                     href={`/builder/share?slug=${encodeURIComponent(store.slug || store.name.toLowerCase().replace(/[^a-z0-9]+/g, '-'))}&storeName=${encodeURIComponent(store.name)}`}
