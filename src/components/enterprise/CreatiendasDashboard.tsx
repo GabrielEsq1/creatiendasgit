@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { Store, Plus, Settings, Eye, Trash2, Edit, Package, MessageCircle, QrCode, Clock } from 'lucide-react';
+import { Store, Plus, Settings, Eye, Trash2, Edit, Package, MessageCircle, QrCode } from 'lucide-react';
 import { getStoreUrl } from '@/lib/utils';
 import ActivationChecklist from '../dashboard/ActivationChecklist';
 
@@ -15,66 +15,87 @@ function getTrialDaysRemaining(createdAt: string): number {
     return Math.ceil(30 - elapsed);
 }
 
-function TrialBadge({ store }: { store: StoreData }) {
-    if (store.isPaid) {
-        return (
-            <span className="inline-flex items-center gap-1 text-xs font-bold px-2 py-1 rounded-full bg-green-100 text-green-700">
-                ✅ Activa
-            </span>
-        );
-    }
-    if (!store.createdAt) return null;
+/** Full-width banner shown above the stores grid for unpaid free-trial stores */
+function TrialBanner({ stores }: { stores: StoreData[] }) {
+    // Only show for free-plan stores that haven't paid yet
+    const freeStores = stores.filter(s => !s.isPaid && s.createdAt);
+    if (freeStores.length === 0) return null;
 
-    const daysLeft = getTrialDaysRemaining(store.createdAt);
+    // Use the store with the fewest days left (worst case) as the reference
+    const daysLeft = Math.min(...freeStores.map(s => getTrialDaysRemaining(s.createdAt)));
+    const daysUsed = Math.max(0, 30 - Math.max(0, daysLeft));
+    const progress = Math.min(100, (daysUsed / 30) * 100);
 
-    if (daysLeft <= 0) {
-        return (
-            <span className="inline-flex items-center gap-1 text-xs font-bold px-2 py-1 rounded-full bg-red-100 text-red-700">
-                🔒 Prueba expirada
-            </span>
-        );
-    }
-
+    const expired = daysLeft <= 0;
     const isUrgent = daysLeft <= 7;
     const isWarning = daysLeft <= 15;
 
-    const colorClass = isUrgent
-        ? 'bg-red-100 text-red-700'
+    const barColor = expired || isUrgent
+        ? 'from-red-500 to-red-400'
         : isWarning
-        ? 'bg-amber-100 text-amber-700'
-        : 'bg-blue-100 text-blue-700';
+        ? 'from-amber-500 to-yellow-400'
+        : 'from-blue-500 to-purple-500';
+
+    const borderColor = expired || isUrgent
+        ? 'border-red-200'
+        : isWarning
+        ? 'border-amber-200'
+        : 'border-blue-200';
+
+    const bgColor = expired || isUrgent
+        ? 'bg-red-50'
+        : isWarning
+        ? 'bg-amber-50'
+        : 'bg-blue-50';
+
+    const labelColor = expired || isUrgent
+        ? 'text-red-700'
+        : isWarning
+        ? 'text-amber-700'
+        : 'text-blue-700';
+
+    const title = expired
+        ? '🔒 Tu período de prueba ha terminado'
+        : isUrgent
+        ? `⚠️ ¡Solo quedan ${daysLeft} día${daysLeft === 1 ? '' : 's'} de prueba!`
+        : `🕐 Versión de prueba gratuita`;
+
+    const subtitle = expired
+        ? 'Tu tienda está desactivada públicamente. Activa tu plan para volver a estar visible.'
+        : `Tu tienda estará activa y visible por ${Math.max(0, daysLeft)} días más. Activa tu plan para no perder clientes.`;
 
     return (
-        <span className={`inline-flex items-center gap-1 text-xs font-bold px-2 py-1 rounded-full ${colorClass}`}>
-            <Clock className="w-3 h-3" />
-            {daysLeft}d prueba
-        </span>
-    );
-}
+        <div className={`w-full rounded-2xl border ${borderColor} ${bgColor} p-5 mb-6`}>
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div className="flex-1 min-w-0">
+                    <p className={`font-black text-base ${labelColor}`}>{title}</p>
+                    <p className="text-sm text-slate-500 mt-0.5 leading-snug">{subtitle}</p>
 
-function TrialWarningStrip({ store }: { store: StoreData }) {
-    if (store.isPaid || !store.createdAt) return null;
-    const daysLeft = getTrialDaysRemaining(store.createdAt);
-    if (daysLeft > 7) return null;
+                    {/* Progress bar */}
+                    <div className="mt-3">
+                        <div className="flex justify-between text-xs font-bold mb-1">
+                            <span className={labelColor}>{daysUsed} / 30 días usados</span>
+                            <span className="text-slate-400">{Math.max(0, daysLeft)} días restantes</span>
+                        </div>
+                        <div className="w-full h-2.5 bg-white/70 rounded-full overflow-hidden border border-white">
+                            <div
+                                className={`h-full bg-gradient-to-r ${barColor} rounded-full transition-all duration-700`}
+                                style={{ width: `${progress}%` }}
+                            />
+                        </div>
+                    </div>
+                </div>
 
-    const expired = daysLeft <= 0;
-    const bg = expired ? 'bg-red-50 border-red-200' : 'bg-amber-50 border-amber-200';
-    const text = expired ? 'text-red-700' : 'text-amber-700';
-    const msg = expired
-        ? '⚠️ Tu tienda está desactivada públicamente.'
-        : `⚠️ Solo quedan ${daysLeft} día${daysLeft === 1 ? '' : 's'} de prueba.`;
-
-    return (
-        <div className={`mt-3 px-3 py-2 rounded-xl border ${bg} flex items-center justify-between gap-2`}>
-            <span className={`text-xs font-semibold ${text}`}>{msg}</span>
-            <a
-                href="https://wa.me/573026687991?text=Hola%2C%20quiero%20activar%20mi%20tienda%20y%20realizar%20el%20pago."
-                target="_blank"
-                rel="noopener noreferrer"
-                className="shrink-0 text-xs font-black bg-green-500 hover:bg-green-600 text-white px-3 py-1.5 rounded-lg transition-colors no-underline"
-            >
-                Activar →
-            </a>
+                <a
+                    href="https://wa.me/573026687991?text=Hola%2C%20quiero%20activar%20mi%20plan%20y%20mantener%20mi%20tienda%20activa."
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="shrink-0 inline-flex items-center gap-2 bg-green-500 hover:bg-green-600 text-white font-black px-5 py-3 rounded-xl shadow-md shadow-green-200 transition-all hover:-translate-y-0.5 no-underline text-sm"
+                >
+                    <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.246 2.248 3.484 5.232 3.483 8.413-.003 6.557-5.338 11.892-11.893 11.892-1.997-.001-3.951-.5-5.688-1.448l-6.308 1.654zm6.733-14.453c-.166-.37-.341-.377-.499-.384-.129-.006-.277-.006-.425-.006-.148 0-.388.055-.591.273-.204.218-.777.759-.777 1.85s.796 2.144.906 2.293c.111.148 1.568 2.395 3.8 3.357.518.222.921.356 1.236.456.52.165.993.142 1.367.086.417-.062 1.284-.524 1.465-1.031.181-.506.181-.941.127-1.031-.054-.09-.199-.145-.421-.255s-1.31-.647-1.513-.721-.351-.11-.5.11c-.15.22-.578.721-.708.87-.13.15-.258.168-.48.058s-.937-.344-1.786-1.1c-.66-.588-1.107-1.314-1.237-1.535-.13-.22-.014-.34.097-.449.099-.099.221-.255.333-.384.111-.128.148-.22.222-.369.074-.148.037-.278-.019-.387z" /></svg>
+                    {expired ? 'Activar ahora' : 'Activar plan'}
+                </a>
+            </div>
         </div>
     );
 }
@@ -296,6 +317,9 @@ export default function CreatiendasDashboard() {
                 {/* Activation Checklist (Gamification) */}
                 <ActivationChecklist stores={stores} />
 
+                {/* Trial Days Banner (full-width, shown for free-plan stores) */}
+                <TrialBanner stores={stores} />
+
                 {/* Stores Grid */}
                 {stores.length === 0 ? (
                     <div className="bg-white rounded-2xl p-12 text-center border border-slate-200">
@@ -358,10 +382,7 @@ export default function CreatiendasDashboard() {
                                         </button>
                                     </div>
                                 </div>
-                                <div className="flex items-center justify-between mb-1">
-                                    <h3 className="text-lg font-bold text-slate-800">{store.name}</h3>
-                                    <TrialBadge store={store} />
-                                </div>
+                                <h3 className="text-lg font-bold text-slate-800 mb-2">{store.name}</h3>
                                 <p className="text-sm text-slate-500 mb-4">/{store.slug}</p>
                                 <div className="flex items-center justify-between text-sm">
                                     <span className="text-slate-600">
@@ -375,7 +396,6 @@ export default function CreatiendasDashboard() {
                                         {store.createdAt ? new Date(store.createdAt).toLocaleDateString() : ''}
                                     </span>
                                 </div>
-                                <TrialWarningStrip store={store} />
 
                                 <a
                                     href={`/builder/share?slug=${encodeURIComponent(store.slug || store.name.toLowerCase().replace(/[^a-z0-9]+/g, '-'))}&storeName=${encodeURIComponent(store.name)}`}
