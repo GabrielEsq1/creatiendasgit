@@ -767,12 +767,7 @@ body {
     margin-bottom: 0.35rem;
 }
 
-.about-values-list li::before,
-.about-diff-list li::before {
-    content: "\\2022 ";
-    color: var(--primary-color);
-    font-weight: 700;
-}
+
 
 .about-right-col {
     display: flex;
