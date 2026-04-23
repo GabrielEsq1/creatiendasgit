@@ -32,10 +32,8 @@ export default function HeroEN() {
 
                 {/* Main Headline */}
                 <div className="relative mb-16">
-                    <h1 className="text-5xl md:text-7xl lg:text-8xl font-black tracking-tight mb-8 leading-[1.1] text-slate-900">
-                        Your Online Store on <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-600 to-emerald-600">WhatsApp</span>
-                        <br />
-                        <span className="text-slate-900">Start Free and in <span className="text-green-600 underline decoration-green-500/30 decoration-8 underline-offset-8">3 Minutes</span></span>
+                    <h1 className="text-5xl md:text-6xl lg:text-7xl font-black tracking-tight mb-8 leading-[1.1] text-slate-900">
+                        Create an online store just by filling out a <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-600 to-emerald-600 underline decoration-green-500/30 decoration-8 underline-offset-8">form.</span>
                     </h1>
                     <p className="text-xl md:text-2xl text-slate-600 max-w-3xl mx-auto leading-relaxed font-medium">
                         0% commissions · No credit card · All automatic. <br className="hidden md:block" />
