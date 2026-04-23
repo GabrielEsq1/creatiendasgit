@@ -769,7 +769,7 @@ body {
 
 .about-values-list li::before,
 .about-diff-list li::before {
-    content: "ÔÇó ";
+    content: "\\2022 ";
     color: var(--primary-color);
     font-weight: 700;
 }
