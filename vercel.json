@@ -8,5 +8,11 @@
             "NEXTAUTH_SECRET": "creatiendas-production-secret-2024-v1",
             "NEXTAUTH_URL": "https://creatiendasgit1.vercel.app"
         }
-    }
+    },
+    "crons": [
+        {
+            "path": "/api/cron/nurturing",
+            "schedule": "0 14 * * *"
+        }
+    ]
 }
