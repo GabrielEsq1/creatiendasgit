@@ -267,7 +267,7 @@ export default function AdminDashboard() {
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Tienda</th>
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Propietario</th>
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Creación</th>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Estado Bloqueo</th>
+                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Días Restantes</th>
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Suscripción</th>
                                 </tr>
                             </thead>
@@ -293,13 +293,14 @@ export default function AdminDashboard() {
                                             </td>
                                             <td className="px-6 py-4">
                                                 {isBlocked ? (
-                                                    <span className="px-3 py-1 bg-red-100 text-red-700 rounded-full text-xs font-medium">Bloqueada (30d)</span>
+                                                    <span className="px-3 py-1 bg-red-100 text-red-700 rounded-full text-xs font-medium italic">EXPIRADO</span>
                                                 ) : store.isPaid ? (
-                                                    <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-medium">Permanente</span>
+                                                    <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-medium font-bold">PAGADO (ILIMITADO)</span>
                                                 ) : (
-                                                    <span className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-medium">
-                                                        En prueba ({Math.max(0, 30 - Math.floor(daysDiff))}d rest.)
-                                                    </span>
+                                                    <div className="flex flex-col">
+                                                        <span className="text-sm font-bold text-blue-700">{Math.max(0, 30 - Math.floor(daysDiff))} días</span>
+                                                        <span className="text-[10px] text-blue-400 uppercase tracking-tighter">de prueba gratis</span>
+                                                    </div>
                                                 )}
                                             </td>
                                             <td className="px-6 py-4">
