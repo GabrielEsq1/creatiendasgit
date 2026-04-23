@@ -45,7 +45,7 @@ export default function TranslationPrompt() {
 
     const handleSwitch = () => {
         sessionStorage.setItem("translationPromptShown", "true");
-        window.location.href = targetPath;
+        router.push(targetPath);
         setIsVisible(false);
     };
 

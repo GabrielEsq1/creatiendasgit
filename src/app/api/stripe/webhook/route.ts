@@ -26,7 +26,8 @@ export async function POST(req: Request) {
                 const session = event.data.object as Stripe.Checkout.Session;
                 const subscriptionId = session.subscription as string;
                 const customerId = session.customer as string;
-                // Aquí podrías guardar la suscripción en la BD si lo deseas.
+                // Los pagos se gestionan manualmente por WhatsApp según política de negocio.
+                // Esta sección queda como hook para futuras métricas pero no activa tiendas.
                 break;
             }
             case 'customer.subscription.updated': {

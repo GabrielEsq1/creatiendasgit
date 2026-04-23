@@ -121,17 +121,17 @@ const t = {
 };
 
 const faqsEs = [
-    { q: "¿Qué pasa después de los 30 días gratis?", a: "Recibirás un aviso antes de que termine tu periodo de prueba. Podrás elegir el nivel que mejor se adapte a tu volumen actual para seguir operando." },
-    { q: "¿Puedo cambiar de plan después?", a: "Sí, puedes subir o bajar de nivel en cualquier momento desde tu panel de administración según lo necesites." },
-    { q: "¿Hay comisiones por ventas?", a: "No. Solo pagas la mensualidad fija de tu plan. El 100% de tus ventas te pertenece." },
-    { q: "¿Qué métodos de pago aceptan?", a: "Aceptamos transferencias bancarias, Nequi, y muy pronto PSE y tarjetas de crédito de forma automática." },
+    { q: "¿Qué pasa después de los 30 días gratis?", a: "Tu tienda te avisará cuando el periodo de prueba termine. Podrás coordinar la activación de tu plan directamente con un asesor por WhatsApp para seguir operando sin interrupciones." },
+    { q: "¿Puedo cambiar de plan después?", a: "Sí, puedes subir o bajar de nivel en cualquier momento hablando con nuestro equipo de soporte." },
+    { q: "¿Hay comisiones por ventas?", a: "Absolutamente NO. El 100% de tus ventas es tuyo. Solo pagas la mensualidad fija que elijas." },
+    { q: "¿Cómo realizo el pago de mi plan?", a: "Gestionamos todo de forma personal por WhatsApp para darte soporte directo. Aceptamos transferencias, Nequi, y otros métodos locales." },
 ];
 
 const faqsEn = [
-    { q: "What happens after the 30 free days?", a: "You'll receive a notice before your trial ends. You can choose the level that best suits your current volume to continue operating." },
-    { q: "Can I change plans later?", a: "Yes, you can upgrade or downgrade at any time from your admin dashboard as needed." },
-    { q: "Are there any sales commissions?", a: "No. You only pay the fixed monthly fee for your plan. 100% of your sales belong to you." },
-    { q: "What payment methods do you accept?", a: "We accept bank transfers, local digital wallets, and soon credit cards automatically." },
+    { q: "What happens after the 30 free days?", a: "Your store will notify you when the trial ends. You can coordinate your plan activation directly with an advisor via WhatsApp to continue operating seamlessly." },
+    { q: "Can I change plans later?", a: "Yes, you can upgrade or downgrade at any time by speaking with our support team." },
+    { q: "Are there any sales commissions?", a: "Absolutely NOT. 100% of your sales stay with you. You only pay the fixed monthly fee you choose." },
+    { q: "How do I pay for my plan?", a: "We manage everything personally via WhatsApp to provide direct support. We accept transfers, digital wallets, and other local methods." },
 ];
 
 export default function PricingSection({ locale = "es" }: PricingSectionProps) {

@@ -44,6 +44,7 @@ interface StoreDetailed {
     slug: string;
     views: number;
     createdAt: string;
+    isPaid: boolean;
     owner: {
         id: string;
         name: string | null;
@@ -200,6 +201,7 @@ export default function AdminDashboard() {
                                     <th className="px-4 py-3 font-medium">NAME / URL</th>
                                     <th className="px-4 py-3 font-medium">OWNER ACCOUNT</th>
                                     <th className="px-4 py-3 font-medium">SUBSCRIPTION</th>
+                                    <th className="px-4 py-3 font-medium">FREE DAYS LEFT</th>
                                     <th className="px-4 py-3 font-medium">CREATED TIMESTAMP</th>
                                     <th className="px-4 py-3 font-medium">TOTAL VIEWS</th>
                                     <th className="px-4 py-3 font-medium text-right">ACTIONS</th>
@@ -233,6 +235,23 @@ export default function AdminDashboard() {
                                                 </select>
                                             ) : (
                                                 <span className="text-slate-600 font-mono text-xs">N/A</span>
+                                            )}
+                                        </td>
+                                        <td className="px-4 py-3 text-sm">
+                                            {store.isPaid ? (
+                                                <span className="text-emerald-500 font-bold">PAID</span>
+                                            ) : (
+                                                (() => {
+                                                    const created = new Date(store.createdAt);
+                                                    const now = new Date();
+                                                    const diffTime = now.getTime() - created.getTime();
+                                                    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+                                                    const remaining = 30 - diffDays;
+                                                    
+                                                    if (remaining <= 0) return <span className="text-red-500 font-bold uppercase">Expired</span>;
+                                                    if (remaining <= 5) return <span className="text-orange-500 font-bold">{remaining}d remaining</span>;
+                                                    return <span className="text-slate-300">{remaining}d remaining</span>;
+                                                })()
                                             )}
                                         </td>
                                         <td className="px-4 py-3 text-slate-400">

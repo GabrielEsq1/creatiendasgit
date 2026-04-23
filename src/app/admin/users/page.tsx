@@ -21,6 +21,7 @@ interface Store {
     name: string;
     slug: string;
     createdAt: string;
+    isPaid: boolean;
 }
 
 export default function AdminUsersPage() {
@@ -471,6 +472,20 @@ export default function AdminUsersPage() {
                                             <p className="text-xs text-gray-400">
                                                 Creada: {new Date(store.createdAt).toLocaleDateString()}
                                             </p>
+                                            <div className="mt-1">
+                                                {store.isPaid ? (
+                                                    <span className="text-[10px] bg-green-100 text-green-700 font-bold px-1.5 py-0.5 rounded uppercase">Pagada</span>
+                                                ) : (() => {
+                                                    const created = new Date(store.createdAt);
+                                                    const now = new Date();
+                                                    const diffDays = Math.floor((now.getTime() - created.getTime()) / (1000 * 60 * 60 * 24));
+                                                    const remaining = 30 - diffDays;
+                                                    if (remaining <= 0) return <span className="text-[10px] bg-red-100 text-red-700 font-bold px-1.5 py-0.5 rounded uppercase">Expirada</span>;
+                                                    return <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded uppercase ${remaining <= 5 ? 'bg-orange-100 text-orange-700' : 'bg-blue-100 text-blue-700'}`}>
+                                                        {remaining} días restantes
+                                                    </span>;
+                                                })()}
+                                            </div>
                                         </div>
                                         <div className="flex gap-2">
                                             <a

@@ -507,16 +507,19 @@ function BuilderContent() {
             const isUpdate = !!editSlug || !!storeData.id;
 
             // Only generate new slug for NEW stores, not for updates
-            let slug: string;
-            if (isUpdate) {
-                slug = editSlug || storeData.slug || '';
-            } else {
-                slug = storeData.name.toLowerCase()
+            let slug: string = editSlug || storeData.slug || '';
+            
+            if (!slug && !isUpdate) {
+                // Generate a one-time slug and store it in state so subsequent retries use the same one
+                const newSlug = storeData.name.toLowerCase()
                     .normalize('NFD')
                     .replace(/[\u0300-\u036f]/g, '')
                     .replace(/[^a-z0-9]+/g, '-')
                     .replace(/^-+|-+$/g, '')
                     .replace(/-+/g, '-') + '-' + Date.now().toString(36);
+                
+                slug = newSlug;
+                setStoreData(prev => ({ ...prev, slug: newSlug }));
             }
 
             const endpoint = isUpdate ? `/api/stores/${editSlug || storeData.id}` : '/api/stores';

@@ -75,7 +75,7 @@ export async function PATCH(req: Request) {
         const body = await req.json();
         const { userId, plan } = body;
 
-        if (!userId || !['FREE', 'PRO'].includes(plan)) {
+        if (!userId || !['FREE', 'NEGOCIO', 'PRO'].includes(plan)) {
             return NextResponse.json({ error: 'Datos inválidos' }, { status: 400 });
         }
 
