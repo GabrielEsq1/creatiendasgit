@@ -10,7 +10,7 @@ import { trackGAEvent } from './analytics';
 
 // --- TYPES ---
 
-export type ConversionEvent = 'Lead' | 'CompleteRegistration' | 'StartTrial' | 'ViewContent';
+export type ConversionEvent = 'PageView' | 'Lead' | 'CompleteRegistration' | 'StartTrial' | 'ViewContent';
 
 export interface TrackingParams {
     value?: number;
@@ -47,6 +47,9 @@ export const trackEvent = (event: ConversionEvent, params: TrackingParams = {}) 
     const gaParams = { ...params };
 
     switch (event) {
+        case 'PageView':
+            gaAction = 'page_view';
+            break;
         case 'CompleteRegistration':
             gaAction = 'sign_up'; // GA4 Standard for account creation
             break;
