@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react';
 import VideoModal from './VideoModal';
 import { useAnalytics } from './Analytics';
 import { useSession } from 'next-auth/react';
+import { trackConversionEvent } from '@/lib/analytics';
 
 export default function Hero() {
     const { data: session } = useSession();
@@ -43,7 +44,10 @@ export default function Hero() {
                     <Link
                         href={mounted && session ? "/dashboard" : "/auth/register"}
                         data-cta="primary"
-                        onClick={() => trackEvent('primary_cta_click', { location: 'hero_main' })}
+                        onClick={() => {
+                            trackEvent('primary_cta_click', { location: 'hero_main' });
+                            trackConversionEvent('Lead');
+                        }}
                         className="group relative inline-flex min-h-[48px] sm:min-h-[56px] md:h-16 w-full sm:w-auto items-center justify-center rounded-xl sm:rounded-2xl bg-green-500 px-6 sm:px-8 md:px-10 font-black text-white shadow-2xl shadow-green-500/30 transition-all hover:bg-green-600 hover:scale-105 active:scale-95 text-base sm:text-lg md:text-xl tracking-tight"
                     >
                         <span>{mounted && session ? "Vuelve a tu Tienda" : "Crea tu Tienda Ahora"}</span>

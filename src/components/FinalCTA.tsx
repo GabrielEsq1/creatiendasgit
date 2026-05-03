@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { useAnalytics } from './Analytics';
+import { trackConversionEvent } from '@/lib/analytics';
 
 export default function FinalCTA() {
     const { trackEvent } = useAnalytics();
@@ -14,7 +15,10 @@ export default function FinalCTA() {
             </p>
             <a
                 href="/auth/register"
-                onClick={() => trackEvent('primary_cta_click', { location: 'final_cta' })}
+                onClick={() => {
+                    trackEvent('primary_cta_click', { location: 'final_cta' });
+                    trackConversionEvent('Lead');
+                }}
                 className="inline-block w-full sm:w-auto bg-white text-[#22c55e] font-bold px-8 py-4 rounded-xl hover:bg-gray-50 transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5"
             >
                 Empezar sin riesgo

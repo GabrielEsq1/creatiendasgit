@@ -8,6 +8,7 @@ import { Mail, Lock, ArrowRight, Chrome } from "lucide-react";
 import Link from "next/link";
 import Script from "next/script";
 import { useAnalytics } from "@/components/Analytics";
+import { trackConversionEvent } from "@/lib/analytics";
 import { SocialProofSection } from "@/components/SocialProofSection";
 
 export default function RegisterPage() {
@@ -19,6 +20,7 @@ export default function RegisterPage() {
     const [emailSent, setEmailSent] = useState(false);
     const [registeredEmail, setRegisteredEmail] = useState("");
     const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
+    const [hasTrackedLead, setHasTrackedLead] = useState(false);
     const router = useRouter();
     const { trackEvent } = useAnalytics();
     const playerRef = useRef<any>(null);
@@ -161,6 +163,7 @@ export default function RegisterPage() {
             if (res.ok) {
                 const data = await res.json();
                 trackEvent('signup', { method: 'email' });
+                trackConversionEvent('CompleteRegistration');
                 if (data.requiresVerification) {
                     setRegisteredEmail(email);
                     setEmailSent(true);
@@ -250,7 +253,20 @@ export default function RegisterPage() {
                         <label className="text-[11px] font-bold text-slate-500 ml-1 uppercase tracking-wider">Correo Electrónico</label>
                         <div className="relative group/input">
                             <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within/input:text-green-600 transition-colors" />
-                            <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} className="w-full pl-11 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-base text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-600/50 transition-all shadow-inner" placeholder="tu@negocio.com" />
+                            <input 
+                                type="email" 
+                                required 
+                                value={email} 
+                                onChange={(e) => setEmail(e.target.value)} 
+                                onFocus={() => {
+                                    if (!hasTrackedLead) {
+                                        trackConversionEvent('Lead');
+                                        setHasTrackedLead(true);
+                                    }
+                                }}
+                                className="w-full pl-11 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-base text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-600/50 transition-all shadow-inner" 
+                                placeholder="tu@negocio.com" 
+                            />
                         </div>
                     </div>
 
@@ -356,7 +372,20 @@ export default function RegisterPage() {
                                 <label className="text-xs font-bold text-slate-500 ml-1 uppercase tracking-wider">Correo Electrónico</label>
                                 <div className="relative group/input">
                                     <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within/input:text-green-600 transition-colors" />
-                                    <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} className="w-full pl-11 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-base text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-600/50 transition-all shadow-inner" placeholder="tu@negocio.com" />
+                                    <input 
+                                        type="email" 
+                                        required 
+                                        value={email} 
+                                        onChange={(e) => setEmail(e.target.value)} 
+                                        onFocus={() => {
+                                            if (!hasTrackedLead) {
+                                                trackConversionEvent('Lead');
+                                                setHasTrackedLead(true);
+                                            }
+                                        }}
+                                        className="w-full pl-11 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-base text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-600/50 transition-all shadow-inner" 
+                                        placeholder="tu@negocio.com" 
+                                    />
                                 </div>
                             </div>
                             <div className="space-y-1.5">
