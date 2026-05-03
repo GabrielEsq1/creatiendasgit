@@ -8,6 +8,7 @@ import { Mail, Lock, ArrowRight, ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import Script from "next/script";
 import { SocialProofSection } from "@/components/SocialProofSection";
+import { trackMetaEvent } from "@/lib/meta-pixel";
 
 function LoginForm() {
     const [email, setEmail] = useState("");
@@ -23,6 +24,10 @@ function LoginForm() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const callbackUrl = searchParams?.get("callbackUrl") || "/dashboard";
+
+    useEffect(() => {
+        trackMetaEvent('ViewContent');
+    }, []);
 
     // Explicitly render Turnstile for better reliability in Next.js
     useEffect(() => {

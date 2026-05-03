@@ -23,8 +23,10 @@ export default function RegisterPage() {
     const [hasTrackedLead, setHasTrackedLead] = useState(false);
     const router = useRouter();
     const { trackEvent } = useAnalytics();
-    const playerRef = useRef<any>(null);
-    
+    useEffect(() => {
+        trackMetaEvent('ViewContent');
+    }, []);
+
     // Separate refs and widgets for mobile/desktop
     const turnstileMobileRef = useRef<HTMLDivElement>(null);
     const turnstileDesktopRef = useRef<HTMLDivElement>(null);
