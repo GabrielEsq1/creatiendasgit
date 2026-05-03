@@ -42,7 +42,7 @@ export type AnalyticsEventType =
     | 'add_to_cart'
     | 'whatsapp_checkout_clicked';
 
-const PIXEL_ID = '1419499733092502'; // Píxel de Gabriel Esquivia
+const PIXEL_ID = '965002163089223'; // Píxel de Creatiendas
 
 export const useAnalytics = () => {
     const trackEvent = async (eventType: AnalyticsEventType, data?: any) => {

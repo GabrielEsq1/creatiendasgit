@@ -9,7 +9,6 @@ import { AnalyticsTracker } from "../components/Analytics";
 import TranslationPrompt from "../components/TranslationPrompt";
 import LayoutWrapper from "@/components/LayoutWrapper";
 import OrganizationSchema from "@/components/OrganizationSchema";
-import Script from "next/script";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -77,62 +76,10 @@ export default function RootLayout({
                 <link rel="manifest" href="/manifest.json" />
                 <meta name="theme-color" content="#2563eb" />
                 <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=0.5, maximum-scale=5.0, user-scalable=yes" />
-                {/* Meta Pixel Code */}
-                <script
-                    dangerouslySetInnerHTML={{
-                        __html: `
-!function(f,b,e,v,n,t,s)
-{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-n.queue=[];t=b.createElement(e);t.async=!0;
-t.src=v;s=b.getElementsByTagName(e)[0];
-s.parentNode.insertBefore(t,s)}(window, document,'script',
-'https://connect.facebook.net/en_US/fbevents.js');
-fbq('init', '965002163089223');
-fbq('track', 'PageView');
-                        `
-                    }}
-                />
-                <noscript>
-                    <img 
-                        height="1" 
-                        width="1" 
-                        style={{ display: "none" }}
-                        src="https://www.facebook.com/tr?id=965002163089223&ev=PageView&noscript=1"
-                        alt=""
-                    />
-                </noscript>
-                {/* End Meta Pixel Code */}
             </head>
             <body className={inter.className}>
                 <Providers>
                     <AnalyticsTracker />
-                    {/* Meta Pixel Code */}
-                    <Script id="meta-pixel" strategy="afterInteractive">
-                        {`
-                        !function(f,b,e,v,n,t,s)
-                        {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-                        n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-                        if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-                        n.queue=[];t=b.createElement(e);t.async=!0;
-                        t.src=v;s=b.getElementsByTagName(e)[0];
-                        s.parentNode.insertBefore(t,s)}(window, document,'script',
-                        'https://connect.facebook.net/en_US/fbevents.js');
-                        fbq('init', '965002163089223');
-                        fbq('track', 'PageView');
-                        `}
-                    </Script>
-                    <noscript>
-                        <img 
-                            height="1" 
-                            width="1" 
-                            style={{ display: "none" }}
-                            src="https://www.facebook.com/tr?id=965002163089223&ev=PageView&noscript=1"
-                            alt=""
-                        />
-                    </noscript>
-                    {/* End Meta Pixel Code */}
                     <LayoutWrapper>
                         <OrganizationSchema />
                         {children}
