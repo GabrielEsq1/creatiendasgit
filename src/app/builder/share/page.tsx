@@ -1,9 +1,10 @@
 'use client';
 export const dynamic = "force-dynamic";
 
-import React, { useEffect, useState, Suspense } from 'react';
+import React, { useEffect, useRef, useState, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { ExternalLink, Copy, CheckCircle2 } from 'lucide-react';
+import { trackMetaEvent } from '@/lib/meta-pixel';
 
 // We import QRCodeSVG but we won't render it until mounted
 import { QRCodeSVG } from 'qrcode.react';
@@ -13,9 +14,16 @@ function ShareContent() {
     const searchParams = useSearchParams();
     const [mounted, setMounted] = useState(false);
     const [copied, setCopied] = useState(false);
+    const hasTrackedRef = useRef(false);
 
     useEffect(() => {
         setMounted(true);
+        // Fire StartTrial once when user reaches the share page
+        // (store successfully created = trial started)
+        if (!hasTrackedRef.current) {
+            hasTrackedRef.current = true;
+            trackMetaEvent('StartTrial');
+        }
     }, []);
 
     const storeName = searchParams.get('storeName') || 'Tu Tienda';
