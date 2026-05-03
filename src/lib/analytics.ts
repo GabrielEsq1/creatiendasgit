@@ -292,22 +292,9 @@ export const incrementIntentScore = (points: number = 1) => {
 };
 
 /**
- * Direct Conversion Tracking Helper (Meta Pixel + GA4)
- * For Lead and CompleteRegistration events
+ * NOTE: High-value conversions (Lead, CompleteRegistration, StartTrial)
+ * have been moved to src/lib/meta-pixel.ts for unified Meta + GA4 tracking
+ * with guaranteed delivery before navigation.
  */
-export const trackConversionEvent = (eventName: string) => {
-    if (typeof window !== 'undefined') {
-        if ((window as any).fbq) {
-            (window as any).fbq('track', eventName);
-        }
-        if ((window as any).gtag) {
-            let gaEventName = eventName.toLowerCase();
-            // Map CompleteRegistration to GA4's complete_registration
-            if (eventName === 'CompleteRegistration') {
-                gaEventName = 'complete_registration';
-            }
-            (window as any).gtag('event', gaEventName);
-        }
-    }
-};
+
 

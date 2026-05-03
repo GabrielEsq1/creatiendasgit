@@ -44,6 +44,8 @@ export type AnalyticsEventType =
 
 const PIXEL_ID = '965002163089223'; // Píxel de Creatiendas
 
+import { trackMetaEvent, MetaStandardEvent } from '@/lib/meta-pixel';
+
 export const useAnalytics = () => {
     const trackEvent = async (eventType: AnalyticsEventType, data?: any) => {
         try {
@@ -60,14 +62,14 @@ export const useAnalytics = () => {
                 }),
             }).catch(() => { }); // Silent fail
 
-            // 2. Send to Meta Pixel
-            if (typeof window !== 'undefined' && (window as any).fbq) {
-                const fbEvent = mapToPixelEvent(eventType);
-                (window as any).fbq('track', fbEvent, data);
+            // 2. Send to Meta Pixel & GA4 (High Value Conversions)
+            const metaEvent = mapToPixelEvent(eventType);
+            if (metaEvent) {
+                trackMetaEvent(metaEvent as MetaStandardEvent, data);
+            } else {
+                // Regular GA4 tracking for non-conversion events
+                trackGAEvent({ action: eventType, ...data });
             }
-
-            // 3. Send to GA4
-            trackGAEvent({ action: eventType, ...data });
 
             if (process.env.NODE_ENV === 'development') {
                 console.log(`[Analytics] ${eventType}:`, data);
@@ -80,17 +82,23 @@ export const useAnalytics = () => {
     return { trackEvent };
 };
 
-function mapToPixelEvent(eventType: AnalyticsEventType): string {
+function mapToPixelEvent(eventType: AnalyticsEventType): string | null {
     switch (eventType) {
         case 'page_view': return 'PageView';
-        case 'signup': return 'CompleteRegistration';
-        case 'create_store': return 'StartTrial';
+        case 'view_content': return 'ViewContent';
         case 'initiate_checkout': return 'InitiateCheckout';
         case 'purchase': return 'Purchase';
-        case 'view_content': return 'ViewContent';
-        default: return 'CustomEvent';
+        case 'add_to_cart': return 'AddToCart';
+        // Note: signup (CompleteRegistration) and create_store (StartTrial) 
+        // are handled manually in their respective flows to allow for 
+        // custom logic/delays, so we return null here to avoid double tracking.
+        case 'signup': return null; 
+        case 'create_store': return null;
+        case 'store_created': return null;
+        default: return null;
     }
 }
+
 
 function AnalyticsTrackerInner() {
     const pathname = usePathname();

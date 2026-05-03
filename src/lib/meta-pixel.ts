@@ -1,14 +1,14 @@
+import { trackGAEvent } from './analytics';
+
 /**
- * Meta Pixel Utility — src/lib/meta-pixel.ts
+ * Universal Conversion Utility — src/lib/meta-pixel.ts
  *
- * Centralizes all Meta Pixel event tracking for Creatiendas.
+ * Centralizes all high-value conversion tracking for Creatiendas (Meta Pixel + GA4).
  * The pixel base code is loaded in src/app/layout.tsx <head>.
- * Use these helpers from client components / page handlers.
- *
- * Pixel ID: 965002163089223
+ * GA4 is loaded via AnalyticsTracker.
  */
 
-// Extend Window so TypeScript doesn't complain about window.fbq
+// Extend Window so TypeScript doesn't complain
 declare global {
     interface Window {
         fbq: (...args: unknown[]) => void;
@@ -24,41 +24,58 @@ export type MetaStandardEvent =
     | 'InitiateCheckout'
     | 'Purchase'
     | 'AddToCart'
+    | 'StartTrial'
     | 'Subscribe';
 
 /**
- * Fire a standard Meta Pixel event.
+ * Fire a conversion event on both Meta Pixel and GA4.
  * Safe to call server-side (no-op) and client-side.
  *
  * @param event  Standard Meta event name
- * @param params Optional event parameters (value, currency, content_name, etc.)
+ * @param params Optional event parameters
  */
 export function trackMetaEvent(
     event: MetaStandardEvent,
     params?: Record<string, unknown>
 ): void {
     if (typeof window === 'undefined') return;
-    if (typeof window.fbq !== 'function') {
-        console.warn('[MetaPixel] fbq not loaded yet — event dropped:', event);
-        return;
+
+    // 1. Meta Pixel Tracking
+    if (typeof window.fbq === 'function') {
+        if (params) {
+            window.fbq('track', event, params);
+        } else {
+            window.fbq('track', event);
+        }
+    } else {
+        console.warn('[Analytics] Meta Pixel (fbq) not loaded yet — event dropped:', event);
     }
 
-    if (params) {
-        window.fbq('track', event, params);
-    } else {
-        window.fbq('track', event);
-    }
+    // 2. GA4 Tracking (Mapping Meta names to GA4 standard events)
+    let gaEventName = event.toLowerCase();
+    
+    // Manual mapping for standard events
+    if (event === 'CompleteRegistration') gaEventName = 'complete_registration';
+    if (event === 'StartTrial') gaEventName = 'start_trial';
+    if (event === 'InitiateCheckout') gaEventName = 'begin_checkout';
+    if (event === 'AddToCart') gaEventName = 'add_to_cart';
+    
+    trackGAEvent({
+        action: gaEventName,
+        ...params
+    });
 }
 
+
 /**
- * Fire a Meta Pixel event and wait a brief moment so the beacon
- * is dispatched **before** any client-side navigation or redirect.
+ * Fire a conversion event and wait a brief moment so the beacons
+ * are dispatched **before** any client-side navigation or redirect.
  *
  * Use this when you need to call router.push() right after tracking.
  *
  * @param event    Standard Meta event name
  * @param params   Optional event parameters
- * @param delayMs  How long to wait (default 300 ms — enough for fbevents.js beacon)
+ * @param delayMs  How long to wait (default 300 ms)
  */
 export async function trackMetaEventBeforeNav(
     event: MetaStandardEvent,
