@@ -44,7 +44,7 @@ export type AnalyticsEventType =
 
 const PIXEL_ID = '965002163089223'; // Píxel de Creatiendas
 
-import { trackMetaEvent, MetaStandardEvent } from '@/lib/meta-pixel';
+import { trackEvent, ConversionEvent } from '@/lib/tracking';
 
 export const useAnalytics = () => {
     const trackEvent = async (eventType: AnalyticsEventType, data?: any) => {
@@ -65,7 +65,7 @@ export const useAnalytics = () => {
             // 2. Send to Meta Pixel & GA4 (High Value Conversions)
             const metaEvent = mapToPixelEvent(eventType);
             if (metaEvent) {
-                trackMetaEvent(metaEvent as MetaStandardEvent, data);
+                trackEvent(metaEvent as ConversionEvent, data);
             } else {
                 // Regular GA4 tracking for non-conversion events
                 trackGAEvent({ action: eventType, ...data });

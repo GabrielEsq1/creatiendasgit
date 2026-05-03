@@ -293,7 +293,7 @@ export const incrementIntentScore = (points: number = 1) => {
 
 /**
  * NOTE: High-value conversions (Lead, CompleteRegistration, StartTrial)
- * have been moved to src/lib/meta-pixel.ts for unified Meta + GA4 tracking
+ * have been moved to src/lib/tracking.ts for unified Meta + GA4 tracking
  * with guaranteed delivery before navigation.
  */
 

@@ -8,7 +8,7 @@ import { Mail, Lock, ArrowRight, Chrome } from "lucide-react";
 import Link from "next/link";
 import Script from "next/script";
 import { useAnalytics } from "@/components/Analytics";
-import { trackMetaEvent, trackMetaEventBeforeNav } from "@/lib/meta-pixel";
+import { trackEvent, trackRegistrationSuccess, trackLeadCapture } from "@/lib/tracking";
 import { SocialProofSection } from "@/components/SocialProofSection";
 
 export default function RegisterPage() {
@@ -24,7 +24,7 @@ export default function RegisterPage() {
     const router = useRouter();
     const { trackEvent } = useAnalytics();
     useEffect(() => {
-        trackMetaEvent('ViewContent');
+        trackEvent('ViewContent');
     }, []);
 
     // Separate refs and widgets for mobile/desktop
@@ -167,13 +167,13 @@ export default function RegisterPage() {
                 trackEvent('signup', { method: 'email' });
 
                 if (data.requiresVerification) {
-                    // User lands on email-sent screen — fire pixel now (no redirect)
-                    trackMetaEvent('CompleteRegistration');
+                    // User lands on email-sent screen — fire events now (no redirect)
+                    trackRegistrationSuccess('email');
                     setRegisteredEmail(email);
                     setEmailSent(true);
                 } else {
-                    // Wait for pixel beacon to be dispatched before navigating
-                    await trackMetaEventBeforeNav('CompleteRegistration');
+                    // Wait for tracking beacons to be dispatched before navigating
+                    await trackRegistrationSuccess('email');
                     router.push("/auth/login?registered=true");
                 }
             } else {
@@ -266,7 +266,7 @@ export default function RegisterPage() {
                                 onChange={(e) => setEmail(e.target.value)} 
                                 onFocus={() => {
                                     if (!hasTrackedLead) {
-                                        trackMetaEvent('Lead');
+                                        trackLeadCapture('registration_form');
                                         setHasTrackedLead(true);
                                     }
                                 }}

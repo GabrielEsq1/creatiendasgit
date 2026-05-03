@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { useAnalytics } from './Analytics';
-import { trackMetaEvent } from '@/lib/meta-pixel';
+import { trackLeadCapture } from '@/lib/tracking';
 
 export default function FinalCTA() {
     const { trackEvent } = useAnalytics();
@@ -17,7 +17,7 @@ export default function FinalCTA() {
                 href="/auth/register"
                 onClick={() => {
                     trackEvent('primary_cta_click', { location: 'final_cta' });
-                    trackMetaEvent('Lead');
+                    trackLeadCapture('final_cta');
                 }}
                 className="inline-block w-full sm:w-auto bg-white text-[#22c55e] font-bold px-8 py-4 rounded-xl hover:bg-gray-50 transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5"
             >

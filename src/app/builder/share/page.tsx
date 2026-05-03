@@ -4,7 +4,7 @@ export const dynamic = "force-dynamic";
 import React, { useEffect, useRef, useState, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { ExternalLink, Copy, CheckCircle2 } from 'lucide-react';
-import { trackMetaEvent } from '@/lib/meta-pixel';
+import { trackEvent } from '@/lib/tracking';
 
 // We import QRCodeSVG but we won't render it until mounted
 import { QRCodeSVG } from 'qrcode.react';
@@ -22,7 +22,7 @@ function ShareContent() {
         // (store successfully created = trial started)
         if (!hasTrackedRef.current) {
             hasTrackedRef.current = true;
-            trackMetaEvent('StartTrial');
+            trackEvent('StartTrial');
         }
     }, []);
 
