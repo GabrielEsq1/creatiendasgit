@@ -8,7 +8,7 @@ import { Mail, Lock, ArrowRight, Chrome } from "lucide-react";
 import Link from "next/link";
 import Script from "next/script";
 import { useAnalytics } from "@/components/Analytics";
-import { trackConversionEvent } from "@/lib/analytics";
+import { trackMetaEvent, trackMetaEventBeforeNav } from "@/lib/meta-pixel";
 import { SocialProofSection } from "@/components/SocialProofSection";
 
 export default function RegisterPage() {
@@ -163,11 +163,15 @@ export default function RegisterPage() {
             if (res.ok) {
                 const data = await res.json();
                 trackEvent('signup', { method: 'email' });
-                trackConversionEvent('CompleteRegistration');
+
                 if (data.requiresVerification) {
+                    // User lands on email-sent screen — fire pixel now (no redirect)
+                    trackMetaEvent('CompleteRegistration');
                     setRegisteredEmail(email);
                     setEmailSent(true);
                 } else {
+                    // Wait for pixel beacon to be dispatched before navigating
+                    await trackMetaEventBeforeNav('CompleteRegistration');
                     router.push("/auth/login?registered=true");
                 }
             } else {
@@ -260,7 +264,7 @@ export default function RegisterPage() {
                                 onChange={(e) => setEmail(e.target.value)} 
                                 onFocus={() => {
                                     if (!hasTrackedLead) {
-                                        trackConversionEvent('Lead');
+                                        trackMetaEvent('Lead');
                                         setHasTrackedLead(true);
                                     }
                                 }}
@@ -379,7 +383,7 @@ export default function RegisterPage() {
                                         onChange={(e) => setEmail(e.target.value)} 
                                         onFocus={() => {
                                             if (!hasTrackedLead) {
-                                                trackConversionEvent('Lead');
+                                                trackMetaEvent('Lead');
                                                 setHasTrackedLead(true);
                                             }
                                         }}
