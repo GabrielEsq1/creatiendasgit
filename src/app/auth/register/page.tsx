@@ -167,8 +167,6 @@ export default function RegisterPage() {
                 trackEvent('signup', { method: 'email' });
 
                 if (data.requiresVerification) {
-                    // User lands on email-sent screen — fire events now (no redirect)
-                    trackRegistrationSuccess('email');
                     setRegisteredEmail(email);
                     setEmailSent(true);
                 } else {
@@ -209,6 +207,14 @@ export default function RegisterPage() {
             setLoading(false);
         }
     };
+
+    // Robust tracking for the success screen (triggered when state changes to emailSent)
+    useEffect(() => {
+        if (emailSent) {
+            trackRegistrationSuccess('email');
+        }
+    }, [emailSent]);
+
 
     // --- EMAIL SENT SCREEN ---
     if (emailSent) {
