@@ -80,8 +80,10 @@ export default function RootLayout({
             </head>
             <body className={inter.className}>
                 <Providers>
-                    <MetaPixel />
-                    <AnalyticsTracker />
+                    <Suspense fallback={null}>
+                        <MetaPixel />
+                        <AnalyticsTracker />
+                    </Suspense>
                     <LayoutWrapper>
                         <OrganizationSchema />
                         {children}
