@@ -11,6 +11,17 @@ import '../styles/builder.css';
 
 export const dynamic = "force-dynamic";
 
+// Helper to generate a slug from a name
+const generateSlug = (name: string): string => {
+    return name
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '') // remove accents
+        .replace(/[^a-z0-9]+/g, '-')     // replace non-alphanumeric with hyphen
+        .replace(/^-+|-+$/g, '')         // trim leading/trailing hyphens
+        .replace(/-+/g, '-');            // collapse multiple hyphens
+};
+
 // Initial store data structure
 const INITIAL_DATA: StoreData = {
     title: 'Especiales del día',
@@ -22,7 +33,9 @@ const INITIAL_DATA: StoreData = {
     borderRadius: '16px',
     logo: null,
     heroBg: null,
-    slug: '',
+    heroHeight: '240px',
+    heroBgPosition: '50%',
+    slug: 'mi-tienda-bonita',
     socials: {
         instagram: '',
         facebook: '',
@@ -87,6 +100,62 @@ function BuilderContent() {
     const [editingProductId, setEditingProductId] = useState<number | null>(null);
     const [showMobileWarning, setShowMobileWarning] = useState(false);
     const [forceDesktopViewport, setForceDesktopViewport] = useState(false);
+
+    const [isSlugValidating, setIsSlugValidating] = useState(false);
+    const [isSlugAvailable, setIsSlugAvailable] = useState<boolean | null>(null);
+    const [baseHost, setBaseHost] = useState('');
+
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            setBaseHost(window.location.origin);
+        }
+    }, []);
+
+    // Validate slug availability with debounce
+    useEffect(() => {
+        if (!storeData.slug) {
+            setIsSlugAvailable(null);
+            return;
+        }
+
+        setIsSlugValidating(true);
+        const delayDebounceFn = setTimeout(async () => {
+            try {
+                // If edit mode and current slug matches loaded/original editSlug, it is available
+                if (editSlug && storeData.slug === editSlug) {
+                    setIsSlugAvailable(true);
+                    setIsSlugValidating(false);
+                    return;
+                }
+
+                const idParam = storeData.id ? `&storeId=${storeData.id}` : '';
+                const res = await fetch(`/api/stores/check-slug?slug=${storeData.slug}${idParam}`);
+                if (res.ok) {
+                    const data = await res.json();
+                    setIsSlugAvailable(data.available);
+                } else {
+                    setIsSlugAvailable(false);
+                }
+            } catch (err) {
+                console.error('Error validating slug:', err);
+                setIsSlugAvailable(null);
+            } finally {
+                setIsSlugValidating(false);
+            }
+        }, 500);
+
+        return () => clearTimeout(delayDebounceFn);
+    }, [storeData.slug, storeData.id, editSlug]);
+
+    // Check if store was recently saved / slug changed
+    useEffect(() => {
+        if (typeof window !== 'undefined' && searchParams.get('saved') === 'true') {
+            alert('¡Cambios guardados con éxito!\n\nTu tienda está actualizada y optimizada en el servidor.');
+            const newUrl = new URL(window.location.href);
+            newUrl.searchParams.delete('saved');
+            window.history.replaceState({}, '', newUrl.toString());
+        }
+    }, [searchParams]);
 
     // Show warning if user enters on mobile
     useEffect(() => {
@@ -230,7 +299,13 @@ function BuilderContent() {
                 } as StoreData;
             });
         } else {
-            setStoreData(prev => ({ ...prev, [field]: value }));
+            setStoreData(prev => {
+                const updated: any = { ...prev, [field]: value };
+                if (field === 'name') {
+                    updated.slug = generateSlug(value);
+                }
+                return updated;
+            });
         }
     };
 
@@ -427,7 +502,11 @@ function BuilderContent() {
         // MANDATORY FIELDS VALIDATION
         if (!storeData.name || !storeData.name.trim()) {
             alert('❌ El Nombre de la Tienda es obligatorio.');
-            // Scroll to the input if possible or just stop
+            return;
+        }
+
+        if (isSlugAvailable === false) {
+            alert('❌ La URL (enlace) de la tienda no está disponible. Por favor, elige otro Nombre de Tienda.');
             return;
         }
 
@@ -506,20 +585,11 @@ function BuilderContent() {
             // Determine if this is an update (existing store) or create (new store)
             const isUpdate = !!editSlug || !!storeData.id;
 
-            // Only generate new slug for NEW stores, not for updates
-            let slug: string = editSlug || storeData.slug || '';
-            
-            if (!slug && !isUpdate) {
-                // Generate a one-time slug and store it in state so subsequent retries use the same one
-                const newSlug = storeData.name.toLowerCase()
-                    .normalize('NFD')
-                    .replace(/[\u0300-\u036f]/g, '')
-                    .replace(/[^a-z0-9]+/g, '-')
-                    .replace(/^-+|-+$/g, '')
-                    .replace(/-+/g, '-') + '-' + Date.now().toString(36);
-                
-                slug = newSlug;
-                setStoreData(prev => ({ ...prev, slug: newSlug }));
+            // Use the UI-generated storeData.slug if it exists, fallback to editSlug
+            let slug: string = storeData.slug || editSlug || '';
+            if (!slug) {
+                slug = generateSlug(storeData.name);
+                setStoreData(prev => ({ ...prev, slug }));
             }
 
             const endpoint = isUpdate ? `/api/stores/${editSlug || storeData.id}` : '/api/stores';
@@ -591,6 +661,12 @@ function BuilderContent() {
                     let finalSlug = json.slug || slug || storeData.slug;
                     window.location.href = `/builder/share?slug=${finalSlug}&storeName=${encodeURIComponent(storeData.name)}`;
                 } else {
+                    let finalSlug = json.slug || slug || storeData.slug;
+                    if (finalSlug && finalSlug !== editSlug) {
+                        // Redirect to the new edit URL to keep page in sync with new slug
+                        window.location.href = `/builder?edit=${finalSlug}&saved=true`;
+                        return;
+                    }
                     alert(`¡Cambios guardados con éxito!\n\nTu tienda está actualizada y optimizada en el servidor.`);
                 }
             } else {
@@ -606,6 +682,11 @@ function BuilderContent() {
 
     return (
         <div className="app-container">
+            {/* Load Google Fonts for Select options preview */}
+            <link 
+                href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Lato:wght@400;700&family=Merriweather:wght@400;700&family=Montserrat:wght@400;700&family=Nunito:wght@400;700&family=Open+Sans:wght@400;700&family=Oswald:wght@400;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Poppins:wght@400;700&family=Raleway:wght@400;700&family=Roboto:wght@400;700&display=swap" 
+                rel="stylesheet" 
+            />
             {isBlocked && (
                 <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4 bg-slate-900/95 backdrop-blur-md">
                     <div className="bg-white rounded-[2.5rem] p-8 md:p-12 max-w-lg w-full shadow-2xl relative overflow-hidden text-center">
@@ -653,7 +734,39 @@ function BuilderContent() {
                             value={storeData.name} 
                             onChange={e => handleInputChange(null, 'name', e.target.value)} 
                             required
+                            placeholder="Mi Tienda Bonita"
+                            className="w-full p-2 border rounded"
                         />
+                        {/* URL Preview & Availability status */}
+                        {storeData.name && (
+                            <div className="mt-2 text-xs font-semibold flex flex-col gap-1">
+                                <span className="text-slate-500">
+                                    Enlace público de tu tienda:
+                                </span>
+                                <span className="text-blue-600 break-all select-all font-mono">
+                                    {baseHost ? `${baseHost}/stores/${storeData.slug || ''}` : '...'}
+                                </span>
+                                <div className="flex items-center gap-1.5 mt-0.5">
+                                    {isSlugValidating ? (
+                                        <span className="text-slate-400 flex items-center gap-1">
+                                            <svg className="animate-spin h-3.5 w-3.5 text-slate-400 inline-block" viewBox="0 0 24 24" fill="none" style={{ verticalAlign: 'middle', display: 'inline-block', width: '14px', height: '14px' }}>
+                                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                                            </svg>
+                                            Validando disponibilidad...
+                                        </span>
+                                    ) : isSlugAvailable === true ? (
+                                        <span className="text-green-600 bg-green-50 px-2 py-0.5 rounded border border-green-200 inline-flex items-center gap-1">
+                                            ✓ Enlace disponible
+                                        </span>
+                                    ) : isSlugAvailable === false ? (
+                                        <span className="text-red-600 bg-red-50 px-2 py-0.5 rounded border border-red-200 inline-flex items-center gap-1">
+                                            ✗ Este enlace ya está en uso. Por favor cambia el nombre.
+                                        </span>
+                                    ) : null}
+                                </div>
+                            </div>
+                        )}
                     </div>
                     <div className="form-group">
                         <label>Descripción corta</label>
@@ -677,18 +790,23 @@ function BuilderContent() {
                     </div>
                     <div className="form-group">
                         <label>Tipografía</label>
-                        <select value={storeData.font || 'Inter'} onChange={e => handleInputChange(null, 'font', e.target.value)} className="w-full p-2 border rounded">
-                            <option value="Inter">Inter (Estándar)</option>
-                            <option value="Roboto">Roboto (Clásica)</option>
-                            <option value="Open Sans">Open Sans (Legible)</option>
-                            <option value="Lato">Lato (Elegante)</option>
-                            <option value="Montserrat">Montserrat (Geométrica)</option>
-                            <option value="Poppins">Poppins (Moderna)</option>
-                            <option value="Playfair Display">Playfair Display (Lujo/Serif)</option>
-                            <option value="Merriweather">Merriweather (Editorial)</option>
-                            <option value="Raleway">Raleway (Sofisticada)</option>
-                            <option value="Oswald">Oswald (Urbano/Título)</option>
-                            <option value="Nunito">Nunito (Amigable)</option>
+                        <select 
+                            value={storeData.font || 'Inter'} 
+                            onChange={e => handleInputChange(null, 'font', e.target.value)} 
+                            className="w-full p-2 border rounded"
+                            style={{ fontFamily: storeData.font || 'Inter' }}
+                        >
+                            <option value="Inter" style={{ fontFamily: 'Inter' }}>Inter (Estándar)</option>
+                            <option value="Roboto" style={{ fontFamily: 'Roboto' }}>Roboto (Clásica)</option>
+                            <option value="Open Sans" style={{ fontFamily: 'Open Sans' }}>Open Sans (Legible)</option>
+                            <option value="Lato" style={{ fontFamily: 'Lato' }}>Lato (Elegante)</option>
+                            <option value="Montserrat" style={{ fontFamily: 'Montserrat' }}>Montserrat (Geométrica)</option>
+                            <option value="Poppins" style={{ fontFamily: 'Poppins' }}>Poppins (Moderna)</option>
+                            <option value="Playfair Display" style={{ fontFamily: 'Playfair Display' }}>Playfair Display (Lujo/Serif)</option>
+                            <option value="Merriweather" style={{ fontFamily: 'Merriweather' }}>Merriweather (Editorial)</option>
+                            <option value="Raleway" style={{ fontFamily: 'Raleway' }}>Raleway (Sofisticada)</option>
+                            <option value="Oswald" style={{ fontFamily: 'Oswald' }}>Oswald (Urbano/Título)</option>
+                            <option value="Nunito" style={{ fontFamily: 'Nunito' }}>Nunito (Amigable)</option>
                         </select>
                     </div>
                     <div className="form-group">
@@ -714,6 +832,50 @@ function BuilderContent() {
                     </div>
                     <div className="form-group">
                         <ImageUploader label="Imagen de fondo del encabezado (opcional)" onImageSelected={e => handleImageUpload('heroBg', e)} currentImage={storeData.heroBg} showPreview={true} onRemoveSingle={() => setStoreData(prev => ({ ...prev, heroBg: null }))} />
+                    </div>
+
+                    {/* Controles de ajuste del Banner */}
+                    <div className="bg-slate-50 p-4 rounded-xl border border-slate-200/60 my-4 flex flex-col gap-4">
+                        <h4 className="text-sm font-bold text-slate-700 flex items-center gap-1.5">
+                            📐 Ajustes del Banner
+                        </h4>
+                        
+                        <div className="form-group mb-0">
+                            <label className="text-xs text-slate-500 font-semibold flex justify-between">
+                                <span>Altura del Banner</span>
+                                <span className="font-mono text-blue-600 font-bold">{storeData.heroHeight || '240px'}</span>
+                            </label>
+                            <input 
+                                type="range" 
+                                min="150" 
+                                max="500" 
+                                step="10"
+                                value={parseInt(storeData.heroHeight || '240')} 
+                                onChange={e => handleInputChange(null, 'heroHeight', `${e.target.value}px`)}
+                                className="w-full h-2 bg-slate-200/60 rounded-lg appearance-none cursor-pointer accent-blue-600 mt-1"
+                            />
+                        </div>
+
+                        {storeData.heroBg && (
+                            <div className="form-group mb-0">
+                                <label className="text-xs text-slate-500 font-semibold flex justify-between">
+                                    <span>Posición de la Imagen (Vertical)</span>
+                                    <span className="font-mono text-blue-600 font-bold">{storeData.heroBgPosition || '50%'}</span>
+                                </label>
+                                <input 
+                                    type="range" 
+                                    min="0" 
+                                    max="100" 
+                                    step="5"
+                                    value={parseInt(storeData.heroBgPosition || '50')} 
+                                    onChange={e => handleInputChange(null, 'heroBgPosition', `${e.target.value}%`)}
+                                    className="w-full h-2 bg-slate-200/60 rounded-lg appearance-none cursor-pointer accent-blue-600 mt-1"
+                                />
+                                <p className="text-[10px] text-slate-400 mt-1" style={{ fontSize: '11px', color: '#888' }}>
+                                    Arrastra para mover la imagen hacia arriba o hacia abajo.
+                                </p>
+                            </div>
+                        )}
                     </div>
                 </section>
 

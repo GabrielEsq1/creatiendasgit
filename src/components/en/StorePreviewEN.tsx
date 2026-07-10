@@ -237,7 +237,13 @@ export default function StorePreviewEN({ data, products, viewMode = 'desktop', r
                     backgroundColor: data.color,
                     backgroundImage: data.heroBg ? `url(${data.heroBg})` : 'none',
                     backgroundSize: 'cover',
-                    backgroundPosition: 'center'
+                    backgroundPosition: `center ${data.heroBgPosition || '50%'}`,
+                    minHeight: data.heroHeight || '240px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    padding: data.heroHeight ? '1.5rem 1rem' : '3.25rem 2.25rem 3rem'
                 }}>
                     <div className="store-header-inner">
                         {data.logo && <img src={data.logo} alt="Logo" className="store-logo" />}

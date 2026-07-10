@@ -28,6 +28,8 @@ export interface StoreData {
     currency?: 'COP' | 'USD';
     logo: string | null;
     heroBg: string | null;
+    heroHeight?: string;
+    heroBgPosition?: string;
     slug: string;
     socials: {
         instagram: string;

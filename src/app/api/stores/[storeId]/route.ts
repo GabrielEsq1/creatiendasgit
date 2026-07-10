@@ -86,7 +86,7 @@ export async function PUT(
         }
 
         const body = await request.json();
-        const { name, data, products } = body;
+        const { name, slug, data, products } = body;
 
         // Find store by ID or slug
         const storeRecord = await prisma.store.findFirst({
@@ -126,11 +126,33 @@ export async function PUT(
         }
         // ────────────────────────────────────────────────────────────────────
 
+        // Validate slug uniqueness if it has changed
+        let slugToUpdate = storeRecord.slug;
+        if (slug && slug !== storeRecord.slug) {
+            const existingStore = await prisma.store.findFirst({
+                where: {
+                    slug: slug,
+                    NOT: { id: storeRecord.id }
+                }
+            });
+            if (existingStore) {
+                return NextResponse.json(
+                    { success: false, message: 'Este enlace (URL) ya está en uso por otra tienda' },
+                    { status: 400 }
+                );
+            }
+            slugToUpdate = slug;
+        }
+
         const updatedStore = await prisma.store.update({
             where: { id: storeRecord.id },
             data: {
                 name: name || storeRecord.name,
-                data: data,
+                slug: slugToUpdate,
+                data: {
+                    ...(data || {}),
+                    slug: slugToUpdate // Ensure slug inside JSON storeData matches the main slug column
+                },
                 products: products
             }
         });
