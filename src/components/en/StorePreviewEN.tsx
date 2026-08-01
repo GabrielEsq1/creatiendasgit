@@ -246,7 +246,6 @@ export default function StorePreviewEN({ data, products, viewMode = 'desktop', r
                     padding: data.heroHeight ? '1.5rem 1rem' : '3.25rem 2.25rem 3rem'
                 }}>
                     <div className="store-header-inner">
-                        {data.logo && <img src={data.logo} alt="Logo" className="store-logo" />}
                         <div className="store-title">{data.title}</div>
                         <h1 className="store-name">{data.name}</h1>
                         <p className="store-desc">{data.desc}</p>
