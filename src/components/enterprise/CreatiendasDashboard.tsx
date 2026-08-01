@@ -17,6 +17,12 @@ function getTrialDaysRemaining(createdAt: string): number {
 
 /** Full-width banner shown above the stores grid for unpaid free-trial stores */
 function TrialBanner({ stores }: { stores: StoreData[] }) {
+    const { data: session } = useSession();
+    const plan = (session?.user as any)?.plan || 'FREE';
+    const isAdmin = (session?.user as any)?.role === 'ADMIN' || (session?.user as any)?.role === 'SUPERADMIN';
+
+    if (plan === 'PRO' || plan === 'NEGOCIO' || isAdmin) return null;
+
     // Only show for free-plan stores that haven't paid yet
     const freeStores = stores.filter(s => !s.isPaid && s.createdAt);
     if (freeStores.length === 0) return null;
@@ -219,8 +225,12 @@ export default function CreatiendasDashboard() {
                     setStores(storesWithCount);
 
                     // Verifica si hay alguna tienda bloqueada
+                    const plan = (session?.user as any)?.plan || 'FREE';
+                    const isAdmin = (session?.user as any)?.role === 'ADMIN' || (session?.user as any)?.role === 'SUPERADMIN';
+                    const isProOrPaidUser = plan === 'PRO' || plan === 'NEGOCIO' || isAdmin;
+
                     const hasBlockedStore = storesWithCount.some((store: any) => {
-                        if (store.isPaid) return false;
+                        if (store.isPaid || isProOrPaidUser) return false;
                         if (!store.createdAt) return false;
                         const createdDate = new Date(store.createdAt);
                         const daysDiff = (Date.now() - createdDate.getTime()) / (1000 * 60 * 60 * 24);

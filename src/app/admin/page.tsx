@@ -232,6 +232,7 @@ export default function AdminDashboard() {
                                                 >
                                                     <option value="FREE">FREE</option>
                                                     <option value="PRO">PRO</option>
+                                                    <option value="NEGOCIO">NEGOCIO</option>
                                                 </select>
                                             ) : (
                                                 <span className="text-slate-600 font-mono text-xs">N/A</span>
@@ -240,6 +241,8 @@ export default function AdminDashboard() {
                                         <td className="px-4 py-3 text-sm">
                                             {store.isPaid ? (
                                                 <span className="text-emerald-500 font-bold">PAID</span>
+                                            ) : (store.owner?.plan === 'PRO' || store.owner?.plan === 'NEGOCIO') ? (
+                                                <span className="text-emerald-500 font-bold">PRO/NEGOCIO</span>
                                             ) : (
                                                 (() => {
                                                     const created = new Date(store.createdAt);

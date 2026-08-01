@@ -76,6 +76,8 @@ export interface Store {
     products: Product[];
     createdAt: string;
     isPaid: boolean;
+    ownerPlan?: string;
+    ownerRole?: string;
 }
 
 export const StoreService = {
@@ -88,7 +90,15 @@ export const StoreService = {
 
     getStore: async (slug: string) => {
         const store = await prisma.store.findUnique({
-            where: { slug }
+            where: { slug },
+            include: {
+                owner: {
+                    select: {
+                        plan: true,
+                        role: true,
+                    }
+                }
+            }
         });
 
         if (!store) return null;
@@ -100,6 +110,8 @@ export const StoreService = {
             products: store.products as unknown as Product[],
             createdAt: store.createdAt.toISOString(),
             isPaid: store.isPaid,
+            ownerPlan: store.owner?.plan || 'FREE',
+            ownerRole: store.owner?.role || 'USER',
         };
     },
 

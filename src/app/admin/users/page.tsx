@@ -475,6 +475,8 @@ export default function AdminUsersPage() {
                                             <div className="mt-1">
                                                 {store.isPaid ? (
                                                     <span className="text-[10px] bg-green-100 text-green-700 font-bold px-1.5 py-0.5 rounded uppercase">Pagada</span>
+                                                ) : (selectedUser.plan === 'PRO' || selectedUser.plan === 'NEGOCIO') ? (
+                                                    <span className="text-[10px] bg-green-100 text-green-700 font-bold px-1.5 py-0.5 rounded uppercase">Plan {selectedUser.plan}</span>
                                                 ) : (() => {
                                                     const created = new Date(store.createdAt);
                                                     const now = new Date();

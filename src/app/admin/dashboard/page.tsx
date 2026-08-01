@@ -275,7 +275,10 @@ export default function AdminDashboard() {
                                 {stores.map((store) => {
                                     const createdDate = new Date(store.createdAt);
                                     const daysDiff = (Date.now() - createdDate.getTime()) / (1000 * 60 * 60 * 24);
-                                    const isBlocked = !store.isPaid && daysDiff > 30;
+                                    const ownerPlan = store.owner?.plan || 'FREE';
+                                    const ownerRole = store.owner?.role || 'USER';
+                                    const isOwnerAdmin = ownerRole === 'ADMIN' || ownerRole === 'SUPERADMIN';
+                                    const isBlocked = !store.isPaid && ownerPlan !== 'PRO' && ownerPlan !== 'NEGOCIO' && !isOwnerAdmin && daysDiff > 30;
 
                                     return (
                                         <tr key={store.id} className="hover:bg-gray-50">
@@ -294,8 +297,10 @@ export default function AdminDashboard() {
                                             <td className="px-6 py-4">
                                                 {isBlocked ? (
                                                     <span className="px-3 py-1 bg-red-100 text-red-700 rounded-full text-xs font-medium italic">EXPIRADO</span>
-                                                ) : store.isPaid ? (
-                                                    <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-medium font-bold">PAGADO (ILIMITADO)</span>
+                                                ) : (store.isPaid || ownerPlan === 'PRO' || ownerPlan === 'NEGOCIO' || isOwnerAdmin) ? (
+                                                    <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-medium font-bold">
+                                                        {store.isPaid ? 'PAGADO (ILIMITADO)' : `PLAN ${ownerPlan} (ILIMITADO)`}
+                                                    </span>
                                                 ) : (
                                                     <div className="flex flex-col">
                                                         <span className="text-sm font-bold text-blue-700">{Math.max(0, 30 - Math.floor(daysDiff))} días</span>

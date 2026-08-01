@@ -217,7 +217,12 @@ function BuilderContent() {
                         if (data.store.products) setProducts(data.store.products);
 
                         // Check block status
-                        if (!data.store.isPaid && data.store.createdAt) {
+                        const ownerPlan = data.store.ownerPlan || 'FREE';
+                        const ownerRole = data.store.ownerRole || 'USER';
+                        const isAdmin = ownerRole === 'ADMIN' || ownerRole === 'SUPERADMIN';
+                        const isProOrPaid = data.store.isPaid || ownerPlan === 'PRO' || ownerPlan === 'NEGOCIO' || isAdmin;
+                        
+                        if (!isProOrPaid && data.store.createdAt) {
                             const createdDate = new Date(data.store.createdAt);
                             const daysDiff = (Date.now() - createdDate.getTime()) / (1000 * 60 * 60 * 24);
                             if (daysDiff > 30) {

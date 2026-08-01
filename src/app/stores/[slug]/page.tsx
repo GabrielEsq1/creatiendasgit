@@ -28,7 +28,12 @@ export default async function StorePage({ params }: Props) {
 
     const createdDate = new Date(store.createdAt);
     const daysDiff = (Date.now() - createdDate.getTime()) / (1000 * 60 * 60 * 24);
-    const isBlocked = !store.isPaid && daysDiff > 30;
+    
+    const ownerPlan = store.ownerPlan || 'FREE';
+    const ownerRole = store.ownerRole || 'USER';
+    const isAdmin = ownerRole === 'ADMIN' || ownerRole === 'SUPERADMIN';
+    const isProOrPaid = store.isPaid || ownerPlan === 'PRO' || ownerPlan === 'NEGOCIO' || isAdmin;
+    const isBlocked = !isProOrPaid && daysDiff > 30;
 
     if (isBlocked) {
         return (

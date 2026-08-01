@@ -44,6 +44,8 @@ export async function GET(request: Request) {
             const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
 
             if (!store.owner || !store.owner.email) continue;
+            // Exclude stores owned by users with paid/PRO plans
+            if (store.owner.plan === 'PRO' || store.owner.plan === 'NEGOCIO') continue;
 
             let subject = '';
             let title = '';
